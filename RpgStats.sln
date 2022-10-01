@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.BlazorServer", "RpgStats.BlazorServer\RpgStats.BlazorServer.csproj", "{DEACBEBA-C2AC-4D33-99D3-1E3B6A9AC6B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Domain", "RpgStats.Domain\RpgStats.Domain.csproj", "{CA66FA60-0A18-4EA5-84B4-DFB74B314869}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Repo", "RpgStats.Repo\RpgStats.Repo.csproj", "{DCF9FB74-CF71-4D40-B563-EAD85F304AA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Services.Abstractions", "RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj", "{898B970E-709B-4B52-966B-D2272C11C1BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Services", "RpgStats.Services\RpgStats.Services.csproj", "{688ED585-3D1C-4563-B471-6C9B06929F40}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEACBEBA-C2AC-4D33-99D3-1E3B6A9AC6B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEACBEBA-C2AC-4D33-99D3-1E3B6A9AC6B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEACBEBA-C2AC-4D33-99D3-1E3B6A9AC6B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEACBEBA-C2AC-4D33-99D3-1E3B6A9AC6B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA66FA60-0A18-4EA5-84B4-DFB74B314869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA66FA60-0A18-4EA5-84B4-DFB74B314869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA66FA60-0A18-4EA5-84B4-DFB74B314869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA66FA60-0A18-4EA5-84B4-DFB74B314869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF9FB74-CF71-4D40-B563-EAD85F304AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF9FB74-CF71-4D40-B563-EAD85F304AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF9FB74-CF71-4D40-B563-EAD85F304AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF9FB74-CF71-4D40-B563-EAD85F304AA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{898B970E-709B-4B52-966B-D2272C11C1BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{898B970E-709B-4B52-966B-D2272C11C1BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{898B970E-709B-4B52-966B-D2272C11C1BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{898B970E-709B-4B52-966B-D2272C11C1BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{688ED585-3D1C-4563-B471-6C9B06929F40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{688ED585-3D1C-4563-B471-6C9B06929F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{688ED585-3D1C-4563-B471-6C9B06929F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{688ED585-3D1C-4563-B471-6C9B06929F40}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {89448F67-F1C7-49DA-8512-E0050C900CD4}
+	EndGlobalSection
+EndGlobal
