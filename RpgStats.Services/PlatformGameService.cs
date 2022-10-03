@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
+using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
@@ -14,57 +17,121 @@ public class PlatformGameService : IPlatformGameService
         _dbContext = dbContext;
     }
 
-    public async Task<List<PlatformGame>> GetAllPlatformGamesAsync()
+    public async Task<List<PlatformGameDto>> GetAllPlatformGamesAsync()
     {
-        return await _dbContext.PlatformGames
+        var platformGames = await _dbContext.PlatformGames
             .Include(pg => pg.Game)
             .Include(pg => pg.Platform)
             .ToListAsync();
+
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 
-    public async Task<List<PlatformGame>> GetAllPlatformGamesByPlatformAsync(Platform platform)
+    public async Task<List<PlatformGameDto>> GetAllPlatformGamesByPlatformIdAsync(long platformId)
     {
-        return await _dbContext.PlatformGames
+        var platformGames = await _dbContext.PlatformGames
             .Include(pg => pg.Game)
             .Include(pg => pg.Platform)
-            .Where(pg => pg.Platform == platform)
+            .Where(pg => pg.PlatformId == platformId)
             .ToListAsync();
+
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 
-    public async Task<List<PlatformGame>> GetAllPlatformGamesByGameAsync(Game game)
+    public async Task<List<PlatformGameDto>> GetAllPlatformGamesByGameIdAsync(long gameId)
     {
-        return await _dbContext.PlatformGames
+        var platformGames = await _dbContext.PlatformGames
             .Include(pg => pg.Game)
             .Include(pg => pg.Platform)
-            .Where(pg => pg.Game == game)
+            .Where(pg => pg.GameId == gameId)
             .ToListAsync();
+
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 
-    public async Task<PlatformGame?> GetPlatformGameByIdAsync(long platformGameId)
+    public async Task<PlatformGameDto?> GetPlatformGameByIdAsync(long platformGameId)
     {
-        return await _dbContext.PlatformGames
+        var platformGame = await _dbContext.PlatformGames
             .Include(pg => pg.Game)
             .Include(pg => pg.Platform)
             .FirstOrDefaultAsync(pg => pg.Id == platformGameId);
+
+        if (platformGame == null)
+        {
+            throw new PlatformGameNotFoundException(platformGameId);
+        }
+
+        return platformGame.Adapt<PlatformGameDto>();
     }
 
-    public async Task<PlatformGame?> CreatePlatformGameAsync(PlatformGame platformGame)
+    public async Task<PlatformGameDto?> CreatePlatformGameAsync(long platformId, long gameId)
     {
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+
+        if (platform == null)
+        {
+            throw new PlatformNotFoundException(platformId);
+        }
+
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+
+        if (game == null)
+        {
+            throw new GameNotFoundException(gameId);
+        }
+
+        var platformGame = new PlatformGameDto().Adapt<PlatformGame>();
+        platformGame.PlatformId = platformId;
+        platformGame.Platform = platform;
+        platformGame.GameId = gameId;
+        platformGame.Game = game;
+
+
+
         _dbContext.PlatformGames.Add(platformGame);
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(platformGame);
+
+        return platformGame.Adapt<PlatformGameDto>();
     }
 
-    public async Task<PlatformGame?> UpdatePlatformGameAsync(PlatformGame platformGame)
+    public async Task<PlatformGameDto?> UpdatePlatformGameAsync(long platformGameId, long platformId, long gameId)
     {
+        var platformGame = await _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformGameId);
+
+        if (platformGame == null)
+        {
+            throw new PlatformGameNotFoundException(platformGameId);
+        }
+
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+
+        if (platform == null)
+        {
+            throw new PlatformNotFoundException(platformId);
+        }
+
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+
+        if (game == null)
+        {
+            throw new GameNotFoundException(gameId);
+        }
+
+        platformGame.PlatformId = platform.Id;
+        platformGame.Platform = platform;
+        platformGame.GameId = game.Id;
+        platformGame.Game = game;
+
+
         _dbContext.Entry(platformGame).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(platformGame);
+
+        return platformGame.Adapt<PlatformGameDto>();
     }
 
     public Task DeletePlatformGameAsync(long platformId)
     {
-        PlatformGame? platformGame = _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformId).Result;
+        var platformGame = _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformId).Result;
 
         if (platformGame == null)
         {
@@ -72,6 +139,7 @@ public class PlatformGameService : IPlatformGameService
         }
 
         _dbContext.Remove(platformGame);
+
         return _dbContext.SaveChangesAsync();
     }
 }

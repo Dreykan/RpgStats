@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
+using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
@@ -14,33 +17,55 @@ public class PlatformService : IPlatformService
         _dbContext = dbContext;
     }
 
-    public async Task<List<Platform>> GetAllPlatformsAsync()
+    public async Task<List<PlatformDto>> GetAllPlatformsAsync()
     {
-        return await _dbContext.Platforms.ToListAsync();
+        var platforms = await _dbContext.Platforms.ToListAsync();
+
+        return platforms.Adapt<List<PlatformDto>>();
     }
 
-    public async Task<Platform?> GetPlatformByIdAsync(long platformId)
+    public async Task<PlatformDto?> GetPlatformByIdAsync(long platformId)
     {
-        return await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+
+        if (platform == null)
+        {
+            throw new PlatformNotFoundException(platformId);
+        }
+
+        return platform.Adapt<PlatformDto>();
     }
 
-    public async Task<Platform?> CreatePlatformAsync(Platform platform)
+    public async Task<PlatformDto?> CreatePlatformAsync(PlatformForCreationDto platformForCreationDto)
     {
+        var platform = platformForCreationDto.Adapt<Platform>();
+
         _dbContext.Platforms.Add(platform);
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(platform);
+
+        return platform.Adapt<PlatformDto>();
     }
 
-    public async Task<Platform?> UpdatePlatformAsync(Platform platform)
+    public async Task<PlatformDto?> UpdatePlatformAsync(long platformId, PlatformForUpdateDto platformForUpdateDto)
     {
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+
+        if (platform == null)
+        {
+            throw new PlatformNotFoundException(platformId);
+        }
+
+        platform.Name = platformForUpdateDto.Name;
+
         _dbContext.Entry(platform).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(platform);
+
+        return platform.Adapt<PlatformDto>();
     }
 
     public Task DeletePlatformAsync(long platformId)
     {
-        Platform? platform = _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId).Result;
+        var platform = _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId).Result;
 
         if (platform == null)
         {
@@ -48,6 +73,7 @@ public class PlatformService : IPlatformService
         }
 
         _dbContext.Remove(platform);
+
         return _dbContext.SaveChangesAsync();
     }
 }

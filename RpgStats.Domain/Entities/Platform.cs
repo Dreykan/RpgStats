@@ -15,7 +15,7 @@ public class Platform
     [StringLength(60, ErrorMessage = "The name for the platform can't be longer than 60 characters.")]
     public string? Name { get; set; }
 
-
+    [InverseProperty("Platform")]
     public ICollection<PlatformGame>? PlatformGames { get; set; }
 
 }

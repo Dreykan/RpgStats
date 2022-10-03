@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using RpgStats.BlazorServer;
 using RpgStats.BlazorServer.Data;
@@ -13,6 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddControllers().AddApplicationPart(typeof(RpgStats.Controllers.AssemblyReference).Assembly);
+builder.Services.AddSwaggerGen(c =>
+{
+    c.EnableAnnotations();
+    c.SwaggerDoc("v1", new OpenApiInfo {Title = "RpgStats", Version = "v1"});
+});
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IGameService, GameService>();
@@ -39,11 +46,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web v1"));
+}
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseEndpoints(endpoints => endpoints.MapControllers());
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

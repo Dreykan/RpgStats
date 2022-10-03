@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
+using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
@@ -14,28 +17,51 @@ public class GameService : IGameService
         _dbContext = dbContext;
     }
 
-    public async Task<List<Game>> GetAllGamesAsync()
+    public async Task<List<GameDto>> GetAllGamesAsync()
     {
-        return await _dbContext.Games.ToListAsync();
+        var games = await _dbContext.Games.ToListAsync();
+
+        return games.Adapt<List<GameDto>>();
     }
 
-    public async Task<Game?> GetGameByIdAsync(long gameId)
+    public async Task<GameDto?> GetGameByIdAsync(long gameId)
     {
-        return await _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId);
+        var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId);
+
+        if (game == null)
+        {
+            throw new GameNotFoundException(gameId);
+        }
+
+        return game.Adapt<GameDto>();
     }
 
-    public async Task<Game?> CreateGameAsync(Game game)
+    public async Task<GameDto?> CreateGameAsync(GameForCreationDto gameForCreationDto)
     {
+        var game = gameForCreationDto.Adapt<Game>();
+
         _dbContext.Games.Add(game);
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(game);
+
+        return game.Adapt<GameDto>();
     }
 
-    public async Task<Game?> UpdateGameAsync(Game game)
+    public async Task<GameDto?> UpdateGameAsync(long gameId, GameForUpdateDto gameForUpdateDto)
     {
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+
+        if (game == null)
+        {
+            throw new GameNotFoundException(gameId);
+        }
+
+        game.Name = gameForUpdateDto.Name;
+        game.Picture = gameForUpdateDto.Picture;
+
         _dbContext.Entry(game).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(game);
+
+        return game.Adapt<GameDto>();
     }
 
     public Task DeleteGameAsync(long gameId)
@@ -48,6 +74,7 @@ public class GameService : IGameService
         }
 
         _dbContext.Remove(game);
+
         return _dbContext.SaveChangesAsync();
     }
 }

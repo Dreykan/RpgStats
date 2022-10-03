@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
+using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
@@ -14,51 +17,96 @@ public class CharacterService : ICharacterService
         _dbContext = dbContext;
     }
 
-    public async Task<List<Character>> GetAllCharactersAsync()
+    public async Task<List<CharacterDto>> GetAllCharactersAsync()
     {
-        return await _dbContext.Characters.ToListAsync();
+        var characters = await _dbContext.Characters.ToListAsync();
+
+        return characters.Adapt<List<CharacterDto>>();
     }
 
-    public async Task<List<Character>> GetAllCharactersByGameAsync(Game game)
+    public async Task<List<CharacterDto>> GetAllCharactersByGameIdAsync(long gameId)
     {
-        return await _dbContext.Characters
+        var characters = await _dbContext.Characters
             .Include(g => g.Game)
-            .Where(g => g.Game == game)
+            .Where(g => g.GameId == gameId)
             .ToListAsync();
+
+        return characters.Adapt<List<CharacterDto>>();
     }
 
-    public async Task<List<Character>> GetAllCharactersByNameAsync(string name)
+    public async Task<List<CharacterDto>> GetAllCharactersByNameAsync(string name)
     {
-        return await _dbContext.Characters
+        var characters = await _dbContext.Characters
             .Include(g => g.Game)
             .Where(g => g.Name != null && g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
+
+        return characters.Adapt<List<CharacterDto>>();
     }
 
-    public async Task<Character?> GetCharacterByIdAsync(long characterId)
+    public async Task<CharacterDto?> GetCharacterByIdAsync(long characterId)
     {
-        return await _dbContext.Characters
+        var character = await _dbContext.Characters
             .Include(g => g.Game)
             .FirstOrDefaultAsync(c => c.Id == characterId);
+
+        if (character == null)
+        {
+            throw new CharacterNotFoundException(characterId);
+        }
+
+        return character.Adapt<CharacterDto>();
     }
 
-    public async Task<Character?> CreateCharacterAsync(Character character)
+    public async Task<CharacterDto?> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto)
     {
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+
+        if (game == null)
+        {
+            throw new GameNotFoundException(gameId);
+        }
+
+        var character = characterForCreationDto.Adapt<Character>();
+        character.GameId = game.Id;
+        character.Game = game;
+
         _dbContext.Characters.Add(character);
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(character);
+
+        return character.Adapt<CharacterDto>();
     }
 
-    public async Task<Character?> UpdateCharacterAsync(Character character)
+    public async Task<CharacterDto?> UpdateCharacterAsync(long characterId, long gameId, CharacterForUpdateDto characterForUpdateDto)
     {
+        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+
+        if (character == null)
+        {
+            throw new CharacterNotFoundException(characterId);
+        }
+
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+
+        if (game == null)
+        {
+            throw new GameNotFoundException(gameId);
+        }
+
+        character.Name = characterForUpdateDto.Name;
+        character.Picture = characterForUpdateDto.Picture;
+        character.GameId = game.Id;
+        character.Game = game;
+
         _dbContext.Entry(character).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(character);
+
+        return character.Adapt<CharacterDto>();
     }
 
     public Task DeleteCharacterAsync(long characterId)
     {
-        Character? character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
+        var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
 
         if (character == null)
         {
@@ -66,6 +114,7 @@ public class CharacterService : ICharacterService
         }
 
         _dbContext.Remove(character);
+
         return _dbContext.SaveChangesAsync();
     }
 }

@@ -1,15 +1,16 @@
 ﻿using RpgStats.Domain.Entities;
+using RpgStats.Dto;
 
 namespace RpgStats.Services.Abstractions;
 
 public interface IPlatformGameService
 {
-    Task<List<PlatformGame>> GetAllPlatformGamesAsync();
-    Task<List<PlatformGame>> GetAllPlatformGamesByPlatformAsync(Platform platform);
-    Task<List<PlatformGame>> GetAllPlatformGamesByGameAsync(Game game);
-    Task<PlatformGame?> GetPlatformGameByIdAsync(long platformGameId);
-    Task<PlatformGame?> CreatePlatformGameAsync(PlatformGame platformGame);
-    Task<PlatformGame?> UpdatePlatformGameAsync(PlatformGame platformGame);
+    Task<List<PlatformGameDto>> GetAllPlatformGamesAsync();
+    Task<List<PlatformGameDto>> GetAllPlatformGamesByPlatformIdAsync(long platformId);
+    Task<List<PlatformGameDto>> GetAllPlatformGamesByGameIdAsync(long gameId);
+    Task<PlatformGameDto?> GetPlatformGameByIdAsync(long platformGameId);
+    Task<PlatformGameDto?> CreatePlatformGameAsync(long platformId, long gameId);
+    Task<PlatformGameDto?> UpdatePlatformGameAsync(long platformGameId, long platformId, long gameId);
     Task DeletePlatformGameAsync(long platformId);
 
 }

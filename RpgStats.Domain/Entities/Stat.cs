@@ -18,5 +18,6 @@ public class Stat
     [StringLength(8, ErrorMessage = "The shortname for the stat can't be longer than 8 characters.")]
     public string? ShortName { get; set; }
 
+    [InverseProperty("Stat")]
     public ICollection<StatValue>? StatValues { get; set; }
 }

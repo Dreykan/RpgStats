@@ -22,5 +22,6 @@ public class Character
     public long GameId { get; set; }
     public Game? Game { get; set; }
 
+    [InverseProperty("Character")]
     public ICollection<StatValue>? StatValues { get; set; }
 }

@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.BlazorServer", "RpgStats.BlazorServer\RpgStats.BlazorServer.csproj", "{DEACBEBA-C2AC-4D33-99D3-1E3B6A9AC6B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.BlazorServer", "RpgStats.BlazorServer\RpgStats.BlazorServer.csproj", "{DEACBEBA-C2AC-4D33-99D3-1E3B6A9AC6B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Domain", "RpgStats.Domain\RpgStats.Domain.csproj", "{CA66FA60-0A18-4EA5-84B4-DFB74B314869}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Domain", "RpgStats.Domain\RpgStats.Domain.csproj", "{CA66FA60-0A18-4EA5-84B4-DFB74B314869}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Repo", "RpgStats.Repo\RpgStats.Repo.csproj", "{DCF9FB74-CF71-4D40-B563-EAD85F304AA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Repo", "RpgStats.Repo\RpgStats.Repo.csproj", "{DCF9FB74-CF71-4D40-B563-EAD85F304AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Services.Abstractions", "RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj", "{898B970E-709B-4B52-966B-D2272C11C1BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Services.Abstractions", "RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj", "{898B970E-709B-4B52-966B-D2272C11C1BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Services", "RpgStats.Services\RpgStats.Services.csproj", "{688ED585-3D1C-4563-B471-6C9B06929F40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Services", "RpgStats.Services\RpgStats.Services.csproj", "{688ED585-3D1C-4563-B471-6C9B06929F40}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Controllers", "RpgStats.Controllers\RpgStats.Controllers.csproj", "{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Dto", "RpgStats.Dto\RpgStats.Dto.csproj", "{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{688ED585-3D1C-4563-B471-6C9B06929F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{688ED585-3D1C-4563-B471-6C9B06929F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{688ED585-3D1C-4563-B471-6C9B06929F40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

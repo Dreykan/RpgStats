@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
+using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
@@ -14,28 +17,53 @@ public class StatService : IStatService
         _dbContext = dbContext;
     }
 
-    public async Task<List<Stat>> GetAllStatsAsync()
+    public async Task<List<StatDto>> GetAllStatsAsync()
     {
-        return await _dbContext.Stats.ToListAsync();
+        var stats = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .ToListAsync();
+
+        return stats.Adapt<List<StatDto>>();
     }
 
-    public async Task<Stat?> GetStatByIdAsync(long statId)
+    public async Task<StatDto?> GetStatByIdAsync(long statId)
     {
-        return await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+
+        if (stat == null)
+        {
+            throw new StatNotFoundException(statId);
+        }
+
+        return stat.Adapt<StatDto>();
     }
 
-    public async Task<Stat?> CreateStatAsync(Stat stat)
+    public async Task<StatDto?> CreateStatAsync(StatForCreationDto statForCreationDto)
     {
+        var stat = statForCreationDto.Adapt<Stat>();
+
         _dbContext.Add(stat);
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(stat);
+
+        return stat.Adapt<StatDto>();
     }
 
-    public async Task<Stat> UpdateStatAsync(Stat stat)
+    public async Task<StatDto?> UpdateStatAsync(long statId, StatForUpdateDto statForUpdateDto)
     {
+        var stat = _dbContext.Stats.FirstOrDefault(s => s.Id == statId);
+
+        if (stat == null)
+        {
+            throw new StatNotFoundException(statId);
+        }
+
+        stat.Name = statForUpdateDto.Name;
+        stat.ShortName = statForUpdateDto.ShortName;
+
         _dbContext.Entry(stat).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(stat);
+
+        return stat.Adapt<StatDto>();
     }
 
     public Task DeleteStatAsync(long statId)
@@ -48,6 +76,7 @@ public class StatService : IStatService
         }
 
         _dbContext.Remove(stat);
+
         return _dbContext.SaveChangesAsync();
     }
 }

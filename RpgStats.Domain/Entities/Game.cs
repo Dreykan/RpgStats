@@ -17,6 +17,9 @@ public class Game
 
     public byte[]? Picture { get; set; }
 
+    [InverseProperty("Game")]
     public ICollection<PlatformGame>? PlatformGames { get; set; }
+
+    [InverseProperty("Game")]
     public ICollection<Character>? Characters { get; set; }
 }

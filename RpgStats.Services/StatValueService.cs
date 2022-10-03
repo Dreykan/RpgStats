@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
+using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
@@ -14,52 +17,107 @@ public class StatValueService : IStatValueService
         _dbContext = dbContext;
     }
 
-    public async Task<List<StatValue>> GetAllStatValuesAsync()
+    public async Task<List<StatValueDto>> GetAllStatValuesAsync()
     {
-        return await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .Include(sv => sv.Stat)
-            .ToListAsync();
+        var statValues = await _dbContext.StatValues.ToListAsync();
+
+        return statValues.Adapt<List<StatValueDto>>();
     }
 
-    public async Task<List<StatValue>> GetAllStatValuesByCharacterAsync(Character character)
+    public async Task<List<StatValueDto>> GetAllStatValuesByCharacterIdAsync(long characterId)
     {
-        return await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .Include(sv => sv.Stat)
-            .Where(sv => sv.Character == character)
+        var statValues = await _dbContext.StatValues
+            .Where(sv => sv.CharacterId == characterId)
             .ToListAsync();
+
+        return statValues.Adapt<List<StatValueDto>>();
     }
 
-    public async Task<List<StatValue>> GetAllStatValuesByStatAsync(Stat stat)
+    public async Task<List<StatValueDto>> GetAllStatValuesByStatIdAsync(long statId)
     {
-        return await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .Include(sv => sv.Stat)
-            .Where(sv => sv.Stat == stat)
+        var statValues = await _dbContext.StatValues
+            .Where(sv => sv.StatId == statId)
             .ToListAsync();
+
+        return statValues.Adapt<List<StatValueDto>>();
     }
 
-    public async Task<StatValue?> GetStatValueByIdAsync(long statId)
+    public async Task<StatValueDto?> GetStatValueByIdAsync(long statId)
     {
-        return await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .Include(sv => sv.Stat)
+        var statValue = await _dbContext.StatValues
             .FirstOrDefaultAsync(sv => sv.Id == statId);
+
+        if (statValue == null)
+        {
+            throw new StatNotFoundException(statId);
+        }
+
+        return statValue.Adapt<StatValueDto>();
     }
 
-    public async Task<StatValue?> CreateStatValueAsync(StatValue statValue)
+    public async Task<StatValueDto?> CreateStatValueAsync(long characterId, long statId, StatValueForCreationDto statValueForCreationDto)
     {
+        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+
+        if (character == null)
+        {
+            throw new CharacterNotFoundException(characterId);
+        }
+
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+
+        if (stat == null)
+        {
+            throw new StatNotFoundException(statId);
+        }
+
+        var statValue = statValueForCreationDto.Adapt<StatValue>();
+        statValue.CharacterId = character.Id;
+        statValue.Character = character;
+        statValue.StatId = stat.Id;
+        statValue.Stat = stat;
+
         _dbContext.Add(statValue);
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(statValue);
+
+        return statValue.Adapt<StatValueDto>();
     }
 
-    public async Task<StatValue?> UpdateStatValueAsync(StatValue statValue)
+    public async Task<StatValueDto?> UpdateStatValueAsync(long statValueId, long characterId, long statId, StatValueForUpdateDto statValueForUpdateDto)
     {
+        var statValue = await _dbContext.StatValues.FirstOrDefaultAsync(sv => sv.Id == statValueId);
+
+        if (statValue == null)
+        {
+            throw new StatValueNotFoundException(statValueId);
+        }
+
+        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+
+        if (character == null)
+        {
+            throw new CharacterNotFoundException(characterId);
+        }
+
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+
+        if (stat == null)
+        {
+            throw new StatNotFoundException(statId);
+        }
+
+        statValue.Level = statValueForUpdateDto.Level;
+        statValue.Value = statValueForUpdateDto.Value;
+        statValue.CharacterId = character.Id;
+        statValue.Character = character;
+        statValue.StatId = stat.Id;
+        statValue.Stat = stat;
+
+
         _dbContext.Entry(statValue).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return await Task.FromResult(statValue);
+
+        return statValue.Adapt<StatValueDto>();
     }
 
     public Task DeleteStatValueAsync(long statId)
@@ -72,6 +130,7 @@ public class StatValueService : IStatValueService
         }
 
         _dbContext.Remove(statValue);
+
         return _dbContext.SaveChangesAsync();
     }
 }

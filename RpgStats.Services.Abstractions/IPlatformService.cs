@@ -1,12 +1,13 @@
 ﻿using RpgStats.Domain.Entities;
+using RpgStats.Dto;
 
 namespace RpgStats.Services.Abstractions;
 
 public interface IPlatformService
 {
-    Task<List<Platform>> GetAllPlatformsAsync();
-    Task<Platform?> GetPlatformByIdAsync(long platformId);
-    Task<Platform?> CreatePlatformAsync(Platform platform);
-    Task<Platform?> UpdatePlatformAsync(Platform platform);
+    Task<List<PlatformDto>> GetAllPlatformsAsync();
+    Task<PlatformDto?> GetPlatformByIdAsync(long platformId);
+    Task<PlatformDto?> CreatePlatformAsync(PlatformForCreationDto platformForCreationDto);
+    Task<PlatformDto?> UpdatePlatformAsync(long platformId, PlatformForUpdateDto platformForUpdateDto);
     Task DeletePlatformAsync(long platformId);
 }
