@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RpgStats.Domain.Entities;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;

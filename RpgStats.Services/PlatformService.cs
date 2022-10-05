@@ -19,14 +19,18 @@ public class PlatformService : IPlatformService
 
     public async Task<List<PlatformDto>> GetAllPlatformsAsync()
     {
-        var platforms = await _dbContext.Platforms.ToListAsync();
+        var platforms = await _dbContext.Platforms
+            .Include(p => p.PlatformGames)
+            .ToListAsync();
 
         return platforms.Adapt<List<PlatformDto>>();
     }
 
     public async Task<PlatformDto?> GetPlatformByIdAsync(long platformId)
     {
-        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+        var platform = await _dbContext.Platforms
+            .Include(p => p.PlatformGames)
+            .FirstOrDefaultAsync(p => p.Id == platformId);
 
         if (platform == null)
         {

@@ -11,9 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RpgStats.Domain\RpgStats.Domain.csproj" />
     <ProjectReference Include="..\RpgStats.Dto\RpgStats.Dto.csproj" />
-    <ProjectReference Include="..\RpgStats.Repo\RpgStats.Repo.csproj" />
   </ItemGroup>
 
 </Project>

@@ -19,7 +19,10 @@ public class StatValueService : IStatValueService
 
     public async Task<List<StatValueDto>> GetAllStatValuesAsync()
     {
-        var statValues = await _dbContext.StatValues.ToListAsync();
+        var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .Include(sv => sv.Stat)
+            .ToListAsync();
 
         return statValues.Adapt<List<StatValueDto>>();
     }
@@ -27,6 +30,8 @@ public class StatValueService : IStatValueService
     public async Task<List<StatValueDto>> GetAllStatValuesByCharacterIdAsync(long characterId)
     {
         var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .Include(sv => sv.Stat)
             .Where(sv => sv.CharacterId == characterId)
             .ToListAsync();
 
@@ -36,6 +41,8 @@ public class StatValueService : IStatValueService
     public async Task<List<StatValueDto>> GetAllStatValuesByStatIdAsync(long statId)
     {
         var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .Include(sv => sv.Stat)
             .Where(sv => sv.StatId == statId)
             .ToListAsync();
 
@@ -45,6 +52,8 @@ public class StatValueService : IStatValueService
     public async Task<StatValueDto?> GetStatValueByIdAsync(long statId)
     {
         var statValue = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .Include(sv => sv.Stat)
             .FirstOrDefaultAsync(sv => sv.Id == statId);
 
         if (statValue == null)

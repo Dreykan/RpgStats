@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RpgStats.Domain\RpgStats.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

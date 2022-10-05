@@ -36,6 +36,12 @@ else
 }
 else
 {
+    @if (_characters.Count == 0)
+    {
+        <div>
+            <p>Keine Charaktere vorhanden...</p>
+        </div>
+    }
     <div>
         @foreach (var c in _characters)
         {

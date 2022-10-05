@@ -20,8 +20,6 @@ public class PlatformGameService : IPlatformGameService
     public async Task<List<PlatformGameDto>> GetAllPlatformGamesAsync()
     {
         var platformGames = await _dbContext.PlatformGames
-            .Include(pg => pg.Game)
-            .Include(pg => pg.Platform)
             .ToListAsync();
 
         return platformGames.Adapt<List<PlatformGameDto>>();
@@ -30,8 +28,6 @@ public class PlatformGameService : IPlatformGameService
     public async Task<List<PlatformGameDto>> GetAllPlatformGamesByPlatformIdAsync(long platformId)
     {
         var platformGames = await _dbContext.PlatformGames
-            .Include(pg => pg.Game)
-            .Include(pg => pg.Platform)
             .Where(pg => pg.PlatformId == platformId)
             .ToListAsync();
 
@@ -41,8 +37,6 @@ public class PlatformGameService : IPlatformGameService
     public async Task<List<PlatformGameDto>> GetAllPlatformGamesByGameIdAsync(long gameId)
     {
         var platformGames = await _dbContext.PlatformGames
-            .Include(pg => pg.Game)
-            .Include(pg => pg.Platform)
             .Where(pg => pg.GameId == gameId)
             .ToListAsync();
 
@@ -52,8 +46,6 @@ public class PlatformGameService : IPlatformGameService
     public async Task<PlatformGameDto?> GetPlatformGameByIdAsync(long platformGameId)
     {
         var platformGame = await _dbContext.PlatformGames
-            .Include(pg => pg.Game)
-            .Include(pg => pg.Platform)
             .FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
         if (platformGame == null)

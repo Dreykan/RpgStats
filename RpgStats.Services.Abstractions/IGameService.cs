@@ -1,5 +1,4 @@
-﻿using RpgStats.Domain.Entities;
-using RpgStats.Dto;
+﻿using RpgStats.Dto;
 
 namespace RpgStats.Services.Abstractions;
 

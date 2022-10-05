@@ -19,7 +19,10 @@ public class CharacterService : ICharacterService
 
     public async Task<List<CharacterDto>> GetAllCharactersAsync()
     {
-        var characters = await _dbContext.Characters.ToListAsync();
+        var characters = await _dbContext.Characters
+            .Include(c => c.StatValues)
+            .Include(c => c.Game)
+            .ToListAsync();
 
         return characters.Adapt<List<CharacterDto>>();
     }
@@ -27,7 +30,7 @@ public class CharacterService : ICharacterService
     public async Task<List<CharacterDto>> GetAllCharactersByGameIdAsync(long gameId)
     {
         var characters = await _dbContext.Characters
-            .Include(g => g.Game)
+            .Include(c => c.StatValues)
             .Where(g => g.GameId == gameId)
             .ToListAsync();
 
@@ -37,7 +40,7 @@ public class CharacterService : ICharacterService
     public async Task<List<CharacterDto>> GetAllCharactersByNameAsync(string name)
     {
         var characters = await _dbContext.Characters
-            .Include(g => g.Game)
+            .Include(c => c.StatValues)
             .Where(g => g.Name != null && g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
@@ -47,7 +50,7 @@ public class CharacterService : ICharacterService
     public async Task<CharacterDto?> GetCharacterByIdAsync(long characterId)
     {
         var character = await _dbContext.Characters
-            .Include(g => g.Game)
+            .Include(c => c.StatValues)
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
         if (character == null)

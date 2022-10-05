@@ -19,14 +19,20 @@ public class GameService : IGameService
 
     public async Task<List<GameDto>> GetAllGamesAsync()
     {
-        var games = await _dbContext.Games.ToListAsync();
+        var games = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .Include(g => g.Characters)
+            .ToListAsync();
 
         return games.Adapt<List<GameDto>>();
     }
 
     public async Task<GameDto?> GetGameByIdAsync(long gameId)
     {
-        var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId);
+        var game = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .Include(g => g.Characters)
+            .FirstOrDefaultAsync(x => x.Id == gameId);
 
         if (game == null)
         {

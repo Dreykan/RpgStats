@@ -28,7 +28,9 @@ public class StatService : IStatService
 
     public async Task<StatDto?> GetStatByIdAsync(long statId)
     {
-        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+        var stat = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .FirstOrDefaultAsync(s => s.Id == statId);
 
         if (stat == null)
         {
