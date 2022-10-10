@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Services", "RpgSta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Controllers", "RpgStats.Controllers\RpgStats.Controllers.csproj", "{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Dto", "RpgStats.Dto\RpgStats.Dto.csproj", "{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Dto", "RpgStats.Dto\RpgStats.Dto.csproj", "{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

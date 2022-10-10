@@ -1,12 +1,8 @@
 ﻿@page "/counter"
 @using RpgStats.Services.Abstractions
 @using RpgStats.Dto
+@using System.Globalization
 @inject IPlatformService PlatformService;
-@inject ICharacterService CharacterService;
-@inject IGameService GameService;
-@inject IPlatformGameService PlatformGameService;
-@inject IStatService StatService;
-@inject IStatValueService StatValueService;
 
 <PageTitle>Counter</PageTitle>
 
@@ -22,101 +18,12 @@
 }
 else
 {
-    <div>
-        @foreach (var p in _platforms)
-        {
-            <p>@p.Name</p>
-        }
-    </div>
+    
 }
 
-@if (_characters == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    @if (_characters.Count == 0)
-    {
-        <div>
-            <p>Keine Charaktere vorhanden...</p>
-        </div>
-    }
-    <div>
-        @foreach (var c in _characters)
-        {
-            <p>@c.Name</p>
-        }
-    </div>
-}
-
-@if (_games == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div>
-        @foreach (var g in _games)
-        {
-            <p>@g.Name</p>
-        }
-    </div>
-}
-
-@if (_platformGames == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div>
-        @foreach (var pg in _platformGames)
-        {
-            <p>@pg.Id --- @pg.PlatformId --- @pg.GameId</p>
-        }
-    </div>
-}
-
-@if (_stats == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div>
-        @foreach (var s in _stats)
-        {
-            <p>@s.Name --- @s.ShortName</p>
-            @foreach (var sv in s.StatValues)
-            {
-                <p>@sv.Level --- @sv.Value</p>
-            }
-        }
-    </div>
-}
-
-@if (_statValues == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div>
-        @foreach (var sv in _statValues)
-        {
-            <p>@sv.CharacterId --- @sv.StatId --- @sv.Level --- @sv.Value</p>
-        }
-    </div>
-}
 
 @code {
-    private List<PlatformDto>? _platforms;
-    private List<CharacterDto>? _characters;
-    private List<GameDto>? _games;
-    private List<PlatformGameDto>? _platformGames;
-    private List<StatDto>? _stats;
-    private List<StatValueDto>? _statValues;
+    private List<PlatformDetailDto>? _platforms;
 
     private int currentCount = 0;
 
@@ -127,59 +34,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await GetPlatforms();
-        await GetCharacters();
-        await GetGames();
-        await GetPlatformGames();
-        await GetStats();
-        await GetStatValues();
+        await GetPlatformsWithGames();
     }
 
-    private async Task GetPlatforms()
+    private async Task GetPlatformsWithGames()
     {
-        var platforms = await PlatformService.GetAllPlatformsAsync();
+        var platforms = await PlatformService.GetAllPlatformDetailDtosAsync();
         _platforms = platforms
             .OrderBy(p => p.Name)
-            .ToList();
-    }
-
-    private async Task GetCharacters()
-    {
-        var characters = await CharacterService.GetAllCharactersAsync();
-        _characters = characters
-            .OrderBy(c => c.Name)
-            .ToList();
-    }
-
-    private async Task GetGames()
-    {
-        var games = await GameService.GetAllGamesAsync();
-        _games = games
-            .OrderBy(g => g.Name)
-            .ToList();
-    }
-
-    private async Task GetPlatformGames()
-    {
-        var platformGames = await PlatformGameService.GetAllPlatformGamesAsync();
-        _platformGames = platformGames
-            .OrderBy(pg => pg.Id)
-            .ToList();
-    }
-
-    private async Task GetStats()
-    {
-        var stats = await StatService.GetAllStatsAsync();
-        _stats = stats
-            .OrderBy(s => s.Name)
-            .ToList();
-    }
-
-    private async Task GetStatValues()
-    {
-        var statValues = await StatValueService.GetAllStatValuesAsync();
-        _statValues = statValues
-            .OrderBy(sv => sv.Level)
             .ToList();
     }
 }

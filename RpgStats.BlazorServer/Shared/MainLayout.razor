@@ -1,8 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>RpgStats.BlazorServer</PageTitle>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<div class="page">
+<PageTitle>RpgStats</PageTitle>
+
+
+@*<div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -16,4 +21,32 @@
             @Body
         </article>
     </main>
-</div>
+</div>*@
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        RpgStats
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" Elevation="10">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Class="mt-2">Navigation</MudText>
+        </MudDrawerHeader>
+        <CustomMudNavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code
+{
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

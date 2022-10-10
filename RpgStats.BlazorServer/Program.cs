@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MudBlazor.Services;
 using Newtonsoft.Json;
 using RpgStats.BlazorServer;
 using RpgStats.BlazorServer.Data;
@@ -22,6 +23,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo {Title = "RpgStats", Version = "v1"});
 });
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddMudServices();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IPlatformService, PlatformService>();
