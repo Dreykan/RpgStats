@@ -9,4 +9,7 @@ public interface IPlatformService
     Task<PlatformDto?> CreatePlatformAsync(PlatformForCreationDto platformForCreationDto);
     Task<PlatformDto?> UpdatePlatformAsync(long platformId, PlatformForUpdateDto platformForUpdateDto);
     Task DeletePlatformAsync(long platformId);
+    Task<List<PlatformDetailDto>> GetAllPlatformDetailDtosAsync();
+    Task<List<PlatformDetailDto>> GetAllPlatformDetailDtosByNameAsync(string name);
+    Task<PlatformDetailDto> GetPlatformDetailDtoByIdAsync(long platformId);
 }

@@ -40,11 +40,43 @@ public class CharacterController : ControllerBase
         return Ok(characters);
     }
 
+    [HttpGet("details")]
+    [SwaggerOperation(Summary = "Get all Characters with Details")]
+    public async Task<IActionResult> GetAllCharacterDetailDtos()
+    {
+        var characters = await _characterService.GetAllCharacterDetailDtosAsync();
+        return Ok(characters);
+    }
+
+    [HttpGet("detailsByGame")]
+    [SwaggerOperation(Summary = "Get all Characters with Details by Game")]
+    public async Task<IActionResult> GetAllCharacterDetailDtosByGame(long gameId)
+    {
+        var characters = await _characterService.GetAllCharacterDetailDtosByGameIdAsync(gameId);
+        return Ok(characters);
+    }
+
+    [HttpGet("detailsByName")]
+    [SwaggerOperation(Summary = "Get all Characters with Details by Name")]
+    public async Task<IActionResult> GetAllCharacterDetailDtosByName(string name)
+    {
+        var characters = await _characterService.GetAllCharacterDetailDtosByNameAsync(name);
+        return Ok(characters);
+    }
+
     [HttpGet("{characterId:long}")]
     [SwaggerOperation(Summary = "Get a Character by Id")]
     public async Task<IActionResult> GetCharacterById(long characterId)
     {
         var character = await _characterService.GetCharacterByIdAsync(characterId);
+        return Ok(character);
+    }
+
+    [HttpGet("details{characterId:long}")]
+    [SwaggerOperation(Summary = "Get a Character with Details by Id")]
+    public async Task<IActionResult> GetCharacterDetailDtoById(long characterId)
+    {
+        var character = await _characterService.GetCharacterDetailDtoByIdAsync(characterId);
         return Ok(character);
     }
 

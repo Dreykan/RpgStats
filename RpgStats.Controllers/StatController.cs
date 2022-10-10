@@ -24,11 +24,59 @@ public class StatController : ControllerBase
         return Ok(stats);
     }
 
+    [HttpGet("byName")]
+    [SwaggerOperation(Summary = "Get all Stats by Name")]
+    public async Task<IActionResult> GetAllStatsByName(string name)
+    {
+        var stats = await _statService.GetAllStatsByNameAsync(name);
+        return Ok(stats);
+    }
+
+    [HttpGet("byShortname")]
+    [SwaggerOperation(Summary = "Get all Stats by Shortname")]
+    public async Task<IActionResult> GetAllStatsByShortname(string shortName)
+    {
+        var stats = await _statService.GetAllStatsByShortNameAsync(shortName);
+        return Ok(stats);
+    }
+
+    [HttpGet("details")]
+    [SwaggerOperation(Summary = "Get all Stats with Details")]
+    public async Task<IActionResult> GetAllStatDetailDtos()
+    {
+        var stats = await _statService.GetAllStatDetailDtosAsync();
+        return Ok(stats);
+    }
+
+    [HttpGet("detailsByName")]
+    [SwaggerOperation(Summary = "Get all Stats with Details by Name")]
+    public async Task<IActionResult> GetAllStatDetailDtosByName(string name)
+    {
+        var stats = await _statService.GetAllStatDetailDtosByNameAsync(name);
+        return Ok(stats);
+    }
+
+    [HttpGet("detailsByShortName")]
+    [SwaggerOperation(Summary = "Get all Stats with Details by ShortName")]
+    public async Task<IActionResult> GetAllStatDetailDtosByShortName(string shortName)
+    {
+        var stats = await _statService.GetAllStatDetailDtosByShortNameAsync(shortName);
+        return Ok(stats);
+    }
+
     [HttpGet("{statId:long}")]
     [SwaggerOperation(Summary = "Get a Stat")]
     public async Task<IActionResult> GetStatById(long statId)
     {
         var stat = await _statService.GetStatByIdAsync(statId);
+        return Ok(stat);
+    }
+
+    [HttpGet("details{statId:long}")]
+    [SwaggerOperation(Summary = "Get a Stat with Details by Id")]
+    public async Task<IActionResult> GetStatDetailDtoById(long statId)
+    {
+        var stat = await _statService.GetStatDetailDtoByIdAsync(statId);
         return Ok(stat);
     }
 

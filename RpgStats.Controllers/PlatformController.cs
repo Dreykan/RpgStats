@@ -24,11 +24,35 @@ public class PlatformController : ControllerBase
         return Ok(platforms);
     }
 
+    [HttpGet("details")]
+    [SwaggerOperation(Summary = "Get all Platforms with Details")]
+    public async Task<IActionResult> GetAllPlatformDetailDtos()
+    {
+        var platforms = await _platformService.GetAllPlatformDetailDtosAsync();
+        return Ok(platforms);
+    }
+
+    [HttpGet("detailsByName")]
+    [SwaggerOperation(Summary = "Get all Platforms with Details by Name")]
+    public async Task<IActionResult> GetAllPlatformDetailDtosByName(string name)
+    {
+        var platforms = await _platformService.GetAllPlatformDetailDtosByNameAsync(name);
+        return Ok(platforms);
+    }
+
     [HttpGet("{platformId:long}")]
     [SwaggerOperation(Summary = "Get a Platform by Id")]
     public async Task<IActionResult> GetPlatformById(long platformId)
     {
         var platform = await _platformService.GetPlatformByIdAsync(platformId);
+        return Ok(platform);
+    }
+
+    [HttpGet("details{platformId:long}")]
+    [SwaggerOperation(Summary = "Get a Platform with Details by Id")]
+    public async Task<IActionResult> GetPlatformDetailDtoById(long platformId)
+    {
+        var platform = await _platformService.GetPlatformDetailDtoByIdAsync(platformId);
         return Ok(platform);
     }
 

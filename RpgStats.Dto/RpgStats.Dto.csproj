@@ -10,4 +10,8 @@
     <ProjectReference Include="..\RpgStats.Domain\RpgStats.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mapper\" />
+  </ItemGroup>
+
 </Project>

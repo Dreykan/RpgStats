@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
+using RpgStats.Dto.Mapper;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
+using System.Xml.Linq;
 
 namespace RpgStats.Services;
 
@@ -26,6 +28,103 @@ public class StatService : IStatService
         return stats.Adapt<List<StatDto>>();
     }
 
+    public async Task<List<StatDto>> GetAllStatsByNameAsync(string name)
+    {
+        var stats = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .Where(s => s.Name != null && s.Name.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
+
+        return stats.Adapt<List<StatDto>>();
+    }
+
+    public async Task<List<StatDto>> GetAllStatsByShortNameAsync(string shortName)
+    {
+        var stats = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .Where(s => s.ShortName != null && s.ShortName.ToLower().Contains(shortName.ToLower()))
+            .ToListAsync();
+
+        return stats.Adapt<List<StatDto>>();
+    }
+
+    public async Task<List<StatDetailDto>> GetAllStatDetailDtosAsync()
+    {
+        var stats = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .ToListAsync();
+
+        var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .ToListAsync();
+
+        var statDetailDtos = new List<StatDetailDto>();
+        var statMapper = new StatMapper();
+
+        foreach (var stat in stats)
+        {
+            var svTempList = statValues
+                .Where(sv => sv.StatId == stat.Id)
+                .ToList();
+
+            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
+        }
+
+        return statDetailDtos;
+    }
+
+    public async Task<List<StatDetailDto>> GetAllStatDetailDtosByNameAsync(string name)
+    {
+        var stats = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .Where(s => s.Name != null && s.Name.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
+
+        var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .ToListAsync();
+
+        var statDetailDtos = new List<StatDetailDto>();
+        var statMapper = new StatMapper();
+
+        foreach (var stat in stats)
+        {
+            var svTempList = statValues
+                .Where(sv => sv.StatId == stat.Id)
+                .ToList();
+
+            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
+        }
+
+        return statDetailDtos;
+    }
+
+    public async Task<List<StatDetailDto>> GetAllStatDetailDtosByShortNameAsync(string shortName)
+    {
+        var stats = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .Where(s => s.ShortName != null && s.ShortName.ToLower().Contains(shortName.ToLower()))
+            .ToListAsync();
+
+        var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .ToListAsync();
+
+        var statDetailDtos = new List<StatDetailDto>();
+        var statMapper = new StatMapper();
+
+        foreach (var stat in stats)
+        {
+            var svTempList = statValues
+                .Where(sv => sv.StatId == stat.Id)
+                .ToList();
+
+            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
+        }
+
+        return statDetailDtos;
+    }
+
     public async Task<StatDto?> GetStatByIdAsync(long statId)
     {
         var stat = await _dbContext.Stats
@@ -38,6 +137,30 @@ public class StatService : IStatService
         }
 
         return stat.Adapt<StatDto>();
+    }
+
+    public async Task<StatDetailDto?> GetStatDetailDtoByIdAsync(long statId)
+    {
+        var stat = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .FirstOrDefaultAsync(s => s.Id == statId);
+
+        var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Character)
+            .ToListAsync();
+
+        var statDetailDto = new StatDetailDto();
+        var statMapper = new StatMapper();
+
+        if (stat == null) return statDetailDto;
+
+        var svTempList = statValues
+            .Where(sv => sv.StatId == statId)
+            .ToList();
+
+        statDetailDto = statMapper.MapToStatDetailDto(stat, svTempList);
+
+        return statDetailDto;
     }
 
     public async Task<StatDto?> CreateStatAsync(StatForCreationDto statForCreationDto)

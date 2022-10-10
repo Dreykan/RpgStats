@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
+using RpgStats.Dto.Mapper;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
@@ -79,5 +80,93 @@ public class PlatformService : IPlatformService
         _dbContext.Remove(platform);
 
         return _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<List<PlatformDetailDto>> GetAllPlatformDetailDtosAsync()
+    {
+        var platforms = await _dbContext.Platforms
+            .Include(p => p.PlatformGames)
+            .ToListAsync();
+
+        var games = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .ToListAsync();
+
+        var platformDetailDtos = new List<PlatformDetailDto>();
+        var platformMapper = new PlatformMapper();
+
+        foreach (var platform in platforms)
+        {
+            var tmpGames = new List<Game?>();
+            if (platform.PlatformGames != null)
+            {
+                foreach (var pg in platform.PlatformGames)
+                {
+                    tmpGames.Add(games.FirstOrDefault(g => g.Id == pg.GameId));
+                }
+            }
+
+            platformDetailDtos.Add(platformMapper.MapToPlatformDetailDto(platform, tmpGames));
+        }
+
+        return platformDetailDtos;
+    }
+
+    public async Task<List<PlatformDetailDto>> GetAllPlatformDetailDtosByNameAsync(string name)
+    {
+        var platforms = await _dbContext.Platforms
+            .Include(p => p.PlatformGames)
+            .Where(p => p.Name != null && p.Name.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
+
+        var games = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .ToListAsync();
+
+        var platformDetailDtos = new List<PlatformDetailDto>();
+        var platformMapper = new PlatformMapper();
+
+        foreach (var platform in platforms)
+        {
+            var tmpGames = new List<Game?>();
+            if (platform.PlatformGames != null)
+            {
+                foreach (var pg in platform.PlatformGames)
+                {
+                    tmpGames.Add(games.FirstOrDefault(g => g.Id == pg.GameId));
+                }
+            }
+
+            platformDetailDtos.Add(platformMapper.MapToPlatformDetailDto(platform, tmpGames));
+        }
+
+        return platformDetailDtos;
+    }
+
+    public async Task<PlatformDetailDto> GetPlatformDetailDtoByIdAsync(long platformId)
+    {
+        var platform = await _dbContext.Platforms
+            .Include(p => p.PlatformGames)
+            .FirstOrDefaultAsync(p => p.Id == platformId);
+
+        var games = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .ToListAsync();
+
+        var platformDetailDto = new PlatformDetailDto();
+        var platformMapper = new PlatformMapper();
+
+        var tmpGames = new List<Game?>();
+        if (platform?.PlatformGames != null)
+        {
+            foreach (var pg in platform.PlatformGames)
+            {
+                tmpGames.Add(games.FirstOrDefault(g => g.Id == pg.GameId));
+            }
+
+            platformDetailDto = platformMapper.MapToPlatformDetailDto(platform, tmpGames);
+        }
+
+        return platformDetailDto;
     }
 }

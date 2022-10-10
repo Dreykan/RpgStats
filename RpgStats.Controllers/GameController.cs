@@ -24,11 +24,43 @@ public class GameController : ControllerBase
         return Ok(games);
     }
 
+    [HttpGet("byName")]
+    [SwaggerOperation(Summary = "Get all Games by Name")]
+    public async Task<IActionResult> GetAllGamesByName(string name)
+    {
+        var games = await _gameService.GetAllGamesByNameAsync(name);
+        return Ok(games);
+    }
+
+    [HttpGet("details")]
+    [SwaggerOperation(Summary = "Get all Games with Details")]
+    public async Task<IActionResult> GetAllGameDetailDtos()
+    {
+        var games = await _gameService.GetAllGameDetailDtosAsync();
+        return Ok(games);
+    }
+
+    [HttpGet("detailsByName")]
+    [SwaggerOperation(Summary = "Get all Games with Details by Name")]
+    public async Task<IActionResult> GetAllGameDetailDtosByName(string name)
+    {
+        var games = await _gameService.GetAllGameDetailDtosByNameAsync(name);
+        return Ok(games);
+    }
+
     [HttpGet("{gameId:long}")]
     [SwaggerOperation(Summary = "Get a Game by Id")]
     public async Task<IActionResult> GetGameById(long gameId)
     {
         var game = await _gameService.GetGameByIdAsync(gameId);
+        return Ok(game);
+    }
+
+    [HttpGet("details{gameId:long}")]
+    [SwaggerOperation(Summary = "Get a Game with Details by Id")]
+    public async Task<IActionResult> GetGameDetailDtoById(long gameId)
+    {
+        var game = await _gameService.GetGameDetailDtoByIdAsync(gameId);
         return Ok(game);
     }
 
