@@ -6,7 +6,6 @@ using RpgStats.Dto;
 using RpgStats.Dto.Mapper;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
-using System.Xml.Linq;
 
 namespace RpgStats.Services;
 
@@ -172,9 +171,12 @@ public class GameService : IGameService
 
         var gameDetailDto = new GameDetailDto();
         var gameMapper = new GameMapper();
-
+        if (game == null)
+        {
+            return gameDetailDto;
+        }
         var platformsFiltered = new List<Platform?>();
-        if (game?.PlatformGames != null)
+        if (game.PlatformGames != null)
         {
             foreach (var pg in game.PlatformGames)
             {

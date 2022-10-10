@@ -45,7 +45,7 @@ public class GameMapper
         var platformWithoutFkObjectsDtos = new List<PlatformWithoutFkObjectsDto>();
         foreach (var p in platforms)
         {
-            platformWithoutFkObjectsDtos.Add(platformMapper.MapToPlatformWithoutFkObjectsDto(p));
+            if (p != null) platformWithoutFkObjectsDtos.Add(platformMapper.MapToPlatformWithoutFkObjectsDto(p));
         }
 
         gameDetailDto.PlatformWithoutFkObjectsDtos = platformWithoutFkObjectsDtos;

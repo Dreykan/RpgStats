@@ -6,7 +6,6 @@ using RpgStats.Dto;
 using RpgStats.Dto.Mapper;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
-using System.Xml.Linq;
 
 namespace RpgStats.Services;
 
