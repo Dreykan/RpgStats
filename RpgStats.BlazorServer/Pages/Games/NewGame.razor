@@ -1,6 +1,8 @@
 ﻿@page "/newGame"
 @using RpgStats.Services.Abstractions
 @using RpgStats.Dto
+@using SkiaSharp
+@using RpgStats.BizLogic
 @inject IGameService GameService
 @inject IPlatformService PlatformService
 @inject IPlatformGameService PlatformGameService
@@ -14,24 +16,27 @@
         <MudPaper Class="pa-4">
             <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
                 <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@gameForCreationDto.Name"/>
-                <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms">
+                <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms" Clearable="true">
                     @foreach (var platformDto in platformDtos)
                     {
                         <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
                     }
                 </MudSelect>
-                <MudFileUpload T="IBrowserFile" Accept=".jpg" FilesChanged="UploadFiles" MaximumFileCount="1">
+                <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles" MaximumFileCount="1">
                     <ButtonTemplate>
                         <MudButton HtmlTag="label"
                                    Variant="Variant.Filled"
                                    Color="Color.Primary"
                                    StartIcon="@Icons.Material.Filled.Image"
                                    for="@context">
-                            Upload Image (only .jpg)
+                            Upload Image (only .jpg and png)
                         </MudButton>
                     </ButtonTemplate>
                 </MudFileUpload>
-                <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
+                <MudToolBar DisableGutters="true" Class="gap-4">
+                    <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
+                    <MudButton OnClick="ClearImages" Disabled="@(!files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                </MudToolBar>
                 <div class="align-content-center mt-4">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!success)" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
                 </div>
@@ -73,6 +78,7 @@
         }
 
         gameForCreationDto.Name = "";
+        files.Clear();
     }
 
     private async Task GetPlatforms()
@@ -106,16 +112,25 @@
         {
             ShowErrorMessage("You can't upload more than one image for a game.");
         }
-
         
         using MemoryStream ms = new MemoryStream();
         var stream = file.OpenReadStream(1024000L);
         await stream.CopyToAsync(ms);
-        gameForCreationDto.Picture = ms.ToArray();
+        var imageBytes = ms.ToArray();
+
+        var resizedImageBytes = ImageProcessor.ResizeImageTo512(imageBytes, SKFilterQuality.High);
+
+        gameForCreationDto.Picture = resizedImageBytes;
     }
 
     private async void ShowErrorMessage(string text)
     {
         bool? result = await DialogService.ShowMessageBox("Error", text, "OK");
+    }
+
+    private void ClearImages()
+    {
+        gameForCreationDto.Picture = null;
+        files.Clear();
     }
 }
