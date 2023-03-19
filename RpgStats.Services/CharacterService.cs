@@ -122,26 +122,30 @@ public class CharacterService : ICharacterService
         return _dbContext.SaveChangesAsync();
     }
 
+    // TODO: In allen Services nachschauen ob wie in dieser Methode ein "Include" weggelassen werden kann. StatValues werden in diesem Fall ja nochmal extra aus der Datenbank geladen und dann in die CharacterDetailDto eingebunden.
+    // TODO: In den nachfolgenden Methoden gucken ob ab "var statValues..." der Code ausgelagert werden kann in eine separate private Methode, da dieser Code sich wiederholt.
     public async Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosAsync()
     {
         var characters = await _dbContext.Characters
             .Include(c => c.Game)
-            .Include(c => c.StatValues)
+            //.Include(c => c.StatValues)
             .ToListAsync();
 
-        var statValues = await _dbContext.StatValues
-            .Include(sv => sv.Stat)
-            .ToListAsync();
+        //var statValues = await _dbContext.StatValues
+        //    .Include(sv => sv.Stat)
+        //    .ToListAsync();
 
-        var characterDetailDtoList = new List<CharacterDetailDto>();
-        var characterMapper = new CharacterMapper();
-        foreach (var character in characters)
-        {
-            var svTempList = statValues
-                .Where(sv => sv.CharacterId == character.Id)
-                .ToList();
-            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
-        }
+        //var characterDetailDtoList = new List<CharacterDetailDto>();
+        //var characterMapper = new CharacterMapper();
+        //foreach (var character in characters)
+        //{
+        //    var svTempList = statValues
+        //        .Where(sv => sv.CharacterId == character.Id)
+        //        .ToList();
+        //    characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
+        //}
+
+        var characterDetailDtoList = await CreateCharacterDetailDtoList(characters);
 
         return characterDetailDtoList;
     }
@@ -213,5 +217,24 @@ public class CharacterService : ICharacterService
         characterDetailDto = characterMapper.MapToCharacterDetailDto(character, svTempList);
 
         return characterDetailDto;
+    }
+
+    private async Task<List<CharacterDetailDto>> CreateCharacterDetailDtoList(List<Character> characters)
+    {
+        var statValues = await _dbContext.StatValues
+            .Include(sv => sv.Stat)
+            .ToListAsync();
+
+        var characterDetailDtoList = new List<CharacterDetailDto>();
+        var characterMapper = new CharacterMapper();
+        foreach (var character in characters)
+        {
+            var svTempList = statValues
+                .Where(sv => sv.CharacterId == character.Id)
+                .ToList();
+            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
+        }
+
+        return characterDetailDtoList;
     }
 }

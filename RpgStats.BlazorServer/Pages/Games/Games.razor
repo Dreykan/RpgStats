@@ -1,0 +1,70 @@
+﻿@page "/allGames"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@inject IGameService GameService
+
+@if (_games == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
+}
+else
+{
+    <div class="card-group">
+        @foreach (var game in _games)
+        {
+            <MudCard Class="m-2" Style="min-width: 24rem; max-width: 28rem;" Elevation="5">
+                <MudCardContent>
+                    <MudText Align="Align.Center" Typo="Typo.h5">@game.Name</MudText>
+                    <MudDivider Light="true"></MudDivider>
+                    @foreach (var character in game.CharacterWithoutFkObjectsDtos)
+                    {
+                        <MudText Typo="Typo.body2">@character.Name</MudText>
+                    }
+                    <MudDivider Light="true"/> 
+                    @foreach (var platform in game.PlatformWithoutFkObjectsDtos)
+                    {
+                        <MudText Typo="Typo.body2">@platform.Name</MudText>
+                    }
+                    <MudDivider Light="true"></MudDivider>
+                    @if (game.Picture == null)
+                    {
+                        <MudText>"There is no Picture for this game."</MudText>
+                    }
+                    else
+                    {
+                        <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.ScaleDown" Width="250" Height="250" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-lg" />
+                    }
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="m-auto">Details</MudButton>
+                </MudCardContent>
+            </MudCard>
+        }
+    </div>
+}
+
+@code {
+
+    private List<GameDetailDto> _games;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGames();
+    }
+
+    private async Task GetGames()
+    {
+        _games = await GameService.GetAllGameDetailDtosAsync();
+        _games = _games.OrderBy(x => x.Name).ToList();
+    }
+
+    private string TurnByteArrayToImage(GameDetailDto game)
+    {
+        string imageSrc = string.Empty;
+        if (game.Picture != null)
+        {
+            imageSrc = Convert.ToBase64String(game.Picture);
+        }
+
+        var a = $"data:image/jpg;base64,{imageSrc}";
+        return a;
+    }
+}

@@ -1,9 +1,50 @@
 ﻿@page "/"
+@using RpgStats.Dto
+@using RpgStats.Controllers
+@using RpgStats.Services
+@using RpgStats.Services.Abstractions
+@inject IGameService GameService
 
-<PageTitle>Index</PageTitle>
+@if (_games == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
+}
+else
+{
+    <div class="card-group">
+        @foreach (var game in _games)
+        {
+        <MudCard Class="m-2" Style="min-width: 24rem; max-width: 28rem;" Elevation="5">
+            <MudCardContent>
+                <MudText Align="Align.Center" Typo="Typo.h5">@game.Name</MudText>
+                @foreach (var character in game.CharacterWithoutFkObjectsDtos)
+                {
+                    <MudText Typo="Typo.body2">@character.Name</MudText>
+                }
+                <MudDivider Light="true"/> 
+                @foreach (var platform in game.PlatformWithoutFkObjectsDtos)
+                {
+                    <MudText Typo="Typo.body2">@platform.Name</MudText>
+                }
+            </MudCardContent>
+        </MudCard>
+        }
+    </div>
+}
 
-<h1>Hello, world!</h1>
+@code {
 
-Welcome to your new app.
+    private List<GameDetailDto> _games;
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGames();
+    }
+
+    private async Task GetGames()
+    {
+        _games = await GameService.GetAllGameDetailDtosAsync();
+        _games = _games.OrderBy(x => x.Name).ToList();
+    }
+
+}

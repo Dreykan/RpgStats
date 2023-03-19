@@ -1,0 +1,9 @@
+﻿<MudText Align="Align.Center" Style="margin-top: 5rem">
+    Erstellt von Remo (Dreykan)
+    <br/>
+    <b>Version:</b> @_version
+</MudText>
+
+@code {
+    readonly Version? _version = typeof(Program).Assembly.GetName().Version;
+}

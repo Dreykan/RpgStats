@@ -1,0 +1,121 @@
+﻿@page "/newGame"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@inject IGameService GameService
+@inject IPlatformService PlatformService
+@inject IPlatformGameService PlatformGameService
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h4" Align="Align.Center">Erstelle ein neues Spiel</MudText>
+
+<MudGrid Class="mt-5">
+    <MudItem xs="12" sm="12">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@gameForCreationDto.Name"/>
+                <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms">
+                    @foreach (var platformDto in platformDtos)
+                    {
+                        <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudFileUpload T="IBrowserFile" Accept=".jpg" FilesChanged="UploadFiles" MaximumFileCount="1">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Image"
+                                   for="@context">
+                            Upload Image (only .jpg)
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+                <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
+                <div class="align-content-center mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!success)" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private GameForCreationDto gameForCreationDto = new();
+    private List<PlatformDto> platformDtos = new();
+    private string value = "Nothing selected.";
+    private IEnumerable<string> selectedPlatforms { get; set; } = new HashSet<string>() {  };
+    MudForm form;
+    bool success;
+    string[] errors = { };
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPlatforms();
+    }
+
+    private async Task Create()
+    {
+        await GameService.CreateGameAsync(gameForCreationDto);
+        long gameId = await GetIdOfCreatedGame(gameForCreationDto.Name);
+
+        List<long> selectedPlatformIds = new();
+        foreach (var selectedPlatform in selectedPlatforms)
+        {
+            long id = await GetIdOfPlatform(selectedPlatform);
+            selectedPlatformIds.Add(id);
+        }
+
+        foreach (var selectedPlatformId in selectedPlatformIds)
+        {
+            await PlatformGameService.CreatePlatformGameAsync(selectedPlatformId, gameId); // Hier kommts noch zu nem Fehler. Doppelte Schlüsselvergabe des PK. UNIQUE-Constraint verletzt.
+        }
+
+        gameForCreationDto.Name = "";
+    }
+
+    private async Task GetPlatforms()
+    {
+        platformDtos = await PlatformService.GetAllPlatformsAsync();
+    }
+
+    private async Task<long> GetIdOfCreatedGame(string gameName)
+    {
+        var gameList = await GameService.GetAllGamesByNameAsync(gameName);
+        var game = gameList.FirstOrDefault();
+        long id = game.Id;
+        return id;
+    }
+
+    private async Task<long> GetIdOfPlatform(string platformName)
+    {
+        var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
+        var platform = platformList.FirstOrDefault();
+        long id = platform.Id;
+        return id;
+    }
+
+    private async void UploadFiles(IBrowserFile file)
+    {
+        if (files.Count <= 0)
+        {
+            files.Add(file);
+        }
+        else
+        {
+            ShowErrorMessage("You can't upload more than one image for a game.");
+        }
+
+        
+        using MemoryStream ms = new MemoryStream();
+        var stream = file.OpenReadStream(1024000L);
+        await stream.CopyToAsync(ms);
+        gameForCreationDto.Picture = ms.ToArray();
+    }
+
+    private async void ShowErrorMessage(string text)
+    {
+        bool? result = await DialogService.ShowMessageBox("Error", text, "OK");
+    }
+}
