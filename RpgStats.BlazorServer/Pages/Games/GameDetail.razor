@@ -1,0 +1,54 @@
+﻿@page "/gameDetail/{Id:int}"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@inject IGameService GameService
+
+@if (_game == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
+}
+else
+{
+    <MudText>@_game.Id</MudText>
+    <MudText>@_game.Name</MudText>
+    <MudImage Src="@TurnByteArrayToImage(_game)" ObjectFit="ObjectFit.Fill" Width="250" Height="250" Alt="Picture of this Game" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block"></MudImage>
+    <MudText>On this platforms:</MudText>
+    @foreach (var platform in _game.PlatformWithoutFkObjectsDtos)
+    {
+        <MudText>@platform.Name</MudText>
+    }
+    <MudText>Characters:</MudText>
+    @foreach (var character in _game.CharacterWithoutFkObjectsDtos)
+    {
+        <MudText>@character.Name</MudText>
+    }
+}
+
+@code {
+    private GameDetailDto? _game;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGame();
+    }
+
+    private async Task GetGame()
+    {
+        _game = await GameService.GetGameDetailDtoByIdAsync(Id);
+    }
+
+    private string TurnByteArrayToImage(GameDetailDto game)
+    {
+        string imageSrc = string.Empty;
+        if (game.Picture != null)
+        {
+            imageSrc = Convert.ToBase64String(game.Picture);
+        }
+
+        var imageString = $"data:image/jpg;base64,{imageSrc}";
+        return imageString;
+    }
+}

@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{0DED8742-796
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bizlogic", "bizlogic", "{C4827331-5667-457A-AF67-008D69DFF0F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.BizLogic", "RpgStats.BizLogic\RpgStats.BizLogic.csproj", "{E492595C-267D-44F3-A9AE-716E09774740}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.BizLogic", "RpgStats.BizLogic\RpgStats.BizLogic.csproj", "{E492595C-267D-44F3-A9AE-716E09774740}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

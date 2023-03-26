@@ -15,26 +15,36 @@ else
             <MudCard Class="m-2" Style="min-width: 24rem; max-width: 28rem;" Elevation="5">
                 <MudCardContent>
                     <MudText Align="Align.Center" Typo="Typo.h5">@game.Name</MudText>
-                    <MudDivider Light="true"></MudDivider>
-                    @foreach (var character in game.CharacterWithoutFkObjectsDtos)
+                    <MudDivider Light="true"/>
+                    @if (game.CharacterWithoutFkObjectsDtos != null)
                     {
-                        <MudText Typo="Typo.body2">@character.Name</MudText>
+                        foreach (var character in game.CharacterWithoutFkObjectsDtos)
+                        {
+                            <MudText Typo="@Typo.body2">@character.Name</MudText>
+                        }
                     }
-                    <MudDivider Light="true"/> 
-                    @foreach (var platform in game.PlatformWithoutFkObjectsDtos)
+                    <MudDivider Light="true"/>
+                    @if (game.PlatformWithoutFkObjectsDtos != null)
                     {
-                        <MudText Typo="Typo.body2">@platform.Name</MudText>
+                        foreach (var platform in game.PlatformWithoutFkObjectsDtos)
+                        {
+                            <MudText Typo="@Typo.body2">@platform.Name</MudText>
+                        }
                     }
                     <MudDivider Light="true"></MudDivider>
                     @if (game.Picture == null)
                     {
-                        <MudText>"There is no Picture for this game."</MudText>
+                        <MudText Class="mx-auto d-block m-3">"There is no Picture for this game."</MudText>
                     }
                     else
                     {
-                        <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Width="250" Height="250" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-lg" />
+                        <div>
+                            <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Width="250" Height="250" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" />
+                        </div>
+                        
                     }
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="m-auto">Details</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="m-auto" Href="@($"/gameDetail/{game.Id}")">Details</MudButton>
+                    
                 </MudCardContent>
             </MudCard>
         }
@@ -43,7 +53,7 @@ else
 
 @code {
 
-    private List<GameDetailDto> _games;
+    private List<GameDetailDto>? _games;
 
     protected override async Task OnInitializedAsync()
     {

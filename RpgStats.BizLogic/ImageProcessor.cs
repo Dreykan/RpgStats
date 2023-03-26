@@ -8,7 +8,6 @@ public class ImageProcessor
     {
         using MemoryStream ms = new MemoryStream(imageBytes);
         using SKBitmap sourceBitmap = SKBitmap.Decode(ms);
-
         double ratio = (double)sourceBitmap.Width / sourceBitmap.Height;
 
         int width;
