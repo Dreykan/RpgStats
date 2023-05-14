@@ -10,6 +10,8 @@ public interface IPlatformGameService
     Task<PlatformGameDto?> GetPlatformGameByIdAsync(long platformGameId);
     Task<PlatformGameDto?> CreatePlatformGameAsync(long platformId, long gameId);
     Task<PlatformGameDto?> UpdatePlatformGameAsync(long platformGameId, long platformId, long gameId);
-    Task DeletePlatformGameAsync(long platformId);
+    Task DeletePlatformGameAsync(long platformGameId);
+    Task DeletePlatformGameByGameIdAsync(long gameId);
+    Task DeletePlatformGameByPlatformIdAsync(long platformId);
 
 }

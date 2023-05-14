@@ -1,0 +1,181 @@
+﻿@page "/updateGame/{Id:int}"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@using SkiaSharp
+@using RpgStats.BizLogic
+@inject NavigationManager NavigationManager
+@inject IGameService GameService
+@inject IPlatformService PlatformService
+@inject IPlatformGameService PlatformGameService
+@inject IDialogService DialogService
+
+@if (_game == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+}
+else
+{
+    <MudText Typo="Typo.h4" Align="Align.Center">Update das Spiel @_game.Name</MudText>
+
+    <MudGrid Class="mt-5">
+        <MudItem xs="12" sm="12">
+            <MudPaper Class="pa-4">
+                <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@gameForUpdateDto.Name" />
+                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms" Clearable="true">
+                        @foreach (var platformDto in platformDtos)
+                        {
+                            <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles" MaximumFileCount="1">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Image"
+                                       for="@context">
+                                Upload Image (only .jpg and png)
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                    <MudToolBar DisableGutters="true" Class="gap-4">
+                        <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
+                        <MudButton OnClick="ClearImages" Disabled="@(!files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                    </MudToolBar>
+                    <div class="align-content-center mt-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!success)" Class="m-auto" OnClick="@(async () => await Update())">Update</MudButton>
+                    </div>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+
+@code {
+    private GameDetailDto? _game;
+    private GameForUpdateDto gameForUpdateDto = new();
+    private List<PlatformDto> platformDtos = new();
+    private IEnumerable<string?> selectedPlatforms { get; set; } = new HashSet<string>() { };
+    private string value = "Nothing selected.";
+    MudForm form;
+    bool success;
+    string[] errors = { };
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGame();
+        await GetPlatforms();
+        await PrefillFormular();
+    }
+
+    private async Task GetGame()
+    {
+        _game = await GameService.GetGameDetailDtoByIdAsync(Id);
+    }
+
+    private async Task Update()
+    {
+        if (files.Count == 0)
+        {
+            gameForUpdateDto.Picture = _game?.Picture;
+        }
+
+        await GameService.UpdateGameAsync(Id, gameForUpdateDto);
+
+        await PlatformGameService.DeletePlatformGameByGameIdAsync(Id);
+
+        List<long> selectPlatformIds = new();
+        foreach (var platformName in selectedPlatforms)
+        {
+            long id = await GetIdOfPlatform(platformName);
+            selectPlatformIds.Add(id);
+        }
+
+        foreach (var platformId in selectPlatformIds)
+        {
+            await PlatformGameService.CreatePlatformGameAsync(platformId, Id);
+        }
+
+        gameForUpdateDto.Name = "";
+        files.Clear();
+        selectedPlatforms = new HashSet<string>() { };
+
+        await ShowSuccessDialog();
+
+        NavigationManager.NavigateTo($"/gameDetail/{Id}");
+    }
+
+    private async Task ShowSuccessDialog()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Das Spiel wurde erfolgreich geändert.");
+        parameters.Add("ButtonText", "OK");
+        parameters.Add("Color", Color.Success);
+
+        var options = new DialogOptions()
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small
+        };
+
+        var dialog = await DialogService.ShowAsync<SuccessDialog>("Erfolg", parameters, options);
+        await dialog.Result;
+    }
+
+    private async Task GetPlatforms()
+    {
+        platformDtos = await PlatformService.GetAllPlatformsAsync();
+    }
+
+    private async Task PrefillFormular()
+    {
+        gameForUpdateDto.Name = _game?.Name;
+
+        if (_game?.PlatformWithoutFkObjectsDtos != null)
+            foreach (var platform in _game.PlatformWithoutFkObjectsDtos)
+            {
+                selectedPlatforms = selectedPlatforms.Append(platform.Name);
+            }
+    }
+
+    private async Task<long> GetIdOfPlatform(string platformName)
+    {
+        var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
+        var platform = platformList.FirstOrDefault();
+        long id = platform.Id;
+        return id;
+    }
+
+    private async void UploadFiles(IBrowserFile file)
+    {
+        if (files.Count <= 0)
+        {
+            files.Add(file);
+        }
+        else
+        {
+            await DialogService.ShowMessageBox("Nur ein Bild erlaubt", "Es ist nur ein Bild erlaubt");
+        }
+
+        using MemoryStream ms = new MemoryStream();
+        var stream = file.OpenReadStream(4096000L);
+        await stream.CopyToAsync(ms);
+        var imageBytes = ms.ToArray();
+
+        var resizedImageBytes = ImageProcessor.ResizeImageTo512(imageBytes, SKFilterQuality.High);
+
+        gameForUpdateDto.Picture = resizedImageBytes;
+    }
+
+    private void ClearImages()
+    {
+        gameForUpdateDto.Picture = null;
+        files.Clear();
+    }
+}

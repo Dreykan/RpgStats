@@ -6,8 +6,8 @@
 @inject IGameService GameService
 @inject IPlatformService PlatformService
 @inject IPlatformGameService PlatformGameService
-@inject NavigationManager Navigation
 @inject IDialogService DialogService
+@inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle ein neues Spiel</MudText>
 
@@ -74,11 +74,32 @@
 
         foreach (var selectedPlatformId in selectedPlatformIds)
         {
-            await PlatformGameService.CreatePlatformGameAsync(selectedPlatformId, gameId); // Hier kommts noch zu nem Fehler. Doppelte Schlüsselvergabe des PK. UNIQUE-Constraint verletzt.
+            await PlatformGameService.CreatePlatformGameAsync(selectedPlatformId, gameId);
         }
 
         gameForCreationDto.Name = "";
         files.Clear();
+
+        await ShowSuccessDialog();
+
+        NavigationManager.NavigateTo("/allGames");
+    }
+
+    private async Task ShowSuccessDialog()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Das Spiel wurde erfolgreich erstellt.");
+        parameters.Add("ButtonText", "OK");
+        parameters.Add("Color", Color.Success);
+
+        var options = new DialogOptions()
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+        var dialog = await DialogService.ShowAsync<SuccessDialog>("Erfolg", parameters, options);
+        await dialog.Result;
     }
 
     private async Task GetPlatforms()

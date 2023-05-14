@@ -121,9 +121,9 @@ public class PlatformGameService : IPlatformGameService
         return platformGame.Adapt<PlatformGameDto>();
     }
 
-    public Task DeletePlatformGameAsync(long platformId)
+    public Task DeletePlatformGameAsync(long platformGameId)
     {
-        var platformGame = _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformId).Result;
+        var platformGame = _dbContext.PlatformGames.FirstOrDefault(pg => pg.Id == platformGameId);
 
         if (platformGame == null)
         {
@@ -133,5 +133,29 @@ public class PlatformGameService : IPlatformGameService
         _dbContext.Remove(platformGame);
 
         return _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeletePlatformGameByGameIdAsync(long gameId)
+    {
+        var platformGames = _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToList();
+        if (platformGames.Any())
+        {
+            foreach (var platformGame in platformGames)
+            {
+                await DeletePlatformGameAsync(platformGame.Id);
+            }
+        }
+    }
+
+    public async Task DeletePlatformGameByPlatformIdAsync(long platformId)
+    {
+        var platformGames = _dbContext.PlatformGames.Where(pg => pg.PlatformId == platformId).ToList();
+        if (platformGames.Any())
+        {
+            foreach (var platformGame in platformGames)
+            {
+                await DeletePlatformGameAsync(platformGame.Id);
+            }
+        }
     }
 }

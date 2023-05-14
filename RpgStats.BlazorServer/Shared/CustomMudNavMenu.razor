@@ -1,13 +1,21 @@
-﻿<MudNavMenu>
-    <MudDivider Class="my-2"></MudDivider>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
-    <MudNavGroup Title="Testseiten">
-        <MudNavLink Href="/counter" Match="NavLinkMatch.Prefix">Counter</MudNavLink>
-        <MudNavLink Href="/fetchdata" Match="NavLinkMatch.Prefix">Fetch Data</MudNavLink>
-        <MudNavLink Href="/MudQuickStart" Match="NavLinkMatch.Prefix">Mudblazor Quick Start</MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Spiele">
-        <MudNavLink Href="/newGame" Match="NavLinkMatch.Prefix">Neues Spiel</MudNavLink>
-        <MudNavLink Href="/allGames" Match="NavLinkMatch.Prefix">Alle Spiele</MudNavLink>
-    </MudNavGroup>
-</MudNavMenu>
+﻿<MudDrawer @bind-Open="SideBarOpen" Elevation="1">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h5" Color="Color.Primary" Style="margin-top: 10px; margin-left: 15px;">Rpg-Stats</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavGroup Title="Testseiten" Icon="@Icons.Material.Filled.Try">
+            <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.Numbers">Counter</MudNavLink>
+            <MudNavLink Href="/fetchdata" Icon="@Icons.Material.Filled.DataArray">FetchData</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Spiele" Icon="@Icons.Material.Filled.Games">
+            <MudNavLink Href="/newGame" Icon="@Icons.Material.Filled.OpenInNew">Neues Spiel</MudNavLink>
+            <MudNavLink Href="/allGames" Icon="@Icons.Material.Filled.AllInclusive">Alle Spiele</MudNavLink>
+        </MudNavGroup>
+    </MudNavMenu>
+</MudDrawer>
+
+@code {
+    [Parameter]
+    public bool SideBarOpen { get; set; }
+}

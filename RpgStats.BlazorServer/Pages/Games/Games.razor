@@ -3,53 +3,47 @@
 @using RpgStats.Dto
 @inject IGameService GameService
 
-@if (_games == null)
-{
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
-}
-else
-{
-    <div class="card-group">
+<MudGrid>
+    @if (_games == null)
+    {
+        <MudItem md="12" sm="12">
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
+        </MudItem>
+    }
+    else
+    {
         @foreach (var game in _games)
         {
-            <MudCard Class="m-2" Style="min-width: 24rem; max-width: 28rem;" Elevation="5">
-                <MudCardContent>
-                    <MudText Align="Align.Center" Typo="Typo.h5">@game.Name</MudText>
-                    <MudDivider Light="true"/>
-                    @if (game.CharacterWithoutFkObjectsDtos != null)
-                    {
-                        foreach (var character in game.CharacterWithoutFkObjectsDtos)
-                        {
-                            <MudText Typo="@Typo.body2">@character.Name</MudText>
-                        }
-                    }
-                    <MudDivider Light="true"/>
-                    @if (game.PlatformWithoutFkObjectsDtos != null)
-                    {
-                        foreach (var platform in game.PlatformWithoutFkObjectsDtos)
-                        {
-                            <MudText Typo="@Typo.body2">@platform.Name</MudText>
-                        }
-                    }
-                    <MudDivider Light="true"></MudDivider>
+            <div class="card-group">
+                <MudCard Class="m-2" Style="min-width: 24rem; max-width: 24rem; min-height: 500px;" Elevation="15">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h4" Align="Align.Center">@game.Name</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
                     @if (game.Picture == null)
                     {
-                        <MudText Class="mx-auto d-block m-3">"There is no Picture for this game."</MudText>
+                        <MudText Typo="Typo.body2" Align="Align.Center">No Picture...</MudText>
                     }
                     else
                     {
-                        <div>
-                            <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Width="250" Height="250" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" />
-                        </div>
-                        
+                        <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;" />
                     }
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="m-auto" Href="@($"/gameDetail/{game.Id}")">Details</MudButton>
-                    
-                </MudCardContent>
-            </MudCard>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5">Platform:</MudText>
+                        <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
+                        <MudText Typo="Typo.h5">Characters:</MudText>
+                        <MudText Typo="Typo.body1">@CreateCharacterString(game)</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary" Style="margin: auto;">Details</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </div>
+
         }
-    </div>
-}
+    }
+</MudGrid>
 
 @code {
 
@@ -76,5 +70,35 @@ else
 
         var a = $"data:image/jpg;base64,{imageSrc}";
         return a;
+    }
+
+    private string CreatePlatformString(GameDetailDto game)
+    {
+        string platformString = string.Empty;
+        if (game.PlatformWithoutFkObjectsDtos != null && game.PlatformWithoutFkObjectsDtos.Any())
+        {
+            foreach (var gamePlatformWithoutFkObjectsDto in game.PlatformWithoutFkObjectsDtos)
+            {
+                platformString = platformString + gamePlatformWithoutFkObjectsDto.Name + ", ";
+            }
+            platformString = platformString.Remove(platformString.Length - 2, 1);
+        }
+
+        return platformString;
+    }
+
+    private string CreateCharacterString(GameDetailDto game)
+    {
+        string characterString = string.Empty;
+        if (game.CharacterWithoutFkObjectsDtos != null && game.CharacterWithoutFkObjectsDtos.Any())
+        {
+            foreach (var gameCharacterWithoutFkObjectsDto in game.CharacterWithoutFkObjectsDtos)
+            {
+                characterString = characterString + gameCharacterWithoutFkObjectsDto.Name + ", ";
+            }
+            characterString = characterString.Remove(characterString.Length - 2, 1);
+        }
+
+        return characterString;
     }
 }

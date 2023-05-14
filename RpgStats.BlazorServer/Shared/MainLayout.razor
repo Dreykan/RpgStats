@@ -1,57 +1,26 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
-<MudDialogProvider />
-<MudSnackbarProvider />
-
-<PageTitle>RpgStats</PageTitle>
-
-
-@*<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>*@
-
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudText Typo="Typo.h5">RpgStats</MudText>
-        <MudSpacer/>
-        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Dark Mode"/>
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen" Elevation="10">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h5" Class="mt-2">Navigation</MudText>
-        </MudDrawerHeader>
-        <CustomMudNavMenu/>
-    </MudDrawer>
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <AppBar OnSidebarToggled="ToggleSidebar" OnThemeToggled="ToggleTheme"/>
+    
+    <CustomMudNavMenu SideBarOpen="_sidebarOpen"/>
+    
+    <MudMainContent Class="pt-16 px-16">
+        <MudContainer Class="mt-6">
             @Body
         </MudContainer>
-        <SiteFooter />
     </MudMainContent>
 </MudLayout>
 
+<MudThemeProvider Theme="_currentTheme"></MudThemeProvider>
+<MudDialogProvider/>
+
 @code
 {
-    private MudTheme _theme = new();
-    private bool _isDarkMode = true;
-    bool _drawerOpen = true;
+    private MudTheme _currentTheme = new MudTheme();
+    private bool _sidebarOpen = false;
 
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
+    private void ToggleTheme(MudTheme changedTheme) => _currentTheme = changedTheme;
+
+    private void ToggleSidebar() => _sidebarOpen = !_sidebarOpen;
 }

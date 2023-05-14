@@ -84,7 +84,7 @@ public class GameService : IGameService
 
     public Task DeleteGameAsync(long gameId)
     {
-        Game? game = _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId).Result;
+        Game? game = _dbContext.Games.FirstOrDefault(x => x.Id == gameId);
 
         if (game == null)
         {
