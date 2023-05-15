@@ -22,7 +22,7 @@ else
         <MudItem lg="8" md="6" sm="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
                 <MudText Typo="Typo.h5" Class="mb-1">Platforms</MudText>
-                @foreach (var platform in _game.PlatformWithoutFkObjectsDtos)
+                @foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
                 {
                     <MudText Typo="Typo.body1" Class="mb-1">- @platform.Name</MudText>
                 }
@@ -78,7 +78,7 @@ else
         parameters.Add("ButtonText", "Löschen");
         parameters.Add("Color", Color.Error);
 
-        var options = new DialogOptions()
+        var options = new DialogOptions
         {
             CloseButton = true,
             MaxWidth = MaxWidth.ExtraSmall

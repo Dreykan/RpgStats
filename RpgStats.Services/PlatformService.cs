@@ -70,7 +70,7 @@ public class PlatformService : IPlatformService
 
     public Task DeletePlatformAsync(long platformId)
     {
-        var platform = _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId).Result;
+        var platform = _dbContext.Platforms.FirstOrDefault(p => p.Id == platformId);
 
         if (platform == null)
         {

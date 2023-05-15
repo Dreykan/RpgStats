@@ -1,0 +1,87 @@
+﻿@page "/allPlatforms"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@inject IPlatformService PlatformService
+@inject IDialogService DialogService
+
+<MudGrid>
+    @if (_platforms == null)
+    {
+        <MudItem md="12" sm="12">
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+        </MudItem>
+    }
+    else
+    {
+        <MudItem md="12" sm="12">
+            <MudButton Href="/newPlatform" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neue Plattform</MudButton>
+        </MudItem>
+
+        @foreach (var platform in _platforms)
+        {
+            <div class="card-group">
+                <MudCard Class="m-2" Style="min-width: 24rem; max-width: 24rem; min-height: 500px;" Elevation="15">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h4" Align="Align.Center">@platform.Name</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(async () => await DeletePlatform(platform.Id))"/>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5">Games:</MudText>
+                        @foreach (var game in platform.GameWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
+                        {
+                            <MudText>
+                                <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")">@game.Name</MudLink>
+                            </MudText>
+                        }
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Href="@($"/updatePlatform/{platform.Id}")" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Style="margin: auto;">Ändern</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </div>
+        }
+    }
+
+</MudGrid>
+
+@code {
+    private List<PlatformDetailDto>? _platforms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPlatforms();
+    }
+
+    private async Task GetPlatforms()
+    {
+        _platforms = await PlatformService.GetAllPlatformDetailDtosAsync();
+        _platforms = _platforms.OrderBy(x => x.Name).ToList();
+    }
+
+    private async Task DeletePlatform(long id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Soll die Plattform wirklich gelöscht werden?");
+        parameters.Add("ButtonText", "Löschen");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.ExtraSmall
+        };
+
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Löschen", parameters, options);
+        var result = await dialog.Result;
+
+        if (result.Canceled == false)
+        {
+            await PlatformService.DeletePlatformAsync(id);
+            await GetPlatforms();
+        }
+    }
+}

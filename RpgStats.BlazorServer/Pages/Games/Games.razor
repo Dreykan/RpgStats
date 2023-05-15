@@ -79,7 +79,7 @@
         string platformString = string.Empty;
         if (game.PlatformWithoutFkObjectsDtos != null && game.PlatformWithoutFkObjectsDtos.Any())
         {
-            foreach (var gamePlatformWithoutFkObjectsDto in game.PlatformWithoutFkObjectsDtos)
+            foreach (var gamePlatformWithoutFkObjectsDto in game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
             {
                 platformString = platformString + gamePlatformWithoutFkObjectsDto.Name + ", ";
             }

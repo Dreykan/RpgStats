@@ -15,9 +15,9 @@
     <MudItem xs="12" sm="12">
         <MudPaper Class="pa-0">
             <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@gameForCreationDto.Name"/>
+                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Ein Name ist schon erforderlich..." @bind-Value="@gameForCreationDto.Name"/>
                 <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms" Clearable="true">
-                    @foreach (var platformDto in platformDtos)
+                    @foreach (var platformDto in platformDtos.OrderBy(x => x.Name).ToList())
                     {
                         <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
                     }

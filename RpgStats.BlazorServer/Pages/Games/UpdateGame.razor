@@ -23,7 +23,7 @@ else
                 <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
                     <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@gameForUpdateDto.Name" />
                     <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms" Clearable="true">
-                        @foreach (var platformDto in platformDtos)
+                        @foreach (var platformDto in platformDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
                         }
@@ -146,7 +146,7 @@ else
         gameForUpdateDto.Name = _game?.Name;
 
         if (_game?.PlatformWithoutFkObjectsDtos != null)
-            foreach (var platform in _game.PlatformWithoutFkObjectsDtos)
+            foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
             {
                 selectedPlatforms = selectedPlatforms.Append(platform.Name);
             }
