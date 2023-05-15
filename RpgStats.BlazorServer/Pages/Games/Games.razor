@@ -1,6 +1,7 @@
 ﻿@page "/allGames"
 @using RpgStats.Services.Abstractions
 @using RpgStats.Dto
+@using RpgStats.BizLogic
 @inject IGameService GameService
 
 <MudGrid>
@@ -12,6 +13,10 @@
     }
     else
     {
+        <MudItem md="12" sm="12">
+            <MudButton Href="/newGame" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neues Spiel</MudButton>
+        </MudItem>
+
         @foreach (var game in _games)
         {
             <div class="card-group">
@@ -32,8 +37,6 @@
                     <MudCardContent>
                         <MudText Typo="Typo.h5">Platform:</MudText>
                         <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
-                        <MudText Typo="Typo.h5">Characters:</MudText>
-                        <MudText Typo="Typo.body1">@CreateCharacterString(game)</MudText>
                     </MudCardContent>
                     <MudCardActions>
                         <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary" Style="margin: auto;">Details</MudButton>
@@ -62,14 +65,13 @@
 
     private string TurnByteArrayToImage(GameDetailDto game)
     {
-        string imageSrc = string.Empty;
+        var imageSrc = string.Empty;
         if (game.Picture != null)
         {
-            imageSrc = Convert.ToBase64String(game.Picture);
+            imageSrc = ImageService.ConvertByteArrayToImage(game.Picture);
         }
 
-        var a = $"data:image/jpg;base64,{imageSrc}";
-        return a;
+        return imageSrc;
     }
 
     private string CreatePlatformString(GameDetailDto game)
@@ -85,20 +87,5 @@
         }
 
         return platformString;
-    }
-
-    private string CreateCharacterString(GameDetailDto game)
-    {
-        string characterString = string.Empty;
-        if (game.CharacterWithoutFkObjectsDtos != null && game.CharacterWithoutFkObjectsDtos.Any())
-        {
-            foreach (var gameCharacterWithoutFkObjectsDto in game.CharacterWithoutFkObjectsDtos)
-            {
-                characterString = characterString + gameCharacterWithoutFkObjectsDto.Name + ", ";
-            }
-            characterString = characterString.Remove(characterString.Length - 2, 1);
-        }
-
-        return characterString;
     }
 }

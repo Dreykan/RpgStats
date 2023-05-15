@@ -2,7 +2,7 @@
 
 namespace RpgStats.BizLogic;
 
-public class ImageProcessor
+public class ImageService
 {
     public static byte[] ResizeImageTo512(byte[] imageBytes, SKFilterQuality quality = SKFilterQuality.Medium)
     {
@@ -36,5 +36,10 @@ public class ImageProcessor
         using SKData data = scaledImage.Encode(SKEncodedImageFormat.Jpeg, 90);
 
         return data.ToArray();
+    }
+
+    public static string ConvertByteArrayToImage(byte[] imageBytes)
+    {
+        return $"data:image/png;base64,{Convert.ToBase64String(imageBytes)}";
     }
 }

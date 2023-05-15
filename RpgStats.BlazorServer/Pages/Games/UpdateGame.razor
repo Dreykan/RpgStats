@@ -28,21 +28,28 @@ else
                             <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
                         }
                     </MudSelect>
-                    <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles" MaximumFileCount="1">
-                        <ButtonTemplate>
-                            <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.Image"
-                                       for="@context">
-                                Upload Image (only .jpg and png)
-                            </MudButton>
-                        </ButtonTemplate>
-                    </MudFileUpload>
-                    <MudToolBar DisableGutters="true" Class="gap-4">
-                        <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
-                        <MudButton OnClick="ClearImages" Disabled="@(!files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
-                    </MudToolBar>
+                    <MudGrid>
+                        <MudItem lg="6" md="6" xs="12" sm="12">
+                            <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles" MaximumFileCount="1">
+                                <ButtonTemplate>
+                                    <MudButton HtmlTag="label"
+                                               Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.Image"
+                                               for="@context">
+                                        Upload Image (only .jpg and png)
+                                    </MudButton>
+                                </ButtonTemplate>
+                            </MudFileUpload>
+                            <MudToolBar DisableGutters="true" Class="gap-4">
+                                <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
+                                <MudButton OnClick="ClearImages" Disabled="@(!files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                            </MudToolBar>
+                        </MudItem>
+                        <MudItem lg="1" md="3" xs="12" sm="12">
+                            <MudImage Src="@TurnByteArrayToImage(imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                        </MudItem>
+                    </MudGrid>
                     <div class="align-content-center mt-4">
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!success)" Class="m-auto" OnClick="@(async () => await Update())">Update</MudButton>
                     </div>
@@ -63,6 +70,7 @@ else
     bool success;
     string[] errors = { };
     IList<IBrowserFile> files = new List<IBrowserFile>();
+    byte[] imageBytes = Array.Empty<byte>();
 
     [Parameter]
     public int Id { get; set; }
@@ -142,6 +150,11 @@ else
             {
                 selectedPlatforms = selectedPlatforms.Append(platform.Name);
             }
+
+        if (_game?.Picture != null)
+        {
+            imageBytes = _game.Picture;
+        }
     }
 
     private async Task<long> GetIdOfPlatform(string platformName)
@@ -166,16 +179,25 @@ else
         using MemoryStream ms = new MemoryStream();
         var stream = file.OpenReadStream(4096000L);
         await stream.CopyToAsync(ms);
-        var imageBytes = ms.ToArray();
+        imageBytes = ms.ToArray();
 
-        var resizedImageBytes = ImageProcessor.ResizeImageTo512(imageBytes, SKFilterQuality.High);
+        var resizedImageBytes = ImageService.ResizeImageTo512(imageBytes, SKFilterQuality.High);
 
         gameForUpdateDto.Picture = resizedImageBytes;
+    }
+
+    private string TurnByteArrayToImage(Byte[] imageBytes)
+    {
+        var imageSrc = string.Empty;
+        imageSrc = ImageService.ConvertByteArrayToImage(imageBytes);
+
+        return imageSrc;
     }
 
     private void ClearImages()
     {
         gameForUpdateDto.Picture = null;
+        imageBytes = Array.Empty<byte>();
         files.Clear();
     }
 }
