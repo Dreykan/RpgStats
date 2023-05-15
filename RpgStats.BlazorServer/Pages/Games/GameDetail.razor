@@ -13,11 +13,18 @@
 else
 {
     <MudGrid>
-        <MudItem md="12" sm="12">
+        <MudItem xs="12">
             <MudText Typo="Typo.h3" Align="Align.Center">@_game.Name</MudText>
         </MudItem>
         <MudItem lg="4" md="6" sm="12">
-            <MudImage Src="@TurnByteArrayToImage(_game)" ObjectFit="ObjectFit.Fill" Alt="Picture of this Game" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block" Style="max-width: 400px;"></MudImage>
+            @if (_game.Picture == null)
+            {
+                <MudCardMedia Image="images/placeholder-1.png" Title="placeholder-1"/>
+            }
+            else
+            {
+                <MudImage Src="@TurnByteArrayToImage(_game)" ObjectFit="ObjectFit.Fill" Alt="Picture of this Game" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block" Style="max-width: 400px;"></MudImage>
+            }
         </MudItem>
         <MudItem lg="8" md="6" sm="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">

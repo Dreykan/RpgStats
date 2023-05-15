@@ -28,7 +28,7 @@
                     </MudCardHeader>
                     @if (game.Picture == null)
                     {
-                        <MudText Typo="Typo.body2" Align="Align.Center">No Picture...</MudText>
+                        <MudCardMedia Image="images/placeholder-1.png" Title="placeholder-3" />
                     }
                     else
                     {
@@ -39,7 +39,7 @@
                         <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
                     </MudCardContent>
                     <MudCardActions>
-                        <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary" Style="margin: auto;">Details</MudButton>
+                        <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Style="margin: auto;">Details</MudButton>
                     </MudCardActions>
                 </MudCard>
             </div>

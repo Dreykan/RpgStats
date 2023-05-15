@@ -1,19 +1,20 @@
 ﻿@page "/allPlatforms"
 @using RpgStats.Services.Abstractions
 @using RpgStats.Dto
+@using RpgStats.BizLogic
 @inject IPlatformService PlatformService
 @inject IDialogService DialogService
 
 <MudGrid>
     @if (_platforms == null)
     {
-        <MudItem md="12" sm="12">
+        <MudItem xs="12">
             <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
         </MudItem>
     }
     else
     {
-        <MudItem md="12" sm="12">
+        <MudItem xs="12">
             <MudButton Href="/newPlatform" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neue Plattform</MudButton>
         </MudItem>
 
@@ -26,6 +27,7 @@
                             <MudText Typo="Typo.h4" Align="Align.Center">@platform.Name</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
+                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" Href="@($"/updatePlatform/{platform.Id}")" />
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(async () => await DeletePlatform(platform.Id))"/>
                         </CardHeaderActions>
                     </MudCardHeader>
@@ -34,13 +36,24 @@
                         @foreach (var game in platform.GameWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudText>
-                                <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")">@game.Name</MudLink>
+                                <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")">
+                                    @if (game.Picture == null)
+                                    {
+                                        <MudAvatar Size="Size.Large">
+                                            <MudImage Src="images/placeholder-1.png"></MudImage>
+                                        </MudAvatar>
+                                    }
+                                    else
+                                    {
+                                        <MudAvatar Size="Size.Large">
+                                            <MudImage Src="@TurnByteArrayToImage(game.Picture)"></MudImage>
+                                        </MudAvatar>
+                                    }
+                                    @game.Name
+                                </MudLink>
                             </MudText>
                         }
                     </MudCardContent>
-                    <MudCardActions>
-                        <MudButton Href="@($"/updatePlatform/{platform.Id}")" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Style="margin: auto;">Ändern</MudButton>
-                    </MudCardActions>
                 </MudCard>
             </div>
         }
@@ -83,5 +96,10 @@
             await PlatformService.DeletePlatformAsync(id);
             await GetPlatforms();
         }
+    }
+
+    private string TurnByteArrayToImage(byte[] imageBytes)
+    {
+        return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 }

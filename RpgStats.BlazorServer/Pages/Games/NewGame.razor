@@ -44,8 +44,6 @@
                         <MudImage Src="@TurnByteArrayToImage(imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
                     </MudItem>
                 </MudGrid>
-                
-                
                 <div class="align-content-center mt-4">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!success)" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
                 </div>

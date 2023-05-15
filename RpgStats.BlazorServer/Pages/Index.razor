@@ -1,50 +1,23 @@
 ﻿@page "/"
-@using RpgStats.Dto
-@using RpgStats.Controllers
-@using RpgStats.Services
 @using RpgStats.Services.Abstractions
 @inject IGameService GameService
 
-@if (_games == null)
-{
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
-}
-else
-{
-    <div class="card-group">
-        @foreach (var game in _games)
-        {
-        <MudCard Class="m-2" Style="min-width: 24rem; max-width: 28rem;" Elevation="5">
-            <MudCardContent>
-                <MudText Align="Align.Center" Typo="Typo.h5">@game.Name</MudText>
-                @foreach (var character in game.CharacterWithoutFkObjectsDtos)
-                {
-                    <MudText Typo="Typo.body2">@character.Name</MudText>
-                }
-                <MudDivider Light="true"/> 
-                @foreach (var platform in game.PlatformWithoutFkObjectsDtos)
-                {
-                    <MudText Typo="Typo.body2">@platform.Name</MudText>
-                }
-            </MudCardContent>
-        </MudCard>
-        }
-    </div>
-}
+<MudGrid>
+    <MudItem xs="12">
+        <MudText Typo="Typo.h1" Align="Align.Center">RpgStats</MudText>
+    </MudItem>
+    <MudItem sm="4" xs="12">
+        <MudButton Class="py-8" Href="/allPlatforms" FullWidth="true" Color="Color.Primary" ButtonType="ButtonType.Button" Variant="Variant.Filled">Platforms</MudButton>
+    </MudItem>
+    <MudItem sm="4" xs="12">
+        <MudButton Class="py-8" Href="/allGames" FullWidth="true" Color="Color.Primary" ButtonType="ButtonType.Button" Variant="Variant.Filled">Games</MudButton>
+    </MudItem>
+    <MudItem sm="4" xs="12">
+        <MudButton Class="py-8" Href="/allCharacters" FullWidth="true" Color="Color.Primary" ButtonType="ButtonType.Button" Variant="Variant.Filled">Characters</MudButton>
+    </MudItem>
+
+</MudGrid>
 
 @code {
-
-    private List<GameDetailDto> _games;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetGames();
-    }
-
-    private async Task GetGames()
-    {
-        _games = await GameService.GetAllGameDetailDtosAsync();
-        _games = _games.OrderBy(x => x.Name).ToList();
-    }
-
+    
 }

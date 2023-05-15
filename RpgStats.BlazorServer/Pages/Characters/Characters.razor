@@ -1,0 +1,71 @@
+﻿@page "/allCharacters"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@using RpgStats.BizLogic
+@inject ICharacterService CharacterService
+
+<MudGrid>
+    @if (_characters == null)
+    {
+        <MudItem xs="12">
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudButton Href="/newCharacter" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neuer Character</MudButton>
+        </MudItem>
+
+        @foreach (var character in _characters)
+        {
+            <div class="card-group">
+                <MudCard Class="m-2" Style="min-width: 24rem; max-width: 24rem; min-height: 500px;" Elevation="15">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h4" Align="Align.Center">@character.Name</MudText>
+                            <MudText Typo="Typo.body1" Align="Align.Center">@character.GameWithoutFkObjectsDto.Name</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    @if (character.Picture == null)
+                    {
+                        <MudCardMedia Image="images/placeholder-3.png" Title="placeholder-3"/>
+                    }
+                    else
+                    {
+                        <MudImage Src="@TurnByteArrayToImage(character)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Character" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;" />
+                    }
+                    <MudCardActions>
+                        <MudButton Href="@($"/characterDetail/{character.Id}")" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Style="margin: auto;">Details</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </div>
+        }
+    }
+</MudGrid>
+
+@code {
+    private List<CharacterDetailDto>? _characters;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCharacters();
+    }
+
+    private async Task GetCharacters()
+    {
+        _characters = await CharacterService.GetAllCharacterDetailDtosAsync();
+        _characters = _characters.OrderBy(x => x.GameWithoutFkObjectsDto.Name).ToList();
+    }
+
+    private string TurnByteArrayToImage(CharacterDetailDto character)
+    {
+        var imageSrc = string.Empty;
+        if (character.Picture != null)
+        {
+            imageSrc = ImageService.ConvertByteArrayToImage(character.Picture);
+        }
+
+        return imageSrc;
+    }
+}

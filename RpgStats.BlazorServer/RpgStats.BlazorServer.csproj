@@ -37,4 +37,8 @@
     <ProjectReference Include="..\RpgStats.Services\RpgStats.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
