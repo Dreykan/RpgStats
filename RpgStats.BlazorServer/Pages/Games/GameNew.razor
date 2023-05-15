@@ -12,7 +12,7 @@
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle ein neues Spiel</MudText>
 
 <MudGrid Class="mt-5">
-    <MudItem xs="12" sm="12">
+    <MudItem xs="12">
         <MudPaper Class="pa-0">
             <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
                 <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Ein Name ist schon erforderlich..." @bind-Value="@gameForCreationDto.Name"/>
@@ -154,10 +154,7 @@
 
     private string TurnByteArrayToImage(Byte[] imageBytes)
     {
-        var imageSrc = string.Empty;
-        imageSrc = ImageService.ConvertByteArrayToImage(imageBytes);
-
-        return imageSrc;
+        return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 
     private async void ShowErrorMessage(string text)

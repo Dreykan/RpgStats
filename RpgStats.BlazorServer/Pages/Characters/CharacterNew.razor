@@ -1,0 +1,119 @@
+﻿@page "/newCharacter"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@using RpgStats.BizLogic
+@using RpgStats.Services
+@using SkiaSharp
+@inject ICharacterService CharacterService
+@inject IGameService GameService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<MudText Typo="Typo.h4" Align="Align.Center">Erstelle einen neuen Charakter</MudText>
+
+<MudGrid Class="mt-5">
+    <MudItem xs="12">
+        <MudPaper Class="pa-0">
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForCreationDto.Name"/>
+                <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="SelectedGame" Clearable="true">
+                    @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                    {
+                        <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudGrid>
+                    <MudItem lg="6" md="6" sm="12" xs="12">
+                        <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFile" MaximumFileCount="1">
+                            <ButtonTemplate>
+                                <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Image" for="@context">
+                                    Upload Image (jpg, png)
+                                </MudButton>
+                            </ButtonTemplate>
+                        </MudFileUpload>
+                        <MudToolBar DisableGutters="true" Class="gap-4">
+                            <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
+                            <MudButton OnClick="ClearImage" Disabled="@(!_files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                        </MudToolBar>
+                    </MudItem>
+                    <MudItem lg="1" md="3" sm="12" xs="12">
+                        <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Bild des Charakters" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                    </MudItem>
+                </MudGrid>
+                <div class="align-content-center mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private CharacterForCreationDto _characterForCreationDto = new();
+    private List<GameDto> _gameDtos = new();
+    private MudForm? _form;
+    private bool _success;
+    private string[] _errors = { };
+    private string _value = "Nothing selected.";
+    private IEnumerable<string> SelectedGame { get; set; } = new HashSet<string>() { };
+    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private byte[] _imageBytes = Array.Empty<byte>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _gameDtos = await GameService.GetAllGamesAsync();
+    }
+
+    private async Task Create()
+    {
+        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
+        var result = await CharacterService.CreateCharacterAsync(selectedGame.Id, _characterForCreationDto);
+
+        if (result?.Id != null)
+        {
+            NavigationManager.NavigateTo($"/characterDetail/{result.Id}");
+        }
+        else
+        {
+            ShowErrorMessage("Es ist ein Fehler aufgetreten.");
+        }
+    }
+
+    private async Task UploadFile(IBrowserFile file)
+    {
+        if (_files.Count <= 0)
+        {
+            _files.Add(file);
+        }
+        else
+        {
+            ShowErrorMessage("Es kann nur ein Bild hochgeladen werden.");
+        }
+
+        using MemoryStream ms = new();
+        var stream = file.OpenReadStream(4096000L);
+        await stream.CopyToAsync(ms);
+        _imageBytes = ms.ToArray();
+
+        var resizedImageBytes = ImageService.ResizeImageTo512(_imageBytes, SKFilterQuality.High);
+
+        _characterForCreationDto.Picture = resizedImageBytes;
+    }
+
+    private async void ShowErrorMessage(string text)
+    {
+        bool? result = await DialogService.ShowMessageBox("Error", text, "OK");
+    }
+
+    private void ClearImage()
+    {
+        _characterForCreationDto.Picture = null;
+        _imageBytes = Array.Empty<byte>();
+        _files.Clear();
+    }
+
+    private string TurnByteArrayToImage(Byte[] imageBytes)
+    {
+        return ImageService.ConvertByteArrayToImage(imageBytes);
+    }
+}
