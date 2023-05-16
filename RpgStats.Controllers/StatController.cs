@@ -82,7 +82,7 @@ public class StatController : ControllerBase
 
     [HttpPost]
     [SwaggerOperation(Summary = "Create a Stat")]
-    public async Task<IActionResult> CreateStat(StatForCreationDto statForCreationDto)
+    public async Task<IActionResult> CreateStat(StatForCreationDto? statForCreationDto)
     {
         var response = await _statService.CreateStatAsync(statForCreationDto);
         if (response != null) return CreatedAtAction(nameof(GetStatById), new { statId = response.Id }, response);

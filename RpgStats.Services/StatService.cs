@@ -162,7 +162,7 @@ public class StatService : IStatService
         return statDetailDto;
     }
 
-    public async Task<StatDto?> CreateStatAsync(StatForCreationDto statForCreationDto)
+    public async Task<StatDto?> CreateStatAsync(StatForCreationDto? statForCreationDto)
     {
         var stat = statForCreationDto.Adapt<Stat>();
 

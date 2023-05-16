@@ -1,0 +1,109 @@
+﻿@page "/allStatTypes"
+@using RpgStats.Services.Abstractions
+@using RpgStats.Dto
+@inject IStatService StatService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<MudGrid>
+    @if (_stats == null)
+    {
+        <MudItem xs="12">
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large" OnClick="@(async () => await ShowNewStatTypeDialog())">Neuer Status Typ</MudButton>
+        </MudItem>
+
+        @foreach (var stat in _stats)
+        {
+            <MudItem xs="12">
+                <MudText Typo="Typo.h4">@stat.ShortName --- @stat.Name
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" OnClick="@(async () => await ShowUpdateStatTypeDialog(stat.Id))"/>
+                </MudText>
+            </MudItem>
+        }
+    }
+</MudGrid>
+
+@code {
+    private List<StatDto>? _stats;
+    private StatForCreationDto? _statForCreationDto = new();
+    private StatForUpdateDto? _statForUpdateDto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetStats();
+    }
+
+    private async Task GetStats()
+    {
+        _stats = await StatService.GetAllStatsAsync();
+        _stats = _stats.OrderBy(x => x.Name).ToList();
+    }
+
+    private async Task ShowNewStatTypeDialog()
+    {
+        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<StatTypeDialog>("Neuer Status Typ", closeOnEscapeKey);
+        var result = await dialog.Result;
+
+        if (result.Canceled == false)
+        {
+            if (result.Data is StatDto stat)
+                _statForCreationDto = new StatForCreationDto()
+                {
+                    Name = stat.Name,
+                    ShortName = stat.ShortName
+                };
+            await CreateNewStatType();
+        }
+    }
+
+    private async Task CreateNewStatType()
+    {
+        var result = await StatService.CreateStatAsync(_statForCreationDto);
+        if (result is null)
+        {
+            return;
+        }
+        
+        await GetStats();
+    }
+
+    private async Task ShowUpdateStatTypeDialog(long id)
+    {
+        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<StatTypeDialog>("Status Typ bearbeiten", closeOnEscapeKey);
+        var result = await dialog.Result;
+
+        if (result.Canceled == false)
+        {
+            if (result.Data is StatDto stat)
+                _statForUpdateDto = new StatForUpdateDto()
+                {
+                    Name = stat.Name,
+                    ShortName = stat.ShortName
+                };
+            await UpdateStatType(id);
+        }
+    }
+
+    private async Task UpdateStatType(long id)
+    {
+        if (_statForUpdateDto != null)
+        {
+            var result = await StatService.UpdateStatAsync(id, _statForUpdateDto);
+            if (result is null)
+            {
+                return;
+            }
+        }
+        await GetStats();
+    }
+}

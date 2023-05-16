@@ -12,7 +12,7 @@ public interface IStatService
     Task<List<StatDetailDto>> GetAllStatDetailDtosByShortNameAsync(string shortName);
     Task<StatDto?> GetStatByIdAsync(long statId);
     Task<StatDetailDto?> GetStatDetailDtoByIdAsync(long statId);
-    Task<StatDto?> CreateStatAsync(StatForCreationDto statForCreationDto);
+    Task<StatDto?> CreateStatAsync(StatForCreationDto? statForCreationDto);
     Task<StatDto?> UpdateStatAsync(long statId, StatForUpdateDto statForUpdateDto);
     Task DeleteStatAsync(long statId);
 }

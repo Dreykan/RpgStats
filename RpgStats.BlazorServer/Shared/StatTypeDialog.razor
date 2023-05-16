@@ -1,0 +1,28 @@
+﻿@using RpgStats.Dto
+<MudDialog>
+    <DialogContent>
+        <MudTextField T="string" Label="Abkürzung" @bind-Value="@_stat.ShortName"></MudTextField>
+        <MudTextField T="string" Label="Voller Name" @bind-Value="@_stat.Name"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Primary">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    private StatDto _stat = new();
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(_stat));
+    }
+}
