@@ -121,7 +121,7 @@
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 
-    private async Task PrefillForm()
+    private Task PrefillForm()
     {
         if (!string.IsNullOrEmpty(GameName))
         {
@@ -132,5 +132,6 @@
                 _value = gameDto.Name;
             }
         }
+        return Task.CompletedTask;
     }
 }

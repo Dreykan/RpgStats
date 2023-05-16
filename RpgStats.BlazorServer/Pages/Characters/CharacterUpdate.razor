@@ -136,7 +136,7 @@ else
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 
-    private async Task PrefillForm()
+    private Task PrefillForm()
     {
         if (_character != null)
         {
@@ -152,5 +152,6 @@ else
                 _imageBytes = _character.Picture;
             }
         }
+        return Task.CompletedTask;
     }
 }

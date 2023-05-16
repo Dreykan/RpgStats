@@ -6,7 +6,6 @@ using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
 using Newtonsoft.Json;
 using RpgStats.BlazorServer;
-using RpgStats.BlazorServer.Data;
 using RpgStats.Repo;
 using RpgStats.Services;
 using RpgStats.Services.Abstractions;
@@ -22,7 +21,6 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo {Title = "RpgStats", Version = "v1"});
 });
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
 builder.Services.AddTransient<ICharacterService, CharacterService>();
 builder.Services.AddTransient<IGameService, GameService>();
