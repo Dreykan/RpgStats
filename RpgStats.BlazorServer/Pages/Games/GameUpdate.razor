@@ -79,7 +79,7 @@ else
     {
         await GetGame();
         await GetPlatforms();
-        await PrefillFormular();
+        await PrefillForm();
     }
 
     private async Task GetGame()
@@ -141,7 +141,7 @@ else
         platformDtos = await PlatformService.GetAllPlatformsAsync();
     }
 
-    private async Task PrefillFormular()
+    private async Task PrefillForm()
     {
         gameForUpdateDto.Name = _game?.Name;
 
