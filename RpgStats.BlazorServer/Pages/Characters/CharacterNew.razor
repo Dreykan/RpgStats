@@ -1,4 +1,5 @@
 ﻿@page "/newCharacter"
+@page "/newCharacter/{GameName?}"
 @using RpgStats.Services.Abstractions
 @using RpgStats.Dto
 @using RpgStats.BizLogic
@@ -58,9 +59,13 @@
     private IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
+    [Parameter]
+    public string? GameName { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         _gameDtos = await GameService.GetAllGamesAsync();
+        await PrefillForm();
     }
 
     private async Task Create()
@@ -114,5 +119,18 @@
     private string TurnByteArrayToImage(Byte[] imageBytes)
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
+    }
+
+    private async Task PrefillForm()
+    {
+        if (!string.IsNullOrEmpty(GameName))
+        {
+            var gameDto = _gameDtos.FirstOrDefault(x => x.Name == GameName);
+            if (gameDto != null)
+            {
+                SelectedGame = new HashSet<string>() { gameDto.Name };
+                _value = gameDto.Name;
+            }
+        }
     }
 }

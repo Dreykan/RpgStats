@@ -23,7 +23,7 @@ else
             }
             else
             {
-                <MudImage Src="@TurnByteArrayToImage(_game)" ObjectFit="ObjectFit.Fill" Alt="Picture of this Game" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block" Style="max-width: 400px;"></MudImage>
+                <MudImage Src="@TurnByteArrayToImage(_game.Picture)" ObjectFit="ObjectFit.Fill" Alt="Picture of this Game" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block" Style="max-width: 400px;"></MudImage>
             }
         </MudItem>
         <MudItem lg="8" md="6" sm="12">
@@ -33,11 +33,29 @@ else
                 {
                     <MudText Typo="Typo.body1" Class="mb-1">- @platform.Name</MudText>
                 }
-                <MudText Typo="Typo.h5" Class="mt-4">Characters</MudText>
-                @foreach (var character in _game.CharacterWithoutFkObjectsDtos)
-                {
-                    <MudText Typo="Typo.body1" Class="mb-1">- @character.Name</MudText>
-                }
+                <MudText Typo="Typo.h5" Class="mt-4">Characters
+                    <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Primary" Href="@($"/newCharacter/{_game.Name}")"/>
+                </MudText>
+                <MudGrid Class="my-4">
+                    @foreach (var character in _game.CharacterWithoutFkObjectsDtos)
+                    {
+                        <MudLink Class="mx-5" Typo="Typo.body1" Href="@($"/characterDetail/{character.Id}")">
+                            @if (character.Picture == null)
+                            {
+                                <MudAvatar Size="Size.Large">
+                                    <MudImage Src="images/placeholder-3.png"></MudImage>
+                                </MudAvatar>
+                            }
+                            else
+                            {
+                                <MudAvatar Size="Size.Large">
+                                    <MudImage Src="@TurnByteArrayToImage(character.Picture)"></MudImage>
+                                </MudAvatar>
+                            }
+                            <MudText Typo="Typo.body1" Class="mb-1">@character.Name</MudText>
+                        </MudLink>
+                    }
+                </MudGrid>
             </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">
                 <MudItem xs="6">
@@ -67,15 +85,9 @@ else
         _game = await GameService.GetGameDetailDtoByIdAsync(Id);
     }
 
-    private string TurnByteArrayToImage(GameDetailDto game)
+    private string TurnByteArrayToImage(byte[] imageBytes)
     {
-        var imageSrc = string.Empty;
-        if (game.Picture != null)
-        {
-            imageSrc = ImageService.ConvertByteArrayToImage(game.Picture);
-        }
-
-        return imageSrc;
+        return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 
     private async Task DeleteGame()

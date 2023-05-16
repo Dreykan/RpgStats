@@ -26,14 +26,16 @@
                             <MudText Typo="Typo.h4" Align="Align.Center">@game.Name</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
-                    @if (game.Picture == null)
-                    {
-                        <MudCardMedia Image="images/placeholder-1.png" Title="placeholder-3" />
-                    }
-                    else
-                    {
-                        <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;" />
-                    }
+                    <MudLink Href="@($"/gameDetail/{game.Id}")">
+                        @if (game.Picture == null)
+                        {
+                            <MudCardMedia Image="images/placeholder-1.png" Title="placeholder-3" />
+                        }
+                        else
+                        {
+                            <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;" />
+                        }
+                    </MudLink>
                     <MudCardContent>
                         <MudText Typo="Typo.h5">Platform:</MudText>
                         <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
