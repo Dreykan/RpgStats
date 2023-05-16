@@ -11,7 +11,9 @@ public class StatValueMapper
         {
             Id = statValue.Id,
             Level = statValue.Level,
-            Value = statValue.Value
+            Value = statValue.Value,
+            ContainedBonusNum = statValue.ContainedBonusNum,
+            ContainedBonusPercent = statValue.ContainedBonusPercent
         };
 
         // Map Stat-Property
@@ -31,7 +33,9 @@ public class StatValueMapper
         {
             Id = statValue.Id,
             Level = statValue.Level,
-            Value = statValue.Value
+            Value = statValue.Value,
+            ContainedBonusNum = statValue.ContainedBonusNum,
+            ContainedBonusPercent = statValue.ContainedBonusPercent
         };
 
         // Map Character-Property

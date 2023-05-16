@@ -117,6 +117,8 @@ public class StatValueService : IStatValueService
 
         statValue.Level = statValueForUpdateDto.Level;
         statValue.Value = statValueForUpdateDto.Value;
+        statValue.ContainedBonusNum = statValueForUpdateDto.ContainedBonusNum;
+        statValue.ContainedBonusPercent = statValueForUpdateDto.ContainedBonusPercent;
         statValue.CharacterId = character.Id;
         statValue.Character = character;
         statValue.StatId = stat.Id;

@@ -7,4 +7,7 @@ public class StatValueDto
     public long CharacterId { get; set; }
     public long StatId { get; set; }
     public int Value { get; set; }
+    public int ContainedBonusNum { get; set; }
+    public int ContainedBonusPercent { get; set; }
+
 }
