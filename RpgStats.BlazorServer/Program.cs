@@ -24,13 +24,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
-builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGameStatService, GameStatService>();
-builder.Services.AddScoped<IPlatformService, PlatformService>();
-builder.Services.AddScoped<IPlatformGameService, PlatformGameService>();
-builder.Services.AddScoped<IStatService, StatService>();
-builder.Services.AddScoped<IStatValueService, StatValueService>();
+builder.Services.AddTransient<ICharacterService, CharacterService>();
+builder.Services.AddTransient<IGameService, GameService>();
+builder.Services.AddTransient<IGameStatService, GameStatService>();
+builder.Services.AddTransient<IPlatformService, PlatformService>();
+builder.Services.AddTransient<IPlatformGameService, PlatformGameService>();
+builder.Services.AddTransient<IStatService, StatService>();
+builder.Services.AddTransient<IStatValueService, StatValueService>();
 builder.Services.AddDbContextPool<RpgStatsContext>(options =>
 {
     var connectionString = GetConnectionString();
