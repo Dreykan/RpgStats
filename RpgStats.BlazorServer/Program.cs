@@ -26,6 +26,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameStatService, GameStatService>();
 builder.Services.AddScoped<IPlatformService, PlatformService>();
 builder.Services.AddScoped<IPlatformGameService, PlatformGameService>();
 builder.Services.AddScoped<IStatService, StatService>();
