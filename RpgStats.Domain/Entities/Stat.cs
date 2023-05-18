@@ -20,4 +20,7 @@ public class Stat
 
     [InverseProperty("Stat")]
     public ICollection<StatValue>? StatValues { get; set; }
+
+    [InverseProperty("Stat")]
+    public ICollection<GameStat>? GameStats { get; set; }
 }

@@ -21,5 +21,8 @@ public class Game
     public ICollection<PlatformGame>? PlatformGames { get; set; }
 
     [InverseProperty("Game")]
+    public ICollection<GameStat>? GameStats { get; set; }
+
+    [InverseProperty("Game")]
     public ICollection<Character>? Characters { get; set; }
 }

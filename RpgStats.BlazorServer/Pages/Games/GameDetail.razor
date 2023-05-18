@@ -56,6 +56,17 @@ else
                         </MudLink>
                     }
                 </MudGrid>
+                <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="Diese Statuswerte-Typen kommen in diesem Spiel vor.">
+                    <MudText Typo="Typo.h5">Status-Typen</MudText>
+                </MudTooltip>
+                <MudGrid Class="my-4">
+                    @foreach (var statusType in _game.StatWithoutFkObjectsDtos)
+                    {
+                        <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="@statusType.Name">
+                            <MudChip Class="mx-2" Color="Color.Primary">@statusType.ShortName</MudChip>
+                        </MudTooltip>
+                    }
+                </MudGrid>
             </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">
                 <MudItem xs="6">

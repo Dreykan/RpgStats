@@ -6,4 +6,5 @@ public class StatDto
     public string? Name { get; set; }
     public string? ShortName { get; set; }
     public IEnumerable<StatValueDto>? StatValues { get; set; }
+    public IEnumerable<GameStatDto>? GameStats { get; set; }
 }

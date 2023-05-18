@@ -101,9 +101,13 @@ public class GameService : IGameService
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
             .Include(g => g.Characters)
+            .Include(g => g.GameStats)
             .ToListAsync();
 
         var platforms = await _dbContext.Platforms
+            .ToListAsync();
+
+        var stats = await _dbContext.Stats
             .ToListAsync();
 
         var gameDetailDtos = new List<GameDetailDto>();
@@ -121,7 +125,17 @@ public class GameService : IGameService
                 }
             }
 
-            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered));
+            var statsFiltered = new List<Stat?>();
+            if (game.GameStats != null)
+            {
+                foreach (var gs in game.GameStats)
+                {
+                    statsFiltered.Add(stats
+                        .FirstOrDefault(s => s.Id == gs.StatId));
+                }
+            }
+
+            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
         }
 
         return gameDetailDtos;
@@ -132,10 +146,14 @@ public class GameService : IGameService
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
             .Include(g => g.Characters)
+            .Include(g => g.GameStats)
             .Where(g => g.Name != null && g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         var platforms = await _dbContext.Platforms
+            .ToListAsync();
+
+        var stats = await _dbContext.Stats
             .ToListAsync();
 
         var gameDetailDtos = new List<GameDetailDto>();
@@ -153,7 +171,17 @@ public class GameService : IGameService
                 }
             }
 
-            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered));
+            var statsFiltered = new List<Stat?>();
+            if (game.GameStats != null)
+            {
+                foreach (var gs in game.GameStats)
+                {
+                    statsFiltered.Add(stats
+                        .FirstOrDefault(s => s.Id == gs.StatId));
+                }
+            }
+
+            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
         }
 
         return gameDetailDtos;
@@ -164,9 +192,13 @@ public class GameService : IGameService
         var game = await _dbContext.Games
             .Include(g => g.PlatformGames)
             .Include(g => g.Characters)
+            .Include(g => g.GameStats)
             .FirstOrDefaultAsync(g => g.Id == gameId);
 
         var platforms = await _dbContext.Platforms
+            .ToListAsync();
+
+        var stats = await _dbContext.Stats
             .ToListAsync();
 
         var gameDetailDto = new GameDetailDto();
@@ -185,7 +217,17 @@ public class GameService : IGameService
             }
         }
 
-        gameDetailDto = gameMapper.MapToGameDetailDto(game, platformsFiltered);
+        var statsFiltered = new List<Stat?>();
+        if (game.GameStats != null)
+        {
+            foreach (var gs in game.GameStats)
+            {
+                statsFiltered.Add(stats
+                    .FirstOrDefault(s => s.Id == gs.StatId));
+            }
+        }
+
+        gameDetailDto = gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered);
 
         return gameDetailDto;
     }

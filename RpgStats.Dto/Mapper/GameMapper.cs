@@ -17,7 +17,7 @@ public class GameMapper
         return gameWithoutFkObjectsDto;
     }
 
-    public GameDetailDto MapToGameDetailDto(Game game, List<Platform?> platforms)
+    public GameDetailDto MapToGameDetailDto(Game game, List<Platform?> platforms, List<Stat?> stats)
     {
         // New Object and map simple properties
         var gameDetailDto = new GameDetailDto
@@ -49,6 +49,18 @@ public class GameMapper
         }
 
         gameDetailDto.PlatformWithoutFkObjectsDtos = platformWithoutFkObjectsDtos;
+
+        // Map Stats-Property
+        var statMapper = new StatMapper();
+        var statWithoutFkObjectsDtos = new List<StatWithoutFkObjectsDto>();
+        if (stats == null) return gameDetailDto;
+        foreach (var stat in stats)
+        {
+            statWithoutFkObjectsDtos.Add(statMapper.MapToStatWithoutFkObjectsDto(stat));
+        }
+
+        gameDetailDto.StatWithoutFkObjectsDtos = statWithoutFkObjectsDtos;
+
 
         return gameDetailDto;
     }

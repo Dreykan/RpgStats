@@ -37,6 +37,17 @@ public class StatMapper
 
         statDetailDto.StatValueWithCharacterObjectDtos = statValueWithCharacterObjectDto;
 
+        // Map Game-Property
+        var gameMapper = new GameMapper();
+        var gameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>();
+        if (stat.GameStats == null) return statDetailDto;
+        foreach (var gameStat in stat.GameStats)
+        {
+            gameWithoutFkObjectsDtos.Add(gameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game));
+        }
+
+        statDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectsDtos;
+
         return statDetailDto;
     }
 }
