@@ -3,6 +3,7 @@
 @using RpgStats.Dto
 @using RpgStats.BizLogic
 @inject IGameService GameService
+@inject IGameStatService GameStatService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
@@ -34,12 +35,12 @@ else
                     <MudText Typo="Typo.body1" Class="mb-1">- @platform.Name</MudText>
                 }
                 <MudText Typo="Typo.h5" Class="mt-4">Characters
-                    <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Primary" Href="@($"/newCharacter/{_game.Name}")"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Info" Href="@($"/newCharacter/{_game.Name}")"/>
                 </MudText>
                 <MudGrid Class="my-4">
                     @foreach (var character in _game.CharacterWithoutFkObjectsDtos)
                     {
-                        <MudLink Class="mx-5" Typo="Typo.body1" Href="@($"/characterDetail/{character.Id}")">
+                        <MudLink Class="mx-5" Typo="Typo.body1" Color="Color.Info" Href="@($"/characterDetail/{character.Id}")">
                             @if (character.Picture == null)
                             {
                                 <MudAvatar Size="Size.Large">
@@ -57,13 +58,15 @@ else
                     }
                 </MudGrid>
                 <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="Diese Statuswerte-Typen kommen in diesem Spiel vor.">
-                    <MudText Typo="Typo.h5">Status-Typen</MudText>
+                    <MudText Typo="Typo.h5">Status-Typen
+                        <MudIconButton Icon="@Icons.Material.Filled.AddLink" Color="Color.Info" OnClick="(async () => await LinkGameStat())"/>
+                    </MudText>
                 </MudTooltip>
                 <MudGrid Class="my-4">
                     @foreach (var statusType in _game.StatWithoutFkObjectsDtos)
                     {
                         <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="@statusType.Name">
-                            <MudChip Class="mx-2" Color="Color.Primary">@statusType.ShortName</MudChip>
+                            <MudChip Class="mx-2" Color="Color.Secondary">@statusType.ShortName</MudChip>
                         </MudTooltip>
                     }
                 </MudGrid>
@@ -122,5 +125,54 @@ else
             await GameService.DeleteGameAsync(Id);
             NavigationManager.NavigateTo("/allGames");
         }
+    }
+
+    private async Task LinkGameStat()
+    {
+        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true };
+
+        var dialogParameter = new DialogParameters();
+        dialogParameter.Add("Game", _game);
+        var dialog = await DialogService.ShowAsync<LinkGameStatDialog>($"Status-Typ mit dem Spiel: {_game.Name} verknüpfen.", dialogParameter, closeOnEscapeKey);
+        var result = await dialog.Result;
+
+        if (result.Canceled == false)
+        {
+            if (result.Data is GameStatDto gameStat)
+            {
+                await CreateGameStat(gameStat);
+            }
+        }
+    }
+
+    private async Task CreateGameStat(GameStatDto gameStat)
+    {
+        if (await CheckGameStatExist(gameStat))
+        {
+            var parameters = new DialogParameters();
+            parameters.Add("ContentText", "Dieser Status-Typ ist schon mit dem Spiel verknüpft.");
+            parameters.Add("ButtonText", "OK");
+            parameters.Add("Color", Color.Info);
+
+            var options = new DialogOptions()
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+            await DialogService.ShowAsync<MessageDialog>("Fehler", parameters, options);
+        }
+        else
+        {
+            await GameStatService.CreateGameStatAsync(gameStat.GameId, gameStat.StatId);
+        }
+        await GetGame();
+    }
+
+    private async Task<bool> CheckGameStatExist(GameStatDto gameStat)
+    {
+        var gameStats = await GameStatService.GetAllGameStatsByGameIdAsync(gameStat.GameId);
+        var gameStatExist = gameStats.Any(x => x.StatId == gameStat.StatId);
+        return gameStatExist;
     }
 }

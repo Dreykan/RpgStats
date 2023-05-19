@@ -1,0 +1,51 @@
+﻿@using RpgStats.Dto
+@using System.Net
+@using RpgStats.Services.Abstractions
+@inject IStatService StatService
+
+<MudDialog>
+    <DialogContent>
+        <MudSelect T="string" Required="true" Label="Status-Typ" MultiSelection="false" @bind-Value="_stat" @bind-SelectedValues="SelectedStat" Clearable="true">
+            @foreach (var statDto in _stats.OrderBy(x => x.ShortName).ToList())
+            {
+                <MudSelectItem T="string" Value="@statDto.ShortName">@statDto.ShortName --- @statDto.Name</MudSelectItem>
+            }
+        </MudSelect>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Primary">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public GameDetailDto Game { get; set; }
+
+    private List<StatDto> _stats = new();
+    private string _stat = "Nothing selected.";
+    private IEnumerable<string> SelectedStat { get; set; } = new HashSet<string>();
+    private GameStatDto _gameStatDto = new(); 
+
+    protected override async Task OnInitializedAsync()
+    {
+        _stats = await StatService.GetAllStatsAsync();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void Submit()
+    {
+        _gameStatDto.GameId = Game.Id;
+        _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
+        MudDialog.Close(DialogResult.Ok(_gameStatDto));
+    }
+
+
+}

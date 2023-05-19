@@ -106,7 +106,7 @@
                 MaxWidth = MaxWidth.Small
             };
 
-        var dialog = await DialogService.ShowAsync<SuccessDialog>("Erfolg", parameters, options);
+        var dialog = await DialogService.ShowAsync<MessageDialog>("Erfolg", parameters, options);
         await dialog.Result;
     }
 
