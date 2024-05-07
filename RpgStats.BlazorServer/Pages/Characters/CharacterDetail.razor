@@ -3,6 +3,8 @@
 @using RpgStats.Dto
 @using RpgStats.BizLogic
 @inject ICharacterService CharacterService
+@inject IStatValueService StatValueService
+@inject IStatService StatService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
@@ -55,11 +57,24 @@ else
                 </MudItem>
             </MudGrid>
         </MudItem>
+        <MudItem xs="12">
+            <MudTable Items="@_statValues">
+                <HeaderContent>
+                    <MudTh>Level</MudTh>
+                    @foreach (var stat in _stats)
+                    {
+                        <MudTh>@stat.ShortName</MudTh>
+                    }
+                </HeaderContent>
+            </MudTable>
+        </MudItem>
     </MudGrid>
 }
 
 @code {
     private CharacterDetailDto? _character;
+    private List<StatValueDto> _statValues = new();
+    private List<StatDto> _stats = new();
 
     [Parameter]
     public int Id { get; set; }
@@ -67,6 +82,29 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetCharacter();
+        await GetStatValues();
+        await GetStats();
+    }
+
+    private async Task GetStatValues()
+    {
+        if (_character != null)
+        {
+            _statValues = await StatValueService.GetAllStatValuesByCharacterIdAsync(_character.Id);
+        }
+    }
+
+    private async Task GetStats()
+    {
+        // Ermittle alle Stats, die zu den StatValues gehören und füge sie der Liste _stats hinzu, wenn noch nicht vorhanden
+        foreach (var statValue in _statValues)
+        {
+            var stat = await StatService.GetStatByIdAsync(statValue.StatId);
+            if (_stats.Contains(stat) == false)
+            {
+                _stats.Add(stat);
+            }
+        }
     }
 
     private async Task GetCharacter()

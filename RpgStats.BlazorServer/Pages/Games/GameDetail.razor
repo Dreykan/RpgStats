@@ -66,7 +66,7 @@ else
                     @foreach (var statusType in _game.StatWithoutFkObjectsDtos)
                     {
                         <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="@statusType.Name">
-                            <MudChip Class="mx-2" Color="Color.Secondary">@statusType.ShortName</MudChip>
+                            <MudChip Class="mx-9" Color="Color.Secondary">@statusType.ShortName</MudChip>
                         </MudTooltip>
                     }
                 </MudGrid>

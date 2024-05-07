@@ -36,7 +36,7 @@
                         @foreach (var game in platform.GameWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudText>
-                                <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")">
+                                <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")" Color="Color.Info">
                                     @if (game.Picture == null)
                                     {
                                         <MudAvatar Size="Size.Large">
