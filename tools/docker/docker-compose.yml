@@ -1,0 +1,16 @@
+version: '3.9'
+
+name: rpgstats-stack
+
+services:
+  db:
+    container_name: rpgstats-db  
+    image: postgres:16.3
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 512mb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: RpgStats
+      POSTGRES_PASSWORD: RpgStats
