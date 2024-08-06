@@ -23,13 +23,6 @@ public class RpgStatsContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PlatformGame>().HasKey(pg => new {pg.PlatformId, pg.GameId});
-        modelBuilder.Entity<GameStat>().HasKey(stat => new {stat.GameId, stat.StatId});
-        modelBuilder.Entity<StatValue>().HasKey(sv => new {sv.CharacterId, sv.StatId});
-
-
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RpgStatsContext).Assembly);
-
         if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         {
             SeedData(modelBuilder);

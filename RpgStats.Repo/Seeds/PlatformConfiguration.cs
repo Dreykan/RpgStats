@@ -22,7 +22,7 @@ namespace RpgStats.Repo.Seeds
                 new Platform { Id = 6, Name = "PlayStation 5", PlatformGames = new List<PlatformGame>() },
                 new Platform { Id = 7, Name = "Xbox Series X/S", PlatformGames = new List<PlatformGame>() },
                 new Platform { Id = 8, Name = "Nintendo Switch", PlatformGames = new List<PlatformGame>() }
-                
+
             );
         }
     }
