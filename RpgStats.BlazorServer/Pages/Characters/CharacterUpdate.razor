@@ -85,7 +85,20 @@ else
 
     private async Task Update()
     {
+
+        if (_files.Count == 0)
+        {
+            _characterForUpdateDto.Picture = _character?.Picture;
+        }
+
         var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
+
+        if (_character == null || selectedGame == null)
+        {
+            ShowErrorMessage("Charakter oder Spiel nicht gefunden.");
+            return;
+        }
+
         var result = await CharacterService.UpdateCharacterAsync(_character.Id, selectedGame.Id, _characterForUpdateDto);
 
         if (result?.Id != null)
@@ -106,7 +119,7 @@ else
         }
         else
         {
-            ShowErrorMessage("Es kann nur ein Bild hochgeladen werden.");
+            _files[0] = file;
         }
 
         using MemoryStream ms = new();
@@ -138,19 +151,21 @@ else
 
     private Task PrefillForm()
     {
-        if (_character != null)
+        if (_character == null)
         {
-            _characterForUpdateDto.Name = _character.Name;
+            return Task.CompletedTask;
+        }
 
-            if (_character.GameWithoutFkObjectsDto != null)
-            {
-                SelectedGame = SelectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
-            }
+        _characterForUpdateDto.Name = _character.Name;
 
-            if (_character.Picture != null)
-            {
-                _imageBytes = _character.Picture;
-            }
+        if (_character.GameWithoutFkObjectsDto != null)
+        {
+            SelectedGame = SelectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
+        }
+
+        if (_character.Picture != null)
+        {
+            _imageBytes = _character.Picture;
         }
         return Task.CompletedTask;
     }

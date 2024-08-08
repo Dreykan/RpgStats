@@ -20,10 +20,10 @@ else
     <MudGrid Class="mt-5">
         <MudItem xs="12" sm="12">
             <MudPaper Class="pa-4">
-                <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@gameForUpdateDto.Name" />
-                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms" Clearable="true">
-                        @foreach (var platformDto in platformDtos.OrderBy(x => x.Name).ToList())
+                <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name" />
+                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="_selectedPlatforms" Clearable="true">
+                        @foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
                         }
@@ -42,16 +42,16 @@ else
                                 </ButtonTemplate>
                             </MudFileUpload>
                             <MudToolBar DisableGutters="true" Class="gap-4">
-                                <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
-                                <MudButton OnClick="ClearImages" Disabled="@(!files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                                <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
+                                <MudButton OnClick="ClearImages" Disabled="@(!_files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
                             </MudToolBar>
                         </MudItem>
                         <MudItem lg="1" md="3" xs="12" sm="12">
-                            <MudImage Src="@TurnByteArrayToImage(imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                            <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
                         </MudItem>
                     </MudGrid>
                     <div class="align-content-center mt-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!success)" Class="m-auto" OnClick="@(async () => await Update())">Update</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Update</MudButton>
                     </div>
                 </MudForm>
             </MudPaper>
@@ -62,15 +62,15 @@ else
 
 @code {
     private GameDetailDto? _game;
-    private GameForUpdateDto gameForUpdateDto = new();
-    private List<PlatformDto> platformDtos = new();
-    private IEnumerable<string?> selectedPlatforms { get; set; } = new HashSet<string>() { };
-    private string value = "Nothing selected.";
-    MudForm form;
-    bool success;
-    string[] errors = { };
-    IList<IBrowserFile> files = new List<IBrowserFile>();
-    byte[] imageBytes = Array.Empty<byte>();
+    private GameForUpdateDto _gameForUpdateDto = new();
+    private List<PlatformDto> _platformDtos = new();
+    private IEnumerable<string?> _selectedPlatforms { get; set; } = new HashSet<string>() { };
+    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private string _value = "Nothing selected.";
+    private MudForm? _form;
+    private bool _success;
+    private string[] _errors = { };
+    private byte[] _imageBytes = Array.Empty<byte>();
 
     [Parameter]
     public int Id { get; set; }
@@ -79,7 +79,7 @@ else
     {
         await GetGame();
         await GetPlatforms();
-        await PrefillForm();
+        PrefillForm();
     }
 
     private async Task GetGame()
@@ -89,18 +89,22 @@ else
 
     private async Task Update()
     {
-        if (files.Count == 0)
+        if (_files.Count == 0)
         {
-            gameForUpdateDto.Picture = _game?.Picture;
+            _gameForUpdateDto.Picture = _game?.Picture;
         }
 
-        await GameService.UpdateGameAsync(Id, gameForUpdateDto);
+        await GameService.UpdateGameAsync(Id, _gameForUpdateDto);
 
         await PlatformGameService.DeletePlatformGameByGameIdAsync(Id);
 
         List<long> selectPlatformIds = new();
-        foreach (var platformName in selectedPlatforms)
+        foreach (var platformName in _selectedPlatforms)
         {
+            if (string.IsNullOrEmpty(platformName))
+			{
+				continue;
+			}
             long id = await GetIdOfPlatform(platformName);
             selectPlatformIds.Add(id);
         }
@@ -110,9 +114,9 @@ else
             await PlatformGameService.CreatePlatformGameAsync(platformId, Id);
         }
 
-        gameForUpdateDto.Name = "";
-        files.Clear();
-        selectedPlatforms = new HashSet<string>() { };
+        _gameForUpdateDto.Name = "";
+        _files.Clear();
+        _selectedPlatforms = new HashSet<string>() { };
 
         await ShowSuccessDialog();
 
@@ -138,22 +142,22 @@ else
 
     private async Task GetPlatforms()
     {
-        platformDtos = await PlatformService.GetAllPlatformsAsync();
+        _platformDtos = await PlatformService.GetAllPlatformsAsync();
     }
 
-    private async Task PrefillForm()
+    private void PrefillForm()
     {
-        gameForUpdateDto.Name = _game?.Name;
+        _gameForUpdateDto.Name = _game?.Name;
 
         if (_game?.PlatformWithoutFkObjectsDtos != null)
             foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
             {
-                selectedPlatforms = selectedPlatforms.Append(platform.Name);
+                _selectedPlatforms = _selectedPlatforms.Append(platform.Name);
             }
 
         if (_game?.Picture != null)
         {
-            imageBytes = _game.Picture;
+            _imageBytes = _game.Picture;
         }
     }
 
@@ -161,29 +165,29 @@ else
     {
         var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
         var platform = platformList.FirstOrDefault();
-        long id = platform.Id;
+        long id = platform?.Id ?? 0;
         return id;
     }
 
     private async void UploadFiles(IBrowserFile file)
     {
-        if (files.Count <= 0)
+        if (_files.Count <= 0)
         {
-            files.Add(file);
+            _files.Add(file);
         }
         else
         {
-            await DialogService.ShowMessageBox("Nur ein Bild erlaubt", "Es ist nur ein Bild erlaubt");
+            _files[0] = file;
         }
 
         using MemoryStream ms = new MemoryStream();
         var stream = file.OpenReadStream(4096000L);
         await stream.CopyToAsync(ms);
-        imageBytes = ms.ToArray();
+        _imageBytes = ms.ToArray();
 
-        var resizedImageBytes = ImageService.ResizeImageTo512(imageBytes, SKFilterQuality.High);
+        var resizedImageBytes = ImageService.ResizeImageTo512(_imageBytes, SKFilterQuality.High);
 
-        gameForUpdateDto.Picture = resizedImageBytes;
+        _gameForUpdateDto.Picture = resizedImageBytes;
     }
 
     private string TurnByteArrayToImage(Byte[] imageBytes)
@@ -196,8 +200,8 @@ else
 
     private void ClearImages()
     {
-        gameForUpdateDto.Picture = null;
-        imageBytes = Array.Empty<byte>();
-        files.Clear();
+        _gameForUpdateDto.Picture = null;
+        _imageBytes = Array.Empty<byte>();
+        _files.Clear();
     }
 }
