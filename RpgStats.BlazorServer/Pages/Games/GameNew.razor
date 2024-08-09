@@ -14,10 +14,10 @@
 <MudGrid Class="mt-5">
     <MudItem xs="12">
         <MudPaper Class="pa-0">
-            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Ein Name ist schon erforderlich..." @bind-Value="@gameForCreationDto.Name"/>
-                <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="selectedPlatforms" Clearable="true">
-                    @foreach (var platformDto in platformDtos.OrderBy(x => x.Name).ToList())
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Ein Name ist schon erforderlich..." @bind-Value="_gameForCreationDto.Name" TextChanged="OnNameChanged" Immediate="true"/>
+                <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="_selectedPlatforms" Clearable="true">
+                    @foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
                     {
                         <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
                     }
@@ -36,16 +36,16 @@
                             </ButtonTemplate>
                         </MudFileUpload>
                         <MudToolBar DisableGutters="true" Class="gap-4">
-                            <MudText>@files.Count.ToString() Bilder zwischengespeichert</MudText>
-                            <MudButton OnClick="ClearImages" Disabled="@(!files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                            <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
+                            <MudButton OnClick="ClearImages" Disabled="@(!_files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
                         </MudToolBar>
                     </MudItem>
                     <MudItem lg="1" md="3" xs="12" sm="12">
-                        <MudImage Src="@TurnByteArrayToImage(imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                        <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
                     </MudItem>
                 </MudGrid>
                 <div class="align-content-center mt-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!success)" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
                 </div>
             </MudForm>
         </MudPaper>
@@ -53,15 +53,15 @@
 </MudGrid>
 
 @code {
-    private GameForCreationDto gameForCreationDto = new();
-    private List<PlatformDto> platformDtos = new();
-    private string value = "Nothing selected.";
-    private IEnumerable<string> selectedPlatforms { get; set; } = new HashSet<string>() {  };
-    MudForm form;
-    bool success;
-    string[] errors = { };
-    IList<IBrowserFile> files = new List<IBrowserFile>();
-    Byte[] imageBytes = Array.Empty<byte>();
+    private GameForCreationDto _gameForCreationDto = new();
+    private List<PlatformDto> _platformDtos = new();
+    private string _value = "Nothing selected.";
+    private IEnumerable<string> _selectedPlatforms { get; set; } = new HashSet<string>() {  };
+    private MudForm? _form;
+    private bool _success;
+    private string[] _errors = { };
+    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private Byte[] _imageBytes = Array.Empty<byte>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,11 +70,12 @@
 
     private async Task Create()
     {
-        await GameService.CreateGameAsync(gameForCreationDto);
-        long gameId = await GetIdOfCreatedGame(gameForCreationDto.Name);
+        await GameService.CreateGameAsync(_gameForCreationDto);
+
+        long gameId = _gameForCreationDto.Name != null ? await GetIdOfCreatedGame(_gameForCreationDto.Name) : 0;
 
         List<long> selectedPlatformIds = new();
-        foreach (var selectedPlatform in selectedPlatforms)
+        foreach (var selectedPlatform in _selectedPlatforms)
         {
             long id = await GetIdOfPlatform(selectedPlatform);
             selectedPlatformIds.Add(id);
@@ -85,8 +86,8 @@
             await PlatformGameService.CreatePlatformGameAsync(selectedPlatformId, gameId);
         }
 
-        gameForCreationDto.Name = "";
-        files.Clear();
+        _gameForCreationDto.Name = "";
+        _files.Clear();
 
         await ShowSuccessDialog();
 
@@ -112,14 +113,14 @@
 
     private async Task GetPlatforms()
     {
-        platformDtos = await PlatformService.GetAllPlatformsAsync();
+        _platformDtos = await PlatformService.GetAllPlatformsAsync();
     }
 
     private async Task<long> GetIdOfCreatedGame(string gameName)
     {
         var gameList = await GameService.GetAllGamesByNameAsync(gameName);
         var game = gameList.FirstOrDefault();
-        long id = game.Id;
+        long id = game != null ? game.Id : 0;
         return id;
     }
 
@@ -127,29 +128,29 @@
     {
         var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
         var platform = platformList.FirstOrDefault();
-        long id = platform.Id;
+        long id = platform != null ? platform.Id : 0;
         return id;
     }
 
     private async void UploadFiles(IBrowserFile file)
     {
-        if (files.Count <= 0)
+        if (_files.Count <= 0)
         {
-            files.Add(file);
+            _files.Add(file);
         }
         else
         {
             ShowErrorMessage("You can't upload more than one image for a game.");
         }
-        
+
         using MemoryStream ms = new MemoryStream();
         var stream = file.OpenReadStream(4096000L);
         await stream.CopyToAsync(ms);
-        imageBytes = ms.ToArray();
+        _imageBytes = ms.ToArray();
 
-        var resizedImageBytes = ImageService.ResizeImageTo512(imageBytes, SKFilterQuality.High);
+        var resizedImageBytes = ImageService.ResizeImageTo512(_imageBytes, SKFilterQuality.High);
 
-        gameForCreationDto.Picture = resizedImageBytes;
+        _gameForCreationDto.Picture = resizedImageBytes;
     }
 
     private string TurnByteArrayToImage(Byte[] imageBytes)
@@ -164,8 +165,16 @@
 
     private void ClearImages()
     {
-        gameForCreationDto.Picture = null;
-        imageBytes = Array.Empty<byte>();
-        files.Clear();
+        _gameForCreationDto.Picture = null;
+        _imageBytes = Array.Empty<byte>();
+        _files.Clear();
+    }
+
+    private void OnNameChanged(string value)
+    {
+        if (_selectedPlatforms.Any())
+        {
+            _success = !string.IsNullOrWhiteSpace(value);
+        }
     }
 }
