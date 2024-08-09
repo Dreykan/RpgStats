@@ -21,7 +21,7 @@ else
         <MudItem xs="12" sm="12">
             <MudPaper Class="pa-4">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name" />
+                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name" TextChanged="OnNameChanged" Immediate="true" />
                     <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="_selectedPlatforms" Clearable="true">
                         @foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
                         {
@@ -204,4 +204,12 @@ else
         _imageBytes = Array.Empty<byte>();
         _files.Clear();
     }
+
+    private void OnNameChanged(string value)
+	{
+        if (_selectedPlatforms.Any())
+		{
+			_success = !string.IsNullOrWhiteSpace(value);
+		}
+	}
 }

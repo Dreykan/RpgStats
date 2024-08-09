@@ -20,8 +20,8 @@ else
         <MudItem xs="12">
             <MudPaper Class="pa-0">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForUpdateDto.Name"/>
-                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="SelectedGame" Clearable="true">
+                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForUpdateDto.Name" TextChanged="OnNameChanged" Immediate="true"/>
+                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="_selectedGame" Clearable="true">
                         @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
@@ -63,8 +63,8 @@ else
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
-    private string _value = "Nothing selected.";
-    private IEnumerable<string?> SelectedGame { get; set; } = new HashSet<string>() { };
+    private string _value = string.Empty;
+    private IEnumerable<string?> _selectedGame { get; set; } = new HashSet<string>() { };
     private IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
@@ -91,7 +91,7 @@ else
             _characterForUpdateDto.Picture = _character?.Picture;
         }
 
-        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
+        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == _selectedGame.FirstOrDefault());
 
         if (_character == null || selectedGame == null)
         {
@@ -160,7 +160,7 @@ else
 
         if (_character.GameWithoutFkObjectsDto != null)
         {
-            SelectedGame = SelectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
+            _selectedGame = _selectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
         }
 
         if (_character.Picture != null)
@@ -169,4 +169,12 @@ else
         }
         return Task.CompletedTask;
     }
+
+    private void OnNameChanged(string value)
+    {
+        if (_selectedGame.Any())
+        {
+            _success = !string.IsNullOrWhiteSpace(value);
+        }
+	}
 }
