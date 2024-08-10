@@ -49,9 +49,9 @@ namespace RpgStats.Dto.Tests.Mapper
                 Game = new Game { Id = 1, Name = "Test Game" }
             };
             var statValues = new List<StatValue>
-                {
-                    new StatValue { Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 0, Stat = new Stat { Id = 1, Name = "Strength" } }
-                };
+            {
+                new StatValue { Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 0, Stat = new Stat { Id = 1, Name = "Strength" } }
+            };
             var mapper = new CharacterMapper();
 
             // Act
