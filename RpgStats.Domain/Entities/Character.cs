@@ -19,7 +19,7 @@ public class Character
 
     [Required(ErrorMessage = "An entry in the column GameId is required.")]
     [ForeignKey(nameof(Game))]
-    public long GameId { get; set; }
+    public long? GameId { get; set; }
     public Game? Game { get; set; }
 
     [InverseProperty("Character")]

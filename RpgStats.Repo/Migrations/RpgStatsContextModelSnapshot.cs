@@ -45,7 +45,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
 
                     b.HasData(
                         new
@@ -111,7 +111,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
 
                     b.HasData(
                         new
@@ -149,7 +149,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("StatId");
 
-                    b.ToTable("GamesStats");
+                    b.ToTable("GamesStats", (string)null);
 
                     b.HasData(
                         new
@@ -302,7 +302,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Platforms");
+                    b.ToTable("Platforms", (string)null);
 
                     b.HasData(
                         new
@@ -368,7 +368,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("PlatformId");
 
-                    b.ToTable("PlatformsGames");
+                    b.ToTable("PlatformsGames", (string)null);
 
                     b.HasData(
                         new
@@ -441,7 +441,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stats");
+                    b.ToTable("Stats", (string)null);
 
                     b.HasData(
                         new
@@ -569,7 +569,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("StatId");
 
-                    b.ToTable("StatValues");
+                    b.ToTable("StatValues", (string)null);
 
                     b.HasData(
                         new
