@@ -27,7 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bizlogic", "bizlogic", "{C4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.BizLogic", "RpgStats.BizLogic\RpgStats.BizLogic.csproj", "{E492595C-267D-44F3-A9AE-716E09774740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Domain.Tests", "RpgStats.Domain.Tests\RpgStats.Domain.Tests.csproj", "{9420A98D-0F1F-44F0-A04D-291BCC1F3BD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Domain.Tests", "RpgStats.Domain.Tests\RpgStats.Domain.Tests.csproj", "{9420A98D-0F1F-44F0-A04D-291BCC1F3BD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Dto.Tests", "RpgStats.Dto.Tests\RpgStats.Dto.Tests.csproj", "{F0ADCD40-6C18-400F-AD20-E155BF10A031}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{9420A98D-0F1F-44F0-A04D-291BCC1F3BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9420A98D-0F1F-44F0-A04D-291BCC1F3BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9420A98D-0F1F-44F0-A04D-291BCC1F3BD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0ADCD40-6C18-400F-AD20-E155BF10A031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0ADCD40-6C18-400F-AD20-E155BF10A031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0ADCD40-6C18-400F-AD20-E155BF10A031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0ADCD40-6C18-400F-AD20-E155BF10A031}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{1C7565D1-84F6-4C04-A3F5-61C41885A2BF} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
 		{E492595C-267D-44F3-A9AE-716E09774740} = {C4827331-5667-457A-AF67-008D69DFF0F7}
 		{9420A98D-0F1F-44F0-A04D-291BCC1F3BD1} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
+		{F0ADCD40-6C18-400F-AD20-E155BF10A031} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89448F67-F1C7-49DA-8512-E0050C900CD4}
