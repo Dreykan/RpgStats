@@ -1,4 +1,5 @@
-﻿using RpgStats.Domain.Entities;
+﻿// ReSharper disable UseObjectOrCollectionInitializer
+using RpgStats.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace RpgStats.Domain.Tests.Entities
@@ -6,93 +7,111 @@ namespace RpgStats.Domain.Tests.Entities
     public class CharacterTests
     {
         [Fact]
-        public void Character_Creation_Success()
+        public void Character_Id_ShouldBeSetAndRetrievedCorrectly()
         {
-            // Arrange
-            var character = new Character
-            {
-                Name = "Test Character",
-                GameId = 1
-            };
-
-            // Act
-            var result = character;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal("Test Character", result.Name);
-            Assert.Equal(1, result.GameId);
+            var character = new Character();
+            
+            character.Id = 12345;
+            
+            Assert.Equal(12345, character.Id);
+        }
+        
+        [Fact]
+        public void Character_Name_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var character = new Character();
+            
+            character.Name = "TestCharacter";
+            
+            Assert.Equal("TestCharacter", character.Name);
+        }
+        
+        [Fact]
+        public void Character_Picture_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var character = new Character();
+            
+            character.Picture = [0x01, 0x02, 0x03];
+            
+            Assert.Equal([0x01, 0x02, 0x03], character.Picture);
+        }
+        
+        [Fact]
+        public void Character_GameId_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var character = new Character();
+            
+            character.GameId = 12345;
+            
+            Assert.Equal(12345, character.GameId);
+        }
+        
+        [Fact]
+        public void Character_Game_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var character = new Character();
+            
+            character.Game = new Game { Id = 12345, Name = "TestGame" };
+            
+            Assert.Equal(12345, character.Game.Id);
+            Assert.Equal("TestGame", character.Game.Name);
+        }
+        
+        [Fact]
+        public void Character_StatValues_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var character = new Character();
+            
+            character.StatValues = new List<StatValue> { new StatValue { Id = 12345, Value = 10 } };
+            
+            Assert.Equal( 12345, character.StatValues.First().Id);
+            Assert.Equal(10, character.StatValues.First().Value);
         }
 
         [Fact]
-        public void Character_Name_Required_Validation()
+        public void Character_Name_RequiredValidation()
         {
-            // Arrange
             var character = new Character
             {
                 GameId = 1
             };
 
-            // Act
             var validationResults = ValidateModel(character);
-
-            // Assert
+            
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("A name for a character is required."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("A name for a character is required."));
         }
 
         [Fact]
-        public void Character_Name_Length_Validation()
+        public void Character_Name_LengthValidation()
         {
-            // Arrange
             var character = new Character
             {
                 Name = new string('a', 61),
                 GameId = 1
             };
-
-            // Act
+            
             var validationResults = ValidateModel(character);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("The Name can't be longer than 60 characters."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("The Name can't be longer than 60 characters."));
         }
 
         [Fact]
-        public void Character_GameId_Required_Validation()
+        public void Character_GameId_RequiredValidation()
         {
-            // Arrange
             var character = new Character
             {
                 Name = "Hero"
             };
-
-            // Act
+            
             var validationResults = ValidateModel(character);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("An entry in the column GameId is required."));
-        }
-
-        [Fact]
-        public void Character_Relationships_Test()
-        {
-            // Arrange
-            var game = new Game { Id = 1, Name = "Test Game" };
-            var statValue = new StatValue { Id = 1, CharacterId = 1, Value = 10 };
-            var character = new Character
-            {
-                Name = "Hero",
-                GameId = 1,
-                Game = game,
-                StatValues = new List<StatValue> { statValue }
-            };
-
-            // Act & Assert
-            Assert.Equal(game, character.Game);
-            Assert.Contains(statValue, character.StatValues);
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry in the column GameId is required."));
         }
 
         private List<ValidationResult> ValidateModel(object model)
