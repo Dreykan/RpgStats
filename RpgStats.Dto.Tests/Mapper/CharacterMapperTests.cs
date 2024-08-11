@@ -3,8 +3,6 @@ using RpgStats.Dto.Mapper;
 
 namespace RpgStats.Dto.Tests.Mapper
 {
-    using System.Collections.ObjectModel;
-
     public class CharacterMapperTests
     {
         [Fact]
