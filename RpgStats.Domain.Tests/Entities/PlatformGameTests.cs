@@ -1,60 +1,99 @@
-﻿using System.ComponentModel.DataAnnotations;
-using RpgStats.Domain.Entities;
+﻿using RpgStats.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
+// ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities
 {
     public class PlatformGameTests
     {
         [Fact]
-        public void PlatformGame_Should_Have_Default_Values()
+        public void PlatformGame_Id_ShouldBeSetAndRetrievedCorrectly()
         {
             var platformGame = new PlatformGame();
-            Assert.Equal(0, platformGame.Id);
-            Assert.Null(platformGame.PlatformId);
-            Assert.Null(platformGame.Platform);
-            Assert.Null(platformGame.GameId);
-            Assert.Null(platformGame.Game);
+
+            platformGame.Id = 12345;
+
+            Assert.Equal(12345, platformGame.Id);
         }
 
         [Fact]
-        public void PlatformGame_Should_Set_And_Get_Properties()
+        public void PlatformGame_PlatformId_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var platformGame = new PlatformGame();
+
+            platformGame.PlatformId = 12345;
+
+            Assert.Equal(12345, platformGame.PlatformId);
+        }
+
+        [Fact]
+        public void PlatformGame_Platform_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var platformGame = new PlatformGame();
+
+            platformGame.Platform = new Platform { Id = 12345, Name = "TestPlatform" };
+
+            Assert.Equal(12345, platformGame.Platform.Id);
+            Assert.Equal("TestPlatform", platformGame.Platform.Name);
+        }
+
+        [Fact]
+        public void PlatformGame_GameId_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var platformGame = new PlatformGame();
+
+            platformGame.GameId = 12345;
+
+            Assert.Equal(12345, platformGame.GameId);
+        }
+
+        [Fact]
+        public void PlatformGame_Game_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var platformGame = new PlatformGame();
+
+            platformGame.Game = new Game { Id = 12345, Name = "TestGame" };
+
+            Assert.Equal(12345, platformGame.Game.Id);
+            Assert.Equal("TestGame", platformGame.Game.Name);
+        }
+
+        [Fact]
+        public void PlatformGame_PlatformId_RequiredValidation()
         {
             var platformGame = new PlatformGame
             {
-                Id = 1,
-                PlatformId = 2,
-                GameId = 3
+                GameId = 1
             };
 
-            Assert.Equal(1, platformGame.Id);
-            Assert.Equal(2, platformGame.PlatformId);
-            Assert.Equal(3, platformGame.GameId);
+            var validationResults = ValidateModel(platformGame);
+
+            Assert.NotEmpty(validationResults);
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry for column PlatformId is required."));
         }
 
         [Fact]
-        public void PlatformGame_Should_Throw_Validation_Exception_For_Missing_PlatformId()
+        public void PlatformGame_GameId_RequiredValidation()
         {
-            var platformGame = new PlatformGame { GameId = 1 };
-            var context = new ValidationContext(platformGame, null, null);
-            var results = new List<ValidationResult>();
+            var platformGame = new PlatformGame
+            {
+                PlatformId = 1
+            };
 
-            var isValid = Validator.TryValidateObject(platformGame, context, results, true);
+            var validationResults = ValidateModel(platformGame);
 
-            Assert.False(isValid);
-            Assert.Contains(results, v => v.ErrorMessage == "An entry for column PlatformId is required.");
+            Assert.NotEmpty(validationResults);
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry for the column GameId is required."));
         }
 
-        [Fact]
-        public void PlatformGame_Should_Throw_Validation_Exception_For_Missing_GameId()
+        private List<ValidationResult> ValidateModel(object model)
         {
-            var platformGame = new PlatformGame { PlatformId = 1 };
-            var context = new ValidationContext(platformGame, null, null);
-            var results = new List<ValidationResult>();
-
-            var isValid = Validator.TryValidateObject(platformGame, context, results, true);
-
-            Assert.False(isValid);
-            Assert.Contains(results, v => v.ErrorMessage == "An entry for the column GameId is required.");
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(model, null, null);
+            Validator.TryValidateObject(model, validationContext, validationResults, true);
+            return validationResults;
         }
     }
 }

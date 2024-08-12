@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # Custom Entries
 dbConnection.json
+*.DS_Store
+.idea/

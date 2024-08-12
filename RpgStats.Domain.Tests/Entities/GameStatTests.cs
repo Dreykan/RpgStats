@@ -1,80 +1,91 @@
 ﻿using RpgStats.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities
 {
     public class GameStatTests
     {
         [Fact]
-        public void GameStat_Creation_Success()
+        public void GameStat_Id_ShouldBeSetAndRetrievedCorrectly()
         {
-            // Arrange
-            var gameStat = new GameStat
-            {
-                GameId = 1,
-                StatId = 1
-            };
-
-            // Act
-            var result = gameStat;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(1, result.GameId);
-            Assert.Equal(1, result.StatId);
+            var gameStat = new GameStat();
+            
+            gameStat.Id = 12345;
+            
+            Assert.Equal(12345, gameStat.Id);
+        }
+        
+        [Fact]
+        public void GameStat_GameId_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var gameStat = new GameStat();
+            
+            gameStat.GameId = 12345;
+            
+            Assert.Equal(12345, gameStat.GameId);
+        }
+        
+        [Fact]
+        public void GameStat_Game_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var gameStat = new GameStat();
+            
+            gameStat.Game = new Game { Id = 12345, Name = "TestGame" };
+            
+            Assert.Equal(12345, gameStat.Game.Id);
+            Assert.Equal("TestGame", gameStat.Game.Name);
+        }
+        
+        [Fact]
+        public void GameStat_StatId_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var gameStat = new GameStat();
+            
+            gameStat.StatId = 12345;
+            
+            Assert.Equal(12345, gameStat.StatId);
+        }
+        
+        [Fact]
+        public void GameStat_Stat_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var gameStat = new GameStat();
+            
+            gameStat.Stat = new Stat { Id = 12345, Name = "TestStat" };
+            
+            Assert.Equal(12345, gameStat.Stat.Id);
+            Assert.Equal("TestStat", gameStat.Stat.Name);
         }
 
         [Fact]
-        public void GameStat_GameId_Required_Validation()
+        public void GameStat_GameId_RequiredValidation()
         {
-            // Arrange
             var gameStat = new GameStat
             {
                 StatId = 1
             };
 
-            // Act
             var validationResults = ValidateModel(gameStat);
-
-            // Assert
+            
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("An entry for the column GameId is required."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry for the column GameId is required."));
         }
 
         [Fact]
-        public void GameStat_StatId_Required_Validation()
+        public void GameStat_StatId_RequiredValidation()
         {
-            // Arrange
             var gameStat = new GameStat
             {
                 GameId = 1
             };
-
-            // Act
+            
             var validationResults = ValidateModel(gameStat);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("An entry for the column StatId is required."));
-        }
-
-        [Fact]
-        public void GameStat_Relationships_Test()
-        {
-            // Arrange
-            var game = new Game { Id = 1, Name = "Test Game" };
-            var stat = new Stat { Id = 1, Name = "Test Stat" };
-            var gameStat = new GameStat
-            {
-                GameId = 1,
-                StatId = 1,
-                Game = game,
-                Stat = stat
-            };
-
-            // Act & Assert
-            Assert.Equal(game, gameStat.Game);
-            Assert.Equal(stat, gameStat.Stat);
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry for the column StatId is required."));
         }
 
         private List<ValidationResult> ValidateModel(object model)

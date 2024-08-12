@@ -1,161 +1,215 @@
 ﻿using RpgStats.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities
 {
     public class StatValueTests
     {
         [Fact]
-        public void StatValue_Creation_Success()
+        public void StatValue_Id_ShouldBeSetAndRetrievedCorrectly()
         {
-            // Arrange
+            var statValue = new StatValue();
+
+            statValue.Id = 12345;
+
+            Assert.Equal(12345, statValue.Id);
+        }
+
+        [Fact]
+        public void StatValue_Level_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.Level = 10;
+
+            Assert.Equal(10, statValue.Level);
+        }
+
+        [Fact]
+        public void StatValue_CharacterId_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.CharacterId = 12345;
+
+            Assert.Equal(12345, statValue.CharacterId);
+        }
+
+        [Fact]
+        public void StatValue_Character_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.Character = new Character { Id = 12345, Name = "TestCharacter" };
+
+            Assert.Equal(12345, statValue.Character.Id);
+            Assert.Equal("TestCharacter", statValue.Character.Name);
+        }
+
+        [Fact]
+        public void StatValue_StatId_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.StatId = 12345;
+
+            Assert.Equal(12345, statValue.StatId);
+        }
+
+        [Fact]
+        public void StatValue_Stat_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.Stat = new Stat { Id = 12345, Name = "TestStat" };
+
+            Assert.Equal(12345, statValue.Stat.Id);
+            Assert.Equal("TestStat", statValue.Stat.Name);
+        }
+
+        [Fact]
+        public void StatValue_Value_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.Value = 100;
+
+            Assert.Equal(100, statValue.Value);
+        }
+
+        [Fact]
+        public void StatValue_ContainedBonusNum_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.ContainedBonusNum = 5;
+
+            Assert.Equal(5, statValue.ContainedBonusNum);
+        }
+
+        [Fact]
+        public void StatValue_ContainedBonusPercent_ShouldBeSetAndRetrievedCorrectly()
+        {
+            var statValue = new StatValue();
+
+            statValue.ContainedBonusPercent = 20;
+
+            Assert.Equal(20, statValue.ContainedBonusPercent);
+        }
+
+        [Fact]
+        public void StatValue_Level_RequiredValidation()
+        {
             var statValue = new StatValue
             {
-                Level = 1,
                 CharacterId = 1,
                 StatId = 1,
                 Value = 10,
                 ContainedBonusNum = 5,
-                ContainedBonusPercent = 10
+                ContainedBonusPercent = 20
             };
 
-            // Act
-            var result = statValue;
+            var validationResults = ValidateModel(statValue);
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(1, result.Level);
-            Assert.Equal(1, result.CharacterId);
-            Assert.Equal(1, result.StatId);
-            Assert.Equal(10, result.Value);
-            Assert.Equal(5, result.ContainedBonusNum);
-            Assert.Equal(10, result.ContainedBonusPercent);
+            Assert.NotEmpty(validationResults);
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("A Level entry is required."));
         }
 
         [Fact]
-        public void StatValue_Level_Required_Validation()
+        public void StatValue_CharacterId_RequiredValidation()
         {
-            // Arrange
             var statValue = new StatValue
             {
-                CharacterId = 1,
+                Level = 10,
                 StatId = 1,
                 Value = 10,
                 ContainedBonusNum = 5,
-                ContainedBonusPercent = 10
+                ContainedBonusPercent = 20
             };
 
-            // Act
             var validationResults = ValidateModel(statValue);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("A Level entry is required."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("An Character-Entry is required."));
         }
 
         [Fact]
-        public void StatValue_CharacterId_Required_Validation()
+        public void StatValue_StatId_RequiredValidation()
         {
-            // Arrange
             var statValue = new StatValue
             {
-                Level = 1,
-                StatId = 1,
-                Value = 10,
-                ContainedBonusNum = 5,
-                ContainedBonusPercent = 10
-            };
-
-            // Act
-            var validationResults = ValidateModel(statValue);
-
-            // Assert
-            Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("An Character-Entry is required."));
-        }
-
-        [Fact]
-        public void StatValue_StatId_Required_Validation()
-        {
-            // Arrange
-            var statValue = new StatValue
-            {
-                Level = 1,
+                Level = 10,
                 CharacterId = 1,
                 Value = 10,
                 ContainedBonusNum = 5,
-                ContainedBonusPercent = 10
+                ContainedBonusPercent = 20
             };
 
-            // Act
             var validationResults = ValidateModel(statValue);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("A Stat-Entry is required."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("A Stat-Entry is required."));
         }
 
         [Fact]
-        public void StatValue_Value_Required_Validation()
+        public void StatValue_Value_RequiredValidation()
         {
-            // Arrange
             var statValue = new StatValue
             {
-                Level = 1,
+                Level = 10,
                 CharacterId = 1,
                 StatId = 1,
                 ContainedBonusNum = 5,
-                ContainedBonusPercent = 10
+                ContainedBonusPercent = 20
             };
 
-            // Act
             var validationResults = ValidateModel(statValue);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("A value for the stat entry is required."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("A value for the stat entry is required."));
         }
 
         [Fact]
-        public void StatValue_ContainedBonusNum_Required_Validation()
+        public void StatValue_ContainedBonusNum_RequiredValidation()
         {
-            // Arrange
             var statValue = new StatValue
             {
-                Level = 1,
+                Level = 10,
                 CharacterId = 1,
                 StatId = 1,
                 Value = 10,
-                ContainedBonusPercent = 10
+                ContainedBonusPercent = 20
             };
 
-            // Act
             var validationResults = ValidateModel(statValue);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("A bonus contained herein in numbers for this entry is required."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("A bonus contained herein in numbers for this entry is required."));
         }
 
         [Fact]
-        public void StatValue_ContainedBonusPercent_Required_Validation()
+        public void StatValue_ContainedBonusPercent_RequiredValidation()
         {
-            // Arrange
             var statValue = new StatValue
             {
-                Level = 1,
+                Level = 10,
                 CharacterId = 1,
                 StatId = 1,
                 Value = 10,
                 ContainedBonusNum = 5
             };
 
-            // Act
             var validationResults = ValidateModel(statValue);
 
-            // Assert
             Assert.NotEmpty(validationResults);
-            Assert.Contains(validationResults, v => v.ErrorMessage.Contains("A bonus contained herein in percent for this entry is required."));
+            Assert.Contains(validationResults,
+                v => v.ErrorMessage != null && v.ErrorMessage.Contains("A bonus contained herein in percent for this entry is required."));
         }
 
         private List<ValidationResult> ValidateModel(object model)

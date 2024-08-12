@@ -1,6 +1,6 @@
-﻿// ReSharper disable UseObjectOrCollectionInitializer
-using RpgStats.Domain.Entities;
+﻿using RpgStats.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities
 {
