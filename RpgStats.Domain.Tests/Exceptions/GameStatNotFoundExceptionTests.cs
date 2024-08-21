@@ -7,28 +7,31 @@ namespace RpgStats.Domain.Tests.Exceptions
         [Fact]
         public void GameStatNotFoundException_Creation_Success()
         {
-            // Arrange
             long gameStatId = 456;
 
-            // Act
             var exception = new GameStatNotFoundException(gameStatId);
 
-            // Assert
             Assert.NotNull(exception);
+        }
+        
+        [Fact]
+        public void GameStatNotFoundException_Type_IsCorrect()
+        {
+            long gameStatId = 456;
+
+            var exception = new GameStatNotFoundException(gameStatId);
+
             Assert.IsType<GameStatNotFoundException>(exception);
         }
 
         [Fact]
-        public void GameStatNotFoundException_Message_CorrectFormat()
+        public void GameStatNotFoundException_Message_IsCorrect()
         {
-            // Arrange
             long gameStatId = 456;
             string expectedMessage = $"The GameStat with the identifier {gameStatId} was not found.";
 
-            // Act
             var exception = new GameStatNotFoundException(gameStatId);
 
-            // Assert
             Assert.Equal(expectedMessage, exception.Message);
         }
     }

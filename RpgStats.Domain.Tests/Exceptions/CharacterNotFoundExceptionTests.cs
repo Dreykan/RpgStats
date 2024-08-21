@@ -7,28 +7,31 @@ namespace RpgStats.Domain.Tests.Exceptions
         [Fact]
         public void CharacterNotFoundException_Creation_Success()
         {
-            // Arrange
             long characterId = 123;
 
-            // Act
             var exception = new CharacterNotFoundException(characterId);
 
-            // Assert
             Assert.NotNull(exception);
+        }
+        
+        [Fact]
+        public void CharacterNotFoundException_Type_IsCorrect()
+        {
+            long characterId = 123;
+
+            var exception = new CharacterNotFoundException(characterId);
+
             Assert.IsType<CharacterNotFoundException>(exception);
         }
 
         [Fact]
-        public void CharacterNotFoundException_Message_CorrectFormat()
+        public void CharacterNotFoundException_Message_IsCorrect()
         {
-            // Arrange
             long characterId = 123;
             string expectedMessage = $"The Character with the identifier {characterId} was not found.";
 
-            // Act
             var exception = new CharacterNotFoundException(characterId);
 
-            // Assert
             Assert.Equal(expectedMessage, exception.Message);
         }
     }

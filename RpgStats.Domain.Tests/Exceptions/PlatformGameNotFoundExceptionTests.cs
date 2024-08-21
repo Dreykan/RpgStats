@@ -7,28 +7,31 @@ namespace RpgStats.Domain.Tests.Exceptions
         [Fact]
         public void PlatformGameNotFoundException_Creation_Success()
         {
-            // Arrange
             long platformGameId = 456;
 
-            // Act
             var exception = new PlatformGameNotFoundException(platformGameId);
 
-            // Assert
             Assert.NotNull(exception);
+        }
+        
+        [Fact]
+        public void PlatformGameNotFoundException_Type_IsCorrect()
+        {
+            long platformGameId = 456;
+
+            var exception = new PlatformGameNotFoundException(platformGameId);
+
             Assert.IsType<PlatformGameNotFoundException>(exception);
         }
 
         [Fact]
-        public void PlatformGameNotFoundException_Message_CorrectFormat()
+        public void PlatformGameNotFoundException_Message_IsCorrect()
         {
-            // Arrange
             long platformGameId = 456;
             string expectedMessage = $"The PlatformGame with the identifier {platformGameId} was not found.";
 
-            // Act
             var exception = new PlatformGameNotFoundException(platformGameId);
 
-            // Assert
             Assert.Equal(expectedMessage, exception.Message);
         }
     }

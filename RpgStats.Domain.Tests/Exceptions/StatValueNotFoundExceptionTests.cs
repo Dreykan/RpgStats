@@ -7,28 +7,31 @@ namespace RpgStats.Domain.Tests.Exceptions
         [Fact]
         public void StatValueNotFoundException_Creation_Success()
         {
-            // Arrange
             long statValueId = 456;
 
-            // Act
             var exception = new StatValueNotFoundException(statValueId);
 
-            // Assert
             Assert.NotNull(exception);
+        }
+        
+        [Fact]
+        public void StatValueNotFoundException_Type_IsCorrect()
+        {
+            long statValueId = 456;
+
+            var exception = new StatValueNotFoundException(statValueId);
+
             Assert.IsType<StatValueNotFoundException>(exception);
         }
 
         [Fact]
-        public void StatValueNotFoundException_Message_CorrectFormat()
+        public void StatValueNotFoundException_Message_IsCorrect()
         {
-            // Arrange
             long statValueId = 456;
             string expectedMessage = $"The StatValue with the identifier {statValueId} was not found.";
 
-            // Act
             var exception = new StatValueNotFoundException(statValueId);
 
-            // Assert
             Assert.Equal(expectedMessage, exception.Message);
         }
     }

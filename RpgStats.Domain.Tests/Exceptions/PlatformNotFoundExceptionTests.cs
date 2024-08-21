@@ -7,28 +7,31 @@ namespace RpgStats.Domain.Tests.Exceptions
         [Fact]
         public void PlatformNotFoundException_Creation_Success()
         {
-            // Arrange
             long platformId = 456;
 
-            // Act
             var exception = new PlatformNotFoundException(platformId);
 
-            // Assert
             Assert.NotNull(exception);
+        }
+        
+        [Fact]
+        public void PlatformNotFoundException_Type_IsCorrect()
+        {
+            long platformId = 456;
+
+            var exception = new PlatformNotFoundException(platformId);
+
             Assert.IsType<PlatformNotFoundException>(exception);
         }
 
         [Fact]
-        public void PlatformNotFoundException_Message_CorrectFormat()
+        public void PlatformNotFoundException_Message_IsCorrect()
         {
-            // Arrange
             long platformId = 456;
             string expectedMessage = $"The Platform with the identifier {platformId} was not found.";
 
-            // Act
             var exception = new PlatformNotFoundException(platformId);
 
-            // Assert
             Assert.Equal(expectedMessage, exception.Message);
         }
     }

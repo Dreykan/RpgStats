@@ -7,30 +7,34 @@ namespace RpgStats.Domain.Tests.Exceptions
         [Fact]
         public void StatValueDoesNotBelongToCharacterException_Creation_Success()
         {
-            // Arrange
             long statvalueId = 456;
             long characterId = 789;
 
-            // Act
             var exception = new StatValueDoesNotBelongToCharacterException(statvalueId, characterId);
 
-            // Assert
             Assert.NotNull(exception);
+        }
+        
+        [Fact]
+        public void StatValueDoesNotBelongToCharacterException_Type_IsCorrect()
+        {
+            long statvalueId = 456;
+            long characterId = 789;
+
+            var exception = new StatValueDoesNotBelongToCharacterException(statvalueId, characterId);
+
             Assert.IsType<StatValueDoesNotBelongToCharacterException>(exception);
         }
 
         [Fact]
-        public void StatValueDoesNotBelongToCharacterException_Message_CorrectFormat()
+        public void StatValueDoesNotBelongToCharacterException_Message_IsCorrect()
         {
-            // Arrange
             long statvalueId = 456;
             long characterId = 789;
             string expectedMessage = $"The StatValue with the identifier {statvalueId} does not belong to the Character with the identifier {characterId}.";
 
-            // Act
             var exception = new StatValueDoesNotBelongToCharacterException(statvalueId, characterId);
 
-            // Assert
             Assert.Equal(expectedMessage, exception.Message);
         }
     }
