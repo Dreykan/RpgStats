@@ -22,7 +22,6 @@ public class CharacterService : ICharacterService
     {
         var characters = await _dbContext.Characters
             .Include(c => c.StatValues)
-            .Include(c => c.Game)
             .ToListAsync();
 
         return characters.Adapt<List<CharacterDto>>();
