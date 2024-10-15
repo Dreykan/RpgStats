@@ -123,6 +123,7 @@ public class CharacterService : ICharacterService
 
     // TODO: In allen Services nachschauen ob wie in dieser Methode ein "Include" weggelassen werden kann. StatValues werden in diesem Fall ja nochmal extra aus der Datenbank geladen und dann in die CharacterDetailDto eingebunden.
     // TODO: In den nachfolgenden Methoden gucken ob ab "var statValues..." der Code ausgelagert werden kann in eine separate private Methode, da dieser Code sich wiederholt.
+    // TODO: Abfragen genau nachschauen. Es werden alle Statvalues geladen um sie dann erst zu filtern und in die CharacterDetailDto einzubinden. Das ist nicht effizient.
     public async Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosAsync()
     {
         var characters = await _dbContext.Characters
