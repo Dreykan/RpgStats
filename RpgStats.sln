@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Dto.Tests", "RpgSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Services.Tests", "RpgStats.Services.Tests\RpgStats.Services.Tests.csproj", "{29A8D4BB-87DC-44EA-95BD-831843689BC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Repo.Tests", "RpgStats.Repo.Tests\RpgStats.Repo.Tests.csproj", "{6077CB22-DC99-48CA-B810-A7B725F42388}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{29A8D4BB-87DC-44EA-95BD-831843689BC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29A8D4BB-87DC-44EA-95BD-831843689BC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29A8D4BB-87DC-44EA-95BD-831843689BC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6077CB22-DC99-48CA-B810-A7B725F42388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6077CB22-DC99-48CA-B810-A7B725F42388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6077CB22-DC99-48CA-B810-A7B725F42388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6077CB22-DC99-48CA-B810-A7B725F42388}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{9420A98D-0F1F-44F0-A04D-291BCC1F3BD1} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
 		{F0ADCD40-6C18-400F-AD20-E155BF10A031} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
 		{29A8D4BB-87DC-44EA-95BD-831843689BC4} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
+		{6077CB22-DC99-48CA-B810-A7B725F42388} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89448F67-F1C7-49DA-8512-E0050C900CD4}
