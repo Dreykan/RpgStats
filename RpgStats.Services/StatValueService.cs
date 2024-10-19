@@ -58,7 +58,7 @@ public class StatValueService : IStatValueService
 
         if (statValue == null)
         {
-            throw new StatNotFoundException(statId);
+            throw new StatValueNotFoundException(statId);
         }
 
         return statValue.Adapt<StatValueDto>();
