@@ -63,12 +63,12 @@ public class DatabaseFixture : IDisposable
 
     private void AddStats()
     {
-        Context.Stats.Add(new Stat { Id = 1, Name = "Stat1" });
-        Context.Stats.Add(new Stat { Id = 2, Name = "Stat2" });
-        Context.Stats.Add(new Stat { Id = 3, Name = "Stat3" });
-        Context.Stats.Add(new Stat { Id = 4, Name = "Stat4" });
-        Context.Stats.Add(new Stat { Id = 5, Name = "GoodStat1" });
-        Context.Stats.Add(new Stat { Id = 6, Name = "GoodStat2" });
+        Context.Stats.Add(new Stat { Id = 1, Name = "StatValue1", ShortName = "SV1"});
+        Context.Stats.Add(new Stat { Id = 2, Name = "StatValue2", ShortName = "SV2"});
+        Context.Stats.Add(new Stat { Id = 3, Name = "StatValue3", ShortName = "SV3"});
+        Context.Stats.Add(new Stat { Id = 4, Name = "StatValue4", ShortName = "SV4"});
+        Context.Stats.Add(new Stat { Id = 5, Name = "GoodStatValue1", ShortName = "GSV1"});
+        Context.Stats.Add(new Stat { Id = 6, Name = "GoodStatValue2", ShortName = "GSV2"});
     }
 
     private void AddGameStats()
