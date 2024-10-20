@@ -107,7 +107,7 @@ public class CharacterService : ICharacterService
         return character.Adapt<CharacterDto>();
     }
 
-    public Task DeleteCharacterAsync(long characterId)
+    public async Task<Task> DeleteCharacterAsync(long characterId)
     {
         var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
 
@@ -118,7 +118,9 @@ public class CharacterService : ICharacterService
 
         _dbContext.Remove(character);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 
     // TODO: In allen Services nachschauen ob wie in dieser Methode ein "Include" weggelassen werden kann. StatValues werden in diesem Fall ja nochmal extra aus der Datenbank geladen und dann in die CharacterDetailDto eingebunden.
