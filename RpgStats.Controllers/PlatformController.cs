@@ -63,22 +63,26 @@ public class PlatformController : ControllerBase
         var response = await _platformService.CreatePlatformAsync(platformForCreationDto);
         if (response != null)
             return CreatedAtAction(nameof(GetPlatformById), new { platformId = response.Id }, response);
-        return BadRequest(platformForCreationDto);
+        return BadRequest();
     }
 
     [HttpPut]
     [SwaggerOperation(Summary = "Update a Platform")]
     public async Task<IActionResult> UpdatePlatform(long platformId, PlatformForUpdateDto platformForUpdateDto)
     {
-        await _platformService.UpdatePlatformAsync(platformId, platformForUpdateDto);
-        return NoContent();
+        var response = await _platformService.UpdatePlatformAsync(platformId, platformForUpdateDto);
+        if (response != null)
+            return Ok(response);
+        return BadRequest();
     }
 
     [HttpDelete]
     [SwaggerOperation(Summary = "Delete a Platform")]
     public async Task<IActionResult> DeletePlatform(long platformId)
     {
-        await _platformService.DeletePlatformAsync(platformId);
-        return NoContent();
+        var response = await _platformService.DeletePlatformAsync(platformId);
+        if (response == Task.CompletedTask)
+            return Ok();
+        return BadRequest();
     }
 }
