@@ -82,9 +82,9 @@ public class GameService : IGameService
         return game.Adapt<GameDto>();
     }
 
-    public Task DeleteGameAsync(long gameId)
+    public async Task<Task> DeleteGameAsync(long gameId)
     {
-        Game? game = _dbContext.Games.FirstOrDefault(x => x.Id == gameId);
+        var game = _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId).Result;
 
         if (game == null)
         {
@@ -93,7 +93,9 @@ public class GameService : IGameService
 
         _dbContext.Remove(game);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 
     public async Task<List<GameDetailDto>> GetAllGameDetailDtosAsync()

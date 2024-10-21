@@ -77,15 +77,17 @@ public class GameController : ControllerBase
     [SwaggerOperation(Summary = "Update a Game")]
     public async Task<IActionResult> UpdateGame([FromBody] GameForUpdateDto gameForUpdateDto, long gameId)
     {
-        await _gameService.UpdateGameAsync(gameId, gameForUpdateDto);
-        return NoContent();
+        var response = await _gameService.UpdateGameAsync(gameId, gameForUpdateDto);
+        if (response != null) return Ok(response);
+        return BadRequest();
     }
 
     [HttpDelete]
     [SwaggerOperation(Summary = "Delete a Game")]
     public async Task<IActionResult> DeleteGame(long gameId)
     {
-        await _gameService.DeleteGameAsync(gameId);
-        return NoContent();
+        var response = await _gameService.DeleteGameAsync(gameId);
+        if (response == Task.CompletedTask) return Ok();
+        return BadRequest();
     }
 }
