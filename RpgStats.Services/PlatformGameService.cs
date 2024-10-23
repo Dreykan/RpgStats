@@ -121,9 +121,9 @@ public class PlatformGameService : IPlatformGameService
         return platformGame.Adapt<PlatformGameDto>();
     }
 
-    public Task DeletePlatformGameAsync(long platformGameId)
+    public async Task<Task> DeletePlatformGameAsync(long platformGameId)
     {
-        var platformGame = _dbContext.PlatformGames.FirstOrDefault(pg => pg.Id == platformGameId);
+        var platformGame = await _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
         if (platformGame == null)
         {
@@ -132,30 +132,36 @@ public class PlatformGameService : IPlatformGameService
 
         _dbContext.Remove(platformGame);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 
-    public async Task DeletePlatformGameByGameIdAsync(long gameId)
+    public async Task<Task> DeletePlatformGameByGameIdAsync(long gameId)
     {
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToList();
-        if (platformGames.Any())
+
+        if (platformGames.Count == 0) return Task.CompletedTask;
+        foreach (var platformGame in platformGames)
         {
-            foreach (var platformGame in platformGames)
-            {
-                await DeletePlatformGameAsync(platformGame.Id);
-            }
+            await DeletePlatformGameAsync(platformGame.Id);
         }
+            
+        return Task.CompletedTask;
+
     }
 
-    public async Task DeletePlatformGameByPlatformIdAsync(long platformId)
+    public async Task<Task> DeletePlatformGameByPlatformIdAsync(long platformId)
     {
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.PlatformId == platformId).ToList();
-        if (platformGames.Any())
+
+        if (platformGames.Count == 0) return Task.CompletedTask;
+        foreach (var platformGame in platformGames)
         {
-            foreach (var platformGame in platformGames)
-            {
-                await DeletePlatformGameAsync(platformGame.Id);
-            }
+            await DeletePlatformGameAsync(platformGame.Id);
         }
+            
+        return Task.CompletedTask;
+
     }
 }
