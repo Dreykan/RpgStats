@@ -10,10 +10,10 @@ public class StatValueMapper
         var statValueWithStatObjectDto = new StatValueWithStatObjectDto
         {
             Id = statValue.Id,
-            Level = statValue.Level,
-            Value = statValue.Value,
-            ContainedBonusNum = statValue.ContainedBonusNum,
-            ContainedBonusPercent = statValue.ContainedBonusPercent
+            Level = (int)statValue.Level,
+            Value = (int)statValue.Value,
+            ContainedBonusNum = (int)statValue.ContainedBonusNum,
+            ContainedBonusPercent = (int)statValue.ContainedBonusPercent
         };
 
         // Map Stat-Property
@@ -32,10 +32,10 @@ public class StatValueMapper
         var statValueWithCharacterObjectDto = new StatValueWithCharacterObjectDto
         {
             Id = statValue.Id,
-            Level = statValue.Level,
-            Value = statValue.Value,
-            ContainedBonusNum = statValue.ContainedBonusNum,
-            ContainedBonusPercent = statValue.ContainedBonusPercent
+            Level = (int)statValue.Level,
+            Value = (int)statValue.Value,
+            ContainedBonusNum = (int)statValue.ContainedBonusNum,
+            ContainedBonusPercent = (int)statValue.ContainedBonusPercent
         };
 
         // Map Character-Property

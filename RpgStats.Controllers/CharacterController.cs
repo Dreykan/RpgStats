@@ -94,15 +94,19 @@ public class CharacterController : ControllerBase
     [SwaggerOperation(Summary = "Update a Character")]
     public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto, long characterId, long gameId)
     {
-        await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
-        return NoContent();
+        var response = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
+        if (response != null)
+            return Ok(response);
+        return BadRequest();
     }
 
     [HttpDelete("deleteCharacter")]
     [SwaggerOperation(Summary = "Delete a Character")]
     public async Task<IActionResult> DeleteCharacter(long characterId)
     {
-        await _characterService.DeleteCharacterAsync(characterId);
-        return NoContent();
+        var response = await _characterService.DeleteCharacterAsync(characterId);
+        if (response == Task.CompletedTask)
+            return Ok();
+        return BadRequest();
     }
 }

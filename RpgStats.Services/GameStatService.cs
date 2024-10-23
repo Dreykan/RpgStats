@@ -118,41 +118,46 @@ public class GameStatService : IGameStatService
         return gameStat.Adapt<GameStatDto>();
     }
 
-    public Task DeleteGameStatAsync(long gameStatId)
+    public async Task<Task> DeleteGameStatAsync(long gameStatId)
     {
-        var gameStats = _dbContext.GameStats.FirstOrDefault(gs => gs.Id == gameStatId);
+        var gameStats = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
 
         if (gameStats == null)
         {
-            throw new GameStatNotFoundException(gameStatId);
+            return Task.CompletedTask;
         }
 
-        _dbContext.GameStats.Remove(gameStats);
+        _dbContext.Remove(gameStats);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 
-    public async Task DeleteGameStatByGameIdAsync(long gameId)
+    public async Task<Task> DeleteGameStatByGameIdAsync(long gameId)
     {
         var gameStats = await _dbContext.GameStats.Where(gs => gs.GameId == gameId).ToListAsync();
-        if (gameStats.Any())
+
+        if (gameStats.Count == 0) return Task.CompletedTask;
+        foreach (var gameStat in gameStats)
         {
-            foreach (var gameStat in gameStats)
-            {
-                await DeleteGameStatAsync(gameStat.Id);
-            }
+            await DeleteGameStatAsync(gameStat.Id);
         }
+
+        return Task.CompletedTask;
+
     }
 
-    public async Task DeleteGameStatByStatIdAsync(long statId)
+    public async Task<Task> DeleteGameStatByStatIdAsync(long statId)
     {
         var gameStats = await _dbContext.GameStats.Where(gs => gs.StatId == statId).ToListAsync();
-        if (gameStats.Any())
+
+        if (gameStats.Count == 0) return Task.CompletedTask;
+        foreach (var gameStat in gameStats)
         {
-            foreach (var gameStat in gameStats)
-            {
-                await DeleteGameStatAsync(gameStat.Id);
-            }
+            await DeleteGameStatAsync(gameStat.Id);
         }
+
+        return Task.CompletedTask;
     }
 }

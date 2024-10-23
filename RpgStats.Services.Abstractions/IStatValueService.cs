@@ -10,5 +10,5 @@ public interface IStatValueService
     Task<StatValueDto?> GetStatValueByIdAsync(long statId);
     Task<StatValueDto?> CreateStatValueAsync(long characterId, long statId, StatValueForCreationDto statValueForCreationDto);
     Task<StatValueDto?> UpdateStatValueAsync(long statValueId, long characterId, long statId, StatValueForUpdateDto statValueForUpdateDto);
-    Task DeleteStatValueAsync(long statId);
+    Task<Task> DeleteStatValueAsync(long statId);
 }

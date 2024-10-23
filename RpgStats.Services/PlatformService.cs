@@ -68,9 +68,9 @@ public class PlatformService : IPlatformService
         return platform.Adapt<PlatformDto>();
     }
 
-    public Task DeletePlatformAsync(long platformId)
+    public async Task<Task> DeletePlatformAsync(long platformId)
     {
-        var platform = _dbContext.Platforms.FirstOrDefault(p => p.Id == platformId);
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
 
         if (platform == null)
         {
@@ -79,7 +79,9 @@ public class PlatformService : IPlatformService
 
         _dbContext.Remove(platform);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 
     public async Task<List<PlatformDetailDto>> GetAllPlatformDetailDtosAsync()

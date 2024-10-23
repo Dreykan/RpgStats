@@ -190,9 +190,9 @@ public class StatService : IStatService
         return stat.Adapt<StatDto>();
     }
 
-    public Task DeleteStatAsync(long statId)
+    public async Task<Task> DeleteStatAsync(long statId)
     {
-        Stat? stat = _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId).Result;
+        var stat = _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId).Result;
 
         if (stat == null)
         {
@@ -201,6 +201,8 @@ public class StatService : IStatService
 
         _dbContext.Remove(stat);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 }

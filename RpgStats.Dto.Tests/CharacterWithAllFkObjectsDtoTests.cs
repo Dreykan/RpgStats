@@ -1,0 +1,54 @@
+namespace RpgStats.Dto.Tests;
+
+public class CharacterWithAllFkObjectsDtoTests
+{
+    [Fact]
+    public void CharacterWithAllFkObjectsDto_CanBeInitializedWithValidData()
+    {
+        var character = new CharacterWithAllFkObjectsDto
+        {
+            Id = 1,
+            Name = "Hero",
+            Picture = new byte[] { 0x20, 0x20 },
+            GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto(),
+            StatValuesWithStatObjectDtos = new List<StatValueWithStatObjectDto> { new StatValueWithStatObjectDto() }
+        };
+
+        Assert.Equal(1, character.Id);
+        Assert.Equal("Hero", character.Name);
+        Assert.NotNull(character.Picture);
+        Assert.NotNull(character.GameWithoutFkObjectsDto);
+        Assert.NotNull(character.StatValuesWithStatObjectDtos);
+    }
+
+    [Fact]
+    public void CharacterWithAllFkObjectsDto_CanBeInitializedWithNullValues()
+    {
+        var character = new CharacterWithAllFkObjectsDto
+        {
+            Id = 1,
+            Name = null,
+            Picture = null,
+            GameWithoutFkObjectsDto = null,
+            StatValuesWithStatObjectDtos = null
+        };
+
+        Assert.Equal(1, character.Id);
+        Assert.Null(character.Name);
+        Assert.Null(character.Picture);
+        Assert.Null(character.GameWithoutFkObjectsDto);
+        Assert.Null(character.StatValuesWithStatObjectDtos);
+    }
+
+    [Fact]
+    public void CharacterWithAllFkObjectsDto_EmptyInitialization()
+    {
+        var character = new CharacterWithAllFkObjectsDto();
+
+        Assert.Equal(0, character.Id);
+        Assert.Null(character.Name);
+        Assert.Null(character.Picture);
+        Assert.Null(character.GameWithoutFkObjectsDto);
+        Assert.Null(character.StatValuesWithStatObjectDtos);
+    }
+}

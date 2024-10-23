@@ -59,19 +59,39 @@ public class PlatformGameController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut]
+    [HttpPut("{platformGameId:long}")]
     [SwaggerOperation(Summary = "Update a PlatformGame")]
     public async Task<IActionResult> UpdatePlatformGame(long platformGameId, long platformId, long gameId)
     {
-        await _platformGameService.UpdatePlatformGameAsync(platformGameId, platformId, gameId);
-        return NoContent();
+        var response = await _platformGameService.UpdatePlatformGameAsync(platformGameId, platformId, gameId);
+        if (response != null) return Ok(response);
+        return BadRequest();
     }
 
-    [HttpDelete]
+    [HttpDelete("{platformGameId:long}")]
     [SwaggerOperation(Summary = "Delete a PlatformGame")]
     public async Task<IActionResult> DeletePlatformGame(long platformGameId)
     {
-        await _platformGameService.DeletePlatformGameAsync(platformGameId);
-        return NoContent();
+        var response = await _platformGameService.DeletePlatformGameAsync(platformGameId);
+        if (response == Task.CompletedTask) return Ok(); 
+        return BadRequest();
+    }
+    
+    [HttpDelete("byGame/{gameId:long}")]
+    [SwaggerOperation(Summary = "Delete all PlatformGames by Game")]
+    public async Task<IActionResult> DeletePlatformGameByGame(long gameId)
+    {
+        var response = await _platformGameService.DeletePlatformGameByGameIdAsync(gameId);
+        if (response == Task.CompletedTask) return Ok();
+        return BadRequest();
+    }
+    
+    [HttpDelete("byPlatform/{platformId:long}")]
+    [SwaggerOperation(Summary = "Delete all PlatformGames by Platform")]
+    public async Task<IActionResult> DeletePlatformGameByPlatform(long platformId)
+    {
+        var response = await _platformGameService.DeletePlatformGameByPlatformIdAsync(platformId);
+        if (response == Task.CompletedTask) return Ok();
+        return BadRequest();
     }
 }

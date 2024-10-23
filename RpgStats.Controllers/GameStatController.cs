@@ -73,7 +73,29 @@ public class GameStatController : ControllerBase
     [SwaggerOperation(Summary = "Delete a GameStat")]
     public async Task<IActionResult> DeleteGameStat(long gameStatId)
     {
-        await _gameStatService.DeleteGameStatAsync(gameStatId);
-        return Ok();
+        var response = await _gameStatService.DeleteGameStatAsync(gameStatId);
+        if (response == Task.CompletedTask)
+            return Ok();
+        return BadRequest();
+    }
+    
+    [HttpDelete("byGame/{gameId:long}")]
+    [SwaggerOperation(Summary = "Delete all GameStats by Game")]
+    public async Task<IActionResult> DeleteGameStatByGame(long gameId)
+    {
+        var response = await _gameStatService.DeleteGameStatByGameIdAsync(gameId);
+        if (response == Task.CompletedTask)
+            return Ok();
+        return BadRequest();
+    }
+    
+    [HttpDelete("byStat/{statId:long}")]
+    [SwaggerOperation(Summary = "Delete all GameStats by Stat")]
+    public async Task<IActionResult> DeleteGameStatByStat(long statId)
+    {
+        var response = await _gameStatService.DeleteGameStatByStatIdAsync(statId);
+        if (response == Task.CompletedTask)
+            return Ok();
+        return BadRequest();
     }
 }

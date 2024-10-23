@@ -22,7 +22,6 @@ public class CharacterService : ICharacterService
     {
         var characters = await _dbContext.Characters
             .Include(c => c.StatValues)
-            .Include(c => c.Game)
             .ToListAsync();
 
         return characters.Adapt<List<CharacterDto>>();
@@ -108,7 +107,7 @@ public class CharacterService : ICharacterService
         return character.Adapt<CharacterDto>();
     }
 
-    public Task DeleteCharacterAsync(long characterId)
+    public async Task<Task> DeleteCharacterAsync(long characterId)
     {
         var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
 
@@ -119,11 +118,14 @@ public class CharacterService : ICharacterService
 
         _dbContext.Remove(character);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 
     // TODO: In allen Services nachschauen ob wie in dieser Methode ein "Include" weggelassen werden kann. StatValues werden in diesem Fall ja nochmal extra aus der Datenbank geladen und dann in die CharacterDetailDto eingebunden.
     // TODO: In den nachfolgenden Methoden gucken ob ab "var statValues..." der Code ausgelagert werden kann in eine separate private Methode, da dieser Code sich wiederholt.
+    // TODO: Abfragen genau nachschauen. Es werden alle Statvalues geladen um sie dann erst zu filtern und in die CharacterDetailDto einzubinden. Das ist nicht effizient.
     public async Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosAsync()
     {
         var characters = await _dbContext.Characters
