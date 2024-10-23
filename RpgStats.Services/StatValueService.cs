@@ -131,9 +131,9 @@ public class StatValueService : IStatValueService
         return statValue.Adapt<StatValueDto>();
     }
 
-    public Task DeleteStatValueAsync(long statId)
+    public async Task<Task> DeleteStatValueAsync(long statId)
     {
-        StatValue? statValue = _dbContext.StatValues.FirstOrDefaultAsync(sv => sv.Id == statId).Result;
+        var statValue = _dbContext.StatValues.FirstOrDefaultAsync(sv => sv.Id == statId).Result;
 
         if (statValue == null)
         {
@@ -142,6 +142,8 @@ public class StatValueService : IStatValueService
 
         _dbContext.Remove(statValue);
 
-        return _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 }

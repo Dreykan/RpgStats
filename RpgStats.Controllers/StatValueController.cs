@@ -60,19 +60,22 @@ public class StatValueController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut]
+    [HttpPut("{statValueId:long}")]
     [SwaggerOperation(Summary = "Update a StatValue")]
     public async Task<IActionResult> UpdateStatValue([FromBody] StatValueForUpdateDto statValueForUpdateDto, long statValueId, long characterId, long statId)
     {
-        await _statValueService.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto);
-        return NoContent();
+        var response = await _statValueService.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto);
+        if (response != null)
+            return Ok(response);
+        return BadRequest();
     }
 
-    [HttpDelete]
+    [HttpDelete("{statValueId:long}")]
     [SwaggerOperation(Summary = "Delete a StatValue")]
     public async Task<IActionResult> DeleteStatValue(long statValueId)
     {
-        await _statValueService.DeleteStatValueAsync(statValueId);
-        return NoContent();
+        var response = await _statValueService.DeleteStatValueAsync(statValueId);
+        if (response == Task.CompletedTask) return Ok();
+        return BadRequest();
     }
 }
