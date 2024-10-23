@@ -8,7 +8,7 @@ public class StatValueForCreationDto
     public int? Level { get; set; }
 
     [Required(ErrorMessage = "A value for the stat entry is required.")]
-    public int Value { get; set; }
+    public int? Value { get; set; }
 
     [Required(ErrorMessage = "A bonus contained herein in numbers for this entry is required.")]
     public int? ContainedBonusNum { get; set; }

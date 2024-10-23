@@ -100,6 +100,19 @@ public class PlatformGameControllerTests
     }
     
     [Fact]
+    public async Task CreatePlatformGame_ReturnsBadRequest()
+    {
+        var platformId = 1;
+        var gameId = 1;
+        _mockService.Setup(x => x.CreatePlatformGameAsync(platformId, gameId))
+            .ReturnsAsync((PlatformGameDto?)null);
+
+        var result = await _controller.CreatePlatformGame(platformId, gameId);
+
+        Assert.IsType<BadRequestResult>(result);
+    }
+    
+    [Fact]
     public async Task UpdatePlatformGame_ReturnsUpdatedPlatformGame()
     {
         var platformGameId = 1;

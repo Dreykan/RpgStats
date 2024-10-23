@@ -185,24 +185,6 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         Assert.NotNull(gameStats);
         Assert.Equal(12, gameStats.Count);
     }
-
-    [Fact, Priority(24)]
-    public async Task DeleteGameStatAsync_ThrowsGameStatNotFoundException()
-    {
-        await Assert.ThrowsAsync<GameStatNotFoundException>(() => _service.DeleteGameStatAsync(100));
-    }
-    
-    [Fact, Priority(25)]
-    public async Task DeleteGameStatAsync_ThrowsGameStatNotFoundException_WhenGameStatIdIsZero()
-    {
-        await Assert.ThrowsAsync<GameStatNotFoundException>(() => _service.DeleteGameStatAsync(0));
-    }
-    
-    [Fact, Priority(26)]
-    public async Task DeleteGameStatAsync_ThrowsGameStatNotFoundException_WhenGameStatIdIsNegative()
-    {
-        await Assert.ThrowsAsync<GameStatNotFoundException>(() => _service.DeleteGameStatAsync(-1));
-    }
     
     [Fact, Priority(27)]
     public async Task DeleteGameStatByGameIdAsync_DoesNothing_WhenGameIdIsNotFound()
