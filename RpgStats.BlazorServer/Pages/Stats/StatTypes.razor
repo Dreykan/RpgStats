@@ -77,18 +77,26 @@
 
     private async Task ShowUpdateStatTypeDialog(long id)
     {
-        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true };
+        var stat = _stats.FirstOrDefault(s => s.Id == id);
+        if (stat is null)
+        {
+            return;
+        }
+        
+        DialogOptions closeOnEscapeKey = new DialogOptions() { CloseOnEscapeKey = true};
+        
+        var parameters = new DialogParameters { { "Stat", stat } };
 
-        var dialog = await DialogService.ShowAsync<StatTypeDialog>("Status Typ bearbeiten", closeOnEscapeKey);
+        var dialog = await DialogService.ShowAsync<StatTypeDialog>("Status Typ bearbeiten", parameters , closeOnEscapeKey);
         var result = await dialog.Result;
 
         if (result.Canceled == false)
         {
-            if (result.Data is StatDto stat)
+            if (result.Data is StatDto updatedStat)
                 _statForUpdateDto = new StatForUpdateDto()
                 {
-                    Name = stat.Name,
-                    ShortName = stat.ShortName
+                    Name = updatedStat.Name,
+                    ShortName = updatedStat.ShortName
                 };
             await UpdateStatType(id);
         }

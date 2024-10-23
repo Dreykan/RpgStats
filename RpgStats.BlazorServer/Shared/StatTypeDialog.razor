@@ -1,20 +1,56 @@
 ﻿@using RpgStats.Dto
 <MudDialog>
     <DialogContent>
-        <MudTextField T="string" Label="Abkürzung" @bind-Value="@_stat.ShortName"></MudTextField>
-        <MudTextField T="string" Label="Voller Name" @bind-Value="@_stat.Name"></MudTextField>
+        <MudTextField
+            T="string"
+            Label="Abkürzung"
+            @ref="_shortNameTextField"
+            @bind-Value="@_stat.ShortName"
+            Required="true"
+            Immediate="true"
+            OnKeyDown="HandleKeyDown"
+            MaxLength="8"
+            TextChanged="CheckIfFieldsAreFilled">
+        </MudTextField>
+        <MudTextField
+            T="string"
+            Label="Voller Name"
+            @bind-Value="@_stat.Name"
+            Required="true"
+            Immediate="true"
+            OnKeyDown="HandleKeyDown"
+            TextChanged="CheckIfFieldsAreFilled">
+        </MudTextField>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Abbrechen</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Primary">OK</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Primary" Disabled="@_isSubmitDisabled">OK</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    private StatDto _stat = new();
+    [Parameter] public StatDto Stat { get; set; } = new();
+
+    private readonly StatDto _stat = new();
+    private bool _isSubmitDisabled = true;
+    private MudTextField<string> _shortNameTextField;
+    
+    protected override void OnInitialized()
+    {
+        _stat.Name = Stat.Name;
+        _stat.ShortName = Stat.ShortName;
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(50);
+            await _shortNameTextField.FocusAsync();
+        }
+    }
 
     private void Cancel()
     {
@@ -24,5 +60,18 @@
     private void Submit()
     {
         MudDialog.Close(DialogResult.Ok(_stat));
+    }
+
+    private void CheckIfFieldsAreFilled()
+    {
+        _isSubmitDisabled = string.IsNullOrWhiteSpace(_stat.Name) || string.IsNullOrWhiteSpace(_stat.ShortName);
+    }
+    
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && _isSubmitDisabled == false)
+        {
+            Submit();
+        }
     }
 }
