@@ -93,15 +93,17 @@ public class StatController : ControllerBase
     [SwaggerOperation(Summary = "Update a Stat")]
     public async Task<IActionResult> UpdateStat(long statId, StatForUpdateDto statForUpdateDto)
     {
-        await _statService.UpdateStatAsync(statId, statForUpdateDto);
-        return NoContent();
+        var response = await _statService.UpdateStatAsync(statId, statForUpdateDto);
+        if (response != null) return Ok(response);
+        return BadRequest();
     }
 
     [HttpDelete]
     [SwaggerOperation(Summary = "Delete a Stat")]
     public async Task<IActionResult> DeleteStat(long statId)
     {
-        await _statService.DeleteStatAsync(statId);
-        return NoContent();
+        var response = await _statService.DeleteStatAsync(statId);
+        if (response == Task.CompletedTask) return Ok();
+        return BadRequest();
     }
 }
