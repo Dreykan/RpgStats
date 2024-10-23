@@ -114,7 +114,7 @@ public class PlatformControllerTests
     public async Task GetPlatformDetailDtoById_ReturnsPlatformDetailDtoById()
     {
         var platformId = 1;
-        _mockService.Setup(x => x.GetPlatformDetailDtoByIdAsync(platformId))
+        _mockService.Setup(x => x.GetPlatformDetailDtoByIdAsync(platformId))!
             .ReturnsAsync(_platformDetailDtos.FirstOrDefault(x => x.Id == platformId));
 
         var result = await _controller.GetPlatformDetailDtoById(platformId);
