@@ -123,15 +123,11 @@
 
     private Task PrefillForm()
     {
-        if (!string.IsNullOrEmpty(GameName))
-        {
-            var gameDto = _gameDtos.FirstOrDefault(x => x.Name == GameName);
-            if (gameDto != null && gameDto.Name != null)
-            {
-                _selectedGame = new HashSet<string> { gameDto.Name };
-                _value = gameDto.Name;
-            }
-        }
+        if (string.IsNullOrEmpty(GameName)) return Task.CompletedTask;
+        var gameDto = _gameDtos.FirstOrDefault(x => x.Name == GameName);
+        if (gameDto == null || gameDto.Name == null) return Task.CompletedTask;
+        _selectedGame = new HashSet<string> { gameDto.Name };
+        _value = gameDto.Name;
         return Task.CompletedTask;
     }
 

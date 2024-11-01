@@ -28,36 +28,22 @@ public class GameMapper
         };
 
         // Map Characters-Property
-        var characterMapper = new CharacterMapper();
         var characterWithoutFkObjectsDtos = new List<CharacterWithoutFkObjectsDto>();
         if (game.Characters != null)
-        {
-            foreach (var c in game.Characters)
-            {
-                characterWithoutFkObjectsDtos.Add(CharacterMapper.MapToCharacterWithoutFkObjectsDto(c));
-            }
-        }
+            characterWithoutFkObjectsDtos.AddRange(game.Characters.Select(c =>
+                CharacterMapper.MapToCharacterWithoutFkObjectsDto(c)));
 
         gameDetailDto.CharacterWithoutFkObjectsDtos = characterWithoutFkObjectsDtos;
-        
+
         // Map Platforms-Property
-        var platformMapper = new PlatformMapper();
-        var platformWithoutFkObjectsDtos = new List<PlatformWithoutFkObjectsDto>();
-        foreach (var p in platforms)
-        {
-            if (p != null) platformWithoutFkObjectsDtos.Add(PlatformMapper.MapToPlatformWithoutFkObjectsDto(p));
-        }
+        var platformWithoutFkObjectsDtos = platforms.OfType<Platform>()
+            .Select(p => PlatformMapper.MapToPlatformWithoutFkObjectsDto(p)).ToList();
 
         gameDetailDto.PlatformWithoutFkObjectsDtos = platformWithoutFkObjectsDtos;
 
         // Map Stats-Property
-        var statMapper = new StatMapper();
-        var statWithoutFkObjectsDtos = new List<StatWithoutFkObjectsDto>();
         if (stats == null) return gameDetailDto;
-        foreach (var stat in stats)
-        {
-            statWithoutFkObjectsDtos.Add(StatMapper.MapToStatWithoutFkObjectsDto(stat));
-        }
+        var statWithoutFkObjectsDtos = stats.Select(stat => StatMapper.MapToStatWithoutFkObjectsDto(stat)).ToList();
 
         gameDetailDto.StatWithoutFkObjectsDtos = statWithoutFkObjectsDtos;
 

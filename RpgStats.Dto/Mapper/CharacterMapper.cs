@@ -15,25 +15,21 @@ public class CharacterMapper
         };
 
         // Map Game-Property
-        var gameMapper = new GameMapper();
 
         if (character.Game != null)
             characterWithAllFkObjectsDto.GameWithoutFkObjectsDto =
                 GameMapper.MapToGameWithoutFkObjectsDto(character.Game);
 
         // Map StatValue-Property
-        var statValueMapper = new StatValueMapper();
         var statValuesWithStatObjectDtos = new List<StatValueWithStatObjectDto>();
 
         if (character.StatValues != null)
-            foreach (var statValue in character.StatValues)
-            {
-                statValuesWithStatObjectDtos.Add(StatValueMapper.MapToStatValueWithStatObjectDto(statValue));
-            }
+            statValuesWithStatObjectDtos.AddRange(character.StatValues.Select(statValue =>
+                StatValueMapper.MapToStatValueWithStatObjectDto(statValue)));
 
         characterWithAllFkObjectsDto.StatValuesWithStatObjectDtos = statValuesWithStatObjectDtos;
 
-        
+
         return characterWithAllFkObjectsDto;
     }
 
@@ -48,19 +44,12 @@ public class CharacterMapper
         };
 
         // Map Game-Property
-        var gameMapper = new GameMapper();
         if (character.Game != null)
-        {
             characterDetailDto.GameWithoutFkObjectsDto = GameMapper.MapToGameWithoutFkObjectsDto(character.Game);
-        }
 
         // Map StatValue-Property
-        var statValueMapper = new StatValueMapper();
-        var statValuesWithStatObjectDtos = new List<StatValueWithStatObjectDto>();
-        foreach (var statValue in statValues)
-        {
-            statValuesWithStatObjectDtos.Add(StatValueMapper.MapToStatValueWithStatObjectDto(statValue));
-        }
+        var statValuesWithStatObjectDtos = statValues
+            .Select(statValue => StatValueMapper.MapToStatValueWithStatObjectDto(statValue)).ToList();
 
         characterDetailDto.StatValuesWithStatObjectDtos = statValuesWithStatObjectDtos;
 

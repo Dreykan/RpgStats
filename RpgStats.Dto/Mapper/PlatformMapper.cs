@@ -25,12 +25,8 @@ public class PlatformMapper
         };
 
         // Map Game-Property
-        var gameMapper = new GameMapper();
-        var gameWithoutFkObjectDtos = new List<GameWithoutFkObjectsDto>();
-        foreach (var g in games)
-        {
-            if (g != null) gameWithoutFkObjectDtos.Add(GameMapper.MapToGameWithoutFkObjectsDto(g));
-        }
+        var gameWithoutFkObjectDtos =
+            games.OfType<Game>().Select(g => GameMapper.MapToGameWithoutFkObjectsDto(g)).ToList();
 
         platformDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectDtos;
 
