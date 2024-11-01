@@ -55,7 +55,7 @@
     private bool _success;
     private string[] _errors = { };
     private string _value = string.Empty;
-    private IEnumerable<string> _selectedGame { get; set; } = new HashSet<string>() { };
+    private IEnumerable<string> _selectedGame { get; set; } = new HashSet<string> { };
     private IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
@@ -128,7 +128,7 @@
             var gameDto = _gameDtos.FirstOrDefault(x => x.Name == GameName);
             if (gameDto != null && gameDto.Name != null)
             {
-                _selectedGame = new HashSet<string>() { gameDto.Name };
+                _selectedGame = new HashSet<string> { gameDto.Name };
                 _value = gameDto.Name;
             }
         }

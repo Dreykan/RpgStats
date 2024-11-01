@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Diagnostics.CodeAnalysis;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
@@ -9,6 +10,7 @@ using RpgStats.Services.Abstractions;
 
 namespace RpgStats.Services;
 
+[SuppressMessage("Performance", "CA1862:\"StringComparison\"-Methodenüberladungen verwenden, um Zeichenfolgenvergleiche ohne Beachtung der Groß-/Kleinschreibung durchzuführen")]
 public class GameService : IGameService
 {
     private readonly RpgStatsContext _dbContext;
@@ -137,7 +139,7 @@ public class GameService : IGameService
                 }
             }
 
-            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
+            gameDetailDtos.Add(GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
         }
 
         return gameDetailDtos;
@@ -183,7 +185,7 @@ public class GameService : IGameService
                 }
             }
 
-            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
+            gameDetailDtos.Add(GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
         }
 
         return gameDetailDtos;
@@ -229,7 +231,7 @@ public class GameService : IGameService
             }
         }
 
-        gameDetailDto = gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered);
+        gameDetailDto = GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered);
 
         return gameDetailDto;
     }

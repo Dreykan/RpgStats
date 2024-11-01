@@ -4,7 +4,7 @@ namespace RpgStats.Dto.Mapper;
 
 public class GameMapper
 {
-    public GameWithoutFkObjectsDto MapToGameWithoutFkObjectsDto(Game game)
+    public static GameWithoutFkObjectsDto MapToGameWithoutFkObjectsDto(Game game)
     {
         // New Object and map simple properties
         var gameWithoutFkObjectsDto = new GameWithoutFkObjectsDto
@@ -17,7 +17,7 @@ public class GameMapper
         return gameWithoutFkObjectsDto;
     }
 
-    public GameDetailDto MapToGameDetailDto(Game game, List<Platform?> platforms, List<Stat?> stats)
+    public static GameDetailDto MapToGameDetailDto(Game game, List<Platform?> platforms, List<Stat?> stats)
     {
         // New Object and map simple properties
         var gameDetailDto = new GameDetailDto
@@ -34,7 +34,7 @@ public class GameMapper
         {
             foreach (var c in game.Characters)
             {
-                characterWithoutFkObjectsDtos.Add(characterMapper.MapToCharacterWithoutFkObjectsDto(c));
+                characterWithoutFkObjectsDtos.Add(CharacterMapper.MapToCharacterWithoutFkObjectsDto(c));
             }
         }
 
@@ -45,7 +45,7 @@ public class GameMapper
         var platformWithoutFkObjectsDtos = new List<PlatformWithoutFkObjectsDto>();
         foreach (var p in platforms)
         {
-            if (p != null) platformWithoutFkObjectsDtos.Add(platformMapper.MapToPlatformWithoutFkObjectsDto(p));
+            if (p != null) platformWithoutFkObjectsDtos.Add(PlatformMapper.MapToPlatformWithoutFkObjectsDto(p));
         }
 
         gameDetailDto.PlatformWithoutFkObjectsDtos = platformWithoutFkObjectsDtos;
@@ -56,7 +56,7 @@ public class GameMapper
         if (stats == null) return gameDetailDto;
         foreach (var stat in stats)
         {
-            statWithoutFkObjectsDtos.Add(statMapper.MapToStatWithoutFkObjectsDto(stat));
+            statWithoutFkObjectsDtos.Add(StatMapper.MapToStatWithoutFkObjectsDto(stat));
         }
 
         gameDetailDto.StatWithoutFkObjectsDtos = statWithoutFkObjectsDtos;

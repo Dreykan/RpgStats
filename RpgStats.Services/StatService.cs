@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Diagnostics.CodeAnalysis;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
@@ -9,6 +10,7 @@ using RpgStats.Services.Abstractions;
 
 namespace RpgStats.Services;
 
+[SuppressMessage("Performance", "CA1862:\"StringComparison\"-Methodenüberladungen verwenden, um Zeichenfolgenvergleiche ohne Beachtung der Groß-/Kleinschreibung durchzuführen")]
 public class StatService : IStatService
 {
     private readonly RpgStatsContext _dbContext;
@@ -66,7 +68,7 @@ public class StatService : IStatService
                 .Where(sv => sv.StatId == stat.Id)
                 .ToList();
 
-            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
+            statDetailDtos.Add(StatMapper.MapToStatDetailDto(stat, svTempList));
         }
 
         return statDetailDtos;
@@ -92,7 +94,7 @@ public class StatService : IStatService
                 .Where(sv => sv.StatId == stat.Id)
                 .ToList();
 
-            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
+            statDetailDtos.Add(StatMapper.MapToStatDetailDto(stat, svTempList));
         }
 
         return statDetailDtos;
@@ -118,7 +120,7 @@ public class StatService : IStatService
                 .Where(sv => sv.StatId == stat.Id)
                 .ToList();
 
-            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
+            statDetailDtos.Add(StatMapper.MapToStatDetailDto(stat, svTempList));
         }
 
         return statDetailDtos;
@@ -157,7 +159,7 @@ public class StatService : IStatService
             .Where(sv => sv.StatId == statId)
             .ToList();
 
-        statDetailDto = statMapper.MapToStatDetailDto(stat, svTempList);
+        statDetailDto = StatMapper.MapToStatDetailDto(stat, svTempList);
 
         return statDetailDto;
     }

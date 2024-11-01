@@ -29,7 +29,7 @@ public class RpgStatsContext : DbContext
         }
     }
 
-    private void SeedData(ModelBuilder modelBuilder)
+    private static void SeedData(ModelBuilder modelBuilder)
     {
         new CharacterConfiguration().Configure(modelBuilder.Entity<Character>());
         new GameConfiguration().Configure(modelBuilder.Entity<Game>());

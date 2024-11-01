@@ -64,7 +64,7 @@ else
     private GameDetailDto? _game;
     private GameForUpdateDto _gameForUpdateDto = new();
     private List<PlatformDto> _platformDtos = new();
-    private IEnumerable<string?> _selectedPlatforms { get; set; } = new HashSet<string>() { };
+    private IEnumerable<string?> _selectedPlatforms { get; set; } = new HashSet<string>{ };
     private IList<IBrowserFile> _files = new List<IBrowserFile>();
     private string _value = "Nothing selected.";
     private MudForm? _form;
@@ -116,7 +116,7 @@ else
 
         _gameForUpdateDto.Name = "";
         _files.Clear();
-        _selectedPlatforms = new HashSet<string>() { };
+        _selectedPlatforms = new HashSet<string>{ };
 
         await ShowSuccessDialog();
 
@@ -130,7 +130,7 @@ else
         parameters.Add("ButtonText", "OK");
         parameters.Add("Color", Color.Success);
 
-        var options = new DialogOptions()
+        var options = new DialogOptions
         {
             CloseButton = true,
             MaxWidth = MaxWidth.Small

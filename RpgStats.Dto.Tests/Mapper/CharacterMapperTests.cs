@@ -23,7 +23,7 @@ namespace RpgStats.Dto.Tests.Mapper
             var mapper = new CharacterMapper();
 
             // Act
-            var result = mapper.MapToCharacterWithAllFkObjectsDto(character);
+            var result = CharacterMapper.MapToCharacterWithAllFkObjectsDto(character);
 
             // Assert
             Assert.NotNull(result);
@@ -53,7 +53,7 @@ namespace RpgStats.Dto.Tests.Mapper
             var mapper = new CharacterMapper();
 
             // Act
-            var result = mapper.MapToCharacterDetailDto(character, statValues);
+            var result = CharacterMapper.MapToCharacterDetailDto(character, statValues);
 
             // Assert
             Assert.NotNull(result);
@@ -78,7 +78,7 @@ namespace RpgStats.Dto.Tests.Mapper
             var mapper = new CharacterMapper();
 
             // Act
-            var result = mapper.MapToCharacterWithoutFkObjectsDto(character);
+            var result = CharacterMapper.MapToCharacterWithoutFkObjectsDto(character);
 
             // Assert
             Assert.NotNull(result);

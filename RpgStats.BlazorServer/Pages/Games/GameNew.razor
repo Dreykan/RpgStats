@@ -56,7 +56,7 @@
     private GameForCreationDto _gameForCreationDto = new();
     private List<PlatformDto> _platformDtos = new();
     private string _value = "Nothing selected.";
-    private IEnumerable<string> _selectedPlatforms { get; set; } = new HashSet<string>() {  };
+    private IEnumerable<string> _selectedPlatforms { get; set; } = new HashSet<string> {  };
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
@@ -101,7 +101,7 @@
         parameters.Add("ButtonText", "OK");
         parameters.Add("Color", Color.Success);
 
-        var options = new DialogOptions()
+        var options = new DialogOptions
             {
                 CloseButton = true,
                 MaxWidth = MaxWidth.Small

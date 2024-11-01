@@ -3,13 +3,13 @@
 namespace RpgStats.BlazorServer;
 public class DbConnectionJson
 {
-    [JsonProperty("ConnectionStrings")]
+    [JsonProperty(nameof(ConnectionStrings))]
     public ConnectionStrings? ConnectionStrings { get; set; }
 }
 
 public class ConnectionStrings
 {
 
-    [JsonProperty("RpgStatsPostgresql")]
+    [JsonProperty(nameof(RpgStatsPostgresql))]
     public string? RpgStatsPostgresql { get; set; }
 }

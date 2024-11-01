@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Diagnostics.CodeAnalysis;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
@@ -9,6 +10,7 @@ using RpgStats.Services.Abstractions;
 
 namespace RpgStats.Services;
 
+[SuppressMessage("Performance", "CA1862:\"StringComparison\"-Methodenüberladungen verwenden, um Zeichenfolgenvergleiche ohne Beachtung der Groß-/Kleinschreibung durchzuführen")]
 public class CharacterService : ICharacterService
 {
     private readonly RpgStatsContext _dbContext;
@@ -171,7 +173,7 @@ public class CharacterService : ICharacterService
             var svTempList = statValues
                 .Where(sv => sv.CharacterId == character.Id)
                 .ToList();
-            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
+            characterDetailDtoList.Add(CharacterMapper.MapToCharacterDetailDto(character, svTempList));
         }
 
         return characterDetailDtoList;
@@ -196,7 +198,7 @@ public class CharacterService : ICharacterService
             var svTempList = statValues
                 .Where(sv => sv.CharacterId == character.Id)
                 .ToList();
-            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
+            characterDetailDtoList.Add(CharacterMapper.MapToCharacterDetailDto(character, svTempList));
         }
 
         return characterDetailDtoList;
@@ -216,7 +218,7 @@ public class CharacterService : ICharacterService
             .Include(sv => sv.Stat)
             .Where(sv => sv.CharacterId == character.Id)
             .ToListAsync();
-        characterDetailDto = characterMapper.MapToCharacterDetailDto(character, svTempList);
+        characterDetailDto = CharacterMapper.MapToCharacterDetailDto(character, svTempList);
 
         return characterDetailDto;
     }
@@ -234,7 +236,7 @@ public class CharacterService : ICharacterService
             var svTempList = statValues
                 .Where(sv => sv.CharacterId == character.Id)
                 .ToList();
-            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
+            characterDetailDtoList.Add(CharacterMapper.MapToCharacterDetailDto(character, svTempList));
         }
 
         return characterDetailDtoList;

@@ -4,7 +4,7 @@ namespace RpgStats.Dto.Mapper;
 
 public class StatMapper
 {
-    public StatWithoutFkObjectsDto MapToStatWithoutFkObjectsDto(Stat stat)
+    public static StatWithoutFkObjectsDto MapToStatWithoutFkObjectsDto(Stat stat)
     {
         // New Object and map simple properties
         var statWithoutFkObjectDto = new StatWithoutFkObjectsDto
@@ -17,7 +17,7 @@ public class StatMapper
         return statWithoutFkObjectDto;
     }
 
-    public StatDetailDto MapToStatDetailDto(Stat stat, List<StatValue> statValues)
+    public static StatDetailDto MapToStatDetailDto(Stat stat, List<StatValue> statValues)
     {
         // New Object and map simple properties
         var statDetailDto = new StatDetailDto
@@ -32,7 +32,7 @@ public class StatMapper
         var statValueWithCharacterObjectDto = new List<StatValueWithCharacterObjectDto>();
         foreach (var statValue in statValues)
         {
-            statValueWithCharacterObjectDto.Add(statValueMapper.MapToStatValueWithCharacterObject(statValue));
+            statValueWithCharacterObjectDto.Add(StatValueMapper.MapToStatValueWithCharacterObject(statValue));
         }
 
         statDetailDto.StatValueWithCharacterObjectDtos = statValueWithCharacterObjectDto;
@@ -43,7 +43,7 @@ public class StatMapper
         if (stat.GameStats == null) return statDetailDto;
         foreach (var gameStat in stat.GameStats)
         {
-            gameWithoutFkObjectsDtos.Add(gameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game));
+            gameWithoutFkObjectsDtos.Add(GameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game));
         }
 
         statDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectsDtos;

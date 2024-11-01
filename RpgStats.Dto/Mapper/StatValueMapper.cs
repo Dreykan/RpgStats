@@ -4,7 +4,7 @@ namespace RpgStats.Dto.Mapper;
 
 public class StatValueMapper
 {
-    public StatValueWithStatObjectDto MapToStatValueWithStatObjectDto(StatValue statValue)
+    public static StatValueWithStatObjectDto MapToStatValueWithStatObjectDto(StatValue statValue)
     {
         // New Object and map simple properties
         var statValueWithStatObjectDto = new StatValueWithStatObjectDto
@@ -21,12 +21,12 @@ public class StatValueMapper
 
         if (statValue.Stat != null)
             statValueWithStatObjectDto.StatWithoutFkObjectsDto =
-                statMapper.MapToStatWithoutFkObjectsDto(statValue.Stat);
+                StatMapper.MapToStatWithoutFkObjectsDto(statValue.Stat);
 
         return statValueWithStatObjectDto;
     }
 
-    public StatValueWithCharacterObjectDto MapToStatValueWithCharacterObject(StatValue statValue)
+    public static StatValueWithCharacterObjectDto MapToStatValueWithCharacterObject(StatValue statValue)
     {
         // New Object and map simple properties
         var statValueWithCharacterObjectDto = new StatValueWithCharacterObjectDto
@@ -44,7 +44,7 @@ public class StatValueMapper
         if (statValue.Character != null)
         {
             statValueWithCharacterObjectDto.CharacterWithoutFkObjectsDto =
-                characterMapper.MapToCharacterWithoutFkObjectsDto(statValue.Character);
+                CharacterMapper.MapToCharacterWithoutFkObjectsDto(statValue.Character);
         }
 
         return statValueWithCharacterObjectDto;

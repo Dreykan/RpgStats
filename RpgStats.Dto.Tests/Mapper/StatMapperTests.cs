@@ -11,7 +11,7 @@ public class StatMapperTests
         var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR" };
         var mapper = new StatMapper();
 
-        var result = mapper.MapToStatWithoutFkObjectsDto(stat);
+        var result = StatMapper.MapToStatWithoutFkObjectsDto(stat);
 
         Assert.Equal(1, result.Id);
         Assert.Equal("Strength", result.Name);
@@ -25,7 +25,7 @@ public class StatMapperTests
         var statValues = new List<StatValue> { new StatValue { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
         var mapper = new StatMapper();
 
-        var result = mapper.MapToStatDetailDto(stat, statValues);
+        var result = StatMapper.MapToStatDetailDto(stat, statValues);
 
         Assert.Equal(1, result.Id);
         Assert.Equal("Strength", result.Name);
@@ -41,7 +41,7 @@ public class StatMapperTests
         var statValues = new List<StatValue> { new StatValue { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
         var mapper = new StatMapper();
 
-        var result = mapper.MapToStatDetailDto(stat, statValues);
+        var result = StatMapper.MapToStatDetailDto(stat, statValues);
 
         Assert.Equal(1, result.Id);
         Assert.Equal("Strength", result.Name);
@@ -57,7 +57,7 @@ public class StatMapperTests
         var statValues = new List<StatValue>();
         var mapper = new StatMapper();
 
-        var result = mapper.MapToStatDetailDto(stat, statValues);
+        var result = StatMapper.MapToStatDetailDto(stat, statValues);
 
         Assert.Equal(1, result.Id);
         Assert.Equal("Strength", result.Name);

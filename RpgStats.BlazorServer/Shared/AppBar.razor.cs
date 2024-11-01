@@ -21,11 +21,11 @@ namespace RpgStats.BlazorServer.Shared
             await OnThemeToggled.InvokeAsync(_currentTheme);
         }
 
-        private MudTheme GenerateDarkTheme()
+        private static MudTheme GenerateDarkTheme()
         {
-            var mudTheme = new MudTheme()
+            var mudTheme = new MudTheme
             {
-                Palette = new Palette()
+                Palette = new Palette
                 {
                     Black = "#27272f",
                     Background = "#32333d",

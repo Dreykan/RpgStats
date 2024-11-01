@@ -122,5 +122,6 @@ public class DatabaseFixture : IDisposable
     public void Dispose()
     {
         Context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

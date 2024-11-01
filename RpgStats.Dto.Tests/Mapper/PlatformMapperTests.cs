@@ -11,7 +11,7 @@ public class PlatformMapperTests
         var platform = new Platform { Id = 1, Name = "Test Platform" };
         var mapper = new PlatformMapper();
 
-        var result = mapper.MapToPlatformWithoutFkObjectsDto(platform);
+        var result = PlatformMapper.MapToPlatformWithoutFkObjectsDto(platform);
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
@@ -24,7 +24,7 @@ public class PlatformMapperTests
         var games = new List<Game?> { new Game { Id = 1, Name = "Test Game" }, null };
         var mapper = new PlatformMapper();
 
-        var result = mapper.MapToPlatformDetailDto(platform, games);
+        var result = PlatformMapper.MapToPlatformDetailDto(platform, games);
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
@@ -40,7 +40,7 @@ public class PlatformMapperTests
         var games = new List<Game>();
         var mapper = new PlatformMapper();
 
-        var result = mapper.MapToPlatformDetailDto(platform, games);
+        var result = PlatformMapper.MapToPlatformDetailDto(platform, games);
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
@@ -54,7 +54,7 @@ public class PlatformMapperTests
         var games = new List<Game?>();
         var mapper = new PlatformMapper();
 
-        var result = mapper.MapToPlatformDetailDto(platform, games);
+        var result = PlatformMapper.MapToPlatformDetailDto(platform, games);
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
