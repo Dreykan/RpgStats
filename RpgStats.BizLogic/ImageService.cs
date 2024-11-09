@@ -2,7 +2,7 @@
 
 namespace RpgStats.BizLogic;
 
-public class ImageService
+public static class ImageService
 {
     public static byte[] ResizeImageTo512(byte[] imageBytes, SKFilterQuality quality = SKFilterQuality.Medium)
     {

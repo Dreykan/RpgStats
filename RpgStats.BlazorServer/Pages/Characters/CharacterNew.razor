@@ -49,14 +49,14 @@
 </MudGrid>
 
 @code {
-    private CharacterForCreationDto _characterForCreationDto = new();
+    private readonly CharacterForCreationDto _characterForCreationDto = new();
     private List<GameDto> _gameDtos = new();
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
     private string _value = string.Empty;
     private IEnumerable<string> _selectedGame { get; set; } = new HashSet<string> { };
-    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
     [Parameter]

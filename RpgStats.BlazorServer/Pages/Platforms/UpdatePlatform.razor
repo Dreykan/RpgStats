@@ -30,7 +30,7 @@ else
 
 @code {
     private PlatformDetailDto? _platform;
-    private PlatformForUpdateDto _platformForUpdateDto = new();
+    private readonly PlatformForUpdateDto _platformForUpdateDto = new();
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };

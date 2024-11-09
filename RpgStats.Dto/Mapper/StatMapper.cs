@@ -28,13 +28,15 @@ public class StatMapper
         };
 
         // Map StatValue-Property
-        var statValueWithCharacterObjectDto = statValues.Select(statValue => StatValueMapper.MapToStatValueWithCharacterObject(statValue)).ToList();
+        var statValueWithCharacterObjectDto = statValues
+            .Select(StatValueMapper.MapToStatValueWithCharacterObject).ToList();
 
         statDetailDto.StatValueWithCharacterObjectDtos = statValueWithCharacterObjectDto;
 
         // Map Game-Property
         if (stat.GameStats == null) return statDetailDto;
-        var gameWithoutFkObjectsDtos = stat.GameStats.Select(gameStat => GameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game)).ToList();
+        var gameWithoutFkObjectsDtos = stat.GameStats
+            .Select(gameStat => GameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game)).ToList();
 
         statDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectsDtos;
 

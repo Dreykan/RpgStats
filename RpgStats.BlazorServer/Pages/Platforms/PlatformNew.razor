@@ -20,7 +20,7 @@
 </MudGrid>
 
 @code {
-    private PlatformForCreationDto _platformForCreationDto = new();
+    private readonly PlatformForCreationDto _platformForCreationDto = new();
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };

@@ -17,9 +17,9 @@ public class GameDtoTests
     [Fact]
     public void GameDto_Should_Set_And_Get_Properties()
     {
-        var platformGames = new List<PlatformGameDto> { new PlatformGameDto() };
-        var gameStats = new List<GameStatDto> { new GameStatDto() };
-        var characters = new List<CharacterDto> { new CharacterDto() };
+        var platformGames = new List<PlatformGameDto> { new() };
+        var gameStats = new List<GameStatDto> { new() };
+        var characters = new List<CharacterDto> { new() };
 
         var gameDto = new GameDto
         {

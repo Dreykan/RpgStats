@@ -77,10 +77,12 @@
 
     private async Task DeletePlatform(long id)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Soll die Plattform wirklich gelöscht werden?");
-        parameters.Add("ButtonText", "Löschen");
-        parameters.Add("Color", Color.Error);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Soll die Plattform wirklich gelöscht werden?" },
+            { "ButtonText", "Löschen" },
+            { "Color", Color.Error }
+        };
 
         var options = new DialogOptions
         {

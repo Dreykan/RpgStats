@@ -30,20 +30,20 @@ public class GameMapper
         // Map Characters-Property
         var characterWithoutFkObjectsDtos = new List<CharacterWithoutFkObjectsDto>();
         if (game.Characters != null)
-            characterWithoutFkObjectsDtos.AddRange(game.Characters.Select(c =>
-                CharacterMapper.MapToCharacterWithoutFkObjectsDto(c)));
+            characterWithoutFkObjectsDtos.AddRange(
+                game.Characters.Select(CharacterMapper.MapToCharacterWithoutFkObjectsDto));
 
         gameDetailDto.CharacterWithoutFkObjectsDtos = characterWithoutFkObjectsDtos;
 
         // Map Platforms-Property
         var platformWithoutFkObjectsDtos = platforms.OfType<Platform>()
-            .Select(p => PlatformMapper.MapToPlatformWithoutFkObjectsDto(p)).ToList();
+            .Select(PlatformMapper.MapToPlatformWithoutFkObjectsDto).ToList();
 
         gameDetailDto.PlatformWithoutFkObjectsDtos = platformWithoutFkObjectsDtos;
 
         // Map Stats-Property
         if (stats == null) return gameDetailDto;
-        var statWithoutFkObjectsDtos = stats.Select(stat => StatMapper.MapToStatWithoutFkObjectsDto(stat)).ToList();
+        var statWithoutFkObjectsDtos = stats.Select(StatMapper.MapToStatWithoutFkObjectsDto).ToList();
 
         gameDetailDto.StatWithoutFkObjectsDtos = statWithoutFkObjectsDtos;
 

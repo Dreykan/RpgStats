@@ -62,10 +62,10 @@ else
 
 @code {
     private GameDetailDto? _game;
-    private GameForUpdateDto _gameForUpdateDto = new();
+    private readonly GameForUpdateDto _gameForUpdateDto = new();
     private List<PlatformDto> _platformDtos = new();
     private IEnumerable<string?> _selectedPlatforms { get; set; } = new HashSet<string>{ };
-    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private string _value = "Nothing selected.";
     private MudForm? _form;
     private bool _success;
@@ -125,10 +125,12 @@ else
 
     private async Task ShowSuccessDialog()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Das Spiel wurde erfolgreich geändert.");
-        parameters.Add("ButtonText", "OK");
-        parameters.Add("Color", Color.Success);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Das Spiel wurde erfolgreich geändert." },
+            { "ButtonText", "OK" },
+            { "Color", Color.Success }
+        };
 
         var options = new DialogOptions
         {

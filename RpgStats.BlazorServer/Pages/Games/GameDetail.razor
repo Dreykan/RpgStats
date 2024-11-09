@@ -106,10 +106,12 @@ else
 
     private async Task DeleteGame()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Soll das Spiel wirklich gelöscht werden?");
-        parameters.Add("ButtonText", "Löschen");
-        parameters.Add("Color", Color.Error);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Soll das Spiel wirklich gelöscht werden?" },
+            { "ButtonText", "Löschen" },
+            { "Color", Color.Error }
+        };
 
         var options = new DialogOptions
         {
@@ -131,8 +133,7 @@ else
     {
         var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialogParameter = new DialogParameters();
-        dialogParameter.Add("Game", _game);
+        var dialogParameter = new DialogParameters { { "Game", _game } };
         var dialog = await DialogService.ShowAsync<LinkGameStatDialog>($"Status-Typ mit dem Spiel: {_game.Name} verknüpfen.", dialogParameter, dialogOptions);
         var result = await dialog.Result;
 
@@ -149,10 +150,12 @@ else
     {
         if (await CheckGameStatExist(gameStat))
         {
-            var parameters = new DialogParameters();
-            parameters.Add("ContentText", "Dieser Status-Typ ist schon mit dem Spiel verknüpft.");
-            parameters.Add("ButtonText", "OK");
-            parameters.Add("Color", Color.Info);
+            var parameters = new DialogParameters
+            {
+                { "ContentText", "Dieser Status-Typ ist schon mit dem Spiel verknüpft." },
+                { "ButtonText", "OK" },
+                { "Color", Color.Info }
+            };
 
             var options = new DialogOptions
             {

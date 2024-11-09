@@ -21,7 +21,7 @@ public class PlatformMapperTests
     public void MapToPlatformDetailDto_ValidPlatformAndGames_ReturnsDto()
     {
         var platform = new Platform { Id = 1, Name = "Test Platform" };
-        var games = new List<Game?> { new Game { Id = 1, Name = "Test Game" }, null };
+        var games = new List<Game?> { new() { Id = 1, Name = "Test Game" }, null };
         var mapper = new PlatformMapper();
 
         var result = PlatformMapper.MapToPlatformDetailDto(platform, games);

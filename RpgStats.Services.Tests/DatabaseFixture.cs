@@ -4,6 +4,7 @@ using RpgStats.Repo;
 
 namespace RpgStats.Services.Tests;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class DatabaseFixture : IDisposable
 {
     public RpgStatsContext Context { get; }

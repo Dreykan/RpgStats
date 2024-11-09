@@ -74,7 +74,7 @@ else
 @code {
     private CharacterDetailDto? _character;
     private List<StatValueDto> _statValues = new();
-    private List<StatDto> _stats = new();
+    private readonly List<StatDto> _stats = new();
 
     [Parameter]
     public int Id { get; set; }
@@ -119,10 +119,12 @@ else
 
     private async Task DeleteCharacter()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Soll der Charakter wirklich gelöscht werden?");
-        parameters.Add("ButtonText", "Löschen");
-        parameters.Add("Color", Color.Error);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Soll der Charakter wirklich gelöscht werden?" },
+            { "ButtonText", "Löschen" },
+            { "Color", Color.Error }
+        };
         var options = new DialogOptions
         {
             CloseButton = true,

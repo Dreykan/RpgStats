@@ -4,9 +4,9 @@
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ButtonOnClick">@ButtonText</MudButton>
 
 @code {
-    public string Text { get; set; } = "????";
-    public string ButtonText { get; set; } = "Click me!";
-    public int ButtonClicked { get; set; }
+    private string Text { get; set; } = "????";
+    private string ButtonText { get; set; } = "Click me!";
+    private int ButtonClicked { get; set; }
 
     void ButtonOnClick()
     {

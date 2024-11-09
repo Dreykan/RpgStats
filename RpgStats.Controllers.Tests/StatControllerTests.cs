@@ -19,30 +19,30 @@ public class StatControllerTests
 
         _stats = new List<StatDto>
         {
-            new StatDto { Id = 1, Name = "TestStat1", ShortName = "TS1" },
-            new StatDto { Id = 2, Name = "TestStat2", ShortName = "TS2" },
-            new StatDto { Id = 3, Name = "TestStat3", ShortName = "TS3" }
+            new() { Id = 1, Name = "TestStat1", ShortName = "TS1" },
+            new() { Id = 2, Name = "TestStat2", ShortName = "TS2" },
+            new() { Id = 3, Name = "TestStat3", ShortName = "TS3" }
         };
 
         _statDetailDtos = new List<StatDetailDto>
         {
-            new StatDetailDto
+            new()
             {
                 Id = 1, Name = "TestStat1", ShortName = "TS1",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" },
-                    new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" }
+                    new() { Id = 1, Name = "TestGame1" },
+                    new() { Id = 2, Name = "TestGame2" }
                 },
                 StatValueWithCharacterObjectDtos = new List<StatValueWithCharacterObjectDto>
                 {
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 1, Value = 1,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
                             { Id = 1, Name = "TestCharacter1" }
                     },
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 2, Value = 2,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
@@ -50,23 +50,23 @@ public class StatControllerTests
                     }
                 }
             },
-            new StatDetailDto
+            new()
             {
                 Id = 2, Name = "TestStat2", ShortName = "TS2",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 3, Name = "TestGame3" },
-                    new GameWithoutFkObjectsDto { Id = 4, Name = "TestGame4" }
+                    new() { Id = 3, Name = "TestGame3" },
+                    new() { Id = 4, Name = "TestGame4" }
                 },
                 StatValueWithCharacterObjectDtos = new List<StatValueWithCharacterObjectDto>
                 {
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 3, Value = 3,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
                             { Id = 3, Name = "TestCharacter3" }
                     },
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 4, Value = 4,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
@@ -74,23 +74,23 @@ public class StatControllerTests
                     }
                 }
             },
-            new StatDetailDto
+            new()
             {
                 Id = 3, Name = "TestStat3", ShortName = "TS3",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 5, Name = "TestGame5" },
-                    new GameWithoutFkObjectsDto { Id = 6, Name = "TestGame6" }
+                    new() { Id = 5, Name = "TestGame5" },
+                    new() { Id = 6, Name = "TestGame6" }
                 },
                 StatValueWithCharacterObjectDtos = new List<StatValueWithCharacterObjectDto>
                 {
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 5, Value = 5,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
                             { Id = 5, Name = "TestCharacter5" }
                     },
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 6, Value = 6,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto

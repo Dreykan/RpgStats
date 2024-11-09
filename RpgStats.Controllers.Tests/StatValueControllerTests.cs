@@ -18,10 +18,10 @@ public class StatValueControllerTests
         
         _statValues = new List<StatValueDto>
         {
-            new StatValueDto { Id = 1, CharacterId = 1, StatId = 1, Value = 1},
-            new StatValueDto { Id = 2, CharacterId = 2, StatId = 2, Value = 2},
-            new StatValueDto { Id = 3, CharacterId = 1, StatId = 3, Value = 3},
-            new StatValueDto { Id = 4, CharacterId = 3, StatId = 1, Value = 4}
+            new() { Id = 1, CharacterId = 1, StatId = 1, Value = 1},
+            new() { Id = 2, CharacterId = 2, StatId = 2, Value = 2},
+            new() { Id = 3, CharacterId = 1, StatId = 3, Value = 3},
+            new() { Id = 4, CharacterId = 3, StatId = 1, Value = 4}
         };
     }
     

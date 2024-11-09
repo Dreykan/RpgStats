@@ -35,8 +35,8 @@ public class GameMapperTests
             Name = "Test Game",
             Characters = new List<Character>()
         };
-        var platforms = new List<Platform?> { new Platform { Id = 1, Name = "PC" } };
-        var stats = new List<Stat?> { new Stat { Id = 1, Name = "Strength" } };
+        var platforms = new List<Platform?> { new() { Id = 1, Name = "PC" } };
+        var stats = new List<Stat?> { new() { Id = 1, Name = "Strength" } };
         var mapper = new GameMapper();
 
         // Act
@@ -56,7 +56,7 @@ public class GameMapperTests
         {
             Characters = new List<Character>
             {
-                new Character { Id = 1, Name = "Character1" }
+                new() { Id = 1, Name = "Character1" }
             }
         };
         var mapper = new GameMapper();
@@ -77,7 +77,7 @@ public class GameMapperTests
         var game = new Game();
         var platforms = new List<Platform?>
         {
-            new Platform { Id = 1, Name = "PC" }
+            new() { Id = 1, Name = "PC" }
         };
         var mapper = new GameMapper();
 
@@ -97,7 +97,7 @@ public class GameMapperTests
         var game = new Game();
         var stats = new List<Stat?>
         {
-            new Stat { Id = 1, Name = "Strength" }
+            new() { Id = 1, Name = "Strength" }
         };
         var mapper = new GameMapper();
 

@@ -18,10 +18,10 @@ public class GameStatControllerTests
         
         _gameStats = new List<GameStatDto>
         {
-            new GameStatDto { Id = 1, GameId = 1, StatId = 1},
-            new GameStatDto { Id = 2, GameId = 2, StatId = 2},
-            new GameStatDto { Id = 3, GameId = 1, StatId = 3},
-            new GameStatDto { Id = 4, GameId = 3, StatId = 1}
+            new() { Id = 1, GameId = 1, StatId = 1},
+            new() { Id = 2, GameId = 2, StatId = 2},
+            new() { Id = 3, GameId = 1, StatId = 3},
+            new() { Id = 4, GameId = 3, StatId = 1}
         };
     }
     

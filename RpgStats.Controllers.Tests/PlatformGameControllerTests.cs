@@ -18,10 +18,10 @@ public class PlatformGameControllerTests
         
         _platformGames = new List<PlatformGameDto>
         {
-            new PlatformGameDto { Id = 1, PlatformId = 1, GameId = 1},
-            new PlatformGameDto { Id = 2, PlatformId = 2, GameId = 2},
-            new PlatformGameDto { Id = 3, PlatformId = 1, GameId = 3},
-            new PlatformGameDto { Id = 4, PlatformId = 3, GameId = 1}
+            new() { Id = 1, PlatformId = 1, GameId = 1},
+            new() { Id = 2, PlatformId = 2, GameId = 2},
+            new() { Id = 3, PlatformId = 1, GameId = 3},
+            new() { Id = 4, PlatformId = 3, GameId = 1}
         };
     }
     

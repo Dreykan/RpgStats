@@ -26,7 +26,7 @@ public class PlatformMapper
 
         // Map Game-Property
         var gameWithoutFkObjectDtos =
-            games.OfType<Game>().Select(g => GameMapper.MapToGameWithoutFkObjectsDto(g)).ToList();
+            games.OfType<Game>().Select(GameMapper.MapToGameWithoutFkObjectsDto).ToList();
 
         platformDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectDtos;
 

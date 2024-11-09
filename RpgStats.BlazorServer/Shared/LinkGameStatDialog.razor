@@ -28,7 +28,7 @@
     private List<StatDto> _stats = new();
     private string _stat = "Nothing selected.";
     private IEnumerable<string> SelectedStat { get; set; } = new HashSet<string>();
-    private GameStatDto _gameStatDto = new(); 
+    private readonly GameStatDto _gameStatDto = new();
 
     protected override async Task OnInitializedAsync()
     {

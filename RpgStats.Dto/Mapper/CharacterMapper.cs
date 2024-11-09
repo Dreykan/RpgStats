@@ -24,8 +24,8 @@ public class CharacterMapper
         var statValuesWithStatObjectDtos = new List<StatValueWithStatObjectDto>();
 
         if (character.StatValues != null)
-            statValuesWithStatObjectDtos.AddRange(character.StatValues.Select(statValue =>
-                StatValueMapper.MapToStatValueWithStatObjectDto(statValue)));
+            statValuesWithStatObjectDtos.AddRange(
+                character.StatValues.Select(StatValueMapper.MapToStatValueWithStatObjectDto));
 
         characterWithAllFkObjectsDto.StatValuesWithStatObjectDtos = statValuesWithStatObjectDtos;
 
@@ -49,7 +49,7 @@ public class CharacterMapper
 
         // Map StatValue-Property
         var statValuesWithStatObjectDtos = statValues
-            .Select(statValue => StatValueMapper.MapToStatValueWithStatObjectDto(statValue)).ToList();
+            .Select(StatValueMapper.MapToStatValueWithStatObjectDto).ToList();
 
         characterDetailDto.StatValuesWithStatObjectDtos = statValuesWithStatObjectDtos;
 

@@ -53,14 +53,14 @@
 </MudGrid>
 
 @code {
-    private GameForCreationDto _gameForCreationDto = new();
+    private readonly GameForCreationDto _gameForCreationDto = new();
     private List<PlatformDto> _platformDtos = new();
     private string _value = "Nothing selected.";
     private IEnumerable<string> _selectedPlatforms { get; set; } = new HashSet<string> {  };
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
-    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
     protected override async Task OnInitializedAsync()
@@ -96,10 +96,12 @@
 
     private async Task ShowSuccessDialog()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Das Spiel wurde erfolgreich erstellt.");
-        parameters.Add("ButtonText", "OK");
-        parameters.Add("Color", Color.Success);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Das Spiel wurde erfolgreich erstellt." },
+            { "ButtonText", "OK" },
+            { "Color", Color.Success }
+        };
 
         var options = new DialogOptions
             {
@@ -120,7 +122,7 @@
     {
         var gameList = await GameService.GetAllGamesByNameAsync(gameName);
         var game = gameList.FirstOrDefault();
-        long id = game != null ? game.Id : 0;
+        long id = game?.Id ?? 0;
         return id;
     }
 
@@ -128,7 +130,7 @@
     {
         var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
         var platform = platformList.FirstOrDefault();
-        long id = platform != null ? platform.Id : 0;
+        long id = platform?.Id ?? 0;
         return id;
     }
 

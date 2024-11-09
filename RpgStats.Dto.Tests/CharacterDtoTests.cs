@@ -16,7 +16,7 @@ public class CharacterDtoTests
     [Fact]
     public void CharacterDto_Should_Set_And_Get_Properties()
     {
-        var statValues = new List<StatValueDto> { new StatValueDto() };
+        var statValues = new List<StatValueDto> { new() };
         var character = new CharacterDto
         {
             Id = 1,

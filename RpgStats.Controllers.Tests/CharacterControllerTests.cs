@@ -20,16 +20,16 @@ public class CharacterControllerTests
         
         _characters = new List<CharacterDto>
         {
-            new CharacterDto { Id = 1, Name = "TestCharacter1", GameId = 1},
-            new CharacterDto { Id = 2, Name = "TestCharacter2", GameId = 2},
-            new CharacterDto { Id = 3, Name = "TestCharacter3", GameId = 1}
+            new() { Id = 1, Name = "TestCharacter1", GameId = 1},
+            new() { Id = 2, Name = "TestCharacter2", GameId = 2},
+            new() { Id = 3, Name = "TestCharacter3", GameId = 1}
         };
 
         _characterDetailDtos = new List<CharacterDetailDto>
         {
-            new CharacterDetailDto { Id = 1, Name = "TestCharacter1", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } },
-            new CharacterDetailDto { Id = 2, Name = "TestCharacter2", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" } },
-            new CharacterDetailDto { Id = 3, Name = "TestCharacter3", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } }
+            new() { Id = 1, Name = "TestCharacter1", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } },
+            new() { Id = 2, Name = "TestCharacter2", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" } },
+            new() { Id = 3, Name = "TestCharacter3", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } }
         };
     }
 
