@@ -117,7 +117,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatsByName_ReturnsStatsByName()
     {
-        var name = "TestStat1";
+        const string name = "TestStat1";
         _mockService.Setup(x => x.GetAllStatsByNameAsync(name))
             .ReturnsAsync(_stats.Where(x => x.Name == name).ToList());
 
@@ -131,7 +131,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatsByShortname_ReturnsStatsByShortname()
     {
-        var shortName = "TS1";
+        const string shortName = "TS1";
         _mockService.Setup(x => x.GetAllStatsByShortNameAsync(shortName))
             .ReturnsAsync(_stats.Where(x => x.ShortName == shortName).ToList());
 
@@ -158,7 +158,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatDetailDtosByName_ReturnsStatDetailDtosByName()
     {
-        var name = "TestStat1";
+        const string name = "TestStat1";
         _mockService.Setup(x => x.GetAllStatDetailDtosByNameAsync(name))
             .ReturnsAsync(_statDetailDtos.Where(x => x.Name == name).ToList());
 
@@ -172,7 +172,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatDetailDtosByShortName_ReturnsStatDetailDtosByShortName()
     {
-        var shortName = "TS1";
+        const string shortName = "TS1";
         _mockService.Setup(x => x.GetAllStatDetailDtosByShortNameAsync(shortName))
             .ReturnsAsync(_statDetailDtos.Where(x => x.ShortName == shortName).ToList());
 
@@ -186,7 +186,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetStatById_ReturnsStatById()
     {
-        var statId = 1;
+        const int statId = 1;
         _mockService.Setup(x => x.GetStatByIdAsync(statId))
             .ReturnsAsync(_stats.FirstOrDefault(x => x.Id == statId));
 
@@ -200,7 +200,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetStatDetailDtoById_ReturnsStatDetailDtoById()
     {
-        var statId = 1;
+        const int statId = 1;
         _mockService.Setup(x => x.GetStatDetailDtoByIdAsync(statId))
             .ReturnsAsync(_statDetailDtos.FirstOrDefault(x => x.Id == statId));
 
@@ -240,7 +240,7 @@ public class StatControllerTests
     [Fact]
     public async Task UpdateStat_ReturnsUpdatedStat()
     {
-        var statId = 1;
+        const int statId = 1;
         var statForUpdateDto = new StatForUpdateDto { Name = "TestStat1Updated", ShortName = "TS1U" };
         _mockService.Setup(x => x.UpdateStatAsync(statId, statForUpdateDto))
             .ReturnsAsync(new StatDto { Id = statId, Name = statForUpdateDto.Name, ShortName = statForUpdateDto.ShortName });

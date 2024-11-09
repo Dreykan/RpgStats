@@ -47,7 +47,7 @@ public class StatValueForCreationDtoTests
         {
             Level = 1,
             ContainedBonusNum = 5,
-            ContainedBonusPercent = 2,
+            ContainedBonusPercent = 2
         };
 
         var validationResults = new List<ValidationResult>();

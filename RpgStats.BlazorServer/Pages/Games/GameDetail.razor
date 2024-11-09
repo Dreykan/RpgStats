@@ -59,7 +59,7 @@ else
                 </MudGrid>
                 <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="Diese Statuswerte-Typen kommen in diesem Spiel vor.">
                     <MudText Typo="Typo.h5">Status-Typen
-                        <MudIconButton Icon="@Icons.Material.Filled.AddLink" Color="Color.Info" OnClick="(async () => await LinkGameStat())"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.AddLink" Color="Color.Info" OnClick="async () => await LinkGameStat()"/>
                     </MudText>
                 </MudTooltip>
                 <MudGrid Class="my-4">
@@ -99,7 +99,7 @@ else
         _game = await GameService.GetGameDetailDtoByIdAsync(Id);
     }
 
-    private string TurnByteArrayToImage(byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
@@ -129,11 +129,11 @@ else
 
     private async Task LinkGameStat()
     {
-        DialogOptions closeOnEscapeKey = new DialogOptions { CloseOnEscapeKey = true };
+        var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
 
         var dialogParameter = new DialogParameters();
         dialogParameter.Add("Game", _game);
-        var dialog = await DialogService.ShowAsync<LinkGameStatDialog>($"Status-Typ mit dem Spiel: {_game.Name} verknüpfen.", dialogParameter, closeOnEscapeKey);
+        var dialog = await DialogService.ShowAsync<LinkGameStatDialog>($"Status-Typ mit dem Spiel: {_game.Name} verknüpfen.", dialogParameter, dialogOptions);
         var result = await dialog.Result;
 
         if (result.Canceled == false)

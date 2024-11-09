@@ -112,7 +112,7 @@ else
         _character = await CharacterService.GetCharacterDetailDtoByIdAsync(Id);
     }
 
-    private string TurnByteArrayToImage(byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }

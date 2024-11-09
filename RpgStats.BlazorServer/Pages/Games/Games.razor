@@ -64,7 +64,7 @@
         _games = _games.OrderBy(x => x.Name).ToList();
     }
 
-    private string TurnByteArrayToImage(GameDetailDto game)
+    private static string TurnByteArrayToImage(GameDetailDto game)
     {
         var imageSrc = string.Empty;
         if (game.Picture != null)
@@ -75,7 +75,7 @@
         return imageSrc;
     }
 
-    private string CreatePlatformString(GameDetailDto game)
+    private static string CreatePlatformString(GameDetailDto game)
     {
         var platformString = string.Empty;
         if (game.PlatformWithoutFkObjectsDtos == null || !game.PlatformWithoutFkObjectsDtos.Any()) return platformString;

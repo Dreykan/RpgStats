@@ -1,38 +1,37 @@
 ﻿using RpgStats.Domain.Exceptions;
 
-namespace RpgStats.Domain.Tests.Exceptions
+namespace RpgStats.Domain.Tests.Exceptions;
+
+public class StatValueNotFoundExceptionTests
 {
-    public class StatValueNotFoundExceptionTests
+    [Fact]
+    public void StatValueNotFoundException_Creation_Success()
     {
-        [Fact]
-        public void StatValueNotFoundException_Creation_Success()
-        {
-            long statValueId = 456;
+        const long statValueId = 456;
 
-            var exception = new StatValueNotFoundException(statValueId);
+        var exception = new StatValueNotFoundException(statValueId);
 
-            Assert.NotNull(exception);
-        }
+        Assert.NotNull(exception);
+    }
         
-        [Fact]
-        public void StatValueNotFoundException_Type_IsCorrect()
-        {
-            long statValueId = 456;
+    [Fact]
+    public void StatValueNotFoundException_Type_IsCorrect()
+    {
+        const long statValueId = 456;
 
-            var exception = new StatValueNotFoundException(statValueId);
+        var exception = new StatValueNotFoundException(statValueId);
 
-            Assert.IsType<StatValueNotFoundException>(exception);
-        }
+        Assert.IsType<StatValueNotFoundException>(exception);
+    }
 
-        [Fact]
-        public void StatValueNotFoundException_Message_IsCorrect()
-        {
-            long statValueId = 456;
-            string expectedMessage = $"The StatValue with the identifier {statValueId} was not found.";
+    [Fact]
+    public void StatValueNotFoundException_Message_IsCorrect()
+    {
+        const long statValueId = 456;
+        string expectedMessage = $"The StatValue with the identifier {statValueId} was not found.";
 
-            var exception = new StatValueNotFoundException(statValueId);
+        var exception = new StatValueNotFoundException(statValueId);
 
-            Assert.Equal(expectedMessage, exception.Message);
-        }
+        Assert.Equal(expectedMessage, exception.Message);
     }
 }

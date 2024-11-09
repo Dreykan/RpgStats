@@ -1,38 +1,37 @@
 ﻿using RpgStats.Domain.Exceptions;
 
-namespace RpgStats.Domain.Tests.Exceptions
+namespace RpgStats.Domain.Tests.Exceptions;
+
+public class PlatformNotFoundExceptionTests
 {
-    public class PlatformNotFoundExceptionTests
+    [Fact]
+    public void PlatformNotFoundException_Creation_Success()
     {
-        [Fact]
-        public void PlatformNotFoundException_Creation_Success()
-        {
-            long platformId = 456;
+        const long platformId = 456;
 
-            var exception = new PlatformNotFoundException(platformId);
+        var exception = new PlatformNotFoundException(platformId);
 
-            Assert.NotNull(exception);
-        }
+        Assert.NotNull(exception);
+    }
         
-        [Fact]
-        public void PlatformNotFoundException_Type_IsCorrect()
-        {
-            long platformId = 456;
+    [Fact]
+    public void PlatformNotFoundException_Type_IsCorrect()
+    {
+        const long platformId = 456;
 
-            var exception = new PlatformNotFoundException(platformId);
+        var exception = new PlatformNotFoundException(platformId);
 
-            Assert.IsType<PlatformNotFoundException>(exception);
-        }
+        Assert.IsType<PlatformNotFoundException>(exception);
+    }
 
-        [Fact]
-        public void PlatformNotFoundException_Message_IsCorrect()
-        {
-            long platformId = 456;
-            string expectedMessage = $"The Platform with the identifier {platformId} was not found.";
+    [Fact]
+    public void PlatformNotFoundException_Message_IsCorrect()
+    {
+        const long platformId = 456;
+        string expectedMessage = $"The Platform with the identifier {platformId} was not found.";
 
-            var exception = new PlatformNotFoundException(platformId);
+        var exception = new PlatformNotFoundException(platformId);
 
-            Assert.Equal(expectedMessage, exception.Message);
-        }
+        Assert.Equal(expectedMessage, exception.Message);
     }
 }

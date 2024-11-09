@@ -1,41 +1,40 @@
 ﻿using RpgStats.Domain.Exceptions;
 
-namespace RpgStats.Domain.Tests.Exceptions
+namespace RpgStats.Domain.Tests.Exceptions;
+
+public class PlatformAndGameDoesNotBelongToEachOtherExceptionTests
 {
-    public class PlatformAndGameDoesNotBelongToEachOtherExceptionTests
+    [Fact]
+    public void PlatformAndGameDoesNotBelongToEachOtherException_Creation_Success()
     {
-        [Fact]
-        public void PlatformAndGameDoesNotBelongToEachOtherException_Creation_Success()
-        {
-            long platformId = 1;
-            long gameId = 2;
+        const long platformId = 1;
+        const long gameId = 2;
 
-            var exception = new PlatformAndGameDoesNotBelongToEachOtherException(platformId, gameId);
+        var exception = new PlatformAndGameDoesNotBelongToEachOtherException(platformId, gameId);
 
-            Assert.NotNull(exception);
-        }
+        Assert.NotNull(exception);
+    }
         
-        [Fact]
-        public void PlatformAndGameDoesNotBelongToEachOtherException_Type_IsCorrect()
-        {
-            long platformId = 1;
-            long gameId = 2;
+    [Fact]
+    public void PlatformAndGameDoesNotBelongToEachOtherException_Type_IsCorrect()
+    {
+        const long platformId = 1;
+        const long gameId = 2;
 
-            var exception = new PlatformAndGameDoesNotBelongToEachOtherException(platformId, gameId);
+        var exception = new PlatformAndGameDoesNotBelongToEachOtherException(platformId, gameId);
 
-            Assert.IsType<PlatformAndGameDoesNotBelongToEachOtherException>(exception);
-        }
+        Assert.IsType<PlatformAndGameDoesNotBelongToEachOtherException>(exception);
+    }
 
-        [Fact]
-        public void PlatformAndGameDoesNotBelongToEachOtherException_Message_IsCorrect()
-        {
-            long platformId = 1;
-            long gameId = 2;
-            string expectedMessage = $"The Game with the identifier {gameId} is in no relationship to the Platform with the identifier {platformId}.";
+    [Fact]
+    public void PlatformAndGameDoesNotBelongToEachOtherException_Message_IsCorrect()
+    {
+        const long platformId = 1;
+        const long gameId = 2;
+        string expectedMessage = $"The Game with the identifier {gameId} is in no relationship to the Platform with the identifier {platformId}.";
 
-            var exception = new PlatformAndGameDoesNotBelongToEachOtherException(platformId, gameId);
+        var exception = new PlatformAndGameDoesNotBelongToEachOtherException(platformId, gameId);
 
-            Assert.Equal(expectedMessage, exception.Message);
-        }
+        Assert.Equal(expectedMessage, exception.Message);
     }
 }

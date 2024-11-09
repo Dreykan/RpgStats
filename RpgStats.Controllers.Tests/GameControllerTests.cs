@@ -111,7 +111,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetAllGamesByName_ReturnsGamesByName()
     {
-        var name = "TestGame1";
+        const string name = "TestGame1";
         _mockService.Setup(x => x.GetAllGamesByNameAsync(name))
             .ReturnsAsync(_games.Where(x => x.Name == name).ToList());
 
@@ -138,7 +138,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetAllGameDetailDtosByName_ReturnsGameDetailDtosByName()
     {
-        var name = "TestGame1";
+        const string name = "TestGame1";
         _mockService.Setup(x => x.GetAllGameDetailDtosByNameAsync(name))
             .ReturnsAsync(_gameDetailDtos.Where(x => x.Name == name).ToList());
 
@@ -152,7 +152,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetGameById_ReturnsGameById()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetGameByIdAsync(gameId))
             .ReturnsAsync(_games.FirstOrDefault(x => x.Id == gameId));
 
@@ -166,7 +166,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetGameDetailDtoById_ReturnsGameDetailDtoById()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetGameDetailDtoByIdAsync(gameId))
             .ReturnsAsync(_gameDetailDtos.FirstOrDefault(x => x.Id == gameId));
 
@@ -208,7 +208,7 @@ public class GameControllerTests
     public async Task UpdateGame_ReturnsGame()
     {
         var gameForUpdateDto = new GameForUpdateDto { Name = "TestGame4" };
-        var gameId = 1;
+        const int gameId = 1;
         var gameDto = new GameDto { Id = gameId, Name = gameForUpdateDto.Name };
         _mockService.Setup(x => x.UpdateGameAsync(gameId, gameForUpdateDto))
             .ReturnsAsync(gameDto);
@@ -234,7 +234,7 @@ public class GameControllerTests
     [Fact]
     public async Task DeleteGame_ReturnsOk()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.DeleteGameAsync(gameId))
             .ReturnsAsync(Task.CompletedTask);
 

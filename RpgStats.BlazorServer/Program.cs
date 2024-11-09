@@ -67,6 +67,7 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+return;
 
 
 static string? GetConnectionString()
@@ -88,7 +89,7 @@ static async Task ApplyMigration(IServiceProvider serviceProvider)
 {
     using var scope = serviceProvider.CreateScope();
 
-    await using RpgStatsContext dbContext = scope.ServiceProvider.GetRequiredService<RpgStatsContext>();
+    await using var dbContext = scope.ServiceProvider.GetRequiredService<RpgStatsContext>();
 
     await dbContext.Database.MigrateAsync();
 }

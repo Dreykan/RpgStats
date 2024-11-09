@@ -144,7 +144,7 @@ else
         _files.Clear();
     }
 
-    private string TurnByteArrayToImage(Byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }

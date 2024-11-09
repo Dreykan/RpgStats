@@ -47,7 +47,7 @@
 
     private async Task ShowNewStatTypeDialog()
     {
-        DialogOptions closeOnEscapeKey = new DialogOptions { CloseOnEscapeKey = true };
+        var closeOnEscapeKey = new DialogOptions { CloseOnEscapeKey = true };
 
         var dialog = await DialogService.ShowAsync<StatTypeDialog>("Neuer Status Typ", closeOnEscapeKey);
         var result = await dialog.Result;
@@ -83,7 +83,7 @@
             return;
         }
         
-        DialogOptions closeOnEscapeKey = new DialogOptions { CloseOnEscapeKey = true};
+        var closeOnEscapeKey = new DialogOptions { CloseOnEscapeKey = true};
         
         var parameters = new DialogParameters { { "Stat", stat } };
 

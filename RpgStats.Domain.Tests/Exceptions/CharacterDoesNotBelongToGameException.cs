@@ -1,41 +1,40 @@
 ﻿using RpgStats.Domain.Exceptions;
 
-namespace RpgStats.Domain.Tests.Exceptions
+namespace RpgStats.Domain.Tests.Exceptions;
+
+public class CharacterDoesNotBelongToGameExceptionTests
 {
-    public class CharacterDoesNotBelongToGameExceptionTests
+    [Fact]
+    public void CharacterDoesNotBelongToGameException_Creation_Success()
     {
-        [Fact]
-        public void CharacterDoesNotBelongToGameException_Creation_Success()
-        {
-            long characterId = 1;
-            long gameId = 2;
+        const long characterId = 1;
+        const long gameId = 2;
 
-            var exception = new CharacterDoesNotBelongToGameException(characterId, gameId);
+        var exception = new CharacterDoesNotBelongToGameException(characterId, gameId);
 
-            Assert.NotNull(exception);
-        }
+        Assert.NotNull(exception);
+    }
         
-        [Fact]
-        public void CharacterDoesNotBelongToGameException_Type_IsCorrect()
-        {
-            long characterId = 1;
-            long gameId = 2;
+    [Fact]
+    public void CharacterDoesNotBelongToGameException_Type_IsCorrect()
+    {
+        const long characterId = 1;
+        const long gameId = 2;
 
-            var exception = new CharacterDoesNotBelongToGameException(characterId, gameId);
+        var exception = new CharacterDoesNotBelongToGameException(characterId, gameId);
 
-            Assert.IsType<CharacterDoesNotBelongToGameException>(exception);
-        }
+        Assert.IsType<CharacterDoesNotBelongToGameException>(exception);
+    }
 
-        [Fact]
-        public void CharacterDoesNotBelongToGameException_Message_IsCorrect()
-        {
-            long characterId = 1;
-            long gameId = 2;
-            var expectedMessage = $"The Character with the identifier {characterId} does not belong to the game with the identifier {gameId}";
+    [Fact]
+    public void CharacterDoesNotBelongToGameException_Message_IsCorrect()
+    {
+        const long characterId = 1;
+        const long gameId = 2;
+        var expectedMessage = $"The Character with the identifier {characterId} does not belong to the game with the identifier {gameId}";
 
-            var exception = new CharacterDoesNotBelongToGameException(characterId, gameId);
+        var exception = new CharacterDoesNotBelongToGameException(characterId, gameId);
 
-            Assert.Equal(expectedMessage, exception.Message);
-        }
+        Assert.Equal(expectedMessage, exception.Message);
     }
 }

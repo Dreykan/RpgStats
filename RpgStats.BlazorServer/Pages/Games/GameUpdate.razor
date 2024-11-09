@@ -180,7 +180,7 @@ else
             _files[0] = file;
         }
 
-        using MemoryStream ms = new MemoryStream();
+        using var ms = new MemoryStream();
         var stream = file.OpenReadStream(4096000L);
         await stream.CopyToAsync(ms);
         _imageBytes = ms.ToArray();
@@ -190,7 +190,7 @@ else
         _gameForUpdateDto.Picture = resizedImageBytes;
     }
 
-    private string TurnByteArrayToImage(Byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
         var imageSrc = string.Empty;
         imageSrc = ImageService.ConvertByteArrayToImage(imageBytes);

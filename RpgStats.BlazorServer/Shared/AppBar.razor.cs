@@ -2,46 +2,45 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace RpgStats.BlazorServer.Shared
+namespace RpgStats.BlazorServer.Shared;
+
+public partial class AppBar
 {
-    public partial class AppBar
+    private bool _isLightMode = true;
+    private MudTheme _currentTheme = new MudTheme();
+
+    [Parameter] public EventCallback OnSidebarToggled { get; set; }
+    [Parameter] public EventCallback<MudTheme> OnThemeToggled { get; set; }
+
+    private async Task ToggleTheme()
     {
-        private bool _isLightMode = true;
-        private MudTheme _currentTheme = new MudTheme();
+        _isLightMode = !_isLightMode;
 
-        [Parameter] public EventCallback OnSidebarToggled { get; set; }
-        [Parameter] public EventCallback<MudTheme> OnThemeToggled { get; set; }
+        _currentTheme = !_isLightMode ? GenerateDarkTheme() : new MudTheme();
 
-        private async Task ToggleTheme()
+        await OnThemeToggled.InvokeAsync(_currentTheme);
+    }
+
+    private static MudTheme GenerateDarkTheme()
+    {
+        var mudTheme = new MudTheme
         {
-            _isLightMode = !_isLightMode;
-
-            _currentTheme = !_isLightMode ? GenerateDarkTheme() : new MudTheme();
-
-            await OnThemeToggled.InvokeAsync(_currentTheme);
-        }
-
-        private static MudTheme GenerateDarkTheme()
-        {
-            var mudTheme = new MudTheme
+            Palette = new Palette
             {
-                Palette = new Palette
-                {
-                    Black = "#27272f",
-                    Background = "#32333d",
-                    BackgroundGrey = "#27272f",
-                    Surface = "#373740",
-                    TextPrimary = "#ffffffb3",
-                    TextSecondary = "rgba(255,255,255, 0.50)",
-                    AppbarBackground = "#27272f",
-                    AppbarText = "#ffffffb3",
-                    DrawerBackground = "#27272f",
-                    DrawerText = "#ffffffb3",
-                    DrawerIcon = "#ffffffb3"
-                }
-            };
+                Black = "#27272f",
+                Background = "#32333d",
+                BackgroundGrey = "#27272f",
+                Surface = "#373740",
+                TextPrimary = "#ffffffb3",
+                TextSecondary = "rgba(255,255,255, 0.50)",
+                AppbarBackground = "#27272f",
+                AppbarText = "#ffffffb3",
+                DrawerBackground = "#27272f",
+                DrawerText = "#ffffffb3",
+                DrawerIcon = "#ffffffb3"
+            }
+        };
 
-            return mudTheme;
-        }
+        return mudTheme;
     }
 }

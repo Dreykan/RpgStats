@@ -1,41 +1,40 @@
 ﻿using RpgStats.Domain.Exceptions;
 
-namespace RpgStats.Domain.Tests.Exceptions
+namespace RpgStats.Domain.Tests.Exceptions;
+
+public class StatValueDoesNotBelongToStatExceptionTests
 {
-    public class StatValueDoesNotBelongToStatExceptionTests
+    [Fact]
+    public void StatValueDoesNotBelongToStatException_Creation_Success()
     {
-        [Fact]
-        public void StatValueDoesNotBelongToStatException_Creation_Success()
-        {
-            long statvalueId = 123;
-            long statId = 456;
+        const long statvalueId = 123;
+        const long statId = 456;
 
-            var exception = new StatValueDoesNotBelongToStatException(statvalueId, statId);
+        var exception = new StatValueDoesNotBelongToStatException(statvalueId, statId);
 
-            Assert.NotNull(exception);
-        }
+        Assert.NotNull(exception);
+    }
         
-        [Fact]
-        public void StatValueDoesNotBelongToStatException_Type_IsCorrect()
-        {
-            long statvalueId = 123;
-            long statId = 456;
+    [Fact]
+    public void StatValueDoesNotBelongToStatException_Type_IsCorrect()
+    {
+        const long statvalueId = 123;
+        const long statId = 456;
 
-            var exception = new StatValueDoesNotBelongToStatException(statvalueId, statId);
+        var exception = new StatValueDoesNotBelongToStatException(statvalueId, statId);
 
-            Assert.IsType<StatValueDoesNotBelongToStatException>(exception);
-        }
+        Assert.IsType<StatValueDoesNotBelongToStatException>(exception);
+    }
 
-        [Fact]
-        public void StatValueDoesNotBelongToStatException_Message_IsCorrect()
-        {
-            long statvalueId = 123;
-            long statId = 456;
-            string expectedMessage = $"The StatValue with the identifier {statvalueId} does not belong to the Stat with the identifier {statId}.";
+    [Fact]
+    public void StatValueDoesNotBelongToStatException_Message_IsCorrect()
+    {
+        const long statvalueId = 123;
+        const long statId = 456;
+        string expectedMessage = $"The StatValue with the identifier {statvalueId} does not belong to the Stat with the identifier {statId}.";
 
-            var exception = new StatValueDoesNotBelongToStatException(statvalueId, statId);
+        var exception = new StatValueDoesNotBelongToStatException(statvalueId, statId);
 
-            Assert.Equal(expectedMessage, exception.Message);
-        }
+        Assert.Equal(expectedMessage, exception.Message);
     }
 }

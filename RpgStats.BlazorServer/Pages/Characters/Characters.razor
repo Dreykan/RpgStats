@@ -58,7 +58,7 @@
         _characters = _characters.OrderBy(x => x.GameWithoutFkObjectsDto.Name).ToList();
     }
 
-    private string TurnByteArrayToImage(CharacterDetailDto character)
+    private static string TurnByteArrayToImage(CharacterDetailDto character)
     {
         var imageSrc = string.Empty;
         if (character.Picture != null)
