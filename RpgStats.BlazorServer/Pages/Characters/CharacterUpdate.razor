@@ -21,7 +21,7 @@ else
             <MudPaper Class="pa-0">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                     <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForUpdateDto.Name" TextChanged="OnNameChanged" Immediate="true"/>
-                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="_selectedGame" Clearable="true">
+                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="SelectedGame" Clearable="true">
                         @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
@@ -56,6 +56,7 @@ else
 
 
 
+@* ReSharper disable NotAccessedField.Local *@
 @code {
     private CharacterDetailDto? _character;
     private readonly CharacterForUpdateDto _characterForUpdateDto = new();
@@ -64,7 +65,7 @@ else
     private bool _success;
     private string[] _errors = { };
     private string _value = string.Empty;
-    private IEnumerable<string?> _selectedGame { get; set; } = new HashSet<string> { };
+    private IEnumerable<string?> SelectedGame { get; set; } = new HashSet<string> { };
     private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
@@ -91,7 +92,7 @@ else
             _characterForUpdateDto.Picture = _character?.Picture;
         }
 
-        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == _selectedGame.FirstOrDefault());
+        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
 
         if (_character == null || selectedGame == null)
         {
@@ -134,7 +135,7 @@ else
 
     private async void ShowErrorMessage(string text)
     {
-        bool? result = await DialogService.ShowMessageBox("Error", text, "OK");
+        await DialogService.ShowMessageBox("Error", text);
     }
 
     private void ClearImage()
@@ -160,7 +161,7 @@ else
 
         if (_character.GameWithoutFkObjectsDto != null)
         {
-            _selectedGame = _selectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
+            SelectedGame = SelectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
         }
 
         if (_character.Picture != null)
@@ -172,9 +173,10 @@ else
 
     private void OnNameChanged(string value)
     {
-        if (_selectedGame.Any())
+        if (SelectedGame.Any())
         {
             _success = !string.IsNullOrWhiteSpace(value);
         }
 	}
 }
+@* ReSharper restore NotAccessedField.Local *@

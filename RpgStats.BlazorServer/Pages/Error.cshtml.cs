@@ -21,6 +21,7 @@ public class ErrorModel : PageModel
 
     public void OnGet()
     {
+        _logger.LogError("An error occurred while processing your request.");
         RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
     }
 }

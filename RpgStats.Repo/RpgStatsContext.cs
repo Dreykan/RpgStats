@@ -6,8 +6,6 @@ namespace RpgStats.Repo;
 
 public class RpgStatsContext : DbContext
 {
-    private readonly string _connectionString = string.Empty;
-
     public RpgStatsContext(DbContextOptions<RpgStatsContext> options) : base(options)
     {
         

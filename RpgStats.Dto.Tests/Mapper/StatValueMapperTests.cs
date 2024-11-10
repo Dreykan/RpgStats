@@ -21,7 +21,6 @@ public class StatValueMapperTests
             }
         };
 
-        var mapper = new StatValueMapper();
         var result = StatValueMapper.MapToStatValueWithStatObjectDto(statValue);
 
         Assert.Equal(statValue.Id, result.Id);
@@ -45,7 +44,6 @@ public class StatValueMapperTests
             Stat = null
         };
 
-        var mapper = new StatValueMapper();
         var result = StatValueMapper.MapToStatValueWithStatObjectDto(statValue);
 
         Assert.Equal(statValue.Id, result.Id);
@@ -72,7 +70,6 @@ public class StatValueMapperTests
             }
         };
 
-        var mapper = new StatValueMapper();
         var result = StatValueMapper.MapToStatValueWithCharacterObject(statValue);
 
         Assert.Equal(statValue.Id, result.Id);
@@ -96,7 +93,6 @@ public class StatValueMapperTests
             Character = null
         };
 
-        var mapper = new StatValueMapper();
         var result = StatValueMapper.MapToStatValueWithCharacterObject(statValue);
 
         Assert.Equal(statValue.Id, result.Id);

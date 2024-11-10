@@ -122,7 +122,6 @@ public class StatService : IStatService
             .ToListAsync();
 
         var statDetailDto = new StatDetailDto();
-        var statMapper = new StatMapper();
 
         if (stat == null) return statDetailDto;
 

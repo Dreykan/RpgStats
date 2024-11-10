@@ -41,7 +41,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetPlatform();
-        _platformForUpdateDto.Name = _platform.Name;
+        _platformForUpdateDto.Name = _platform?.Name;
     }
 
     private async Task GetPlatform()

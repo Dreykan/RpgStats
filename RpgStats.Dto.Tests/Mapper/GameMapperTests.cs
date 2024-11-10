@@ -14,7 +14,6 @@ public class GameMapperTests
             Id = 1,
             Name = "Test Game"
         };
-        var mapper = new GameMapper();
 
         // Act
         var result = GameMapper.MapToGameWithoutFkObjectsDto(game);
@@ -37,7 +36,6 @@ public class GameMapperTests
         };
         var platforms = new List<Platform?> { new() { Id = 1, Name = "PC" } };
         var stats = new List<Stat?> { new() { Id = 1, Name = "Strength" } };
-        var mapper = new GameMapper();
 
         // Act
         var result = GameMapper.MapToGameDetailDto(game, platforms, stats);
@@ -59,7 +57,6 @@ public class GameMapperTests
                 new() { Id = 1, Name = "Character1" }
             }
         };
-        var mapper = new GameMapper();
 
         // Act
         var result = GameMapper.MapToGameDetailDto(game, new List<Platform?>(), new List<Stat?>());
@@ -79,7 +76,6 @@ public class GameMapperTests
         {
             new() { Id = 1, Name = "PC" }
         };
-        var mapper = new GameMapper();
 
         // Act
         var result = GameMapper.MapToGameDetailDto(game, platforms, new List<Stat?>());
@@ -99,7 +95,6 @@ public class GameMapperTests
         {
             new() { Id = 1, Name = "Strength" }
         };
-        var mapper = new GameMapper();
 
         // Act
         var result = GameMapper.MapToGameDetailDto(game, new List<Platform?>(), stats);

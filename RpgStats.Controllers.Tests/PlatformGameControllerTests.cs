@@ -93,9 +93,9 @@ public class PlatformGameControllerTests
 
         var createdResult = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(nameof(PlatformGameController.GetPlatformGameById), createdResult.ActionName);
-        Assert.Equal(response.Id, createdResult.RouteValues["platformGameId"]);
-        Assert.Equal(response.GameId, createdResult.RouteValues["gameId"]);
-        Assert.Equal(response.PlatformId, createdResult.RouteValues["platformId"]);
+        Assert.Equal(response.Id, createdResult.RouteValues?["platformGameId"]);
+        Assert.Equal(response.GameId, createdResult.RouteValues?["gameId"]);
+        Assert.Equal(response.PlatformId, createdResult.RouteValues?["platformId"]);
         Assert.Equal(response, createdResult.Value);
     }
     

@@ -9,7 +9,6 @@ public class StatMapperTests
     public void MapToStatWithoutFkObjectsDto_MapsCorrectly()
     {
         var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR" };
-        var mapper = new StatMapper();
 
         var result = StatMapper.MapToStatWithoutFkObjectsDto(stat);
 
@@ -23,7 +22,6 @@ public class StatMapperTests
     {
         var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR", GameStats = new List<GameStat> { new() { Game = new Game { Id = 1, Name = "Game1" } } } };
         var statValues = new List<StatValue> { new() { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
-        var mapper = new StatMapper();
 
         var result = StatMapper.MapToStatDetailDto(stat, statValues);
 
@@ -39,7 +37,6 @@ public class StatMapperTests
     {
         var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR", GameStats = new List<GameStat>() };
         var statValues = new List<StatValue> { new() { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
-        var mapper = new StatMapper();
 
         var result = StatMapper.MapToStatDetailDto(stat, statValues);
 
@@ -55,7 +52,6 @@ public class StatMapperTests
     {
         var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR", GameStats = new List<GameStat> { new() { Game = new Game { Id = 1, Name = "Game1" } } } };
         var statValues = new List<StatValue>();
-        var mapper = new StatMapper();
 
         var result = StatMapper.MapToStatDetailDto(stat, statValues);
 

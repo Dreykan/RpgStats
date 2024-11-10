@@ -10,24 +10,24 @@
 
 @code {
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
-    public string ContentText { get; set; }
+    public string? ContentText { get; set; }
     
     [Parameter]
-    public string ButtonText { get; set; }
+    public string? ButtonText { get; set; }
     
     [Parameter]
     public Color Color { get; set; }
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private void Submit()
     {
-        MudDialog.Close(DialogResult.Ok(true));
+        MudDialog?.Close(DialogResult.Ok(true));
     }
 }

@@ -16,7 +16,7 @@
         <MudPaper Class="pa-0">
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForCreationDto.Name" TextChanged="OnNameChanged" Immediate="true"/>
-                <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="_selectedGame" Clearable="true">
+                <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="SelectedGame" Clearable="true">
                     @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
                     {
                         <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
@@ -48,6 +48,7 @@
     </MudItem>
 </MudGrid>
 
+@* ReSharper disable NotAccessedField.Local *@
 @code {
     private readonly CharacterForCreationDto _characterForCreationDto = new();
     private List<GameDto> _gameDtos = new();
@@ -55,7 +56,7 @@
     private bool _success;
     private string[] _errors = { };
     private string _value = string.Empty;
-    private IEnumerable<string> _selectedGame { get; set; } = new HashSet<string> { };
+    private IEnumerable<string> SelectedGame { get; set; } = new HashSet<string> { };
     private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
@@ -70,7 +71,7 @@
 
     private async Task Create()
     {
-        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == _selectedGame.FirstOrDefault());
+        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
         var result = selectedGame != null ? await CharacterService.CreateCharacterAsync(selectedGame.Id, _characterForCreationDto) : null;
 
         if (result?.Id != null)
@@ -106,7 +107,7 @@
 
     private async void ShowErrorMessage(string text)
     {
-        bool? result = await DialogService.ShowMessageBox("Error", text, "OK");
+        await DialogService.ShowMessageBox("Error", text);
     }
 
     private void ClearImage()
@@ -126,16 +127,17 @@
         if (string.IsNullOrEmpty(GameName)) return Task.CompletedTask;
         var gameDto = _gameDtos.FirstOrDefault(x => x.Name == GameName);
         if (gameDto == null || gameDto.Name == null) return Task.CompletedTask;
-        _selectedGame = new HashSet<string> { gameDto.Name };
+        SelectedGame = new HashSet<string> { gameDto.Name };
         _value = gameDto.Name;
         return Task.CompletedTask;
     }
 
     private void OnNameChanged(string value)
     {
-        if (_selectedGame.Any())
+        if (SelectedGame.Any())
         {
             _success = !string.IsNullOrWhiteSpace(value); 
         }
     }
 }
+@* ReSharper restore NotAccessedField.Local *@

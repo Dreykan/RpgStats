@@ -114,7 +114,6 @@ public class PlatformService : IPlatformService
             .ToListAsync();
 
         var platformDetailDtos = new List<PlatformDetailDto>();
-        var platformMapper = new PlatformMapper();
 
         foreach (var platform in platforms)
         {
@@ -139,7 +138,6 @@ public class PlatformService : IPlatformService
             .ToListAsync();
 
         var platformDetailDto = new PlatformDetailDto();
-        var platformMapper = new PlatformMapper();
 
         if (platform?.PlatformGames == null) return platformDetailDto;
         var tmpGames = platform.PlatformGames.Select(pg => games.FirstOrDefault(g => g.Id == pg.GameId)).ToList();

@@ -30,46 +30,63 @@ else
         <MudItem lg="8" md="6" sm="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
                 <MudText Typo="Typo.h5" Class="mb-1">Platforms</MudText>
-                @foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
+                @if (_game != null)
                 {
-                    <MudText Typo="Typo.body1" Class="mb-1">- @platform.Name</MudText>
-                }
-                <MudText Typo="Typo.h5" Class="mt-4">Characters
-                    <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Info" Href="@($"/newCharacter/{_game.Name}")"/>
-                </MudText>
-                <MudGrid Class="my-4">
-                    @foreach (var character in _game.CharacterWithoutFkObjectsDtos)
+                    if (_game.PlatformWithoutFkObjectsDtos != null)
                     {
-                        <MudLink Class="mx-5" Typo="Typo.body1" Color="Color.Info" Href="@($"/characterDetail/{character.Id}")">
-                            @if (character.Picture == null)
-                            {
-                                <MudAvatar Size="Size.Large">
-                                    <MudImage Src="images/placeholder-3.png"></MudImage>
-                                </MudAvatar>
-                            }
-                            else
-                            {
-                                <MudAvatar Size="Size.Large">
-                                    <MudImage Src="@TurnByteArrayToImage(character.Picture)"></MudImage>
-                                </MudAvatar>
-                            }
-                            <MudText Typo="Typo.body1" Class="mb-1">@character.Name</MudText>
-                        </MudLink>
+                        foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
+                        {
+                            <MudText Typo="Typo.body1" Class="mb-1">- @platform.Name</MudText>
+                        }
                     }
-                </MudGrid>
-                <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="Diese Statuswerte-Typen kommen in diesem Spiel vor.">
-                    <MudText Typo="Typo.h5">Status-Typen
-                        <MudIconButton Icon="@Icons.Material.Filled.AddLink" Color="Color.Info" OnClick="async () => await LinkGameStat()"/>
+
+                    <MudText Typo="Typo.h5" Class="mt-4">
+                        Characters
+                        <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Info" Href="@($"/newCharacter/{_game.Name}")"/>
                     </MudText>
-                </MudTooltip>
-                <MudGrid Class="my-4">
-                    @foreach (var statusType in _game.StatWithoutFkObjectsDtos)
-                    {
-                        <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="@statusType.Name">
-                            <MudChip Class="mx-9" Color="Color.Secondary">@statusType.ShortName</MudChip>
-                        </MudTooltip>
-                    }
-                </MudGrid>
+                    <MudGrid Class="my-4">
+                        @if (_game.CharacterWithoutFkObjectsDtos != null)
+                        {
+                            foreach (var character in _game.CharacterWithoutFkObjectsDtos)
+                            {
+                                <MudLink Class="mx-5" Typo="Typo.body1" Color="Color.Info" Href="@($"/characterDetail/{character.Id}")">
+                                    @if (character.Picture == null)
+                                    {
+                                        <MudAvatar Size="Size.Large">
+                                            <MudImage Src="images/placeholder-3.png"></MudImage>
+                                        </MudAvatar>
+                                    }
+                                    else
+                                    {
+                                        <MudAvatar Size="Size.Large">
+                                            <MudImage Src="@TurnByteArrayToImage(character.Picture)"></MudImage>
+                                        </MudAvatar>
+                                    }
+                                    <MudText Typo="Typo.body1" Class="mb-1">@character.Name</MudText>
+                                </MudLink>
+                            }
+                        }
+                    </MudGrid>
+                    <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="Diese Statuswerte-Typen kommen in diesem Spiel vor.">
+                        <MudText Typo="Typo.h5">
+                            Status-Typen
+                            <MudIconButton Icon="@Icons.Material.Filled.AddLink" Color="Color.Info" OnClick="async () => await LinkGameStat()"/>
+                        </MudText>
+                    </MudTooltip>
+                    <MudGrid Class="my-4">
+                        @if (_game.StatWithoutFkObjectsDtos != null)
+                        {
+                            foreach (var statusType in _game.StatWithoutFkObjectsDtos)
+                            {
+                                <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="@statusType.Name">
+                                    <MudChip Class="mx-9" Color="Color.Secondary">@statusType.ShortName</MudChip>
+                                </MudTooltip>
+                            }
+                        }
+                    </MudGrid>
+                }
+
+
             </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">
                 <MudItem xs="6">
@@ -134,7 +151,7 @@ else
         var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
 
         var dialogParameter = new DialogParameters { { "Game", _game } };
-        var dialog = await DialogService.ShowAsync<LinkGameStatDialog>($"Status-Typ mit dem Spiel: {_game.Name} verknüpfen.", dialogParameter, dialogOptions);
+        var dialog = await DialogService.ShowAsync<LinkGameStatDialog>($"Status-Typ mit dem Spiel: {_game?.Name} verknüpfen.", dialogParameter, dialogOptions);
         var result = await dialog.Result;
 
         if (result.Canceled == false)

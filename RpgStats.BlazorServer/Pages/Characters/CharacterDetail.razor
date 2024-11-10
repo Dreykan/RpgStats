@@ -31,21 +31,24 @@ else
         <MudItem lg="8" md="6" sm="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
                 <MudText>
-                    <MudLink Typo="Typo.h5" Href="@($"/gameDetail/{_character.GameWithoutFkObjectsDto.Id}")">
-                        @if (_character.GameWithoutFkObjectsDto.Picture == null)
-                        {
-                            <MudAvatar Size="Size.Large">
-                                <MudImage Src="images/placeholder-3.png"></MudImage>
-                            </MudAvatar>
-                        }
-                        else
-                        {
-                            <MudAvatar Size="Size.Large">
-                                <MudImage Src="@TurnByteArrayToImage(_character.GameWithoutFkObjectsDto.Picture)"></MudImage>
-                            </MudAvatar>
-                        }
-                        @_character.GameWithoutFkObjectsDto.Name
-                    </MudLink>
+                    @if (_character.GameWithoutFkObjectsDto != null)
+                    {
+                        <MudLink Typo="Typo.h5" Href="@($"/gameDetail/{_character.GameWithoutFkObjectsDto.Id}")">
+                            @if (_character.GameWithoutFkObjectsDto.Picture == null)
+                            {
+                                <MudAvatar Size="Size.Large">
+                                    <MudImage Src="images/placeholder-3.png"></MudImage>
+                                </MudAvatar>
+                            }
+                            else
+                            {
+                                <MudAvatar Size="Size.Large">
+                                    <MudImage Src="@TurnByteArrayToImage(_character.GameWithoutFkObjectsDto.Picture)"></MudImage>
+                                </MudAvatar>
+                            }
+                            @_character.GameWithoutFkObjectsDto.Name
+                        </MudLink>
+                    }
                 </MudText>
             </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">

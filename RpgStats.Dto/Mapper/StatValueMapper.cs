@@ -16,9 +16,6 @@ public class StatValueMapper
             ContainedBonusPercent = (int)statValue.ContainedBonusPercent
         };
 
-        // Map Stat-Property
-        var statMapper = new StatMapper();
-
         if (statValue.Stat != null)
             statValueWithStatObjectDto.StatWithoutFkObjectsDto =
                 StatMapper.MapToStatWithoutFkObjectsDto(statValue.Stat);
@@ -37,9 +34,6 @@ public class StatValueMapper
             ContainedBonusNum = (int)statValue.ContainedBonusNum,
             ContainedBonusPercent = (int)statValue.ContainedBonusPercent
         };
-
-        // Map Character-Property
-        var characterMapper = new CharacterMapper();
 
         if (statValue.Character != null)
         {

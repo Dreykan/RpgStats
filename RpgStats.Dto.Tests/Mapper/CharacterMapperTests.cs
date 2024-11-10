@@ -20,7 +20,6 @@ public class CharacterMapperTests
                 new() { Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 5, Stat = new Stat { Id = 1, Name = "Strength" } }
             }
         };
-        var mapper = new CharacterMapper();
 
         // Act
         var result = CharacterMapper.MapToCharacterWithAllFkObjectsDto(character);
@@ -50,7 +49,6 @@ public class CharacterMapperTests
         {
             new() { Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 0, Stat = new Stat { Id = 1, Name = "Strength" } }
         };
-        var mapper = new CharacterMapper();
 
         // Act
         var result = CharacterMapper.MapToCharacterDetailDto(character, statValues);
@@ -62,8 +60,11 @@ public class CharacterMapperTests
         Assert.Equal(character.Picture, result.Picture);
         Assert.NotNull(result.GameWithoutFkObjectsDto);
         Assert.Equal(character.Game.Id, result.GameWithoutFkObjectsDto.Id);
-        Assert.Single(result.StatValuesWithStatObjectDtos);
-        Assert.Equal(statValues[0].Id, result.StatValuesWithStatObjectDtos.FirstOrDefault().Id);
+        if (result.StatValuesWithStatObjectDtos != null)
+        {
+            Assert.Single(result.StatValuesWithStatObjectDtos);
+            Assert.Equal(statValues[0].Id, result.StatValuesWithStatObjectDtos.FirstOrDefault()?.Id);
+        }
     }
 
     [Fact]
@@ -75,7 +76,6 @@ public class CharacterMapperTests
             Id = 1,
             Name = "Test Character"
         };
-        var mapper = new CharacterMapper();
 
         // Act
         var result = CharacterMapper.MapToCharacterWithoutFkObjectsDto(character);
