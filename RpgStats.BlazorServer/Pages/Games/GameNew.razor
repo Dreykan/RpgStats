@@ -135,11 +135,11 @@
         return id;
     }
 
-    private async void UploadFiles(IBrowserFile file)
+    private async void UploadFiles(IBrowserFile? file)
     {
         if (_files.Count <= 0)
         {
-            _files.Add(file);
+            if (file != null) _files.Add(file);
         }
         else
         {
@@ -147,8 +147,8 @@
         }
 
         using var ms = new MemoryStream();
-        var stream = file.OpenReadStream(4096000L);
-        await stream.CopyToAsync(ms);
+        var stream = file?.OpenReadStream(4096000L);
+        if (stream != null) await stream.CopyToAsync(ms);
         _imageBytes = ms.ToArray();
 
         var resizedImageBytes = ImageService.ResizeImageTo512(_imageBytes, SKFilterQuality.High);

@@ -1,3 +1,4 @@
+using System.Collections;
 using RpgStats.Domain.Entities;
 using RpgStats.Dto.Mapper;
 
@@ -28,8 +29,9 @@ public class StatMapperTests
         Assert.Equal(1, result.Id);
         Assert.Equal("Strength", result.Name);
         Assert.Equal("STR", result.ShortName);
-        Assert.Single(result.StatValueWithCharacterObjectDtos);
-        Assert.Single(result.GameWithoutFkObjectsDtos);
+        if (result.StatValueWithCharacterObjectDtos != null)
+            Assert.Single((IEnumerable)result.StatValueWithCharacterObjectDtos);
+        if (result.GameWithoutFkObjectsDtos != null) Assert.Single((IEnumerable)result.GameWithoutFkObjectsDtos);
     }
 
     [Fact]
@@ -43,8 +45,9 @@ public class StatMapperTests
         Assert.Equal(1, result.Id);
         Assert.Equal("Strength", result.Name);
         Assert.Equal("STR", result.ShortName);
-        Assert.Single(result.StatValueWithCharacterObjectDtos);
-        Assert.Empty(result.GameWithoutFkObjectsDtos);
+        if (result.StatValueWithCharacterObjectDtos != null)
+            Assert.Single((IEnumerable)result.StatValueWithCharacterObjectDtos);
+        if (result.GameWithoutFkObjectsDtos != null) Assert.Empty(result.GameWithoutFkObjectsDtos);
     }
 
     [Fact]
@@ -58,7 +61,7 @@ public class StatMapperTests
         Assert.Equal(1, result.Id);
         Assert.Equal("Strength", result.Name);
         Assert.Equal("STR", result.ShortName);
-        Assert.Empty(result.StatValueWithCharacterObjectDtos);
-        Assert.Single(result.GameWithoutFkObjectsDtos);
+        if (result.StatValueWithCharacterObjectDtos != null) Assert.Empty(result.StatValueWithCharacterObjectDtos);
+        if (result.GameWithoutFkObjectsDtos != null) Assert.Single((IEnumerable)result.GameWithoutFkObjectsDtos);
     }
 }

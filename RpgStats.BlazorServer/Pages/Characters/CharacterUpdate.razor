@@ -65,7 +65,7 @@ else
     private bool _success;
     private string[] _errors = { };
     private string _value = string.Empty;
-    private IEnumerable<string?> SelectedGame { get; set; } = new HashSet<string> { };
+    private IEnumerable<string?> SelectedGame { get; set; } = new HashSet<string>();
     private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
@@ -112,20 +112,20 @@ else
         }
     }
 
-    private async Task UploadFile(IBrowserFile file)
+    private async Task UploadFile(IBrowserFile? file)
     {
         if (_files.Count <= 0)
         {
-            _files.Add(file);
+            if (file != null) _files.Add(file);
         }
         else
         {
-            _files[0] = file;
+            if (file != null) _files[0] = file;
         }
 
         using MemoryStream ms = new();
-        var stream = file.OpenReadStream(4096000L);
-        await stream.CopyToAsync(ms);
+        var stream = file?.OpenReadStream(4096000L);
+        if (stream != null) await stream.CopyToAsync(ms);
         _imageBytes = ms.ToArray();
 
         var resizedImageBytes = ImageService.ResizeImageTo512(_imageBytes, SKFilterQuality.High);

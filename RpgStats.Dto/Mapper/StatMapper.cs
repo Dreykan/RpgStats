@@ -36,7 +36,11 @@ public class StatMapper
         // Map Game-Property
         if (stat.GameStats == null) return statDetailDto;
         var gameWithoutFkObjectsDtos = stat.GameStats
-            .Select(gameStat => GameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game)).ToList();
+            .Select(gameStat =>
+            {
+                if (gameStat.Game != null) return GameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game);
+                return GameMapper.MapToGameWithoutFkObjectsDto(new Game());
+            }).ToList();
 
         statDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectsDtos;
 

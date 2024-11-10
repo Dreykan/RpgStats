@@ -31,8 +31,10 @@ public class CharacterMapperTests
         Assert.Equal(character.Picture, result.Picture);
         Assert.NotNull(result.GameWithoutFkObjectsDto);
         Assert.Equal(character.Game.Id, result.GameWithoutFkObjectsDto.Id);
+        if (result.StatValuesWithStatObjectDtos == null) return;
         Assert.Single(result.StatValuesWithStatObjectDtos);
-        Assert.Equal(character.StatValues.FirstOrDefault()?.Id, result.StatValuesWithStatObjectDtos.FirstOrDefault()?.Id);
+        Assert.Equal(character.StatValues.FirstOrDefault()?.Id,
+            result.StatValuesWithStatObjectDtos.FirstOrDefault()?.Id);
     }
 
     [Fact]

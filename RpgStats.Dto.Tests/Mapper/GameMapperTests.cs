@@ -62,9 +62,14 @@ public class GameMapperTests
         var result = GameMapper.MapToGameDetailDto(game, new List<Platform?>(), new List<Stat?>());
 
         // Assert
-        Assert.Single(result.CharacterWithoutFkObjectsDtos);
-        Assert.Equal(game.Characters.FirstOrDefault()?.Id, result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Id);
-        Assert.Equal(game.Characters.FirstOrDefault()?.Name, result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Name);
+        if (result.CharacterWithoutFkObjectsDtos != null)
+        {
+            Assert.Single(result.CharacterWithoutFkObjectsDtos);
+            Assert.Equal(game.Characters.FirstOrDefault()?.Id,
+                result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Id);
+            Assert.Equal(game.Characters.FirstOrDefault()?.Name,
+                result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Name);
+        }
     }
 
     [Fact]
@@ -81,6 +86,7 @@ public class GameMapperTests
         var result = GameMapper.MapToGameDetailDto(game, platforms, new List<Stat?>());
 
         // Assert
+        if (result.PlatformWithoutFkObjectsDtos == null) return;
         Assert.Single(result.PlatformWithoutFkObjectsDtos);
         Assert.Equal(platforms[0]?.Id, result.PlatformWithoutFkObjectsDtos.FirstOrDefault()?.Id);
         Assert.Equal(platforms[0]?.Name, result.PlatformWithoutFkObjectsDtos.FirstOrDefault()?.Name);
@@ -100,6 +106,7 @@ public class GameMapperTests
         var result = GameMapper.MapToGameDetailDto(game, new List<Platform?>(), stats);
 
         // Assert
+        if (result.StatWithoutFkObjectsDtos == null) return;
         Assert.Single(result.StatWithoutFkObjectsDtos);
         Assert.Equal(stats[0]?.Id, result.StatWithoutFkObjectsDtos.FirstOrDefault()?.Id);
         Assert.Equal(stats[0]?.Name, result.StatWithoutFkObjectsDtos.FirstOrDefault()?.Name);

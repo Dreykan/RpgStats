@@ -103,7 +103,7 @@ else
         foreach (var statValue in _statValues)
         {
             var stat = await StatService.GetStatByIdAsync(statValue.StatId);
-            if (_stats.Contains(stat) == false)
+            if (stat != null && _stats.Contains(stat) == false)
             {
                 _stats.Add(stat);
             }

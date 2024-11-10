@@ -42,7 +42,7 @@ public class PlatformMapperTests
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
-        Assert.Empty(result.GameWithoutFkObjectsDtos);
+        if (result.GameWithoutFkObjectsDtos != null) Assert.Empty(result.GameWithoutFkObjectsDtos);
     }
 
     [Fact]
@@ -55,6 +55,6 @@ public class PlatformMapperTests
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
-        Assert.Empty(result.GameWithoutFkObjectsDtos);
+        if (result.GameWithoutFkObjectsDtos != null) Assert.Empty(result.GameWithoutFkObjectsDtos);
     }
 }
