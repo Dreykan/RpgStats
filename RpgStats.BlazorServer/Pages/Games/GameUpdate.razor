@@ -22,7 +22,7 @@ else
             <MudPaper Class="pa-4">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                     <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name" TextChanged="OnNameChanged" Immediate="true" />
-                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="_selectedPlatforms" Clearable="true">
+                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="SelectedPlatforms" Clearable="true">
                         @foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
@@ -59,13 +59,13 @@ else
     </MudGrid>
 }
 
-
+@* ReSharper disable NotAccessedField.Local *@
 @code {
     private GameDetailDto? _game;
-    private GameForUpdateDto _gameForUpdateDto = new();
+    private readonly GameForUpdateDto _gameForUpdateDto = new();
     private List<PlatformDto> _platformDtos = new();
-    private IEnumerable<string?> _selectedPlatforms { get; set; } = new HashSet<string>() { };
-    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private IEnumerable<string?> SelectedPlatforms { get; set; } = new HashSet<string>();
+    private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private string _value = "Nothing selected.";
     private MudForm? _form;
     private bool _success;
@@ -99,7 +99,7 @@ else
         await PlatformGameService.DeletePlatformGameByGameIdAsync(Id);
 
         List<long> selectPlatformIds = new();
-        foreach (var platformName in _selectedPlatforms)
+        foreach (var platformName in SelectedPlatforms)
         {
             if (string.IsNullOrEmpty(platformName))
 			{
@@ -116,7 +116,7 @@ else
 
         _gameForUpdateDto.Name = "";
         _files.Clear();
-        _selectedPlatforms = new HashSet<string>() { };
+        SelectedPlatforms = new HashSet<string>();
 
         await ShowSuccessDialog();
 
@@ -125,12 +125,14 @@ else
 
     private async Task ShowSuccessDialog()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Das Spiel wurde erfolgreich geändert.");
-        parameters.Add("ButtonText", "OK");
-        parameters.Add("Color", Color.Success);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Das Spiel wurde erfolgreich geändert." },
+            { "ButtonText", "OK" },
+            { "Color", Color.Success }
+        };
 
-        var options = new DialogOptions()
+        var options = new DialogOptions
         {
             CloseButton = true,
             MaxWidth = MaxWidth.Small
@@ -152,7 +154,7 @@ else
         if (_game?.PlatformWithoutFkObjectsDtos != null)
             foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
             {
-                _selectedPlatforms = _selectedPlatforms.Append(platform.Name);
+                SelectedPlatforms = SelectedPlatforms.Append(platform.Name);
             }
 
         if (_game?.Picture != null)
@@ -169,20 +171,20 @@ else
         return id;
     }
 
-    private async void UploadFiles(IBrowserFile file)
+    private async void UploadFiles(IBrowserFile? file)
     {
         if (_files.Count <= 0)
         {
-            _files.Add(file);
+            if (file != null) _files.Add(file);
         }
         else
         {
-            _files[0] = file;
+            if (file != null) _files[0] = file;
         }
 
-        using MemoryStream ms = new MemoryStream();
-        var stream = file.OpenReadStream(4096000L);
-        await stream.CopyToAsync(ms);
+        using var ms = new MemoryStream();
+        var stream = file?.OpenReadStream(4096000L);
+        if (stream != null) await stream.CopyToAsync(ms);
         _imageBytes = ms.ToArray();
 
         var resizedImageBytes = ImageService.ResizeImageTo512(_imageBytes, SKFilterQuality.High);
@@ -190,10 +192,9 @@ else
         _gameForUpdateDto.Picture = resizedImageBytes;
     }
 
-    private string TurnByteArrayToImage(Byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
-        var imageSrc = string.Empty;
-        imageSrc = ImageService.ConvertByteArrayToImage(imageBytes);
+        var imageSrc = ImageService.ConvertByteArrayToImage(imageBytes);
 
         return imageSrc;
     }
@@ -207,9 +208,10 @@ else
 
     private void OnNameChanged(string value)
 	{
-        if (_selectedPlatforms.Any())
+        if (SelectedPlatforms.Any())
 		{
 			_success = !string.IsNullOrWhiteSpace(value);
 		}
 	}
 }
+@* ReSharper restore NotAccessedField.Local *@

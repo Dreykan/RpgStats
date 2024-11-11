@@ -6,8 +6,6 @@ namespace RpgStats.Repo;
 
 public class RpgStatsContext : DbContext
 {
-    private readonly string _connectionString = string.Empty;
-
     public RpgStatsContext(DbContextOptions<RpgStatsContext> options) : base(options)
     {
         
@@ -29,7 +27,7 @@ public class RpgStatsContext : DbContext
         }
     }
 
-    private void SeedData(ModelBuilder modelBuilder)
+    private static void SeedData(ModelBuilder modelBuilder)
     {
         new CharacterConfiguration().Configure(modelBuilder.Entity<Character>());
         new GameConfiguration().Configure(modelBuilder.Entity<Game>());

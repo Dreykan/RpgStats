@@ -29,13 +29,13 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
     [Parameter] public StatDto Stat { get; set; } = new();
 
     private readonly StatDto _stat = new();
     private bool _isSubmitDisabled = true;
-    private MudTextField<string> _shortNameTextField;
+    private MudTextField<string>? _shortNameTextField;
     
     protected override void OnInitialized()
     {
@@ -48,18 +48,18 @@
         if (firstRender)
         {
             await Task.Delay(50);
-            await _shortNameTextField.FocusAsync();
+            if (_shortNameTextField != null) await _shortNameTextField.FocusAsync();
         }
     }
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private void Submit()
     {
-        MudDialog.Close(DialogResult.Ok(_stat));
+        MudDialog?.Close(DialogResult.Ok(_stat));
     }
 
     private void CheckIfFieldsAreFilled()

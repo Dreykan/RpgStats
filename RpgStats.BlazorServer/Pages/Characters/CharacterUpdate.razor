@@ -21,7 +21,7 @@ else
             <MudPaper Class="pa-0">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                     <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForUpdateDto.Name" TextChanged="OnNameChanged" Immediate="true"/>
-                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="_selectedGame" Clearable="true">
+                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="SelectedGame" Clearable="true">
                         @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
@@ -56,16 +56,17 @@ else
 
 
 
+@* ReSharper disable NotAccessedField.Local *@
 @code {
     private CharacterDetailDto? _character;
-    private CharacterForUpdateDto _characterForUpdateDto = new();
+    private readonly CharacterForUpdateDto _characterForUpdateDto = new();
     private List<GameDto> _gameDtos = new();
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
     private string _value = string.Empty;
-    private IEnumerable<string?> _selectedGame { get; set; } = new HashSet<string>() { };
-    private IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private IEnumerable<string?> SelectedGame { get; set; } = new HashSet<string>();
+    private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
     [Parameter]
@@ -91,7 +92,7 @@ else
             _characterForUpdateDto.Picture = _character?.Picture;
         }
 
-        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == _selectedGame.FirstOrDefault());
+        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
 
         if (_character == null || selectedGame == null)
         {
@@ -111,20 +112,20 @@ else
         }
     }
 
-    private async Task UploadFile(IBrowserFile file)
+    private async Task UploadFile(IBrowserFile? file)
     {
         if (_files.Count <= 0)
         {
-            _files.Add(file);
+            if (file != null) _files.Add(file);
         }
         else
         {
-            _files[0] = file;
+            if (file != null) _files[0] = file;
         }
 
         using MemoryStream ms = new();
-        var stream = file.OpenReadStream(4096000L);
-        await stream.CopyToAsync(ms);
+        var stream = file?.OpenReadStream(4096000L);
+        if (stream != null) await stream.CopyToAsync(ms);
         _imageBytes = ms.ToArray();
 
         var resizedImageBytes = ImageService.ResizeImageTo512(_imageBytes, SKFilterQuality.High);
@@ -134,7 +135,7 @@ else
 
     private async void ShowErrorMessage(string text)
     {
-        bool? result = await DialogService.ShowMessageBox("Error", text, "OK");
+        await DialogService.ShowMessageBox("Error", text);
     }
 
     private void ClearImage()
@@ -144,7 +145,7 @@ else
         _files.Clear();
     }
 
-    private string TurnByteArrayToImage(Byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
@@ -160,7 +161,7 @@ else
 
         if (_character.GameWithoutFkObjectsDto != null)
         {
-            _selectedGame = _selectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
+            SelectedGame = SelectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
         }
 
         if (_character.Picture != null)
@@ -172,9 +173,10 @@ else
 
     private void OnNameChanged(string value)
     {
-        if (_selectedGame.Any())
+        if (SelectedGame.Any())
         {
             _success = !string.IsNullOrWhiteSpace(value);
         }
 	}
 }
+@* ReSharper restore NotAccessedField.Local *@

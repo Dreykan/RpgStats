@@ -18,10 +18,10 @@ public class PlatformGameControllerTests
         
         _platformGames = new List<PlatformGameDto>
         {
-            new PlatformGameDto { Id = 1, PlatformId = 1, GameId = 1},
-            new PlatformGameDto { Id = 2, PlatformId = 2, GameId = 2},
-            new PlatformGameDto { Id = 3, PlatformId = 1, GameId = 3},
-            new PlatformGameDto { Id = 4, PlatformId = 3, GameId = 1}
+            new() { Id = 1, PlatformId = 1, GameId = 1},
+            new() { Id = 2, PlatformId = 2, GameId = 2},
+            new() { Id = 3, PlatformId = 1, GameId = 3},
+            new() { Id = 4, PlatformId = 3, GameId = 1}
         };
     }
     
@@ -41,7 +41,7 @@ public class PlatformGameControllerTests
     [Fact]
     public async Task GetAllPlatformGamesByPlatform_ReturnsPlatformGamesByPlatform()
     {
-        var platformId = 1;
+        const int platformId = 1;
         _mockService.Setup(x => x.GetAllPlatformGamesByPlatformIdAsync(platformId))
             .ReturnsAsync(_platformGames.Where(x => x.PlatformId == platformId).ToList());
 
@@ -55,7 +55,7 @@ public class PlatformGameControllerTests
     [Fact]
     public async Task GetAllPlatformGamesByGame_ReturnsPlatformGamesByGame()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetAllPlatformGamesByGameIdAsync(gameId))
             .ReturnsAsync(_platformGames.Where(x => x.GameId == gameId).ToList());
 
@@ -69,7 +69,7 @@ public class PlatformGameControllerTests
     [Fact]
     public async Task GetPlatformGameById_ReturnsPlatformGameById()
     {
-        var platformGameId = 1;
+        const int platformGameId = 1;
         _mockService.Setup(x => x.GetPlatformGameByIdAsync(platformGameId))
             .ReturnsAsync(_platformGames.FirstOrDefault(x => x.Id == platformGameId));
 
@@ -83,8 +83,8 @@ public class PlatformGameControllerTests
     [Fact]
     public async Task CreatePlatformGame_ReturnsCreatedPlatformGame()
     {
-        var platformId = 1;
-        var gameId = 1;
+        const int platformId = 1;
+        const int gameId = 1;
         var response = new PlatformGameDto { Id = 5, PlatformId = platformId, GameId = gameId };
         _mockService.Setup(x => x.CreatePlatformGameAsync(platformId, gameId))
             .ReturnsAsync(response);
@@ -93,17 +93,17 @@ public class PlatformGameControllerTests
 
         var createdResult = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(nameof(PlatformGameController.GetPlatformGameById), createdResult.ActionName);
-        Assert.Equal(response.Id, createdResult.RouteValues["platformGameId"]);
-        Assert.Equal(response.GameId, createdResult.RouteValues["gameId"]);
-        Assert.Equal(response.PlatformId, createdResult.RouteValues["platformId"]);
+        Assert.Equal(response.Id, createdResult.RouteValues?["platformGameId"]);
+        Assert.Equal(response.GameId, createdResult.RouteValues?["gameId"]);
+        Assert.Equal(response.PlatformId, createdResult.RouteValues?["platformId"]);
         Assert.Equal(response, createdResult.Value);
     }
     
     [Fact]
     public async Task CreatePlatformGame_ReturnsBadRequest()
     {
-        var platformId = 1;
-        var gameId = 1;
+        const int platformId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.CreatePlatformGameAsync(platformId, gameId))
             .ReturnsAsync((PlatformGameDto?)null);
 
@@ -115,9 +115,9 @@ public class PlatformGameControllerTests
     [Fact]
     public async Task UpdatePlatformGame_ReturnsUpdatedPlatformGame()
     {
-        var platformGameId = 1;
-        var platformId = 1;
-        var gameId = 1;
+        const int platformGameId = 1;
+        const int platformId = 1;
+        const int gameId = 1;
         var response = new PlatformGameDto { Id = platformGameId, PlatformId = platformId, GameId = gameId };
         _mockService.Setup(x => x.UpdatePlatformGameAsync(platformGameId, platformId, gameId))
             .ReturnsAsync(response);
@@ -130,11 +130,11 @@ public class PlatformGameControllerTests
     }
     
     [Fact]
-    public async Task UpdatePlaformGame_ReturnsBadRequest()
+    public async Task UpdatePlatformGame_ReturnsBadRequest()
     {
-        var platformGameId = 1;
-        var platformId = 1;
-        var gameId = 1;
+        const int platformGameId = 1;
+        const int platformId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.UpdatePlatformGameAsync(platformGameId, platformId, gameId))
             .ReturnsAsync((PlatformGameDto?)null);
 

@@ -33,25 +33,28 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudText Typo="Typo.h5">Games:</MudText>
-                        @foreach (var game in platform.GameWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
+                        @if (platform.GameWithoutFkObjectsDtos != null)
                         {
-                            <MudText>
-                                <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")" Color="Color.Info">
-                                    @if (game.Picture == null)
-                                    {
-                                        <MudAvatar Size="Size.Large">
-                                            <MudImage Src="images/placeholder-1.png"></MudImage>
-                                        </MudAvatar>
-                                    }
-                                    else
-                                    {
-                                        <MudAvatar Size="Size.Large">
-                                            <MudImage Src="@TurnByteArrayToImage(game.Picture)"></MudImage>
-                                        </MudAvatar>
-                                    }
-                                    @game.Name
-                                </MudLink>
-                            </MudText>
+                            foreach (var game in platform.GameWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
+                            {
+                                <MudText>
+                                    <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")" Color="Color.Info">
+                                        @if (game.Picture == null)
+                                        {
+                                            <MudAvatar Size="Size.Large">
+                                                <MudImage Src="images/placeholder-1.png"></MudImage>
+                                            </MudAvatar>
+                                        }
+                                        else
+                                        {
+                                            <MudAvatar Size="Size.Large">
+                                                <MudImage Src="@TurnByteArrayToImage(game.Picture)"></MudImage>
+                                            </MudAvatar>
+                                        }
+                                        @game.Name
+                                    </MudLink>
+                                </MudText>
+                            }
                         }
                     </MudCardContent>
                 </MudCard>
@@ -77,10 +80,12 @@
 
     private async Task DeletePlatform(long id)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Soll die Plattform wirklich gelöscht werden?");
-        parameters.Add("ButtonText", "Löschen");
-        parameters.Add("Color", Color.Error);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Soll die Plattform wirklich gelöscht werden?" },
+            { "ButtonText", "Löschen" },
+            { "Color", Color.Error }
+        };
 
         var options = new DialogOptions
         {
@@ -98,7 +103,7 @@
         }
     }
 
-    private string TurnByteArrayToImage(byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }

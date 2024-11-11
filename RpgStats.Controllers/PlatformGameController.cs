@@ -39,7 +39,7 @@ public class PlatformGameController : ControllerBase
         return Ok(platformGames);
     }
 
-    [HttpGet("{platformId:long}")]
+    [HttpGet("{platformGameId:long}")]
     [SwaggerOperation(Summary = "Get a Platform by Id")]
     public async Task<IActionResult> GetPlatformGameById(long platformGameId)
     {

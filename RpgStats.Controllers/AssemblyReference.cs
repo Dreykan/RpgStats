@@ -1,6 +1,3 @@
 ﻿namespace RpgStats.Controllers;
 
-public static class AssemblyReference
-{
-    
-}
+public static class AssemblyReference;

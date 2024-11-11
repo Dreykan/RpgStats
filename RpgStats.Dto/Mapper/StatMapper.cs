@@ -2,9 +2,9 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class StatMapper
+public static class StatMapper
 {
-    public StatWithoutFkObjectsDto MapToStatWithoutFkObjectsDto(Stat stat)
+    public static StatWithoutFkObjectsDto MapToStatWithoutFkObjectsDto(Stat stat)
     {
         // New Object and map simple properties
         var statWithoutFkObjectDto = new StatWithoutFkObjectsDto
@@ -17,7 +17,7 @@ public class StatMapper
         return statWithoutFkObjectDto;
     }
 
-    public StatDetailDto MapToStatDetailDto(Stat stat, List<StatValue> statValues)
+    public static StatDetailDto MapToStatDetailDto(Stat stat, List<StatValue> statValues)
     {
         // New Object and map simple properties
         var statDetailDto = new StatDetailDto
@@ -28,23 +28,19 @@ public class StatMapper
         };
 
         // Map StatValue-Property
-        var statValueMapper = new StatValueMapper();
-        var statValueWithCharacterObjectDto = new List<StatValueWithCharacterObjectDto>();
-        foreach (var statValue in statValues)
-        {
-            statValueWithCharacterObjectDto.Add(statValueMapper.MapToStatValueWithCharacterObject(statValue));
-        }
+        var statValueWithCharacterObjectDto = statValues
+            .Select(StatValueMapper.MapToStatValueWithCharacterObject).ToList();
 
         statDetailDto.StatValueWithCharacterObjectDtos = statValueWithCharacterObjectDto;
 
         // Map Game-Property
-        var gameMapper = new GameMapper();
-        var gameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>();
         if (stat.GameStats == null) return statDetailDto;
-        foreach (var gameStat in stat.GameStats)
-        {
-            gameWithoutFkObjectsDtos.Add(gameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game));
-        }
+        var gameWithoutFkObjectsDtos = stat.GameStats
+            .Select(gameStat =>
+            {
+                if (gameStat.Game != null) return GameMapper.MapToGameWithoutFkObjectsDto(gameStat.Game);
+                return GameMapper.MapToGameWithoutFkObjectsDto(new Game());
+            }).ToList();
 
         statDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectsDtos;
 

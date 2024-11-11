@@ -1,38 +1,37 @@
 ﻿using RpgStats.Domain.Exceptions;
 
-namespace RpgStats.Domain.Tests.Exceptions
+namespace RpgStats.Domain.Tests.Exceptions;
+
+public class GameNotFoundExceptionTests
 {
-    public class GameNotFoundExceptionTests
+    [Fact]
+    public void GameNotFoundException_Creation_Success()
     {
-        [Fact]
-        public void GameNotFoundException_Creation_Success()
-        {
-            long gameId = 456;
+        const long gameId = 456;
 
-            var exception = new GameNotFoundException(gameId);
+        var exception = new GameNotFoundException(gameId);
 
-            Assert.NotNull(exception);
-        }
+        Assert.NotNull(exception);
+    }
         
-        [Fact]
-        public void GameNotFoundException_Type_IsCorrect()
-        {
-            long gameId = 456;
+    [Fact]
+    public void GameNotFoundException_Type_IsCorrect()
+    {
+        const long gameId = 456;
 
-            var exception = new GameNotFoundException(gameId);
+        var exception = new GameNotFoundException(gameId);
 
-            Assert.IsType<GameNotFoundException>(exception);
-        }
+        Assert.IsType<GameNotFoundException>(exception);
+    }
 
-        [Fact]
-        public void GameNotFoundException_Message_IsCorrect()
-        {
-            long gameId = 456;
-            string expectedMessage = $"The Game with the identifier {gameId} was not found.";
+    [Fact]
+    public void GameNotFoundException_Message_IsCorrect()
+    {
+        const long gameId = 456;
+        string expectedMessage = $"The Game with the identifier {gameId} was not found.";
 
-            var exception = new GameNotFoundException(gameId);
+        var exception = new GameNotFoundException(gameId);
 
-            Assert.Equal(expectedMessage, exception.Message);
-        }
+        Assert.Equal(expectedMessage, exception.Message);
     }
 }

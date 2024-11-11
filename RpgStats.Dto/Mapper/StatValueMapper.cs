@@ -2,49 +2,43 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class StatValueMapper
+public static class StatValueMapper
 {
-    public StatValueWithStatObjectDto MapToStatValueWithStatObjectDto(StatValue statValue)
+    public static StatValueWithStatObjectDto MapToStatValueWithStatObjectDto(StatValue statValue)
     {
         // New Object and map simple properties
         var statValueWithStatObjectDto = new StatValueWithStatObjectDto
         {
             Id = statValue.Id,
-            Level = (int)statValue.Level,
-            Value = (int)statValue.Value,
-            ContainedBonusNum = (int)statValue.ContainedBonusNum,
-            ContainedBonusPercent = (int)statValue.ContainedBonusPercent
+            Level = statValue.Level ?? 0,
+            Value = statValue.Value ?? 0,
+            ContainedBonusNum = statValue.ContainedBonusNum ?? 0,
+            ContainedBonusPercent = statValue.ContainedBonusPercent ?? 0
         };
-
-        // Map Stat-Property
-        var statMapper = new StatMapper();
 
         if (statValue.Stat != null)
             statValueWithStatObjectDto.StatWithoutFkObjectsDto =
-                statMapper.MapToStatWithoutFkObjectsDto(statValue.Stat);
+                StatMapper.MapToStatWithoutFkObjectsDto(statValue.Stat);
 
         return statValueWithStatObjectDto;
     }
 
-    public StatValueWithCharacterObjectDto MapToStatValueWithCharacterObject(StatValue statValue)
+    public static StatValueWithCharacterObjectDto MapToStatValueWithCharacterObject(StatValue statValue)
     {
         // New Object and map simple properties
         var statValueWithCharacterObjectDto = new StatValueWithCharacterObjectDto
         {
             Id = statValue.Id,
-            Level = (int)statValue.Level,
-            Value = (int)statValue.Value,
-            ContainedBonusNum = (int)statValue.ContainedBonusNum,
-            ContainedBonusPercent = (int)statValue.ContainedBonusPercent
+            Level = statValue.Level ?? 0,
+            Value = statValue.Value ?? 0,
+            ContainedBonusNum = statValue.ContainedBonusNum ?? 0,
+            ContainedBonusPercent = statValue.ContainedBonusPercent ?? 0
         };
-
-        // Map Character-Property
-        var characterMapper = new CharacterMapper();
 
         if (statValue.Character != null)
         {
             statValueWithCharacterObjectDto.CharacterWithoutFkObjectsDto =
-                characterMapper.MapToCharacterWithoutFkObjectsDto(statValue.Character);
+                CharacterMapper.MapToCharacterWithoutFkObjectsDto(statValue.Character);
         }
 
         return statValueWithCharacterObjectDto;

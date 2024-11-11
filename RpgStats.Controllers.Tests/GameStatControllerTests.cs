@@ -18,10 +18,10 @@ public class GameStatControllerTests
         
         _gameStats = new List<GameStatDto>
         {
-            new GameStatDto { Id = 1, GameId = 1, StatId = 1},
-            new GameStatDto { Id = 2, GameId = 2, StatId = 2},
-            new GameStatDto { Id = 3, GameId = 1, StatId = 3},
-            new GameStatDto { Id = 4, GameId = 3, StatId = 1}
+            new() { Id = 1, GameId = 1, StatId = 1},
+            new() { Id = 2, GameId = 2, StatId = 2},
+            new() { Id = 3, GameId = 1, StatId = 3},
+            new() { Id = 4, GameId = 3, StatId = 1}
         };
     }
     
@@ -41,7 +41,7 @@ public class GameStatControllerTests
     [Fact]
     public async Task GetAllGameStatsByGame_ReturnsGameStatsByGame()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetAllGameStatsByGameIdAsync(gameId))
             .ReturnsAsync(_gameStats.Where(x => x.GameId == gameId).ToList());
 
@@ -55,7 +55,7 @@ public class GameStatControllerTests
     [Fact]
     public async Task GetAllGameStatsByStat_ReturnsGameStatsByStat()
     {
-        var statId = 1;
+        const int statId = 1;
         _mockService.Setup(x => x.GetAllGameStatsByStatIdAsync(statId))
             .ReturnsAsync(_gameStats.Where(x => x.StatId == statId).ToList());
 
@@ -69,7 +69,7 @@ public class GameStatControllerTests
     [Fact]
     public async Task GetGameStatById_ReturnsGameStatById()
     {
-        var gameStatId = 1;
+        const int gameStatId = 1;
         _mockService.Setup(x => x.GetGameStatByIdAsync(gameStatId))
             .ReturnsAsync(_gameStats.FirstOrDefault(x => x.Id == gameStatId));
 
@@ -83,8 +83,8 @@ public class GameStatControllerTests
     [Fact]
     public async Task CreateGameStat_ReturnsCreatedGameStat()
     {
-        var gameId = 1;
-        var statId = 1;
+        const int gameId = 1;
+        const int statId = 1;
         var gameStat = new GameStatDto { Id = 5, GameId = gameId, StatId = statId };
         _mockService.Setup(x => x.CreateGameStatAsync(gameId, statId))
             .ReturnsAsync(gameStat);
@@ -112,9 +112,9 @@ public class GameStatControllerTests
     [Fact]
     public async Task UpdateGameStat_ReturnsUpdatedGameStat()
     {
-        var gameStatId = 1;
-        var gameId = 1;
-        var statId = 1;
+        const int gameStatId = 1;
+        const int gameId = 1;
+        const int statId = 1;
         var gameStat = new GameStatDto { Id = gameStatId, GameId = gameId, StatId = statId };
         _mockService.Setup(x => x.UpdateGameStatAsync(gameStatId, gameId, statId))
             .ReturnsAsync(gameStat);

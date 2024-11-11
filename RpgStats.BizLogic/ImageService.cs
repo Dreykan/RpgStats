@@ -2,12 +2,12 @@
 
 namespace RpgStats.BizLogic;
 
-public class ImageService
+public static class ImageService
 {
     public static byte[] ResizeImageTo512(byte[] imageBytes, SKFilterQuality quality = SKFilterQuality.Medium)
     {
-        using MemoryStream ms = new MemoryStream(imageBytes);
-        using SKBitmap sourceBitmap = SKBitmap.Decode(ms);
+        using var ms = new MemoryStream(imageBytes);
+        using var sourceBitmap = SKBitmap.Decode(ms);
         if (sourceBitmap == null)
         {
             throw new ArgumentException("Invalid image data");
@@ -35,9 +35,9 @@ public class ImageService
             height = 512;
         }
 
-        using SKBitmap scaledBitmap = sourceBitmap.Resize(new SKImageInfo(width, height), quality);
-        using SKImage scaledImage = SKImage.FromBitmap(scaledBitmap);
-        using SKData data = scaledImage.Encode(SKEncodedImageFormat.Jpeg, 90);
+        using var scaledBitmap = sourceBitmap.Resize(new SKImageInfo(width, height), quality);
+        using var scaledImage = SKImage.FromBitmap(scaledBitmap);
+        using var data = scaledImage.Encode(SKEncodedImageFormat.Jpeg, 90);
 
         return data.ToArray();
     }

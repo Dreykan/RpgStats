@@ -30,7 +30,7 @@ else
 
 @code {
     private PlatformDetailDto? _platform;
-    private PlatformForUpdateDto _platformForUpdateDto = new();
+    private readonly PlatformForUpdateDto _platformForUpdateDto = new();
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
@@ -41,7 +41,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetPlatform();
-        _platformForUpdateDto.Name = _platform.Name;
+        _platformForUpdateDto.Name = _platform?.Name;
     }
 
     private async Task GetPlatform()

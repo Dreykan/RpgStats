@@ -1,5 +1,4 @@
 ﻿@using RpgStats.Dto
-@using System.Net
 @using RpgStats.Services.Abstractions
 @inject IStatService StatService
 
@@ -20,15 +19,15 @@
 
 @code {
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
-    public GameDetailDto Game { get; set; }
+    public GameDetailDto? Game { get; set; }
 
     private List<StatDto> _stats = new();
     private string _stat = "Nothing selected.";
     private IEnumerable<string> SelectedStat { get; set; } = new HashSet<string>();
-    private GameStatDto _gameStatDto = new(); 
+    private readonly GameStatDto _gameStatDto = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,14 +36,14 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        MudDialog?.Cancel();
     }
 
     private void Submit()
     {
-        _gameStatDto.GameId = Game.Id;
+        if (Game != null) _gameStatDto.GameId = Game.Id;
         _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
-        MudDialog.Close(DialogResult.Ok(_gameStatDto));
+        MudDialog?.Close(DialogResult.Ok(_gameStatDto));
     }
 
 

@@ -18,8 +18,8 @@
 
 @code
 {
-    private MudTheme _currentTheme = new MudTheme();
-    private bool _sidebarOpen = false;
+    private MudTheme _currentTheme = new();
+    private bool _sidebarOpen;
 
     private void ToggleTheme(MudTheme changedTheme) => _currentTheme = changedTheme;
 

@@ -31,21 +31,24 @@ else
         <MudItem lg="8" md="6" sm="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
                 <MudText>
-                    <MudLink Typo="Typo.h5" Href="@($"/gameDetail/{_character.GameWithoutFkObjectsDto.Id}")">
-                        @if (_character.GameWithoutFkObjectsDto.Picture == null)
-                        {
-                            <MudAvatar Size="Size.Large">
-                                <MudImage Src="images/placeholder-3.png"></MudImage>
-                            </MudAvatar>
-                        }
-                        else
-                        {
-                            <MudAvatar Size="Size.Large">
-                                <MudImage Src="@TurnByteArrayToImage(_character.GameWithoutFkObjectsDto.Picture)"></MudImage>
-                            </MudAvatar>
-                        }
-                        @_character.GameWithoutFkObjectsDto.Name
-                    </MudLink>
+                    @if (_character.GameWithoutFkObjectsDto != null)
+                    {
+                        <MudLink Typo="Typo.h5" Href="@($"/gameDetail/{_character.GameWithoutFkObjectsDto.Id}")">
+                            @if (_character.GameWithoutFkObjectsDto.Picture == null)
+                            {
+                                <MudAvatar Size="Size.Large">
+                                    <MudImage Src="images/placeholder-3.png"></MudImage>
+                                </MudAvatar>
+                            }
+                            else
+                            {
+                                <MudAvatar Size="Size.Large">
+                                    <MudImage Src="@TurnByteArrayToImage(_character.GameWithoutFkObjectsDto.Picture)"></MudImage>
+                                </MudAvatar>
+                            }
+                            @_character.GameWithoutFkObjectsDto.Name
+                        </MudLink>
+                    }
                 </MudText>
             </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">
@@ -74,7 +77,7 @@ else
 @code {
     private CharacterDetailDto? _character;
     private List<StatValueDto> _statValues = new();
-    private List<StatDto> _stats = new();
+    private readonly List<StatDto> _stats = new();
 
     [Parameter]
     public int Id { get; set; }
@@ -100,7 +103,7 @@ else
         foreach (var statValue in _statValues)
         {
             var stat = await StatService.GetStatByIdAsync(statValue.StatId);
-            if (_stats.Contains(stat) == false)
+            if (stat != null && _stats.Contains(stat) == false)
             {
                 _stats.Add(stat);
             }
@@ -112,17 +115,19 @@ else
         _character = await CharacterService.GetCharacterDetailDtoByIdAsync(Id);
     }
 
-    private string TurnByteArrayToImage(byte[] imageBytes)
+    private static string TurnByteArrayToImage(byte[] imageBytes)
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 
     private async Task DeleteCharacter()
     {
-        var parameters = new DialogParameters();
-        parameters.Add("ContentText", "Soll der Charakter wirklich gelöscht werden?");
-        parameters.Add("ButtonText", "Löschen");
-        parameters.Add("Color", Color.Error);
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Soll der Charakter wirklich gelöscht werden?" },
+            { "ButtonText", "Löschen" },
+            { "Color", Color.Error }
+        };
         var options = new DialogOptions
         {
             CloseButton = true,

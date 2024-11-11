@@ -19,77 +19,77 @@ public class GameControllerTests
 
         _games = new List<GameDto>
         {
-            new GameDto { Id = 1, Name = "TestGame1" },
-            new GameDto { Id = 2, Name = "TestGame2" },
-            new GameDto { Id = 3, Name = "TestGame3" }
+            new() { Id = 1, Name = "TestGame1" },
+            new() { Id = 2, Name = "TestGame2" },
+            new() { Id = 3, Name = "TestGame3" }
         };
 
         _gameDetailDtos = new List<GameDetailDto>
         {
-            new GameDetailDto
+            new()
             {
                 Id = 1, Name = "TestGame1",
                 CharacterWithoutFkObjectsDtos = new List<CharacterWithoutFkObjectsDto>
                 {
-                    new CharacterWithoutFkObjectsDto { Id = 1, Name = "TestCharacter1" },
-                    new CharacterWithoutFkObjectsDto { Id = 2, Name = "TestCharacter2" },
-                    new CharacterWithoutFkObjectsDto { Id = 3, Name = "TestCharacter3" }
+                    new() { Id = 1, Name = "TestCharacter1" },
+                    new() { Id = 2, Name = "TestCharacter2" },
+                    new() { Id = 3, Name = "TestCharacter3" }
                 },
                 PlatformWithoutFkObjectsDtos = new List<PlatformWithoutFkObjectsDto>
                 {
-                    new PlatformWithoutFkObjectsDto { Id = 1, Name = "TestPlatform1" },
-                    new PlatformWithoutFkObjectsDto { Id = 2, Name = "TestPlatform2" },
-                    new PlatformWithoutFkObjectsDto { Id = 3, Name = "TestPlatform3" }
+                    new() { Id = 1, Name = "TestPlatform1" },
+                    new() { Id = 2, Name = "TestPlatform2" },
+                    new() { Id = 3, Name = "TestPlatform3" }
                 },
                 StatWithoutFkObjectsDtos = new List<StatWithoutFkObjectsDto>
                 {
-                    new StatWithoutFkObjectsDto { Id = 1, Name = "TestStat1" },
-                    new StatWithoutFkObjectsDto { Id = 2, Name = "TestStat2" },
-                    new StatWithoutFkObjectsDto { Id = 3, Name = "TestStat3" }
+                    new() { Id = 1, Name = "TestStat1" },
+                    new() { Id = 2, Name = "TestStat2" },
+                    new() { Id = 3, Name = "TestStat3" }
                 }
             },
-            new GameDetailDto
+            new()
             {
                 Id = 2, Name = "TestGame2",
                 CharacterWithoutFkObjectsDtos = new List<CharacterWithoutFkObjectsDto>
                 {
-                    new CharacterWithoutFkObjectsDto { Id = 4, Name = "TestCharacter4" },
-                    new CharacterWithoutFkObjectsDto { Id = 5, Name = "TestCharacter5" },
-                    new CharacterWithoutFkObjectsDto { Id = 6, Name = "TestCharacter6" }
+                    new() { Id = 4, Name = "TestCharacter4" },
+                    new() { Id = 5, Name = "TestCharacter5" },
+                    new() { Id = 6, Name = "TestCharacter6" }
                 },
                 PlatformWithoutFkObjectsDtos = new List<PlatformWithoutFkObjectsDto>
                 {
-                    new PlatformWithoutFkObjectsDto { Id = 4, Name = "TestPlatform4" },
-                    new PlatformWithoutFkObjectsDto { Id = 5, Name = "TestPlatform5" },
-                    new PlatformWithoutFkObjectsDto { Id = 6, Name = "TestPlatform6" }
+                    new() { Id = 4, Name = "TestPlatform4" },
+                    new() { Id = 5, Name = "TestPlatform5" },
+                    new() { Id = 6, Name = "TestPlatform6" }
                 },
                 StatWithoutFkObjectsDtos = new List<StatWithoutFkObjectsDto>
                 {
-                    new StatWithoutFkObjectsDto { Id = 4, Name = "TestStat4" },
-                    new StatWithoutFkObjectsDto { Id = 5, Name = "TestStat5" },
-                    new StatWithoutFkObjectsDto { Id = 6, Name = "TestStat6" }
+                    new() { Id = 4, Name = "TestStat4" },
+                    new() { Id = 5, Name = "TestStat5" },
+                    new() { Id = 6, Name = "TestStat6" }
                 }
             },
-            new GameDetailDto
+            new()
             {
                 Id = 3, Name = "TestGame3",
                 CharacterWithoutFkObjectsDtos = new List<CharacterWithoutFkObjectsDto>
                 {
-                    new CharacterWithoutFkObjectsDto { Id = 7, Name = "TestCharacter7" },
-                    new CharacterWithoutFkObjectsDto { Id = 8, Name = "TestCharacter8" },
-                    new CharacterWithoutFkObjectsDto { Id = 9, Name = "TestCharacter9" }
+                    new() { Id = 7, Name = "TestCharacter7" },
+                    new() { Id = 8, Name = "TestCharacter8" },
+                    new() { Id = 9, Name = "TestCharacter9" }
                 },
                 PlatformWithoutFkObjectsDtos = new List<PlatformWithoutFkObjectsDto>
                 {
-                    new PlatformWithoutFkObjectsDto { Id = 7, Name = "TestPlatform7" },
-                    new PlatformWithoutFkObjectsDto { Id = 8, Name = "TestPlatform8" },
-                    new PlatformWithoutFkObjectsDto { Id = 9, Name = "TestPlatform9" }
+                    new() { Id = 7, Name = "TestPlatform7" },
+                    new() { Id = 8, Name = "TestPlatform8" },
+                    new() { Id = 9, Name = "TestPlatform9" }
                 },
                 StatWithoutFkObjectsDtos = new List<StatWithoutFkObjectsDto>
                 {
-                    new StatWithoutFkObjectsDto { Id = 7, Name = "TestStat7" },
-                    new StatWithoutFkObjectsDto { Id = 8, Name = "TestStat8" },
-                    new StatWithoutFkObjectsDto { Id = 9, Name = "TestStat9" }
+                    new() { Id = 7, Name = "TestStat7" },
+                    new() { Id = 8, Name = "TestStat8" },
+                    new() { Id = 9, Name = "TestStat9" }
                 }
             }
         }; 
@@ -111,7 +111,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetAllGamesByName_ReturnsGamesByName()
     {
-        var name = "TestGame1";
+        const string name = "TestGame1";
         _mockService.Setup(x => x.GetAllGamesByNameAsync(name))
             .ReturnsAsync(_games.Where(x => x.Name == name).ToList());
 
@@ -138,7 +138,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetAllGameDetailDtosByName_ReturnsGameDetailDtosByName()
     {
-        var name = "TestGame1";
+        const string name = "TestGame1";
         _mockService.Setup(x => x.GetAllGameDetailDtosByNameAsync(name))
             .ReturnsAsync(_gameDetailDtos.Where(x => x.Name == name).ToList());
 
@@ -152,7 +152,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetGameById_ReturnsGameById()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetGameByIdAsync(gameId))
             .ReturnsAsync(_games.FirstOrDefault(x => x.Id == gameId));
 
@@ -166,7 +166,7 @@ public class GameControllerTests
     [Fact]
     public async Task GetGameDetailDtoById_ReturnsGameDetailDtoById()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetGameDetailDtoByIdAsync(gameId))
             .ReturnsAsync(_gameDetailDtos.FirstOrDefault(x => x.Id == gameId));
 
@@ -208,7 +208,7 @@ public class GameControllerTests
     public async Task UpdateGame_ReturnsGame()
     {
         var gameForUpdateDto = new GameForUpdateDto { Name = "TestGame4" };
-        var gameId = 1;
+        const int gameId = 1;
         var gameDto = new GameDto { Id = gameId, Name = gameForUpdateDto.Name };
         _mockService.Setup(x => x.UpdateGameAsync(gameId, gameForUpdateDto))
             .ReturnsAsync(gameDto);
@@ -234,7 +234,7 @@ public class GameControllerTests
     [Fact]
     public async Task DeleteGame_ReturnsOk()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.DeleteGameAsync(gameId))
             .ReturnsAsync(Task.CompletedTask);
 

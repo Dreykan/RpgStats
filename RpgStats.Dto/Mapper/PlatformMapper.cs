@@ -2,9 +2,9 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class PlatformMapper
+public static class PlatformMapper
 {
-    public PlatformWithoutFkObjectsDto MapToPlatformWithoutFkObjectsDto(Platform platform)
+    public static PlatformWithoutFkObjectsDto MapToPlatformWithoutFkObjectsDto(Platform platform)
     {
         var platformWithoutFkObjectsDto = new PlatformWithoutFkObjectsDto
         {
@@ -15,7 +15,7 @@ public class PlatformMapper
         return platformWithoutFkObjectsDto;
     }
 
-    public PlatformDetailDto MapToPlatformDetailDto(Platform platform, List<Game?> games)
+    public static PlatformDetailDto MapToPlatformDetailDto(Platform platform, List<Game?> games)
     {
         // New Object and map simple properties
         var platformDetailDto = new PlatformDetailDto
@@ -25,12 +25,8 @@ public class PlatformMapper
         };
 
         // Map Game-Property
-        var gameMapper = new GameMapper();
-        var gameWithoutFkObjectDtos = new List<GameWithoutFkObjectsDto>();
-        foreach (var g in games)
-        {
-            if (g != null) gameWithoutFkObjectDtos.Add(gameMapper.MapToGameWithoutFkObjectsDto(g));
-        }
+        var gameWithoutFkObjectDtos =
+            games.OfType<Game>().Select(GameMapper.MapToGameWithoutFkObjectsDto).ToList();
 
         platformDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectDtos;
 

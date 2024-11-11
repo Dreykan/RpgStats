@@ -1,7 +1,7 @@
 ﻿@page "/allGames"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject IGameService GameService
 
 <MudGrid>
@@ -29,11 +29,11 @@
                     <MudLink Href="@($"/gameDetail/{game.Id}")">
                         @if (game.Picture == null)
                         {
-                            <MudCardMedia Image="images/placeholder-1.png" Title="placeholder-3" />
+                            <MudCardMedia Image="images/placeholder-1.png" Title="placeholder-3"/>
                         }
                         else
                         {
-                            <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;" />
+                            <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;"/>
                         }
                     </MudLink>
                     <MudCardContent>
@@ -45,7 +45,6 @@
                     </MudCardActions>
                 </MudCard>
             </div>
-
         }
     }
 </MudGrid>
@@ -65,7 +64,7 @@
         _games = _games.OrderBy(x => x.Name).ToList();
     }
 
-    private string TurnByteArrayToImage(GameDetailDto game)
+    private static string TurnByteArrayToImage(GameDetailDto game)
     {
         var imageSrc = string.Empty;
         if (game.Picture != null)
@@ -76,18 +75,14 @@
         return imageSrc;
     }
 
-    private string CreatePlatformString(GameDetailDto game)
+    private static string CreatePlatformString(GameDetailDto game)
     {
-        string platformString = string.Empty;
-        if (game.PlatformWithoutFkObjectsDtos != null && game.PlatformWithoutFkObjectsDtos.Any())
-        {
-            foreach (var gamePlatformWithoutFkObjectsDto in game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
-            {
-                platformString = platformString + gamePlatformWithoutFkObjectsDto.Name + ", ";
-            }
-            platformString = platformString.Remove(platformString.Length - 2, 1);
-        }
+        var platformString = string.Empty;
+        if (game.PlatformWithoutFkObjectsDtos == null || !game.PlatformWithoutFkObjectsDtos.Any()) return platformString;
+        platformString = game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList().Aggregate(platformString, (current, gamePlatformWithoutFkObjectsDto) => current + gamePlatformWithoutFkObjectsDto.Name + ", ");
+        platformString = platformString.Remove(platformString.Length - 2, 1);
 
         return platformString;
     }
+
 }

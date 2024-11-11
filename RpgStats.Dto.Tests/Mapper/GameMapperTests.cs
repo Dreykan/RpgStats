@@ -14,10 +14,9 @@ public class GameMapperTests
             Id = 1,
             Name = "Test Game"
         };
-        var mapper = new GameMapper();
 
         // Act
-        var result = mapper.MapToGameWithoutFkObjectsDto(game);
+        var result = GameMapper.MapToGameWithoutFkObjectsDto(game);
 
         // Assert
         Assert.Equal(game.Id, result.Id);
@@ -35,12 +34,11 @@ public class GameMapperTests
             Name = "Test Game",
             Characters = new List<Character>()
         };
-        var platforms = new List<Platform?> { new Platform { Id = 1, Name = "PC" } };
-        var stats = new List<Stat?> { new Stat { Id = 1, Name = "Strength" } };
-        var mapper = new GameMapper();
+        var platforms = new List<Platform?> { new() { Id = 1, Name = "PC" } };
+        var stats = new List<Stat?> { new() { Id = 1, Name = "Strength" } };
 
         // Act
-        var result = mapper.MapToGameDetailDto(game, platforms, stats);
+        var result = GameMapper.MapToGameDetailDto(game, platforms, stats);
 
         // Assert
         Assert.Equal(game.Id, result.Id);
@@ -56,18 +54,20 @@ public class GameMapperTests
         {
             Characters = new List<Character>
             {
-                new Character { Id = 1, Name = "Character1" }
+                new() { Id = 1, Name = "Character1" }
             }
         };
-        var mapper = new GameMapper();
 
         // Act
-        var result = mapper.MapToGameDetailDto(game, new List<Platform?>(), new List<Stat?>());
+        var result = GameMapper.MapToGameDetailDto(game, new List<Platform?>(), new List<Stat?>());
 
         // Assert
+        if (result.CharacterWithoutFkObjectsDtos == null) return;
         Assert.Single(result.CharacterWithoutFkObjectsDtos);
-        Assert.Equal(game.Characters.FirstOrDefault()?.Id, result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Id);
-        Assert.Equal(game.Characters.FirstOrDefault()?.Name, result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Name);
+        Assert.Equal(game.Characters.FirstOrDefault()?.Id,
+            result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Id);
+        Assert.Equal(game.Characters.FirstOrDefault()?.Name,
+            result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Name);
     }
 
     [Fact]
@@ -77,14 +77,14 @@ public class GameMapperTests
         var game = new Game();
         var platforms = new List<Platform?>
         {
-            new Platform { Id = 1, Name = "PC" }
+            new() { Id = 1, Name = "PC" }
         };
-        var mapper = new GameMapper();
 
         // Act
-        var result = mapper.MapToGameDetailDto(game, platforms, new List<Stat?>());
+        var result = GameMapper.MapToGameDetailDto(game, platforms, new List<Stat?>());
 
         // Assert
+        if (result.PlatformWithoutFkObjectsDtos == null) return;
         Assert.Single(result.PlatformWithoutFkObjectsDtos);
         Assert.Equal(platforms[0]?.Id, result.PlatformWithoutFkObjectsDtos.FirstOrDefault()?.Id);
         Assert.Equal(platforms[0]?.Name, result.PlatformWithoutFkObjectsDtos.FirstOrDefault()?.Name);
@@ -97,14 +97,14 @@ public class GameMapperTests
         var game = new Game();
         var stats = new List<Stat?>
         {
-            new Stat { Id = 1, Name = "Strength" }
+            new() { Id = 1, Name = "Strength" }
         };
-        var mapper = new GameMapper();
 
         // Act
-        var result = mapper.MapToGameDetailDto(game, new List<Platform?>(), stats);
+        var result = GameMapper.MapToGameDetailDto(game, new List<Platform?>(), stats);
 
         // Assert
+        if (result.StatWithoutFkObjectsDtos == null) return;
         Assert.Single(result.StatWithoutFkObjectsDtos);
         Assert.Equal(stats[0]?.Id, result.StatWithoutFkObjectsDtos.FirstOrDefault()?.Id);
         Assert.Equal(stats[0]?.Name, result.StatWithoutFkObjectsDtos.FirstOrDefault()?.Name);

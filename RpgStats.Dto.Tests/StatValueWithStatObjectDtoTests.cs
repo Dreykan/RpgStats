@@ -6,8 +6,10 @@ public class StatValueWithStatObjectDtoTests
     [Fact]
     public void Id_ShouldBeSetAndRetrievedCorrectly()
     {
-        var dto = new StatValueWithStatObjectDto();
-        dto.Id = 12345;
+        var dto = new StatValueWithStatObjectDto
+        {
+            Id = 12345
+        };
         Assert.Equal(12345, dto.Id);
     }
 

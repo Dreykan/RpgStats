@@ -19,38 +19,38 @@ public class PlatformControllerTests
         
         _platforms = new List<PlatformDto>
         {
-            new PlatformDto { Id = 1, Name = "TestPlatform1"},
-            new PlatformDto { Id = 2, Name = "TestPlatform2"},
-            new PlatformDto { Id = 3, Name = "TestPlatform3"}
+            new() { Id = 1, Name = "TestPlatform1"},
+            new() { Id = 2, Name = "TestPlatform2"},
+            new() { Id = 3, Name = "TestPlatform3"}
         };
 
         _platformDetailDtos = new List<PlatformDetailDto>
         {
-            new PlatformDetailDto
+            new()
             {
                 Id = 1, Name = "TestPlatform1",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" },
-                    new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" }
+                    new() { Id = 1, Name = "TestGame1" },
+                    new() { Id = 2, Name = "TestGame2" }
                 }
             },
-            new PlatformDetailDto
+            new()
             {
                 Id = 2, Name = "TestPlatform2",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 3, Name = "TestGame3" },
-                    new GameWithoutFkObjectsDto { Id = 4, Name = "TestGame4" }
+                    new() { Id = 3, Name = "TestGame3" },
+                    new() { Id = 4, Name = "TestGame4" }
                 }
             },
-            new PlatformDetailDto
+            new()
             {
                 Id = 3, Name = "TestPlatform3",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 5, Name = "TestGame5" },
-                    new GameWithoutFkObjectsDto { Id = 6, Name = "TestGame6" }
+                    new() { Id = 5, Name = "TestGame5" },
+                    new() { Id = 6, Name = "TestGame6" }
                 }
             }
         };
@@ -85,7 +85,7 @@ public class PlatformControllerTests
     [Fact]
     public async Task GetAllPlatformDetailDtosByName_ReturnsPlatformDetailDtosByName()
     {
-        var name = "TestPlatform1";
+        const string name = "TestPlatform1";
         _mockService.Setup(x => x.GetAllPlatformDetailDtosByNameAsync(name))
             .ReturnsAsync(_platformDetailDtos.Where(x => x.Name == name).ToList());
 
@@ -99,7 +99,7 @@ public class PlatformControllerTests
     [Fact]
     public async Task GetPlatformById_ReturnsPlatformById()
     {
-        var platformId = 1;
+        const int platformId = 1;
         _mockService.Setup(x => x.GetPlatformByIdAsync(platformId))
             .ReturnsAsync(_platforms.FirstOrDefault(x => x.Id == platformId));
 
@@ -113,7 +113,7 @@ public class PlatformControllerTests
     [Fact]
     public async Task GetPlatformDetailDtoById_ReturnsPlatformDetailDtoById()
     {
-        var platformId = 1;
+        const int platformId = 1;
         _mockService.Setup(x => x.GetPlatformDetailDtoByIdAsync(platformId))!
             .ReturnsAsync(_platformDetailDtos.FirstOrDefault(x => x.Id == platformId));
 
@@ -153,7 +153,7 @@ public class PlatformControllerTests
     [Fact]
     public async Task UpdatePlatform_ReturnsUpdatedPlatform()
     {
-        var platformId = 1;
+        const int platformId = 1;
         var platformForUpdateDto = new PlatformForUpdateDto { Name = "TestPlatform1Updated" };
         var platformDto = new PlatformDto { Id = platformId, Name = platformForUpdateDto.Name };
         _mockService.Setup(x => x.UpdatePlatformAsync(platformId, platformForUpdateDto))

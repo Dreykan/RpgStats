@@ -1,6 +1,3 @@
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
@@ -61,12 +58,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+#pragma warning disable ASP0014
 app.UseEndpoints(endpoints => endpoints.MapControllers());
+#pragma warning restore ASP0014
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+return;
 
 
 static string? GetConnectionString()
@@ -88,7 +88,7 @@ static async Task ApplyMigration(IServiceProvider serviceProvider)
 {
     using var scope = serviceProvider.CreateScope();
 
-    await using RpgStatsContext dbContext = scope.ServiceProvider.GetRequiredService<RpgStatsContext>();
+    await using var dbContext = scope.ServiceProvider.GetRequiredService<RpgStatsContext>();
 
     await dbContext.Database.MigrateAsync();
 }

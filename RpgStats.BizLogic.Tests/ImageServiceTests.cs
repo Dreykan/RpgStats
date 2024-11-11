@@ -61,7 +61,7 @@ public class ImageServiceTests
     public void ResizeImageTo512_ShouldThrowExceptionOnInvalidInput()
     {
         // Arrange
-        byte[] invalidImageBytes = new byte[] { 0, 1, 2, 3 }; // Invalid image data
+        byte[] invalidImageBytes = { 0, 1, 2, 3 }; // Invalid image data
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => ImageService.ResizeImageTo512(invalidImageBytes));

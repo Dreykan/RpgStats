@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using RpgStats.Domain.Entities;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 
@@ -20,16 +19,16 @@ public class CharacterControllerTests
         
         _characters = new List<CharacterDto>
         {
-            new CharacterDto { Id = 1, Name = "TestCharacter1", GameId = 1},
-            new CharacterDto { Id = 2, Name = "TestCharacter2", GameId = 2},
-            new CharacterDto { Id = 3, Name = "TestCharacter3", GameId = 1}
+            new() { Id = 1, Name = "TestCharacter1", GameId = 1},
+            new() { Id = 2, Name = "TestCharacter2", GameId = 2},
+            new() { Id = 3, Name = "TestCharacter3", GameId = 1}
         };
 
         _characterDetailDtos = new List<CharacterDetailDto>
         {
-            new CharacterDetailDto { Id = 1, Name = "TestCharacter1", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } },
-            new CharacterDetailDto { Id = 2, Name = "TestCharacter2", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" } },
-            new CharacterDetailDto { Id = 3, Name = "TestCharacter3", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } }
+            new() { Id = 1, Name = "TestCharacter1", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } },
+            new() { Id = 2, Name = "TestCharacter2", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" } },
+            new() { Id = 3, Name = "TestCharacter3", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } }
         };
     }
 
@@ -49,7 +48,7 @@ public class CharacterControllerTests
     [Fact]
     public async Task GetAllCharactersByGame_ReturnsCharactersByGame()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetAllCharactersByGameIdAsync(gameId))
             .ReturnsAsync(_characters.Where(x => x.GameId == gameId).ToList());
 
@@ -63,7 +62,7 @@ public class CharacterControllerTests
     [Fact]
     public async Task GetAllCharactersByName_ReturnsCharactersByName()
     {
-        var name = "TestCharacter1";
+        const string name = "TestCharacter1";
         _mockService.Setup(x => x.GetAllCharactersByNameAsync(name))
             .ReturnsAsync(_characters.Where(x => x.Name == name).ToList());
 
@@ -90,7 +89,7 @@ public class CharacterControllerTests
     [Fact]
     public async Task GetAllCharacterDetailDtosByGame_ReturnsCharacterDetailDtosByGame()
     {
-        var gameId = 1;
+        const int gameId = 1;
         _mockService.Setup(x => x.GetAllCharacterDetailDtosByGameIdAsync(gameId))
             .ReturnsAsync(_characterDetailDtos.Where(x => x.GameWithoutFkObjectsDto != null && x.GameWithoutFkObjectsDto.Id == gameId).ToList());
 
@@ -104,7 +103,7 @@ public class CharacterControllerTests
     [Fact]
     public async Task GetAllCharacterDetailDtosByName_ReturnsCharacterDetailDtosByName()
     {
-        var name = "TestCharacter1";
+        const string name = "TestCharacter1";
         _mockService.Setup(x => x.GetAllCharacterDetailDtosByNameAsync(name))
             .ReturnsAsync(_characterDetailDtos.Where(x => x.Name == name).ToList());
 
@@ -118,7 +117,7 @@ public class CharacterControllerTests
     [Fact]
     public async Task GetCharacterById_ReturnsCharacter()
     {
-        var characterId = 1;
+        const int characterId = 1;
         _mockService.Setup(x => x.GetCharacterByIdAsync(characterId))
             .ReturnsAsync(_characters[0]);
 
@@ -132,7 +131,7 @@ public class CharacterControllerTests
     [Fact]
     public async Task GetCharacterDetailDtoById_ReturnsCharacterDetailDto()
     {
-        var characterId = 1;
+        const int characterId = 1;
         _mockService.Setup(x => x.GetCharacterDetailDtoByIdAsync(characterId))
             .ReturnsAsync(_characterDetailDtos[0]);
 
@@ -147,7 +146,7 @@ public class CharacterControllerTests
     public async Task CreateCharacter_ReturnsCharacter()
     {
         var characterForCreationDto = new CharacterForCreationDto { Name = "TestCharacter4" };
-        var gameId = 1;
+        const int gameId = 1;
         var characterDto = new CharacterDto { Id = 4, Name = characterForCreationDto.Name, GameId = gameId };
         _mockService.Setup(x => x.CreateCharacterAsync(gameId, characterForCreationDto))
             .ReturnsAsync(characterDto);
@@ -174,8 +173,8 @@ public class CharacterControllerTests
     public async Task UpdateCharacter_ReturnsCharacter()
     {
         var characterForUpdateDto = new CharacterForUpdateDto { Name = "TestCharacter4" };
-        var characterId = 1;
-        var gameId = 1;
+        const int characterId = 1;
+        const int gameId = 1;
         var characterDto = new CharacterDto { Id = characterId, Name = characterForUpdateDto.Name, GameId = gameId };
         _mockService.Setup(x => x.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto))
             .ReturnsAsync(characterDto);
@@ -201,7 +200,7 @@ public class CharacterControllerTests
     [Fact]
     public async Task DeleteCharacter_ReturnsOk()
     {
-        var characterId = 1;
+        const int characterId = 1;
         _mockService.Setup(x => x.DeleteCharacterAsync(characterId))
             .ReturnsAsync(Task.CompletedTask);
 

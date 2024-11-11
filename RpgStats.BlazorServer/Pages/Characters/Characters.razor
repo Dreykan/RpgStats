@@ -24,7 +24,7 @@
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h4" Align="Align.Center">@character.Name</MudText>
-                            <MudText Typo="Typo.body1" Align="Align.Center">@character.GameWithoutFkObjectsDto.Name</MudText>
+                            <MudText Typo="Typo.body1" Align="Align.Center">@character.GameWithoutFkObjectsDto?.Name</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     @if (character.Picture == null)
@@ -55,10 +55,10 @@
     private async Task GetCharacters()
     {
         _characters = await CharacterService.GetAllCharacterDetailDtosAsync();
-        _characters = _characters.OrderBy(x => x.GameWithoutFkObjectsDto.Name).ToList();
+        _characters = _characters.OrderBy(x => x.GameWithoutFkObjectsDto?.Name).ToList();
     }
 
-    private string TurnByteArrayToImage(CharacterDetailDto character)
+    private static string TurnByteArrayToImage(CharacterDetailDto character)
     {
         var imageSrc = string.Empty;
         if (character.Picture != null)

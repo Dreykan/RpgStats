@@ -18,10 +18,10 @@ public class StatValueControllerTests
         
         _statValues = new List<StatValueDto>
         {
-            new StatValueDto { Id = 1, CharacterId = 1, StatId = 1, Value = 1},
-            new StatValueDto { Id = 2, CharacterId = 2, StatId = 2, Value = 2},
-            new StatValueDto { Id = 3, CharacterId = 1, StatId = 3, Value = 3},
-            new StatValueDto { Id = 4, CharacterId = 3, StatId = 1, Value = 4}
+            new() { Id = 1, CharacterId = 1, StatId = 1, Value = 1},
+            new() { Id = 2, CharacterId = 2, StatId = 2, Value = 2},
+            new() { Id = 3, CharacterId = 1, StatId = 3, Value = 3},
+            new() { Id = 4, CharacterId = 3, StatId = 1, Value = 4}
         };
     }
     
@@ -41,7 +41,7 @@ public class StatValueControllerTests
     [Fact]
     public async Task GetAllStatValuesByCharacter_ReturnsStatValuesByCharacter()
     {
-        var characterId = 1;
+        const int characterId = 1;
         _mockService.Setup(x => x.GetAllStatValuesByCharacterIdAsync(characterId))
             .ReturnsAsync(_statValues.Where(x => x.CharacterId == characterId).ToList());
 
@@ -55,7 +55,7 @@ public class StatValueControllerTests
     [Fact]
     public async Task GetAllStatValuesByStat_ReturnsStatValuesByStat()
     {
-        var statId = 1;
+        const int statId = 1;
         _mockService.Setup(x => x.GetAllStatValuesByStatIdAsync(statId))
             .ReturnsAsync(_statValues.Where(x => x.StatId == statId).ToList());
 
@@ -69,7 +69,7 @@ public class StatValueControllerTests
     [Fact]
     public async Task GetStatValueById_ReturnsStatValueById()
     {
-        var statValueId = 1;
+        const int statValueId = 1;
         _mockService.Setup(x => x.GetStatValueByIdAsync(statValueId))
             .ReturnsAsync(_statValues.FirstOrDefault(x => x.Id == statValueId));
 
@@ -84,8 +84,8 @@ public class StatValueControllerTests
     public async Task CreateStatValue_ReturnsCreatedStatValue()
     {
         var statValueForCreationDto = new StatValueForCreationDto { Value = 1 };
-        var characterId = 1;
-        var statId = 1;
+        const int characterId = 1;
+        const int statId = 1;
         var response = new StatValueDto { Id = 5, CharacterId = characterId, StatId = statId, Value = (int)statValueForCreationDto.Value };
         _mockService.Setup(x => x.CreateStatValueAsync(characterId, statId, statValueForCreationDto))
             .ReturnsAsync(response);
@@ -115,9 +115,9 @@ public class StatValueControllerTests
     public async Task UpdateStatValue_ReturnsUpdatedStatValue()
     {
         var statValueForUpdateDto = new StatValueForUpdateDto { Value = 1 };
-        var statValueId = 1;
-        var characterId = 1;
-        var statId = 1;
+        const int statValueId = 1;
+        const int characterId = 1;
+        const int statId = 1;
         var response = new StatValueDto { Id = statValueId, CharacterId = characterId, StatId = statId, Value = (int)statValueForUpdateDto.Value };
         _mockService.Setup(x => x.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto))
             .ReturnsAsync(response);

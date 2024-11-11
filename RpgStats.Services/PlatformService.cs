@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Diagnostics.CodeAnalysis;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
@@ -9,6 +10,8 @@ using RpgStats.Services.Abstractions;
 
 namespace RpgStats.Services;
 
+[SuppressMessage("Performance",
+    "CA1862:\"StringComparison\"-Methodenüberladungen verwenden, um Zeichenfolgevergleiche ohne Beachtung der Groß-/Kleinschreibung durchzuführen")]
 public class PlatformService : IPlatformService
 {
     private readonly RpgStatsContext _dbContext;
@@ -33,10 +36,7 @@ public class PlatformService : IPlatformService
             .Include(p => p.PlatformGames)
             .FirstOrDefaultAsync(p => p.Id == platformId);
 
-        if (platform == null)
-        {
-            throw new PlatformNotFoundException(platformId);
-        }
+        if (platform == null) throw new PlatformNotFoundException(platformId);
 
         return platform.Adapt<PlatformDto>();
     }
@@ -55,10 +55,7 @@ public class PlatformService : IPlatformService
     {
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
 
-        if (platform == null)
-        {
-            throw new PlatformNotFoundException(platformId);
-        }
+        if (platform == null) throw new PlatformNotFoundException(platformId);
 
         platform.Name = platformForUpdateDto.Name;
 
@@ -72,15 +69,12 @@ public class PlatformService : IPlatformService
     {
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
 
-        if (platform == null)
-        {
-            return Task.CompletedTask;
-        }
+        if (platform == null) return Task.CompletedTask;
 
         _dbContext.Remove(platform);
 
         await _dbContext.SaveChangesAsync();
-        
+
         return Task.CompletedTask;
     }
 
@@ -95,20 +89,14 @@ public class PlatformService : IPlatformService
             .ToListAsync();
 
         var platformDetailDtos = new List<PlatformDetailDto>();
-        var platformMapper = new PlatformMapper();
 
         foreach (var platform in platforms)
         {
             var tmpGames = new List<Game?>();
             if (platform.PlatformGames != null)
-            {
-                foreach (var pg in platform.PlatformGames)
-                {
-                    tmpGames.Add(games.FirstOrDefault(g => g.Id == pg.GameId));
-                }
-            }
+                tmpGames.AddRange(platform.PlatformGames.Select(pg => games.FirstOrDefault(g => g.Id == pg.GameId)));
 
-            platformDetailDtos.Add(platformMapper.MapToPlatformDetailDto(platform, tmpGames));
+            platformDetailDtos.Add(PlatformMapper.MapToPlatformDetailDto(platform, tmpGames));
         }
 
         return platformDetailDtos;
@@ -126,20 +114,14 @@ public class PlatformService : IPlatformService
             .ToListAsync();
 
         var platformDetailDtos = new List<PlatformDetailDto>();
-        var platformMapper = new PlatformMapper();
 
         foreach (var platform in platforms)
         {
             var tmpGames = new List<Game?>();
             if (platform.PlatformGames != null)
-            {
-                foreach (var pg in platform.PlatformGames)
-                {
-                    tmpGames.Add(games.FirstOrDefault(g => g.Id == pg.GameId));
-                }
-            }
+                tmpGames.AddRange(platform.PlatformGames.Select(pg => games.FirstOrDefault(g => g.Id == pg.GameId)));
 
-            platformDetailDtos.Add(platformMapper.MapToPlatformDetailDto(platform, tmpGames));
+            platformDetailDtos.Add(PlatformMapper.MapToPlatformDetailDto(platform, tmpGames));
         }
 
         return platformDetailDtos;
@@ -156,18 +138,11 @@ public class PlatformService : IPlatformService
             .ToListAsync();
 
         var platformDetailDto = new PlatformDetailDto();
-        var platformMapper = new PlatformMapper();
 
-        var tmpGames = new List<Game?>();
-        if (platform?.PlatformGames != null)
-        {
-            foreach (var pg in platform.PlatformGames)
-            {
-                tmpGames.Add(games.FirstOrDefault(g => g.Id == pg.GameId));
-            }
+        if (platform?.PlatformGames == null) return platformDetailDto;
+        var tmpGames = platform.PlatformGames.Select(pg => games.FirstOrDefault(g => g.Id == pg.GameId)).ToList();
+        platformDetailDto = PlatformMapper.MapToPlatformDetailDto(platform, tmpGames);
 
-            platformDetailDto = platformMapper.MapToPlatformDetailDto(platform, tmpGames);
-        }
 
         return platformDetailDto;
     }

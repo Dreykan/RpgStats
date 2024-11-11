@@ -19,30 +19,30 @@ public class StatControllerTests
 
         _stats = new List<StatDto>
         {
-            new StatDto { Id = 1, Name = "TestStat1", ShortName = "TS1" },
-            new StatDto { Id = 2, Name = "TestStat2", ShortName = "TS2" },
-            new StatDto { Id = 3, Name = "TestStat3", ShortName = "TS3" }
+            new() { Id = 1, Name = "TestStat1", ShortName = "TS1" },
+            new() { Id = 2, Name = "TestStat2", ShortName = "TS2" },
+            new() { Id = 3, Name = "TestStat3", ShortName = "TS3" }
         };
 
         _statDetailDtos = new List<StatDetailDto>
         {
-            new StatDetailDto
+            new()
             {
                 Id = 1, Name = "TestStat1", ShortName = "TS1",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" },
-                    new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" }
+                    new() { Id = 1, Name = "TestGame1" },
+                    new() { Id = 2, Name = "TestGame2" }
                 },
                 StatValueWithCharacterObjectDtos = new List<StatValueWithCharacterObjectDto>
                 {
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 1, Value = 1,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
                             { Id = 1, Name = "TestCharacter1" }
                     },
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 2, Value = 2,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
@@ -50,23 +50,23 @@ public class StatControllerTests
                     }
                 }
             },
-            new StatDetailDto
+            new()
             {
                 Id = 2, Name = "TestStat2", ShortName = "TS2",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 3, Name = "TestGame3" },
-                    new GameWithoutFkObjectsDto { Id = 4, Name = "TestGame4" }
+                    new() { Id = 3, Name = "TestGame3" },
+                    new() { Id = 4, Name = "TestGame4" }
                 },
                 StatValueWithCharacterObjectDtos = new List<StatValueWithCharacterObjectDto>
                 {
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 3, Value = 3,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
                             { Id = 3, Name = "TestCharacter3" }
                     },
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 4, Value = 4,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
@@ -74,23 +74,23 @@ public class StatControllerTests
                     }
                 }
             },
-            new StatDetailDto
+            new()
             {
                 Id = 3, Name = "TestStat3", ShortName = "TS3",
                 GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>
                 {
-                    new GameWithoutFkObjectsDto { Id = 5, Name = "TestGame5" },
-                    new GameWithoutFkObjectsDto { Id = 6, Name = "TestGame6" }
+                    new() { Id = 5, Name = "TestGame5" },
+                    new() { Id = 6, Name = "TestGame6" }
                 },
                 StatValueWithCharacterObjectDtos = new List<StatValueWithCharacterObjectDto>
                 {
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 5, Value = 5,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
                             { Id = 5, Name = "TestCharacter5" }
                     },
-                    new StatValueWithCharacterObjectDto
+                    new()
                     {
                         Id = 6, Value = 6,
                         CharacterWithoutFkObjectsDto = new CharacterWithoutFkObjectsDto
@@ -117,7 +117,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatsByName_ReturnsStatsByName()
     {
-        var name = "TestStat1";
+        const string name = "TestStat1";
         _mockService.Setup(x => x.GetAllStatsByNameAsync(name))
             .ReturnsAsync(_stats.Where(x => x.Name == name).ToList());
 
@@ -131,7 +131,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatsByShortname_ReturnsStatsByShortname()
     {
-        var shortName = "TS1";
+        const string shortName = "TS1";
         _mockService.Setup(x => x.GetAllStatsByShortNameAsync(shortName))
             .ReturnsAsync(_stats.Where(x => x.ShortName == shortName).ToList());
 
@@ -158,7 +158,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatDetailDtosByName_ReturnsStatDetailDtosByName()
     {
-        var name = "TestStat1";
+        const string name = "TestStat1";
         _mockService.Setup(x => x.GetAllStatDetailDtosByNameAsync(name))
             .ReturnsAsync(_statDetailDtos.Where(x => x.Name == name).ToList());
 
@@ -172,7 +172,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetAllStatDetailDtosByShortName_ReturnsStatDetailDtosByShortName()
     {
-        var shortName = "TS1";
+        const string shortName = "TS1";
         _mockService.Setup(x => x.GetAllStatDetailDtosByShortNameAsync(shortName))
             .ReturnsAsync(_statDetailDtos.Where(x => x.ShortName == shortName).ToList());
 
@@ -186,7 +186,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetStatById_ReturnsStatById()
     {
-        var statId = 1;
+        const int statId = 1;
         _mockService.Setup(x => x.GetStatByIdAsync(statId))
             .ReturnsAsync(_stats.FirstOrDefault(x => x.Id == statId));
 
@@ -200,7 +200,7 @@ public class StatControllerTests
     [Fact]
     public async Task GetStatDetailDtoById_ReturnsStatDetailDtoById()
     {
-        var statId = 1;
+        const int statId = 1;
         _mockService.Setup(x => x.GetStatDetailDtoByIdAsync(statId))
             .ReturnsAsync(_statDetailDtos.FirstOrDefault(x => x.Id == statId));
 
@@ -240,7 +240,7 @@ public class StatControllerTests
     [Fact]
     public async Task UpdateStat_ReturnsUpdatedStat()
     {
-        var statId = 1;
+        const int statId = 1;
         var statForUpdateDto = new StatForUpdateDto { Name = "TestStat1Updated", ShortName = "TS1U" };
         _mockService.Setup(x => x.UpdateStatAsync(statId, statForUpdateDto))
             .ReturnsAsync(new StatDto { Id = statId, Name = statForUpdateDto.Name, ShortName = statForUpdateDto.ShortName });

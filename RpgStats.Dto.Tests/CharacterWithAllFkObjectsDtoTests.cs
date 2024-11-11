@@ -9,9 +9,9 @@ public class CharacterWithAllFkObjectsDtoTests
         {
             Id = 1,
             Name = "Hero",
-            Picture = new byte[] { 0x20, 0x20 },
+            Picture = "  "u8.ToArray(),
             GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto(),
-            StatValuesWithStatObjectDtos = new List<StatValueWithStatObjectDto> { new StatValueWithStatObjectDto() }
+            StatValuesWithStatObjectDtos = new List<StatValueWithStatObjectDto> { new() }
         };
 
         Assert.Equal(1, character.Id);

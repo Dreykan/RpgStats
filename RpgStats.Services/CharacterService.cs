@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Diagnostics.CodeAnalysis;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
@@ -9,6 +10,8 @@ using RpgStats.Services.Abstractions;
 
 namespace RpgStats.Services;
 
+[SuppressMessage("Performance",
+    "CA1862:\"StringComparison\"-Methodenüberladungen verwenden, um Zeichenfolgenvergleiche ohne Beachtung der Groß-/Kleinschreibung durchzuführen")]
 public class CharacterService : ICharacterService
 {
     private readonly RpgStatsContext _dbContext;
@@ -53,10 +56,7 @@ public class CharacterService : ICharacterService
             .Include(c => c.StatValues)
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
-        if (character == null)
-        {
-            throw new CharacterNotFoundException(characterId);
-        }
+        if (character == null) throw new CharacterNotFoundException(characterId);
 
         return character.Adapt<CharacterDto>();
     }
@@ -65,10 +65,7 @@ public class CharacterService : ICharacterService
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         var character = characterForCreationDto.Adapt<Character>();
         character.GameId = game.Id;
@@ -80,21 +77,16 @@ public class CharacterService : ICharacterService
         return character.Adapt<CharacterDto>();
     }
 
-    public async Task<CharacterDto?> UpdateCharacterAsync(long characterId, long gameId, CharacterForUpdateDto characterForUpdateDto)
+    public async Task<CharacterDto?> UpdateCharacterAsync(long characterId, long gameId,
+        CharacterForUpdateDto characterForUpdateDto)
     {
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
 
-        if (character == null)
-        {
-            throw new CharacterNotFoundException(characterId);
-        }
+        if (character == null) throw new CharacterNotFoundException(characterId);
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         character.Name = characterForUpdateDto.Name;
         character.Picture = characterForUpdateDto.Picture;
@@ -111,15 +103,12 @@ public class CharacterService : ICharacterService
     {
         var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
 
-        if (character == null)
-        {
-            return Task.CompletedTask;
-        }
+        if (character == null) return Task.CompletedTask;
 
         _dbContext.Remove(character);
 
         await _dbContext.SaveChangesAsync();
-        
+
         return Task.CompletedTask;
     }
 
@@ -164,17 +153,10 @@ public class CharacterService : ICharacterService
             .Include(sv => sv.Stat)
             .ToListAsync();
 
-        var characterDetailDtoList = new List<CharacterDetailDto>();
-        var characterMapper = new CharacterMapper();
-        foreach (var character in characters)
-        {
-            var svTempList = statValues
-                .Where(sv => sv.CharacterId == character.Id)
-                .ToList();
-            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
-        }
-
-        return characterDetailDtoList;
+        return (from character in characters
+            let svTempList = statValues.Where(sv => sv.CharacterId == character.Id)
+                .ToList()
+            select CharacterMapper.MapToCharacterDetailDto(character, svTempList)).ToList();
     }
 
     public async Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosByNameAsync(string name)
@@ -189,17 +171,10 @@ public class CharacterService : ICharacterService
             .Include(sv => sv.Stat)
             .ToListAsync();
 
-        var characterDetailDtoList = new List<CharacterDetailDto>();
-        var characterMapper = new CharacterMapper();
-        foreach (var character in characters)
-        {
-            var svTempList = statValues
-                .Where(sv => sv.CharacterId == character.Id)
-                .ToList();
-            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
-        }
-
-        return characterDetailDtoList;
+        return (from character in characters
+            let svTempList = statValues.Where(sv => sv.CharacterId == character.Id)
+                .ToList()
+            select CharacterMapper.MapToCharacterDetailDto(character, svTempList)).ToList();
     }
 
     public async Task<CharacterDetailDto> GetCharacterDetailDtoByIdAsync(long characterId)
@@ -210,13 +185,12 @@ public class CharacterService : ICharacterService
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
         var characterDetailDto = new CharacterDetailDto();
-        var characterMapper = new CharacterMapper();
         if (character == null) return characterDetailDto;
         var svTempList = await _dbContext.StatValues
             .Include(sv => sv.Stat)
             .Where(sv => sv.CharacterId == character.Id)
             .ToListAsync();
-        characterDetailDto = characterMapper.MapToCharacterDetailDto(character, svTempList);
+        characterDetailDto = CharacterMapper.MapToCharacterDetailDto(character, svTempList);
 
         return characterDetailDto;
     }
@@ -227,16 +201,9 @@ public class CharacterService : ICharacterService
             .Include(sv => sv.Stat)
             .ToListAsync();
 
-        var characterDetailDtoList = new List<CharacterDetailDto>();
-        var characterMapper = new CharacterMapper();
-        foreach (var character in characters)
-        {
-            var svTempList = statValues
-                .Where(sv => sv.CharacterId == character.Id)
-                .ToList();
-            characterDetailDtoList.Add(characterMapper.MapToCharacterDetailDto(character, svTempList));
-        }
-
-        return characterDetailDtoList;
+        return (from character in characters
+            let svTempList = statValues.Where(sv => sv.CharacterId == character.Id)
+                .ToList()
+            select CharacterMapper.MapToCharacterDetailDto(character, svTempList)).ToList();
     }
 }

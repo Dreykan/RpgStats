@@ -44,7 +44,7 @@ public class StatForCreationDtoTests
         Assert.DoesNotContain(validationResults, v => v.ErrorMessage == "The shortname for the stat can't be longer than 8 characters.");
     }
 
-    private IList<ValidationResult> ValidateModel(object model)
+    private static List<ValidationResult> ValidateModel(object model)
     {
         var validationResults = new List<ValidationResult>();
         var validationContext = new ValidationContext(model, null, null);

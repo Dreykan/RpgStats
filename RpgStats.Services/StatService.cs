@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Diagnostics.CodeAnalysis;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
@@ -9,6 +10,8 @@ using RpgStats.Services.Abstractions;
 
 namespace RpgStats.Services;
 
+[SuppressMessage("Performance",
+    "CA1862:\"StringComparison\"-Methodenüberladungen verwenden, um Zeichenfolgenvergleiche ohne Beachtung der Groß-/Kleinschreibung durchzuführen")]
 public class StatService : IStatService
 {
     private readonly RpgStatsContext _dbContext;
@@ -57,19 +60,10 @@ public class StatService : IStatService
             .Include(sv => sv.Character)
             .ToListAsync();
 
-        var statDetailDtos = new List<StatDetailDto>();
-        var statMapper = new StatMapper();
-
-        foreach (var stat in stats)
-        {
-            var svTempList = statValues
-                .Where(sv => sv.StatId == stat.Id)
-                .ToList();
-
-            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
-        }
-
-        return statDetailDtos;
+        return (from stat in stats
+            let svTempList = statValues.Where(sv => sv.StatId == stat.Id)
+                .ToList()
+            select StatMapper.MapToStatDetailDto(stat, svTempList)).ToList();
     }
 
     public async Task<List<StatDetailDto>> GetAllStatDetailDtosByNameAsync(string name)
@@ -83,19 +77,10 @@ public class StatService : IStatService
             .Include(sv => sv.Character)
             .ToListAsync();
 
-        var statDetailDtos = new List<StatDetailDto>();
-        var statMapper = new StatMapper();
-
-        foreach (var stat in stats)
-        {
-            var svTempList = statValues
-                .Where(sv => sv.StatId == stat.Id)
-                .ToList();
-
-            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
-        }
-
-        return statDetailDtos;
+        return (from stat in stats
+            let svTempList = statValues.Where(sv => sv.StatId == stat.Id)
+                .ToList()
+            select StatMapper.MapToStatDetailDto(stat, svTempList)).ToList();
     }
 
     public async Task<List<StatDetailDto>> GetAllStatDetailDtosByShortNameAsync(string shortName)
@@ -109,19 +94,10 @@ public class StatService : IStatService
             .Include(sv => sv.Character)
             .ToListAsync();
 
-        var statDetailDtos = new List<StatDetailDto>();
-        var statMapper = new StatMapper();
-
-        foreach (var stat in stats)
-        {
-            var svTempList = statValues
-                .Where(sv => sv.StatId == stat.Id)
-                .ToList();
-
-            statDetailDtos.Add(statMapper.MapToStatDetailDto(stat, svTempList));
-        }
-
-        return statDetailDtos;
+        return (from stat in stats
+            let svTempList = statValues.Where(sv => sv.StatId == stat.Id)
+                .ToList()
+            select StatMapper.MapToStatDetailDto(stat, svTempList)).ToList();
     }
 
     public async Task<StatDto?> GetStatByIdAsync(long statId)
@@ -130,10 +106,7 @@ public class StatService : IStatService
             .Include(s => s.StatValues)
             .FirstOrDefaultAsync(s => s.Id == statId);
 
-        if (stat == null)
-        {
-            throw new StatNotFoundException(statId);
-        }
+        if (stat == null) throw new StatNotFoundException(statId);
 
         return stat.Adapt<StatDto>();
     }
@@ -149,7 +122,6 @@ public class StatService : IStatService
             .ToListAsync();
 
         var statDetailDto = new StatDetailDto();
-        var statMapper = new StatMapper();
 
         if (stat == null) return statDetailDto;
 
@@ -157,7 +129,7 @@ public class StatService : IStatService
             .Where(sv => sv.StatId == statId)
             .ToList();
 
-        statDetailDto = statMapper.MapToStatDetailDto(stat, svTempList);
+        statDetailDto = StatMapper.MapToStatDetailDto(stat, svTempList);
 
         return statDetailDto;
     }
@@ -176,10 +148,7 @@ public class StatService : IStatService
     {
         var stat = _dbContext.Stats.FirstOrDefault(s => s.Id == statId);
 
-        if (stat == null)
-        {
-            throw new StatNotFoundException(statId);
-        }
+        if (stat == null) throw new StatNotFoundException(statId);
 
         stat.Name = statForUpdateDto.Name;
         stat.ShortName = statForUpdateDto.ShortName;
@@ -194,15 +163,12 @@ public class StatService : IStatService
     {
         var stat = _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId).Result;
 
-        if (stat == null)
-        {
-            return Task.CompletedTask;
-        }
+        if (stat == null) return Task.CompletedTask;
 
         _dbContext.Remove(stat);
 
         await _dbContext.SaveChangesAsync();
-        
+
         return Task.CompletedTask;
     }
 }

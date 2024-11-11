@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Diagnostics.CodeAnalysis;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
@@ -9,6 +10,8 @@ using RpgStats.Services.Abstractions;
 
 namespace RpgStats.Services;
 
+[SuppressMessage("Performance",
+    "CA1862:\"StringComparison\"-Methodenüberladungen verwenden, um Zeichenfolgenvergleiche ohne Beachtung der Groß-/Kleinschreibung durchzuführen")]
 public class GameService : IGameService
 {
     private readonly RpgStatsContext _dbContext;
@@ -46,10 +49,7 @@ public class GameService : IGameService
             .Include(g => g.Characters)
             .FirstOrDefaultAsync(x => x.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         return game.Adapt<GameDto>();
     }
@@ -68,10 +68,7 @@ public class GameService : IGameService
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         game.Name = gameForUpdateDto.Name;
         game.Picture = gameForUpdateDto.Picture;
@@ -86,15 +83,12 @@ public class GameService : IGameService
     {
         var game = _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId).Result;
 
-        if (game == null)
-        {
-            return Task.CompletedTask;
-        }
+        if (game == null) return Task.CompletedTask;
 
         _dbContext.Remove(game);
 
         await _dbContext.SaveChangesAsync();
-        
+
         return Task.CompletedTask;
     }
 
@@ -113,31 +107,19 @@ public class GameService : IGameService
             .ToListAsync();
 
         var gameDetailDtos = new List<GameDetailDto>();
-        var gameMapper = new GameMapper();
 
         foreach (var game in games)
         {
             var platformsFiltered = new List<Platform?>();
             if (game.PlatformGames != null)
-            {
-                foreach (var pg in game.PlatformGames)
-                {
-                    platformsFiltered.Add(platforms
-                        .FirstOrDefault(p => p.Id == pg.PlatformId));
-                }
-            }
+                platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
+                    platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
 
             var statsFiltered = new List<Stat?>();
             if (game.GameStats != null)
-            {
-                foreach (var gs in game.GameStats)
-                {
-                    statsFiltered.Add(stats
-                        .FirstOrDefault(s => s.Id == gs.StatId));
-                }
-            }
+                statsFiltered.AddRange(game.GameStats.Select(gs => stats.FirstOrDefault(s => s.Id == gs.StatId)));
 
-            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
+            gameDetailDtos.Add(GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
         }
 
         return gameDetailDtos;
@@ -159,31 +141,19 @@ public class GameService : IGameService
             .ToListAsync();
 
         var gameDetailDtos = new List<GameDetailDto>();
-        var gameMapper = new GameMapper();
 
         foreach (var game in games)
         {
             var platformsFiltered = new List<Platform?>();
             if (game.PlatformGames != null)
-            {
-                foreach (var pg in game.PlatformGames)
-                {
-                    platformsFiltered.Add(platforms
-                        .FirstOrDefault(p => p.Id == pg.PlatformId));
-                }
-            }
+                platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
+                    platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
 
             var statsFiltered = new List<Stat?>();
             if (game.GameStats != null)
-            {
-                foreach (var gs in game.GameStats)
-                {
-                    statsFiltered.Add(stats
-                        .FirstOrDefault(s => s.Id == gs.StatId));
-                }
-            }
+                statsFiltered.AddRange(game.GameStats.Select(gs => stats.FirstOrDefault(s => s.Id == gs.StatId)));
 
-            gameDetailDtos.Add(gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
+            gameDetailDtos.Add(GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
         }
 
         return gameDetailDtos;
@@ -204,32 +174,17 @@ public class GameService : IGameService
             .ToListAsync();
 
         var gameDetailDto = new GameDetailDto();
-        var gameMapper = new GameMapper();
-        if (game == null)
-        {
-            return gameDetailDto;
-        }
+        if (game == null) return gameDetailDto;
         var platformsFiltered = new List<Platform?>();
         if (game.PlatformGames != null)
-        {
-            foreach (var pg in game.PlatformGames)
-            {
-                platformsFiltered.Add(platforms
-                    .FirstOrDefault(p => p.Id == pg.PlatformId));
-            }
-        }
+            platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
+                platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
 
         var statsFiltered = new List<Stat?>();
         if (game.GameStats != null)
-        {
-            foreach (var gs in game.GameStats)
-            {
-                statsFiltered.Add(stats
-                    .FirstOrDefault(s => s.Id == gs.StatId));
-            }
-        }
+            statsFiltered.AddRange(game.GameStats.Select(gs => stats.FirstOrDefault(s => s.Id == gs.StatId)));
 
-        gameDetailDto = gameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered);
+        gameDetailDto = GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered);
 
         return gameDetailDto;
     }
