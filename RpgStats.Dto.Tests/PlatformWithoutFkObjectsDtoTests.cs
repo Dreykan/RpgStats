@@ -1,5 +1,3 @@
-using RpgStats.Dto;
-
 namespace RpgStats.Dto.Tests;
 
 public class PlatformWithoutFkObjectsDtoTests

@@ -1,5 +1,4 @@
 ﻿using RpgStats.Domain.Exceptions;
-using Xunit;
 
 namespace RpgStats.Domain.Tests.Exceptions;
 

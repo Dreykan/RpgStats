@@ -2,7 +2,7 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class PlatformMapper
+public static class PlatformMapper
 {
     public static PlatformWithoutFkObjectsDto MapToPlatformWithoutFkObjectsDto(Platform platform)
     {

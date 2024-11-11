@@ -36,7 +36,7 @@ public class PlatformMapperTests
     public void MapToPlatformDetailDto_NullGames_ReturnsDtoWithEmptyGames()
     {
         var platform = new Platform { Id = 1, Name = "Test Platform" };
-        var games = new List<Game>();
+        var games = new List<Game?>();
 
         var result = PlatformMapper.MapToPlatformDetailDto(platform, games);
 

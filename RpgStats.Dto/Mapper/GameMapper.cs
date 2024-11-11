@@ -2,7 +2,7 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class GameMapper
+public static class GameMapper
 {
     public static GameWithoutFkObjectsDto MapToGameWithoutFkObjectsDto(Game game)
     {
@@ -42,8 +42,7 @@ public class GameMapper
         gameDetailDto.PlatformWithoutFkObjectsDtos = platformWithoutFkObjectsDtos;
 
         // Map Stats-Property
-        if (stats == null) return gameDetailDto;
-        var statWithoutFkObjectsDtos = stats.Select(StatMapper.MapToStatWithoutFkObjectsDto).ToList();
+        var statWithoutFkObjectsDtos = stats.OfType<Stat>().Select(StatMapper.MapToStatWithoutFkObjectsDto).ToList();
 
         gameDetailDto.StatWithoutFkObjectsDtos = statWithoutFkObjectsDtos;
 

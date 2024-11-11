@@ -62,14 +62,12 @@ public class GameMapperTests
         var result = GameMapper.MapToGameDetailDto(game, new List<Platform?>(), new List<Stat?>());
 
         // Assert
-        if (result.CharacterWithoutFkObjectsDtos != null)
-        {
-            Assert.Single(result.CharacterWithoutFkObjectsDtos);
-            Assert.Equal(game.Characters.FirstOrDefault()?.Id,
-                result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Id);
-            Assert.Equal(game.Characters.FirstOrDefault()?.Name,
-                result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Name);
-        }
+        if (result.CharacterWithoutFkObjectsDtos == null) return;
+        Assert.Single(result.CharacterWithoutFkObjectsDtos);
+        Assert.Equal(game.Characters.FirstOrDefault()?.Id,
+            result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Id);
+        Assert.Equal(game.Characters.FirstOrDefault()?.Name,
+            result.CharacterWithoutFkObjectsDtos.FirstOrDefault()?.Name);
     }
 
     [Fact]

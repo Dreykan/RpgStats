@@ -2,7 +2,7 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class CharacterMapper
+public static class CharacterMapper
 {
     public static CharacterWithAllFkObjectsDto MapToCharacterWithAllFkObjectsDto(Character character)
     {

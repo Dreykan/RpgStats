@@ -2,7 +2,7 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class StatValueMapper
+public static class StatValueMapper
 {
     public static StatValueWithStatObjectDto MapToStatValueWithStatObjectDto(StatValue statValue)
     {
@@ -10,10 +10,10 @@ public class StatValueMapper
         var statValueWithStatObjectDto = new StatValueWithStatObjectDto
         {
             Id = statValue.Id,
-            Level = (int)statValue.Level,
-            Value = (int)statValue.Value,
-            ContainedBonusNum = (int)statValue.ContainedBonusNum,
-            ContainedBonusPercent = (int)statValue.ContainedBonusPercent
+            Level = statValue.Level ?? 0,
+            Value = statValue.Value ?? 0,
+            ContainedBonusNum = statValue.ContainedBonusNum ?? 0,
+            ContainedBonusPercent = statValue.ContainedBonusPercent ?? 0
         };
 
         if (statValue.Stat != null)
@@ -29,10 +29,10 @@ public class StatValueMapper
         var statValueWithCharacterObjectDto = new StatValueWithCharacterObjectDto
         {
             Id = statValue.Id,
-            Level = (int)statValue.Level,
-            Value = (int)statValue.Value,
-            ContainedBonusNum = (int)statValue.ContainedBonusNum,
-            ContainedBonusPercent = (int)statValue.ContainedBonusPercent
+            Level = statValue.Level ?? 0,
+            Value = statValue.Value ?? 0,
+            ContainedBonusNum = statValue.ContainedBonusNum ?? 0,
+            ContainedBonusPercent = statValue.ContainedBonusPercent ?? 0
         };
 
         if (statValue.Character != null)

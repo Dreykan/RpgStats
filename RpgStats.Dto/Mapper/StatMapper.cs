@@ -2,7 +2,7 @@
 
 namespace RpgStats.Dto.Mapper;
 
-public class StatMapper
+public static class StatMapper
 {
     public static StatWithoutFkObjectsDto MapToStatWithoutFkObjectsDto(Stat stat)
     {

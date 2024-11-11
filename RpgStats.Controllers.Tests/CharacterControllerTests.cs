@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using RpgStats.Domain.Entities;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 
