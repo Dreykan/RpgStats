@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RpgStats.Controllers\RpgStats.Controllers.csproj" />
+      <ProjectReference Include="..\RpgStats.ControllersLegacy\RpgStats.ControllersLegacy.csproj" />
       <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj" />
     </ItemGroup>
 

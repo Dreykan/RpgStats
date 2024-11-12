@@ -1,24 +1,23 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using MudBlazor.Services;
 using Newtonsoft.Json;
-using RpgStats.BlazorServer;
 using RpgStats.Repo;
 using RpgStats.Services;
 using RpgStats.Services.Abstractions;
+using RpgStats.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddControllers().AddApplicationPart(typeof(RpgStats.ControllersLegacy.AssemblyReference).Assembly);
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo {Title = "RpgStats", Version = "v1"});
 });
-builder.Services.AddMudServices();
 builder.Services.AddTransient<ICharacterService, CharacterService>();
 builder.Services.AddTransient<IGameService, GameService>();
 builder.Services.AddTransient<IGameStatService, GameStatService>();
@@ -38,36 +37,20 @@ var app = builder.Build();
 await ApplyMigration(app.Services);
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web v1"));
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.UseAuthorization();
 
-app.UseRouting();
-
-#pragma warning disable ASP0014
-app.UseEndpoints(endpoints => endpoints.MapControllers());
-#pragma warning restore ASP0014
-
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+app.MapControllers();
 
 app.Run();
 return;
-
 
 static string? GetConnectionString()
 {

@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Services.Abstracti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Services", "RpgStats.Services\RpgStats.Services.csproj", "{688ED585-3D1C-4563-B471-6C9B06929F40}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Controllers", "RpgStats.Controllers\RpgStats.Controllers.csproj", "{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.ControllersLegacy", "RpgStats.ControllersLegacy\RpgStats.ControllersLegacy.csproj", "{B9FAD8AE-1558-4C5E-A215-495D2FE0942C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgStats.Dto", "RpgStats.Dto\RpgStats.Dto.csproj", "{1C7565D1-84F6-4C04-A3F5-61C41885A2BF}"
 EndProject
@@ -35,9 +35,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Services.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Repo.Tests", "RpgStats.Repo.Tests\RpgStats.Repo.Tests.csproj", "{6077CB22-DC99-48CA-B810-A7B725F42388}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Controllers.Tests", "RpgStats.Controllers.Tests\RpgStats.Controllers.Tests.csproj", "{F06609DF-9C26-45BB-A365-A55CA430BC4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.ControllersLegacy.Tests", "RpgStats.ControllersLegacy.Tests\RpgStats.ControllersLegacy.Tests.csproj", "{F06609DF-9C26-45BB-A365-A55CA430BC4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.BizLogic.Tests", "RpgStats.BizLogic.Tests\RpgStats.BizLogic.Tests.csproj", "{E2471E1F-DC66-4C3A-B010-741F4806AA9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.WebApi", "RpgStats.WebApi\RpgStats.WebApi.csproj", "{F9DF62E9-8AC9-42DF-9652-BEE39582A771}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,10 @@ Global
 		{E2471E1F-DC66-4C3A-B010-741F4806AA9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2471E1F-DC66-4C3A-B010-741F4806AA9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2471E1F-DC66-4C3A-B010-741F4806AA9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9DF62E9-8AC9-42DF-9652-BEE39582A771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9DF62E9-8AC9-42DF-9652-BEE39582A771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9DF62E9-8AC9-42DF-9652-BEE39582A771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9DF62E9-8AC9-42DF-9652-BEE39582A771}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{6077CB22-DC99-48CA-B810-A7B725F42388} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
 		{F06609DF-9C26-45BB-A365-A55CA430BC4A} = {0DED8742-796E-4451-9987-FCF89DC1127A}
 		{E2471E1F-DC66-4C3A-B010-741F4806AA9A} = {C4827331-5667-457A-AF67-008D69DFF0F7}
+		{F9DF62E9-8AC9-42DF-9652-BEE39582A771} = {0DED8742-796E-4451-9987-FCF89DC1127A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89448F67-F1C7-49DA-8512-E0050C900CD4}
