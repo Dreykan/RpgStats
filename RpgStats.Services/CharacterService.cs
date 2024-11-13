@@ -44,7 +44,7 @@ public class CharacterService : ICharacterService
     {
         var characters = await _dbContext.Characters
             .Include(c => c.StatValues)
-            .Where(g => g.Name != null && g.Name.ToLower().Contains(name.ToLower()))
+            .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         return characters.Adapt<List<CharacterDto>>();
@@ -164,7 +164,7 @@ public class CharacterService : ICharacterService
         var characters = await _dbContext.Characters
             .Include(c => c.Game)
             .Include(c => c.StatValues)
-            .Where(g => g.Name != null && g.Name.ToLower().Contains(name.ToLower()))
+            .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         var statValues = await _dbContext.StatValues
@@ -185,6 +185,7 @@ public class CharacterService : ICharacterService
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
         var characterDetailDto = new CharacterDetailDto();
+
         if (character == null) return characterDetailDto;
         var svTempList = await _dbContext.StatValues
             .Include(sv => sv.Stat)

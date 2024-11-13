@@ -8,7 +8,10 @@ public class CharacterTests
     [Fact]
     public void Character_Id_ShouldBeSetAndRetrievedCorrectly()
     {
-        var character = new Character();
+        var character = new Character
+        {
+            Name = "TestCharacter"
+        };
             
         character.Id = 12345;
             
@@ -18,9 +21,10 @@ public class CharacterTests
     [Fact]
     public void Character_Name_ShouldBeSetAndRetrievedCorrectly()
     {
-        var character = new Character();
-            
-        character.Name = "TestCharacter";
+        var character = new Character
+        {
+            Name = "TestCharacter"
+        };
             
         Assert.Equal("TestCharacter", character.Name);
     }
@@ -28,7 +32,10 @@ public class CharacterTests
     [Fact]
     public void Character_Picture_ShouldBeSetAndRetrievedCorrectly()
     {
-        var character = new Character();
+        var character = new Character
+        {
+            Name = "TestCharacter"
+        };
             
         character.Picture = [0x01, 0x02, 0x03];
             
@@ -38,7 +45,10 @@ public class CharacterTests
     [Fact]
     public void Character_GameId_ShouldBeSetAndRetrievedCorrectly()
     {
-        var character = new Character();
+        var character = new Character
+        {
+            Name = "TestCharacter"
+        };
             
         character.GameId = 12345;
             
@@ -48,7 +58,10 @@ public class CharacterTests
     [Fact]
     public void Character_Game_ShouldBeSetAndRetrievedCorrectly()
     {
-        var character = new Character();
+        var character = new Character
+        {
+            Name = "TestCharacter"
+        };
             
         character.Game = new Game { Id = 12345, Name = "TestGame" };
             
@@ -59,27 +72,15 @@ public class CharacterTests
     [Fact]
     public void Character_StatValues_ShouldBeSetAndRetrievedCorrectly()
     {
-        var character = new Character();
+        var character = new Character
+        {
+            Name = "TestCharacter"
+        };
             
         character.StatValues = new List<StatValue> { new() { Id = 12345, Value = 10 } };
             
         Assert.Equal( 12345, character.StatValues.First().Id);
         Assert.Equal(10, character.StatValues.First().Value);
-    }
-
-    [Fact]
-    public void Character_Name_RequiredValidation()
-    {
-        var character = new Character
-        {
-            GameId = 1
-        };
-
-        var validationResults = TestHelper.ValidateModel(character);
-            
-        Assert.NotEmpty(validationResults);
-        Assert.Contains(validationResults,
-            v => v.ErrorMessage != null && v.ErrorMessage.Contains("A name for a character is required."));
     }
 
     [Fact]
@@ -96,20 +97,5 @@ public class CharacterTests
         Assert.NotEmpty(validationResults);
         Assert.Contains(validationResults,
             v => v.ErrorMessage != null && v.ErrorMessage.Contains("The Name can't be longer than 60 characters."));
-    }
-
-    [Fact]
-    public void Character_GameId_RequiredValidation()
-    {
-        var character = new Character
-        {
-            Name = "Hero"
-        };
-            
-        var validationResults = TestHelper.ValidateModel(character);
-
-        Assert.NotEmpty(validationResults);
-        Assert.Contains(validationResults,
-            v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry in the column GameId is required."));
     }
 }

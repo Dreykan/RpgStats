@@ -5,9 +5,11 @@ public class CharacterDetailDtoTests
     [Fact]
     public void CharacterDetailDto_Should_Have_Default_Values()
     {
-        var dto = new CharacterDetailDto();
+        var dto = new CharacterDetailDto
+        {
+            Name = "TestCharacter"
+        };
         Assert.Equal(0, dto.Id);
-        Assert.Null(dto.Name);
         Assert.Null(dto.Picture);
         Assert.Null(dto.GameWithoutFkObjectsDto);
         Assert.Null(dto.StatValuesWithStatObjectDtos);
@@ -39,13 +41,12 @@ public class CharacterDetailDtoTests
         var dto = new CharacterDetailDto
         {
             Id = 1,
-            Name = null,
+            Name = "TestCharacter",
             Picture = null,
             GameWithoutFkObjectsDto = null,
             StatValuesWithStatObjectDtos = null
         };
         Assert.Equal(1, dto.Id);
-        Assert.Null(dto.Name);
         Assert.Null(dto.Picture);
         Assert.Null(dto.GameWithoutFkObjectsDto);
         Assert.Null(dto.StatValuesWithStatObjectDtos);

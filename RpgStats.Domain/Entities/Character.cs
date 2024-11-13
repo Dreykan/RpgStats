@@ -13,13 +13,13 @@ public class Character
 
     [Required(ErrorMessage = "A name for a character is required.")]
     [StringLength(60, ErrorMessage = "The Name can't be longer than 60 characters.")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     public byte[]? Picture { get; set; }
 
     [Required(ErrorMessage = "An entry in the column GameId is required.")]
     [ForeignKey(nameof(Game))]
-    public long? GameId { get; set; }
+    public long GameId { get; set; }
     public Game? Game { get; set; }
 
     [InverseProperty("Character")]

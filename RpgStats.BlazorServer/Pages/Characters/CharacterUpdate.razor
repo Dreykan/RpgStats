@@ -59,7 +59,10 @@ else
 @* ReSharper disable NotAccessedField.Local *@
 @code {
     private CharacterDetailDto? _character;
-    private readonly CharacterForUpdateDto _characterForUpdateDto = new();
+    private readonly CharacterForUpdateDto _characterForUpdateDto = new()
+    {
+        Name = "TestCharacter"
+    };
     private List<GameDto> _gameDtos = new();
     private MudForm? _form;
     private bool _success;

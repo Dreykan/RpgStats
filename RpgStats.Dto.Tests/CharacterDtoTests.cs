@@ -7,7 +7,7 @@ public class CharacterDtoTests
     {
         var character = new CharacterDto();
         Assert.Equal(0, character.Id);
-        Assert.Null(character.Name);
+        Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
         Assert.Equal(0, character.GameId);
         Assert.Null(character.StatValues);
@@ -38,12 +38,11 @@ public class CharacterDtoTests
     {
         var character = new CharacterDto
         {
-            Name = null,
             Picture = null,
             StatValues = null
         };
 
-        Assert.Null(character.Name);
+        Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
         Assert.Null(character.StatValues);
     }
