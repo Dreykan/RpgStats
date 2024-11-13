@@ -149,7 +149,8 @@ else
 
     private void PrefillForm()
     {
-        _gameForUpdateDto.Name = _game?.Name;
+        if (_game == null) return;
+        _gameForUpdateDto.Name = _game.Name;
 
         if (_game?.PlatformWithoutFkObjectsDtos != null)
             foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())

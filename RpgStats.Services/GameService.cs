@@ -36,7 +36,7 @@ public class GameService : IGameService
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
             .Include(g => g.Characters)
-            .Where(g => g.Name != null && g.Name.ToLower().Contains(name.ToLower()))
+            .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         return games.Adapt<List<GameDto>>();
@@ -131,7 +131,7 @@ public class GameService : IGameService
             .Include(g => g.PlatformGames)
             .Include(g => g.Characters)
             .Include(g => g.GameStats)
-            .Where(g => g.Name != null && g.Name.ToLower().Contains(name.ToLower()))
+            .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         var platforms = await _dbContext.Platforms

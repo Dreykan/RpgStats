@@ -25,10 +25,10 @@ public class GameWithoutFkObjectsDtoTests
     }
 
     [Fact]
-    public void Name_ShouldHandleNullValue()
+    public void Name_ShouldHandleEmptyValue()
     {
-        var dto = new GameWithoutFkObjectsDto { Name = null };
-        Assert.Null(dto.Name);
+        var dto = new GameWithoutFkObjectsDto();
+        Assert.Equal(string.Empty, dto.Name);
     }
 
     [Fact]

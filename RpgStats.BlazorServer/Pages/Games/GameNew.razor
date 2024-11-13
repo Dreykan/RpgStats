@@ -73,7 +73,7 @@
     {
         await GameService.CreateGameAsync(_gameForCreationDto);
 
-        long gameId = _gameForCreationDto.Name != null ? await GetIdOfCreatedGame(_gameForCreationDto.Name) : 0;
+        long gameId = await GetIdOfCreatedGame(_gameForCreationDto.Name);
 
         List<long> selectedPlatformIds = new();
         foreach (var selectedPlatform in SelectedPlatforms)
