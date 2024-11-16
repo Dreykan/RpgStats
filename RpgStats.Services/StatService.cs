@@ -56,13 +56,8 @@ public class StatService : IStatService
             .Include(s => s.StatValues)
             .ToListAsync();
 
-        var statValues = await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .ToListAsync();
-
         return (from stat in stats
-            let svTempList = statValues.Where(sv => sv.StatId == stat.Id)
-                .ToList()
+            let svTempList = stat.StatValues.ToList()
             select StatMapper.MapToStatDetailDto(stat, svTempList)).ToList();
     }
 
@@ -73,13 +68,8 @@ public class StatService : IStatService
             .Where(s => s.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
-        var statValues = await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .ToListAsync();
-
         return (from stat in stats
-            let svTempList = statValues.Where(sv => sv.StatId == stat.Id)
-                .ToList()
+            let svTempList = stat.StatValues.ToList()
             select StatMapper.MapToStatDetailDto(stat, svTempList)).ToList();
     }
 
@@ -90,13 +80,8 @@ public class StatService : IStatService
             .Where(s => s.ShortName != null && s.ShortName.ToLower().Contains(shortName.ToLower()))
             .ToListAsync();
 
-        var statValues = await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .ToListAsync();
-
         return (from stat in stats
-            let svTempList = statValues.Where(sv => sv.StatId == stat.Id)
-                .ToList()
+            let svTempList = stat.StatValues.ToList()
             select StatMapper.MapToStatDetailDto(stat, svTempList)).ToList();
     }
 
@@ -117,17 +102,11 @@ public class StatService : IStatService
             .Include(s => s.StatValues)
             .FirstOrDefaultAsync(s => s.Id == statId);
 
-        var statValues = await _dbContext.StatValues
-            .Include(sv => sv.Character)
-            .ToListAsync();
-
         var statDetailDto = new StatDetailDto();
 
         if (stat == null) return statDetailDto;
 
-        var svTempList = statValues
-            .Where(sv => sv.StatId == statId)
-            .ToList();
+        var svTempList = (stat.StatValues ?? new List<StatValue>()).ToList();
 
         statDetailDto = StatMapper.MapToStatDetailDto(stat, svTempList);
 
