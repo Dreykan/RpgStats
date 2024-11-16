@@ -7,28 +7,40 @@ namespace RpgStats.ControllersLegacy.Tests;
 
 public class CharacterControllerTests
 {
-    private readonly Mock<ICharacterService> _mockService;
-    private readonly CharacterController _controller;
-    private readonly List<CharacterDto> _characters;
     private readonly List<CharacterDetailDto> _characterDetailDtos;
-    
+    private readonly List<CharacterDto> _characters;
+    private readonly CharacterController _controller;
+    private readonly Mock<ICharacterService> _mockService;
+
     public CharacterControllerTests()
     {
         _mockService = new Mock<ICharacterService>();
         _controller = new CharacterController(_mockService.Object);
-        
+
         _characters = new List<CharacterDto>
         {
-            new() { Id = 1, Name = "TestCharacter1", GameId = 1},
-            new() { Id = 2, Name = "TestCharacter2", GameId = 2},
-            new() { Id = 3, Name = "TestCharacter3", GameId = 1}
+            new() { Id = 1, Name = "TestCharacter1", GameId = 1 },
+            new() { Id = 2, Name = "TestCharacter2", GameId = 2 },
+            new() { Id = 3, Name = "TestCharacter3", GameId = 1 }
         };
 
         _characterDetailDtos = new List<CharacterDetailDto>
         {
-            new() { Id = 1, Name = "TestCharacter1", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } },
-            new() { Id = 2, Name = "TestCharacter2", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" } },
-            new() { Id = 3, Name = "TestCharacter3", GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" } }
+            new()
+            {
+                Id = 1, Name = "TestCharacter1",
+                GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" }
+            },
+            new()
+            {
+                Id = 2, Name = "TestCharacter2",
+                GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 2, Name = "TestGame2" }
+            },
+            new()
+            {
+                Id = 3, Name = "TestCharacter3",
+                GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto { Id = 1, Name = "TestGame1" }
+            }
         };
     }
 
@@ -44,7 +56,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<List<CharacterDto>>(okResult.Value);
         Assert.Equal(_characters.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllCharactersByGame_ReturnsCharactersByGame()
     {
@@ -58,7 +70,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<List<CharacterDto>>(okResult.Value);
         Assert.Equal(2, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllCharactersByName_ReturnsCharactersByName()
     {
@@ -72,7 +84,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<List<CharacterDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetAllCharacterDetailDtos_ReturnsAllCharacterDetailDtos()
     {
@@ -85,13 +97,14 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<List<CharacterDetailDto>>(okResult.Value);
         Assert.Equal(_characterDetailDtos.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllCharacterDetailDtosByGame_ReturnsCharacterDetailDtosByGame()
     {
         const int gameId = 1;
         _mockService.Setup(x => x.GetAllCharacterDetailDtosByGameIdAsync(gameId))
-            .ReturnsAsync(_characterDetailDtos.Where(x => x.GameWithoutFkObjectsDto != null && x.GameWithoutFkObjectsDto.Id == gameId).ToList());
+            .ReturnsAsync(_characterDetailDtos
+                .Where(x => x.GameWithoutFkObjectsDto != null && x.GameWithoutFkObjectsDto.Id == gameId).ToList());
 
         var result = await _controller.GetAllCharacterDetailDtosByGame(gameId);
 
@@ -99,7 +112,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<List<CharacterDetailDto>>(okResult.Value);
         Assert.Equal(2, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllCharacterDetailDtosByName_ReturnsCharacterDetailDtosByName()
     {
@@ -113,7 +126,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<List<CharacterDetailDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetCharacterById_ReturnsCharacter()
     {
@@ -127,7 +140,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<CharacterDto>(okResult.Value);
         Assert.Equal(characterId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task GetCharacterDetailDtoById_ReturnsCharacterDetailDto()
     {
@@ -141,7 +154,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<CharacterDetailDto>(okResult.Value);
         Assert.Equal(characterId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreateCharacter_ReturnsCharacter()
     {
@@ -157,7 +170,7 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<CharacterDto>(createdAtActionResult.Value);
         Assert.Equal(characterDto.Id, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreateCharacter_ReturnsBadRequest()
     {
@@ -168,7 +181,7 @@ public class CharacterControllerTests
 
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task UpdateCharacter_ReturnsCharacter()
     {
@@ -185,18 +198,19 @@ public class CharacterControllerTests
         var returnValue = Assert.IsType<CharacterDto>(okResult.Value);
         Assert.Equal(characterId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task UpdateCharacter_ReturnsBadRequest()
     {
-        _mockService.Setup(x => x.UpdateCharacterAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CharacterForUpdateDto>()))
+        _mockService.Setup(x =>
+                x.UpdateCharacterAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CharacterForUpdateDto>()))
             .ReturnsAsync((CharacterDto?)null);
 
-        var result = await _controller.UpdateCharacter(new CharacterForUpdateDto{ Name = "TestCharacter" }, 1, 1);
+        var result = await _controller.UpdateCharacter(new CharacterForUpdateDto { Name = "TestCharacter" }, 1, 1);
 
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task DeleteCharacter_ReturnsOk()
     {
@@ -208,7 +222,7 @@ public class CharacterControllerTests
 
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeleteCharacter_ReturnsBadRequest()
     {

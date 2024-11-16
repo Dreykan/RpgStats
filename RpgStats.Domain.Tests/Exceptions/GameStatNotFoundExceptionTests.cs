@@ -13,7 +13,7 @@ public class GameStatNotFoundExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void GameStatNotFoundException_Type_IsCorrect()
     {
@@ -28,7 +28,7 @@ public class GameStatNotFoundExceptionTests
     public void GameStatNotFoundException_Message_IsCorrect()
     {
         const long gameStatId = 456;
-        string expectedMessage = $"The GameStat with the identifier {gameStatId} was not found.";
+        var expectedMessage = $"The GameStat with the identifier {gameStatId} was not found.";
 
         var exception = new GameStatNotFoundException(gameStatId);
 

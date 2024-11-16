@@ -20,6 +20,12 @@ public class DatabaseFixture : IDisposable
         InitializeTestData();
     }
 
+    public void Dispose()
+    {
+        Context.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
     private void InitializeTestData()
     {
         AddCharacters();
@@ -29,7 +35,7 @@ public class DatabaseFixture : IDisposable
         AddGameStats();
         AddPlatformGames();
         AddStatValues();
-        
+
         Context.SaveChanges();
     }
 
@@ -64,12 +70,12 @@ public class DatabaseFixture : IDisposable
 
     private void AddStats()
     {
-        Context.Stats.Add(new Stat { Id = 1, Name = "StatValue1", ShortName = "SV1"});
-        Context.Stats.Add(new Stat { Id = 2, Name = "StatValue2", ShortName = "SV2"});
-        Context.Stats.Add(new Stat { Id = 3, Name = "StatValue3", ShortName = "SV3"});
-        Context.Stats.Add(new Stat { Id = 4, Name = "StatValue4", ShortName = "SV4"});
-        Context.Stats.Add(new Stat { Id = 5, Name = "GoodStatValue1", ShortName = "GSV1"});
-        Context.Stats.Add(new Stat { Id = 6, Name = "GoodStatValue2", ShortName = "GSV2"});
+        Context.Stats.Add(new Stat { Id = 1, Name = "StatValue1", ShortName = "SV1" });
+        Context.Stats.Add(new Stat { Id = 2, Name = "StatValue2", ShortName = "SV2" });
+        Context.Stats.Add(new Stat { Id = 3, Name = "StatValue3", ShortName = "SV3" });
+        Context.Stats.Add(new Stat { Id = 4, Name = "StatValue4", ShortName = "SV4" });
+        Context.Stats.Add(new Stat { Id = 5, Name = "GoodStatValue1", ShortName = "GSV1" });
+        Context.Stats.Add(new Stat { Id = 6, Name = "GoodStatValue2", ShortName = "GSV2" });
     }
 
     private void AddGameStats()
@@ -103,26 +109,60 @@ public class DatabaseFixture : IDisposable
         Context.PlatformGames.Add(new PlatformGame { PlatformId = 3, GameId = 5 });
         Context.PlatformGames.Add(new PlatformGame { PlatformId = 3, GameId = 6 });
     }
-    
+
     private void AddStatValues()
     {
-        Context.StatValues.Add(new StatValue { Id = 1, CharacterId = 1, Level = 1, StatId = 1, Value = 11, ContainedBonusNum = 2, ContainedBonusPercent = 0 });
-        Context.StatValues.Add(new StatValue { Id = 2, CharacterId = 1, Level = 1, StatId = 2, Value = 22, ContainedBonusNum = 4, ContainedBonusPercent = 3 });
-        Context.StatValues.Add(new StatValue { Id = 3, CharacterId = 1, Level = 1, StatId = 3, Value = 33, ContainedBonusNum = 8, ContainedBonusPercent = 8 });
-        Context.StatValues.Add(new StatValue { Id = 4, CharacterId = 1, Level = 1, StatId = 4, Value = 44, ContainedBonusNum = 6, ContainedBonusPercent = 1 });
-        Context.StatValues.Add(new StatValue { Id = 5, CharacterId = 2, Level = 5, StatId = 1, Value = 55, ContainedBonusNum = 0, ContainedBonusPercent = 2 });
-        Context.StatValues.Add(new StatValue { Id = 6, CharacterId = 2, Level = 5, StatId = 2, Value = 66, ContainedBonusNum = 3, ContainedBonusPercent = 5 });
-        Context.StatValues.Add(new StatValue { Id = 7, CharacterId = 2, Level = 5, StatId = 3, Value = 77, ContainedBonusNum = 5, ContainedBonusPercent = 0 });
-        Context.StatValues.Add(new StatValue { Id = 8, CharacterId = 2, Level = 5, StatId = 5, Value = 88, ContainedBonusNum = 7, ContainedBonusPercent = 4 });
-        Context.StatValues.Add(new StatValue { Id = 9, CharacterId = 3, Level = 9, StatId = 1, Value = 99, ContainedBonusNum = 11, ContainedBonusPercent = 2 });
-        Context.StatValues.Add(new StatValue { Id = 10, CharacterId = 3, Level = 9, StatId = 2, Value = 100, ContainedBonusNum = 22, ContainedBonusPercent = 2 });
-        Context.StatValues.Add(new StatValue { Id = 11, CharacterId = 3, Level = 9, StatId = 5, Value = 110, ContainedBonusNum = 33, ContainedBonusPercent = 4 });
-        Context.StatValues.Add(new StatValue { Id = 12, CharacterId = 3, Level = 9, StatId = 6, Value = 120, ContainedBonusNum = 44, ContainedBonusPercent = 3 });
-    }
-
-    public void Dispose()
-    {
-        Context.Dispose();
-        GC.SuppressFinalize(this);
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 1, CharacterId = 1, Level = 1, StatId = 1, Value = 11, ContainedBonusNum = 2, ContainedBonusPercent = 0
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 2, CharacterId = 1, Level = 1, StatId = 2, Value = 22, ContainedBonusNum = 4, ContainedBonusPercent = 3
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 3, CharacterId = 1, Level = 1, StatId = 3, Value = 33, ContainedBonusNum = 8, ContainedBonusPercent = 8
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 4, CharacterId = 1, Level = 1, StatId = 4, Value = 44, ContainedBonusNum = 6, ContainedBonusPercent = 1
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 5, CharacterId = 2, Level = 5, StatId = 1, Value = 55, ContainedBonusNum = 0, ContainedBonusPercent = 2
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 6, CharacterId = 2, Level = 5, StatId = 2, Value = 66, ContainedBonusNum = 3, ContainedBonusPercent = 5
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 7, CharacterId = 2, Level = 5, StatId = 3, Value = 77, ContainedBonusNum = 5, ContainedBonusPercent = 0
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 8, CharacterId = 2, Level = 5, StatId = 5, Value = 88, ContainedBonusNum = 7, ContainedBonusPercent = 4
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 9, CharacterId = 3, Level = 9, StatId = 1, Value = 99, ContainedBonusNum = 11,
+            ContainedBonusPercent = 2
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 10, CharacterId = 3, Level = 9, StatId = 2, Value = 100, ContainedBonusNum = 22,
+            ContainedBonusPercent = 2
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 11, CharacterId = 3, Level = 9, StatId = 5, Value = 110, ContainedBonusNum = 33,
+            ContainedBonusPercent = 4
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 12, CharacterId = 3, Level = 9, StatId = 6, Value = 120, ContainedBonusNum = 44,
+            ContainedBonusPercent = 3
+        });
     }
 }

@@ -1,8 +1,8 @@
 ﻿@page "/newCharacter"
 @page "/newCharacter/{GameName?}"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @using SkiaSharp
 @inject ICharacterService CharacterService
 @inject IGameService GameService
@@ -15,8 +15,12 @@
     <MudItem xs="12">
         <MudPaper Class="pa-0">
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForCreationDto.Name" TextChanged="OnNameChanged" Immediate="true"/>
-                <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="SelectedGame" Clearable="true">
+                <MudTextField Clearable="true" T="string" Label="Name" Required="true"
+                              RequiredError="Der Charakter sollte schon einen Namen haben..."
+                              @bind-Value="@_characterForCreationDto.Name" TextChanged="OnNameChanged"
+                              Immediate="true"/>
+                <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value"
+                           @bind-SelectedValues="SelectedGame" Clearable="true">
                     @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
                     {
                         <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
@@ -24,24 +28,32 @@
                 </MudSelect>
                 <MudGrid>
                     <MudItem lg="6" md="6" sm="12" xs="12">
-                        <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFile" MaximumFileCount="1">
+                        <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFile"
+                                       MaximumFileCount="1">
                             <ButtonTemplate>
-                                <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Image" for="@context">
+                                <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.Image" for="@context">
                                     Upload Image (jpg, png)
                                 </MudButton>
                             </ButtonTemplate>
                         </MudFileUpload>
                         <MudToolBar DisableGutters="true" Class="gap-4">
                             <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
-                            <MudButton OnClick="ClearImage" Disabled="@(!_files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                            <MudButton OnClick="ClearImage" Disabled="@(!_files.Any())" Color="Color.Error"
+                                       Variant="Variant.Filled">Clear
+                            </MudButton>
                         </MudToolBar>
                     </MudItem>
                     <MudItem lg="1" md="3" sm="12" xs="12">
-                        <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Bild des Charakters" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                        <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill"
+                                  Alt="Bild des Charakters" Elevation="0" Fluid="true"
+                                  Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
                     </MudItem>
                 </MudGrid>
                 <div class="align-content-center mt-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!_success)"
+                               Class="m-auto" OnClick="@(async () => await Create())">Erstellen
+                    </MudButton>
                 </div>
             </MudForm>
         </MudPaper>
@@ -49,6 +61,7 @@
 </MudGrid>
 
 @* ReSharper disable NotAccessedField.Local *@
+
 @code {
     private readonly CharacterForCreationDto _characterForCreationDto = new();
     private List<GameDto> _gameDtos = new();
@@ -60,8 +73,7 @@
     private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
-    [Parameter]
-    public string? GameName { get; set; }
+    [Parameter] public string? GameName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -136,8 +148,10 @@
     {
         if (SelectedGame.Any())
         {
-            _success = !string.IsNullOrWhiteSpace(value); 
+            _success = !string.IsNullOrWhiteSpace(value);
         }
     }
+
 }
+
 @* ReSharper restore NotAccessedField.Local *@

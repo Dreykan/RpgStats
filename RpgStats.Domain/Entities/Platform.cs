@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RpgStats.Domain.Entities;
 
@@ -15,7 +15,5 @@ public class Platform
     [StringLength(60, ErrorMessage = "The name for the platform can't be longer than 60 characters.")]
     public string Name { get; set; } = string.Empty;
 
-    [InverseProperty("Platform")]
-    public ICollection<PlatformGame>? PlatformGames { get; set; }
-
+    [InverseProperty("Platform")] public ICollection<PlatformGame>? PlatformGames { get; set; }
 }

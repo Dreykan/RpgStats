@@ -1,4 +1,5 @@
 ﻿using RpgStats.Domain.Entities;
+
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities;
@@ -59,6 +60,7 @@ public class PlatformTests
 
         Assert.NotEmpty(validationResults);
         Assert.Contains(validationResults,
-            v => v.ErrorMessage != null && v.ErrorMessage.Contains("The name for the platform can't be longer than 60 characters."));
+            v => v.ErrorMessage != null &&
+                 v.ErrorMessage.Contains("The name for the platform can't be longer than 60 characters."));
     }
 }

@@ -7,24 +7,24 @@ namespace RpgStats.ControllersLegacy.Tests;
 
 public class StatValueControllerTests
 {
-    private readonly Mock<IStatValueService> _mockService;
     private readonly StatValueController _controller;
+    private readonly Mock<IStatValueService> _mockService;
     private readonly List<StatValueDto> _statValues;
 
     public StatValueControllerTests()
     {
         _mockService = new Mock<IStatValueService>();
         _controller = new StatValueController(_mockService.Object);
-        
+
         _statValues = new List<StatValueDto>
         {
-            new() { Id = 1, CharacterId = 1, StatId = 1, Value = 1},
-            new() { Id = 2, CharacterId = 2, StatId = 2, Value = 2},
-            new() { Id = 3, CharacterId = 1, StatId = 3, Value = 3},
-            new() { Id = 4, CharacterId = 3, StatId = 1, Value = 4}
+            new() { Id = 1, CharacterId = 1, StatId = 1, Value = 1 },
+            new() { Id = 2, CharacterId = 2, StatId = 2, Value = 2 },
+            new() { Id = 3, CharacterId = 1, StatId = 3, Value = 3 },
+            new() { Id = 4, CharacterId = 3, StatId = 1, Value = 4 }
         };
     }
-    
+
     [Fact]
     public async Task GetAllStatValues_ReturnsAllStatValues()
     {
@@ -37,7 +37,7 @@ public class StatValueControllerTests
         var returnValue = Assert.IsType<List<StatValueDto>>(okResult.Value);
         Assert.Equal(_statValues.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllStatValuesByCharacter_ReturnsStatValuesByCharacter()
     {
@@ -51,7 +51,7 @@ public class StatValueControllerTests
         var returnValue = Assert.IsType<List<StatValueDto>>(okResult.Value);
         Assert.Equal(2, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllStatValuesByStat_ReturnsStatValuesByStat()
     {
@@ -65,7 +65,7 @@ public class StatValueControllerTests
         var returnValue = Assert.IsType<List<StatValueDto>>(okResult.Value);
         Assert.Equal(2, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetStatValueById_ReturnsStatValueById()
     {
@@ -79,14 +79,15 @@ public class StatValueControllerTests
         var returnValue = Assert.IsType<StatValueDto>(okResult.Value);
         Assert.Equal(statValueId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreateStatValue_ReturnsCreatedStatValue()
     {
         var statValueForCreationDto = new StatValueForCreationDto { Value = 1 };
         const int characterId = 1;
         const int statId = 1;
-        var response = new StatValueDto { Id = 5, CharacterId = characterId, StatId = statId, Value = statValueForCreationDto.Value };
+        var response = new StatValueDto
+            { Id = 5, CharacterId = characterId, StatId = statId, Value = statValueForCreationDto.Value };
         _mockService.Setup(x => x.CreateStatValueAsync(characterId, statId, statValueForCreationDto))
             .ReturnsAsync(response);
 
@@ -103,14 +104,15 @@ public class StatValueControllerTests
     [Fact]
     public async Task CreateStatValue_ReturnsBadRequest()
     {
-        _mockService.Setup(x => x.CreateStatValueAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<StatValueForCreationDto>()))
+        _mockService.Setup(x =>
+                x.CreateStatValueAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<StatValueForCreationDto>()))
             .ReturnsAsync((StatValueDto?)null);
-        
+
         var result = await _controller.CreateStatValue(new StatValueForCreationDto(), 1, 1);
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task UpdateStatValue_ReturnsUpdatedStatValue()
     {
@@ -118,7 +120,8 @@ public class StatValueControllerTests
         const int statValueId = 1;
         const int characterId = 1;
         const int statId = 1;
-        var response = new StatValueDto { Id = statValueId, CharacterId = characterId, StatId = statId, Value = statValueForUpdateDto.Value };
+        var response = new StatValueDto
+            { Id = statValueId, CharacterId = characterId, StatId = statId, Value = statValueForUpdateDto.Value };
         _mockService.Setup(x => x.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto))
             .ReturnsAsync(response);
 
@@ -128,15 +131,16 @@ public class StatValueControllerTests
         var returnValue = Assert.IsType<StatValueDto>(okResult.Value);
         Assert.Equal(statValueId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task UpdateStatValue_ReturnsBadRequest()
     {
-        _mockService.Setup(x => x.UpdateStatValueAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<StatValueForUpdateDto>()))
+        _mockService.Setup(x => x.UpdateStatValueAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(),
+                It.IsAny<StatValueForUpdateDto>()))
             .ReturnsAsync((StatValueDto?)null);
-        
+
         var result = await _controller.UpdateStatValue(new StatValueForUpdateDto(), 1, 1, 1);
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
 
@@ -145,20 +149,20 @@ public class StatValueControllerTests
     {
         _mockService.Setup(x => x.DeleteStatValueAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.CompletedTask);
-        
+
         var result = await _controller.DeleteStatValue(1);
-        
+
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeleteStatValue_ReturnsBadRequest()
     {
         _mockService.Setup(x => x.DeleteStatValueAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.FromException(new Exception()));
-        
+
         var result = await _controller.DeleteStatValue(1);
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
 }

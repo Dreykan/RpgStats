@@ -13,7 +13,7 @@ public class StatValueNotFoundExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void StatValueNotFoundException_Type_IsCorrect()
     {
@@ -28,7 +28,7 @@ public class StatValueNotFoundExceptionTests
     public void StatValueNotFoundException_Message_IsCorrect()
     {
         const long statValueId = 456;
-        string expectedMessage = $"The StatValue with the identifier {statValueId} was not found.";
+        var expectedMessage = $"The StatValue with the identifier {statValueId} was not found.";
 
         var exception = new StatValueNotFoundException(statValueId);
 

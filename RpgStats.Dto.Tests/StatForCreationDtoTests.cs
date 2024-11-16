@@ -17,7 +17,8 @@ public class StatForCreationDtoTests
     {
         var dto = new StatForCreationDto { Name = new string('a', 51) };
         var validationResults = ValidateModel(dto);
-        Assert.Contains(validationResults, v => v.ErrorMessage == "The name for the stat can't be longer than 50 characters.");
+        Assert.Contains(validationResults,
+            v => v.ErrorMessage == "The name for the stat can't be longer than 50 characters.");
     }
 
     [Fact]
@@ -25,7 +26,8 @@ public class StatForCreationDtoTests
     {
         var dto = new StatForCreationDto { Name = new string('a', 50) };
         var validationResults = ValidateModel(dto);
-        Assert.DoesNotContain(validationResults, v => v.ErrorMessage == "The name for the stat can't be longer than 50 characters.");
+        Assert.DoesNotContain(validationResults,
+            v => v.ErrorMessage == "The name for the stat can't be longer than 50 characters.");
     }
 
     [Fact]
@@ -33,7 +35,8 @@ public class StatForCreationDtoTests
     {
         var dto = new StatForCreationDto { ShortName = new string('a', 9) };
         var validationResults = ValidateModel(dto);
-        Assert.Contains(validationResults, v => v.ErrorMessage == "The shortname for the stat can't be longer than 8 characters.");
+        Assert.Contains(validationResults,
+            v => v.ErrorMessage == "The shortname for the stat can't be longer than 8 characters.");
     }
 
     [Fact]
@@ -41,7 +44,8 @@ public class StatForCreationDtoTests
     {
         var dto = new StatForCreationDto { ShortName = new string('a', 8) };
         var validationResults = ValidateModel(dto);
-        Assert.DoesNotContain(validationResults, v => v.ErrorMessage == "The shortname for the stat can't be longer than 8 characters.");
+        Assert.DoesNotContain(validationResults,
+            v => v.ErrorMessage == "The shortname for the stat can't be longer than 8 characters.");
     }
 
     private static List<ValidationResult> ValidateModel(object model)

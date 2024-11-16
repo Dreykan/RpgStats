@@ -17,7 +17,7 @@ public class DatabaseMigrationTests
         await context.Database.MigrateAsync();
 
         Assert.True(await context.Database.CanConnectAsync());
-        
+
         await context.Database.CloseConnectionAsync();
     }
 }

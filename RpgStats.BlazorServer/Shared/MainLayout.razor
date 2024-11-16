@@ -2,9 +2,9 @@
 
 <MudLayout>
     <AppBar OnSidebarToggled="ToggleSidebar" OnThemeToggled="ToggleTheme"/>
-    
+
     <CustomMudNavMenu SideBarOpen="_sidebarOpen"/>
-    
+
     <MudMainContent Class="pt-16 px-16">
         <MudContainer Class="mt-6">
             @Body
@@ -17,11 +17,18 @@
 <MudSnackbarProvider/>
 
 @code
+
 {
     private MudTheme _currentTheme = new();
     private bool _sidebarOpen;
 
-    private void ToggleTheme(MudTheme changedTheme) => _currentTheme = changedTheme;
+    private void ToggleTheme(MudTheme changedTheme)
+    {
+        _currentTheme = changedTheme;
+    }
 
-    private void ToggleSidebar() => _sidebarOpen = !_sidebarOpen;
+    private void ToggleSidebar()
+    {
+        _sidebarOpen = !_sidebarOpen;
+    }
 }

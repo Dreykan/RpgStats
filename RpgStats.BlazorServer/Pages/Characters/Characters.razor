@@ -1,20 +1,22 @@
 ﻿@page "/allCharacters"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject ICharacterService CharacterService
 
 <MudGrid>
     @if (_characters == null)
     {
         <MudItem xs="12">
-            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
         </MudItem>
     }
     else
     {
         <MudItem xs="12">
-            <MudButton Href="/newCharacter" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neuer Character</MudButton>
+            <MudButton Href="/newCharacter" Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neuer Character
+            </MudButton>
         </MudItem>
 
         @foreach (var character in _characters)
@@ -24,7 +26,8 @@
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h4" Align="Align.Center">@character.Name</MudText>
-                            <MudText Typo="Typo.body1" Align="Align.Center">@character.GameWithoutFkObjectsDto?.Name</MudText>
+                            <MudText Typo="Typo.body1"
+                                     Align="Align.Center">@character.GameWithoutFkObjectsDto?.Name</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     @if (character.Picture == null)
@@ -33,10 +36,14 @@
                     }
                     else
                     {
-                        <MudImage Src="@TurnByteArrayToImage(character)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Character" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;" />
+                        <MudImage Src="@TurnByteArrayToImage(character)" ObjectFit="ObjectFit.Fill"
+                                  Alt="Picture of the Character" Elevation="2" Fluid="true"
+                                  Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;"/>
                     }
                     <MudCardActions>
-                        <MudButton Href="@($"/characterDetail/{character.Id}")" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Style="margin: auto;">Details</MudButton>
+                        <MudButton Href="@($"/characterDetail/{character.Id}")" Variant="Variant.Filled"
+                                   Color="Color.Primary" FullWidth="true" Style="margin: auto;">Details
+                        </MudButton>
                     </MudCardActions>
                 </MudCard>
             </div>
@@ -68,4 +75,5 @@
 
         return imageSrc;
     }
+
 }

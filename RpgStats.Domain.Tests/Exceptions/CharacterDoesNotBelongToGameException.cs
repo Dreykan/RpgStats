@@ -14,7 +14,7 @@ public class CharacterDoesNotBelongToGameExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void CharacterDoesNotBelongToGameException_Type_IsCorrect()
     {
@@ -31,7 +31,8 @@ public class CharacterDoesNotBelongToGameExceptionTests
     {
         const long characterId = 1;
         const long gameId = 2;
-        var expectedMessage = $"The Character with the identifier {characterId} does not belong to the game with the identifier {gameId}";
+        var expectedMessage =
+            $"The Character with the identifier {characterId} does not belong to the game with the identifier {gameId}";
 
         var exception = new CharacterDoesNotBelongToGameException(characterId, gameId);
 

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RpgStats.Domain.Entities;
 
@@ -17,11 +17,13 @@ public class StatValue
     [Required(ErrorMessage = "An Character-Entry is required.")]
     [ForeignKey(nameof(Character))]
     public long CharacterId { get; set; }
+
     public Character? Character { get; set; }
 
     [Required(ErrorMessage = "A Stat-Entry is required.")]
     [ForeignKey(nameof(Stat))]
     public long StatId { get; set; }
+
     public Stat? Stat { get; set; }
 
     [Required(ErrorMessage = "A value for the stat entry is required.")]
@@ -32,5 +34,4 @@ public class StatValue
 
     [Required(ErrorMessage = "A bonus contained herein in percent for this entry is required.")]
     public int ContainedBonusPercent { get; set; }
-
 }

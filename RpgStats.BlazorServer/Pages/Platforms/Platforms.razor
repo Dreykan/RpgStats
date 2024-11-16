@@ -1,7 +1,7 @@
 ﻿@page "/allPlatforms"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject IPlatformService PlatformService
 @inject IDialogService DialogService
 
@@ -9,13 +9,15 @@
     @if (_platforms == null)
     {
         <MudItem xs="12">
-            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
         </MudItem>
     }
     else
     {
         <MudItem xs="12">
-            <MudButton Href="/newPlatform" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neue Plattform</MudButton>
+            <MudButton Href="/newPlatform" Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neue Plattform
+            </MudButton>
         </MudItem>
 
         @foreach (var platform in _platforms)
@@ -27,8 +29,10 @@
                             <MudText Typo="Typo.h4" Align="Align.Center">@platform.Name</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" Href="@($"/updatePlatform/{platform.Id}")" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(async () => await DeletePlatform(platform.Id))"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"
+                                           Href="@($"/updatePlatform/{platform.Id}")"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                                           OnClick="@(async () => await DeletePlatform(platform.Id))"/>
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
@@ -107,4 +111,5 @@
     {
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
+
 }

@@ -2,9 +2,8 @@
 
 public sealed class StatValueNotFoundException : NotFoundException
 {
-    public StatValueNotFoundException(long statValueId) 
+    public StatValueNotFoundException(long statValueId)
         : base($"The StatValue with the identifier {statValueId} was not found.")
     {
-        
     }
 }

@@ -10,5 +10,4 @@ public class StatForCreationDto
 
     [StringLength(8, ErrorMessage = "The shortname for the stat can't be longer than 8 characters.")]
     public string? ShortName { get; set; }
-
 }

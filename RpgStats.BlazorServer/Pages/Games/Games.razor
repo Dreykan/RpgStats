@@ -14,7 +14,9 @@
     else
     {
         <MudItem md="12" sm="12">
-            <MudButton Href="/newGame" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neues Spiel</MudButton>
+            <MudButton Href="/newGame" Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large">Neues Spiel
+            </MudButton>
         </MudItem>
 
         @foreach (var game in _games)
@@ -33,7 +35,9 @@
                         }
                         else
                         {
-                            <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="2" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;"/>
+                            <MudImage Src="@TurnByteArrayToImage(game)" ObjectFit="ObjectFit.Fill"
+                                      Alt="Picture of the Game" Elevation="2" Fluid="true"
+                                      Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;"/>
                         }
                     </MudLink>
                     <MudCardContent>
@@ -41,7 +45,9 @@
                         <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
                     </MudCardContent>
                     <MudCardActions>
-                        <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Style="margin: auto;">Details</MudButton>
+                        <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary"
+                                   FullWidth="true" Style="margin: auto;">Details
+                        </MudButton>
                     </MudCardActions>
                 </MudCard>
             </div>

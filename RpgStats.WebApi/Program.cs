@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
-    c.SwaggerDoc("v1", new OpenApiInfo {Title = "RpgStats", Version = "v1"});
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RpgStats", Version = "v1" });
 });
 builder.Services.AddTransient<ICharacterService, CharacterService>();
 builder.Services.AddTransient<IGameService, GameService>();
@@ -60,9 +60,7 @@ static string? GetConnectionString()
     var jsonValues = streamReader.ReadToEnd();
     var dbConnectionJson = JsonConvert.DeserializeObject<DbConnectionJson>(jsonValues);
     if (dbConnectionJson?.ConnectionStrings != null)
-    {
         connectionString = dbConnectionJson.ConnectionStrings.RpgStatsPostgresql;
-    }
 
     return connectionString;
 }

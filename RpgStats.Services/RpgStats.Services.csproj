@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Mapster" Version="7.4.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Mapster" Version="7.4.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RpgStats.Domain\RpgStats.Domain.csproj" />
-    <ProjectReference Include="..\RpgStats.Dto\RpgStats.Dto.csproj" />
-    <ProjectReference Include="..\RpgStats.Repo\RpgStats.Repo.csproj" />
-    <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\RpgStats.Domain\RpgStats.Domain.csproj"/>
+        <ProjectReference Include="..\RpgStats.Dto\RpgStats.Dto.csproj"/>
+        <ProjectReference Include="..\RpgStats.Repo\RpgStats.Repo.csproj"/>
+        <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj"/>
+    </ItemGroup>
 
 </Project>

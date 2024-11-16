@@ -14,7 +14,7 @@ public class StatValueDoesNotBelongToCharacterExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void StatValueDoesNotBelongToCharacterException_Type_IsCorrect()
     {
@@ -31,7 +31,8 @@ public class StatValueDoesNotBelongToCharacterExceptionTests
     {
         const long statvalueId = 456;
         const long characterId = 789;
-        string expectedMessage = $"The StatValue with the identifier {statvalueId} does not belong to the Character with the identifier {characterId}.";
+        var expectedMessage =
+            $"The StatValue with the identifier {statvalueId} does not belong to the Character with the identifier {characterId}.";
 
         var exception = new StatValueDoesNotBelongToCharacterException(statvalueId, characterId);
 

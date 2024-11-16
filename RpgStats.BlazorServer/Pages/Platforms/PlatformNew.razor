@@ -1,6 +1,6 @@
 ﻿@page "/newPlatform"
-@using RpgStats.Services.Abstractions
 @using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject IPlatformService PlatformService
 @inject NavigationManager NavigationManager
 
@@ -10,9 +10,14 @@
     <MudItem xs="12" sm="12">
         <MudPaper Class="pa-0">
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Ein Name ist schon erforderlich..." @bind-Value="_platformForCreationDto.Name" TextChanged="@(OnNameChanged)" Immediate="true"/>
+                <MudTextField Clearable="true" T="string" Label="Name" Required="true"
+                              RequiredError="Ein Name ist schon erforderlich..."
+                              @bind-Value="_platformForCreationDto.Name" TextChanged="@(OnNameChanged)"
+                              Immediate="true"/>
                 <div class="align-content-center mt-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="!_success" Class="m-auto" OnClick="@(async () => await Create())">Erstellen</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="!_success"
+                               Class="m-auto" OnClick="@(async () => await Create())">Erstellen
+                    </MudButton>
                 </div>
             </MudForm>
         </MudPaper>
@@ -31,11 +36,13 @@
         {
             return;
         }
+
         var result = await PlatformService.CreatePlatformAsync(_platformForCreationDto);
         if (result is null)
         {
             return;
         }
+
         NavigationManager.NavigateTo("/allPlatforms");
     }
 
@@ -43,4 +50,5 @@
     {
         _success = !string.IsNullOrWhiteSpace(value);
     }
+
 }

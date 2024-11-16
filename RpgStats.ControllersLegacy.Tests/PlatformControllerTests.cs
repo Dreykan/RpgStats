@@ -7,21 +7,21 @@ namespace RpgStats.ControllersLegacy.Tests;
 
 public class PlatformControllerTests
 {
-    private readonly Mock<IPlatformService> _mockService;
     private readonly PlatformController _controller;
-    private readonly List<PlatformDto> _platforms;
+    private readonly Mock<IPlatformService> _mockService;
     private readonly List<PlatformDetailDto> _platformDetailDtos;
+    private readonly List<PlatformDto> _platforms;
 
     public PlatformControllerTests()
     {
         _mockService = new Mock<IPlatformService>();
         _controller = new PlatformController(_mockService.Object);
-        
+
         _platforms = new List<PlatformDto>
         {
-            new() { Id = 1, Name = "TestPlatform1"},
-            new() { Id = 2, Name = "TestPlatform2"},
-            new() { Id = 3, Name = "TestPlatform3"}
+            new() { Id = 1, Name = "TestPlatform1" },
+            new() { Id = 2, Name = "TestPlatform2" },
+            new() { Id = 3, Name = "TestPlatform3" }
         };
 
         _platformDetailDtos = new List<PlatformDetailDto>
@@ -55,7 +55,7 @@ public class PlatformControllerTests
             }
         };
     }
-    
+
     [Fact]
     public async Task GetAllPlatforms_ReturnsAllPlatforms()
     {
@@ -68,7 +68,7 @@ public class PlatformControllerTests
         var returnValue = Assert.IsType<List<PlatformDto>>(okResult.Value);
         Assert.Equal(_platforms.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllPlatformDetailDtos_ReturnsAllPlatformDetailDtos()
     {
@@ -81,7 +81,7 @@ public class PlatformControllerTests
         var returnValue = Assert.IsType<List<PlatformDetailDto>>(okResult.Value);
         Assert.Equal(_platformDetailDtos.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllPlatformDetailDtosByName_ReturnsPlatformDetailDtosByName()
     {
@@ -95,7 +95,7 @@ public class PlatformControllerTests
         var returnValue = Assert.IsType<List<PlatformDetailDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetPlatformById_ReturnsPlatformById()
     {
@@ -109,7 +109,7 @@ public class PlatformControllerTests
         var returnValue = Assert.IsType<PlatformDto>(okResult.Value);
         Assert.Equal(platformId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task GetPlatformDetailDtoById_ReturnsPlatformDetailDtoById()
     {
@@ -123,7 +123,7 @@ public class PlatformControllerTests
         var returnValue = Assert.IsType<PlatformDetailDto>(okResult.Value);
         Assert.Equal(platformId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreatePlatform_ReturnsCreatedPlatform()
     {
@@ -138,7 +138,7 @@ public class PlatformControllerTests
         var returnValue = Assert.IsType<PlatformDto>(createdAtActionResult.Value);
         Assert.Equal(platformDto.Id, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreatePlatform_ReturnsBadRequest()
     {
@@ -165,7 +165,7 @@ public class PlatformControllerTests
         var returnValue = Assert.IsType<PlatformDto>(okResult.Value);
         Assert.Equal(platformId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task UpdatePlatform_ReturnsBadRequest()
     {
@@ -176,7 +176,7 @@ public class PlatformControllerTests
 
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task DeletePlatform_ReturnsOk()
     {
@@ -187,7 +187,7 @@ public class PlatformControllerTests
 
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeletePlatform_ReturnsBadRequest()
     {

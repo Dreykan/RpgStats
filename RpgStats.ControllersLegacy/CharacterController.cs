@@ -82,17 +82,20 @@ public class CharacterController : ControllerBase
 
     [HttpPost]
     [SwaggerOperation(Summary = "Create a Character")]
-    public async Task<IActionResult> CreateCharacter([FromBody] CharacterForCreationDto characterForCreationDto, long gameId)
+    public async Task<IActionResult> CreateCharacter([FromBody] CharacterForCreationDto characterForCreationDto,
+        long gameId)
     {
         var response = await _characterService.CreateCharacterAsync(gameId, characterForCreationDto);
         if (response != null)
-            return CreatedAtAction(nameof(GetCharacterById), new { characterId = response.Id, gameId = response.GameId }, response);
+            return CreatedAtAction(nameof(GetCharacterById),
+                new { characterId = response.Id, gameId = response.GameId }, response);
         return BadRequest();
     }
 
     [HttpPut("updateCharacter")]
     [SwaggerOperation(Summary = "Update a Character")]
-    public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto, long characterId, long gameId)
+    public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto,
+        long characterId, long gameId)
     {
         var response = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
         if (response != null)

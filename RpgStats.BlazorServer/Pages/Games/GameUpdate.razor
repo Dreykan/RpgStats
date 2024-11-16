@@ -1,8 +1,8 @@
 ﻿@page "/updateGame/{Id:int}"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
-@using SkiaSharp
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
+@using SkiaSharp
 @inject NavigationManager NavigationManager
 @inject IGameService GameService
 @inject IPlatformService PlatformService
@@ -11,7 +11,7 @@
 
 @if (_game == null)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
 }
 else
 {
@@ -21,8 +21,11 @@ else
         <MudItem xs="12" sm="12">
             <MudPaper Class="pa-4">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name" TextChanged="OnNameChanged" Immediate="true" />
-                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="SelectedPlatforms" Clearable="true">
+                    <MudTextField Clearable="true" T="string" Label="Name" Required="true"
+                                  RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name"
+                                  TextChanged="OnNameChanged" Immediate="true"/>
+                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value"
+                               @bind-SelectedValues="SelectedPlatforms" Clearable="true">
                         @foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
@@ -30,7 +33,8 @@ else
                     </MudSelect>
                     <MudGrid>
                         <MudItem lg="6" md="6" xs="12" sm="12">
-                            <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles" MaximumFileCount="1">
+                            <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles"
+                                           MaximumFileCount="1">
                                 <ButtonTemplate>
                                     <MudButton HtmlTag="label"
                                                Variant="Variant.Filled"
@@ -43,15 +47,21 @@ else
                             </MudFileUpload>
                             <MudToolBar DisableGutters="true" Class="gap-4">
                                 <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
-                                <MudButton OnClick="ClearImages" Disabled="@(!_files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                                <MudButton OnClick="ClearImages" Disabled="@(!_files.Any())" Color="Color.Error"
+                                           Variant="Variant.Filled">Clear
+                                </MudButton>
                             </MudToolBar>
                         </MudItem>
                         <MudItem lg="1" md="3" xs="12" sm="12">
-                            <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Picture of the Game" Elevation="0" Fluid="true" Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                            <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill"
+                                      Alt="Picture of the Game" Elevation="0" Fluid="true"
+                                      Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
                         </MudItem>
                     </MudGrid>
                     <div class="align-content-center mt-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Update</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                                   Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Update
+                        </MudButton>
                     </div>
                 </MudForm>
             </MudPaper>
@@ -60,6 +70,7 @@ else
 }
 
 @* ReSharper disable NotAccessedField.Local *@
+
 @code {
     private GameDetailDto? _game;
     private readonly GameForUpdateDto _gameForUpdateDto = new();
@@ -72,8 +83,7 @@ else
     private string[] _errors = { };
     private byte[] _imageBytes = Array.Empty<byte>();
 
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,10 +112,11 @@ else
         foreach (var platformName in SelectedPlatforms)
         {
             if (string.IsNullOrEmpty(platformName))
-			{
-				continue;
-			}
-            long id = await GetIdOfPlatform(platformName);
+            {
+                continue;
+            }
+
+            var id = await GetIdOfPlatform(platformName);
             selectPlatformIds.Add(id);
         }
 
@@ -168,7 +179,7 @@ else
     {
         var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
         var platform = platformList.FirstOrDefault();
-        long id = platform?.Id ?? 0;
+        var id = platform?.Id ?? 0;
         return id;
     }
 
@@ -208,11 +219,13 @@ else
     }
 
     private void OnNameChanged(string value)
-	{
+    {
         if (SelectedPlatforms.Any())
-		{
-			_success = !string.IsNullOrWhiteSpace(value);
-		}
-	}
+        {
+            _success = !string.IsNullOrWhiteSpace(value);
+        }
+    }
+
 }
+
 @* ReSharper restore NotAccessedField.Local *@

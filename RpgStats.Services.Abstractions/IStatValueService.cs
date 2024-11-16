@@ -8,7 +8,12 @@ public interface IStatValueService
     Task<List<StatValueDto>> GetAllStatValuesByCharacterIdAsync(long characterId);
     Task<List<StatValueDto>> GetAllStatValuesByStatIdAsync(long statId);
     Task<StatValueDto?> GetStatValueByIdAsync(long statId);
-    Task<StatValueDto?> CreateStatValueAsync(long characterId, long statId, StatValueForCreationDto statValueForCreationDto);
-    Task<StatValueDto?> UpdateStatValueAsync(long statValueId, long characterId, long statId, StatValueForUpdateDto statValueForUpdateDto);
+
+    Task<StatValueDto?> CreateStatValueAsync(long characterId, long statId,
+        StatValueForCreationDto statValueForCreationDto);
+
+    Task<StatValueDto?> UpdateStatValueAsync(long statValueId, long characterId, long statId,
+        StatValueForUpdateDto statValueForUpdateDto);
+
     Task<Task> DeleteStatValueAsync(long statId);
 }

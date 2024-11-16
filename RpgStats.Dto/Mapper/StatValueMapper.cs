@@ -36,10 +36,8 @@ public static class StatValueMapper
         };
 
         if (statValue.Character != null)
-        {
             statValueWithCharacterObjectDto.CharacterWithoutFkObjectsDto =
                 CharacterMapper.MapToCharacterWithoutFkObjectsDto(statValue.Character);
-        }
 
         return statValueWithCharacterObjectDto;
     }

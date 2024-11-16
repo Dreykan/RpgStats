@@ -13,7 +13,7 @@ public class PlatformGameNotFoundExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void PlatformGameNotFoundException_Type_IsCorrect()
     {
@@ -28,7 +28,7 @@ public class PlatformGameNotFoundExceptionTests
     public void PlatformGameNotFoundException_Message_IsCorrect()
     {
         const long platformGameId = 456;
-        string expectedMessage = $"The PlatformGame with the identifier {platformGameId} was not found.";
+        var expectedMessage = $"The PlatformGame with the identifier {platformGameId} was not found.";
 
         var exception = new PlatformGameNotFoundException(platformGameId);
 

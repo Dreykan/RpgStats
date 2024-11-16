@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RpgStats.Domain.Entities;
 
@@ -20,8 +20,8 @@ public class Character
     [Required(ErrorMessage = "An entry in the column GameId is required.")]
     [ForeignKey(nameof(Game))]
     public long GameId { get; set; }
+
     public Game? Game { get; set; }
 
-    [InverseProperty("Character")]
-    public ICollection<StatValue>? StatValues { get; set; }
+    [InverseProperty("Character")] public ICollection<StatValue>? StatValues { get; set; }
 }

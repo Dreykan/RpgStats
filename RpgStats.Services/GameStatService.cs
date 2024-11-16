@@ -48,10 +48,7 @@ public class GameStatService : IGameStatService
         var gameStat = await _dbContext.GameStats
             .FirstOrDefaultAsync(gs => gs.Id == gameStatId);
 
-        if (gameStat == null)
-        {
-            throw new GameStatNotFoundException(gameStatId);
-        }
+        if (gameStat == null) throw new GameStatNotFoundException(gameStatId);
 
         return gameStat.Adapt<GameStatDto>();
     }
@@ -60,17 +57,11 @@ public class GameStatService : IGameStatService
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
 
-        if (stat == null)
-        {
-            throw new StatNotFoundException(statId);
-        }
+        if (stat == null) throw new StatNotFoundException(statId);
 
         var gameStat = new GameStatDto().Adapt<GameStat>();
         gameStat.GameId = gameId;
@@ -88,24 +79,15 @@ public class GameStatService : IGameStatService
     {
         var gameStat = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
 
-        if (gameStat == null)
-        {
-            throw new GameStatNotFoundException(gameStatId);
-        }
+        if (gameStat == null) throw new GameStatNotFoundException(gameStatId);
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
 
-        if (stat == null)
-        {
-            throw new StatNotFoundException(statId);
-        }
+        if (stat == null) throw new StatNotFoundException(statId);
 
         gameStat.StatId = statId;
         gameStat.Stat = stat;
@@ -122,15 +104,12 @@ public class GameStatService : IGameStatService
     {
         var gameStats = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
 
-        if (gameStats == null)
-        {
-            return Task.CompletedTask;
-        }
+        if (gameStats == null) return Task.CompletedTask;
 
         _dbContext.Remove(gameStats);
 
         await _dbContext.SaveChangesAsync();
-        
+
         return Task.CompletedTask;
     }
 
@@ -139,13 +118,9 @@ public class GameStatService : IGameStatService
         var gameStats = await _dbContext.GameStats.Where(gs => gs.GameId == gameId).ToListAsync();
 
         if (gameStats.Count == 0) return Task.CompletedTask;
-        foreach (var gameStat in gameStats)
-        {
-            await DeleteGameStatAsync(gameStat.Id);
-        }
+        foreach (var gameStat in gameStats) await DeleteGameStatAsync(gameStat.Id);
 
         return Task.CompletedTask;
-
     }
 
     public async Task<Task> DeleteGameStatByStatIdAsync(long statId)
@@ -153,10 +128,7 @@ public class GameStatService : IGameStatService
         var gameStats = await _dbContext.GameStats.Where(gs => gs.StatId == statId).ToListAsync();
 
         if (gameStats.Count == 0) return Task.CompletedTask;
-        foreach (var gameStat in gameStats)
-        {
-            await DeleteGameStatAsync(gameStat.Id);
-        }
+        foreach (var gameStat in gameStats) await DeleteGameStatAsync(gameStat.Id);
 
         return Task.CompletedTask;
     }

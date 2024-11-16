@@ -7,10 +7,10 @@ namespace RpgStats.ControllersLegacy.Tests;
 
 public class StatControllerTests
 {
-    private readonly Mock<IStatService> _mockService;
     private readonly StatController _controller;
-    private readonly List<StatDto> _stats;
+    private readonly Mock<IStatService> _mockService;
     private readonly List<StatDetailDto> _statDetailDtos;
+    private readonly List<StatDto> _stats;
 
     public StatControllerTests()
     {
@@ -100,7 +100,7 @@ public class StatControllerTests
             }
         };
     }
-    
+
     [Fact]
     public async Task GetAllStats_ReturnsAllStats()
     {
@@ -113,7 +113,7 @@ public class StatControllerTests
         var returnValue = Assert.IsType<List<StatDto>>(okResult.Value);
         Assert.Equal(_stats.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllStatsByName_ReturnsStatsByName()
     {
@@ -127,7 +127,7 @@ public class StatControllerTests
         var returnValue = Assert.IsType<List<StatDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetAllStatsByShortname_ReturnsStatsByShortname()
     {
@@ -141,7 +141,7 @@ public class StatControllerTests
         var returnValue = Assert.IsType<List<StatDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetAllStatDetailDtos_ReturnsAllStatDetailDtos()
     {
@@ -154,7 +154,7 @@ public class StatControllerTests
         var returnValue = Assert.IsType<List<StatDetailDto>>(okResult.Value);
         Assert.Equal(_statDetailDtos.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllStatDetailDtosByName_ReturnsStatDetailDtosByName()
     {
@@ -168,7 +168,7 @@ public class StatControllerTests
         var returnValue = Assert.IsType<List<StatDetailDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetAllStatDetailDtosByShortName_ReturnsStatDetailDtosByShortName()
     {
@@ -182,7 +182,7 @@ public class StatControllerTests
         var returnValue = Assert.IsType<List<StatDetailDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetStatById_ReturnsStatById()
     {
@@ -196,7 +196,7 @@ public class StatControllerTests
         var returnValue = Assert.IsType<StatDto>(okResult.Value);
         Assert.Equal(statId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task GetStatDetailDtoById_ReturnsStatDetailDtoById()
     {
@@ -210,13 +210,14 @@ public class StatControllerTests
         var returnValue = Assert.IsType<StatDetailDto>(okResult.Value);
         Assert.Equal(statId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreateStat_ReturnsCreatedStat()
     {
         var statForCreationDto = new StatForCreationDto { Name = "TestStat4", ShortName = "TS4" };
         _mockService.Setup(x => x.CreateStatAsync(statForCreationDto))
-            .ReturnsAsync(new StatDto { Id = 4, Name = statForCreationDto.Name, ShortName = statForCreationDto.ShortName });
+            .ReturnsAsync(new StatDto
+                { Id = 4, Name = statForCreationDto.Name, ShortName = statForCreationDto.ShortName });
 
         var result = await _controller.CreateStat(statForCreationDto);
 
@@ -233,17 +234,18 @@ public class StatControllerTests
             .ReturnsAsync((StatDto?)null);
 
         var result = await _controller.CreateStat(new StatForCreationDto());
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task UpdateStat_ReturnsUpdatedStat()
     {
         const int statId = 1;
         var statForUpdateDto = new StatForUpdateDto { Name = "TestStat1Updated", ShortName = "TS1U" };
         _mockService.Setup(x => x.UpdateStatAsync(statId, statForUpdateDto))
-            .ReturnsAsync(new StatDto { Id = statId, Name = statForUpdateDto.Name, ShortName = statForUpdateDto.ShortName });
+            .ReturnsAsync(new StatDto
+                { Id = statId, Name = statForUpdateDto.Name, ShortName = statForUpdateDto.ShortName });
 
         var result = await _controller.UpdateStat(statId, statForUpdateDto);
 
@@ -253,7 +255,7 @@ public class StatControllerTests
         Assert.Equal(statForUpdateDto.Name, returnValue.Name);
         Assert.Equal(statForUpdateDto.ShortName, returnValue.ShortName);
     }
-    
+
     [Fact]
     public async Task UpdateStat_ReturnsBadRequest()
     {
@@ -261,7 +263,7 @@ public class StatControllerTests
             .ReturnsAsync((StatDto?)null);
 
         var result = await _controller.UpdateStat(1, new StatForUpdateDto());
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
 
@@ -270,20 +272,20 @@ public class StatControllerTests
     {
         _mockService.Setup(x => x.DeleteStatAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.CompletedTask);
-        
+
         var result = await _controller.DeleteStat(1);
-        
+
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeleteStat_ReturnsBadRequest()
     {
         _mockService.Setup(x => x.DeleteStatAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.FromException(new Exception()));
-        
+
         var result = await _controller.DeleteStat(1);
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
 }

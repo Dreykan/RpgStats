@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
 using Newtonsoft.Json;
 using RpgStats.BlazorServer;
+using RpgStats.ControllersLegacy;
 using RpgStats.Repo;
 using RpgStats.Services;
 using RpgStats.Services.Abstractions;
@@ -12,11 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddControllers().AddApplicationPart(typeof(RpgStats.ControllersLegacy.AssemblyReference).Assembly);
+builder.Services.AddControllers().AddApplicationPart(typeof(AssemblyReference).Assembly);
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
-    c.SwaggerDoc("v1", new OpenApiInfo {Title = "RpgStats", Version = "v1"});
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RpgStats", Version = "v1" });
 });
 builder.Services.AddMudServices();
 builder.Services.AddTransient<ICharacterService, CharacterService>();
@@ -77,9 +78,7 @@ static string? GetConnectionString()
     var jsonValues = streamReader.ReadToEnd();
     var dbConnectionJson = JsonConvert.DeserializeObject<DbConnectionJson>(jsonValues);
     if (dbConnectionJson?.ConnectionStrings != null)
-    {
         connectionString = dbConnectionJson.ConnectionStrings.RpgStatsPostgresql;
-    }
 
     return connectionString;
 }

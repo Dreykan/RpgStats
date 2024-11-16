@@ -18,7 +18,7 @@ public class StatValueForUpdateDtoTests
         var validationResults = new List<ValidationResult>();
         var validationContext = new ValidationContext(dto);
 
-        bool isValid = Validator.TryValidateObject(dto, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(dto, validationContext, validationResults, true);
 
         Assert.True(isValid);
     }

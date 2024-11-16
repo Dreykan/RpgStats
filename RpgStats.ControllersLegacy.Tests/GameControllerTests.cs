@@ -7,10 +7,10 @@ namespace RpgStats.ControllersLegacy.Tests;
 
 public class GameControllerTests
 {
-    private readonly Mock<IGameService> _mockService;
     private readonly GameController _controller;
-    private readonly List<GameDto> _games;
     private readonly List<GameDetailDto> _gameDetailDtos;
+    private readonly List<GameDto> _games;
+    private readonly Mock<IGameService> _mockService;
 
     public GameControllerTests()
     {
@@ -92,9 +92,9 @@ public class GameControllerTests
                     new() { Id = 9, Name = "TestStat9" }
                 }
             }
-        }; 
+        };
     }
-    
+
     [Fact]
     public async Task GetAllGames_ReturnsAllGames()
     {
@@ -107,7 +107,7 @@ public class GameControllerTests
         var returnValue = Assert.IsType<List<GameDto>>(okResult.Value);
         Assert.Equal(_games.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllGamesByName_ReturnsGamesByName()
     {
@@ -121,7 +121,7 @@ public class GameControllerTests
         var returnValue = Assert.IsType<List<GameDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetAllGameDetailDtos_ReturnsAllGameDetailDtos()
     {
@@ -134,7 +134,7 @@ public class GameControllerTests
         var returnValue = Assert.IsType<List<GameDetailDto>>(okResult.Value);
         Assert.Equal(_gameDetailDtos.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllGameDetailDtosByName_ReturnsGameDetailDtosByName()
     {
@@ -148,7 +148,7 @@ public class GameControllerTests
         var returnValue = Assert.IsType<List<GameDetailDto>>(okResult.Value);
         Assert.Single(returnValue);
     }
-    
+
     [Fact]
     public async Task GetGameById_ReturnsGameById()
     {
@@ -162,7 +162,7 @@ public class GameControllerTests
         var returnValue = Assert.IsType<GameDto>(okResult.Value);
         Assert.Equal(gameId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task GetGameDetailDtoById_ReturnsGameDetailDtoById()
     {
@@ -176,7 +176,7 @@ public class GameControllerTests
         var returnValue = Assert.IsType<GameDetailDto>(okResult.Value);
         Assert.Equal(gameId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreateGame_ReturnsCreatedGame()
     {
@@ -203,7 +203,7 @@ public class GameControllerTests
 
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task UpdateGame_ReturnsGame()
     {
@@ -219,7 +219,7 @@ public class GameControllerTests
         var returnValue = Assert.IsType<GameDto>(okResult.Value);
         Assert.Equal(gameId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task UpdateGame_ReturnsBadRequest()
     {
@@ -230,7 +230,7 @@ public class GameControllerTests
 
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task DeleteGame_ReturnsOk()
     {
@@ -242,7 +242,7 @@ public class GameControllerTests
 
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeleteGame_ReturnsBadRequest()
     {

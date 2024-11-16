@@ -50,7 +50,8 @@ public class StatValueController : ControllerBase
 
     [HttpPost]
     [SwaggerOperation(Summary = "Create a StatValue")]
-    public async Task<IActionResult> CreateStatValue([FromBody] StatValueForCreationDto statValueForCreationDto, long characterId, long statId)
+    public async Task<IActionResult> CreateStatValue([FromBody] StatValueForCreationDto statValueForCreationDto,
+        long characterId, long statId)
     {
         var response = await _statValueService.CreateStatValueAsync(characterId, statId, statValueForCreationDto);
         if (response != null)
@@ -62,9 +63,11 @@ public class StatValueController : ControllerBase
 
     [HttpPut("{statValueId:long}")]
     [SwaggerOperation(Summary = "Update a StatValue")]
-    public async Task<IActionResult> UpdateStatValue([FromBody] StatValueForUpdateDto statValueForUpdateDto, long statValueId, long characterId, long statId)
+    public async Task<IActionResult> UpdateStatValue([FromBody] StatValueForUpdateDto statValueForUpdateDto,
+        long statValueId, long characterId, long statId)
     {
-        var response = await _statValueService.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto);
+        var response =
+            await _statValueService.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto);
         if (response != null)
             return Ok(response);
         return BadRequest();
