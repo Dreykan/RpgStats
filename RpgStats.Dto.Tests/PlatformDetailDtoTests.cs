@@ -7,7 +7,7 @@ public class PlatformDetailDtoTests
     {
         var dto = new PlatformDetailDto();
         Assert.Equal(0, dto.Id);
-        Assert.Null(dto.Name);
+        Assert.Equal(string.Empty, dto.Name);
         Assert.Null(dto.GameWithoutFkObjectsDtos);
     }
 
@@ -27,17 +27,17 @@ public class PlatformDetailDtoTests
     }
 
     [Fact]
-    public void PlatformDetailDto_Should_Handle_Null_Name()
+    public void PlatformDetailDto_Should_Handle_Empty_Name()
     {
         var dto = new PlatformDetailDto
         {
             Id = 1,
-            Name = null,
+            Name = string.Empty,
             GameWithoutFkObjectsDtos = new List<GameWithoutFkObjectsDto>()
         };
 
         Assert.Equal(1, dto.Id);
-        Assert.Null(dto.Name);
+        Assert.Equal(string.Empty, dto.Name);
         Assert.NotNull(dto.GameWithoutFkObjectsDtos);
     }
 

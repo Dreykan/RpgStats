@@ -99,7 +99,7 @@ else
 
         if (_character == null || selectedGame == null)
         {
-            ShowErrorMessage("Charakter oder Spiel nicht gefunden.");
+            await ShowErrorMessage("Charakter oder Spiel nicht gefunden.");
             return;
         }
 
@@ -111,7 +111,7 @@ else
         }
         else
         {
-            ShowErrorMessage("Es ist ein Fehler aufgetreten.");
+            await ShowErrorMessage("Es ist ein Fehler aufgetreten.");
         }
     }
 
@@ -136,7 +136,7 @@ else
         _characterForUpdateDto.Picture = resizedImageBytes;
     }
 
-    private async void ShowErrorMessage(string text)
+    private async Task ShowErrorMessage(string text)
     {
         await DialogService.ShowMessageBox("Error", text);
     }

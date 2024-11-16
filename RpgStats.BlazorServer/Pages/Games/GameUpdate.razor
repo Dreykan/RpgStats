@@ -172,7 +172,7 @@ else
         return id;
     }
 
-    private async void UploadFiles(IBrowserFile? file)
+    private async Task UploadFiles(IBrowserFile? file)
     {
         if (_files.Count <= 0)
         {

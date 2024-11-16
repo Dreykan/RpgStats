@@ -17,16 +17,9 @@ public class PlatformWithoutFkObjectsDtoTests
     }
 
     [Fact]
-    public void Name_ShouldAllowNull()
-    {
-        var dto = new PlatformWithoutFkObjectsDto { Name = null };
-        Assert.Null(dto.Name);
-    }
-
-    [Fact]
     public void Name_ShouldAllowEmptyString()
     {
-        var dto = new PlatformWithoutFkObjectsDto { Name = string.Empty };
+        var dto = new PlatformWithoutFkObjectsDto();
         Assert.Equal(string.Empty, dto.Name);
     }
 }
