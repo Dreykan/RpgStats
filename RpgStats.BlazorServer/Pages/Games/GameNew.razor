@@ -73,7 +73,7 @@
     {
         await GameService.CreateGameAsync(_gameForCreationDto);
 
-        long gameId = _gameForCreationDto.Name != null ? await GetIdOfCreatedGame(_gameForCreationDto.Name) : 0;
+        long gameId = await GetIdOfCreatedGame(_gameForCreationDto.Name);
 
         List<long> selectedPlatformIds = new();
         foreach (var selectedPlatform in SelectedPlatforms)
@@ -135,7 +135,7 @@
         return id;
     }
 
-    private async void UploadFiles(IBrowserFile? file)
+    private async Task UploadFiles(IBrowserFile? file)
     {
         if (_files.Count <= 0)
         {
@@ -143,7 +143,7 @@
         }
         else
         {
-            ShowErrorMessage("You can't upload more than one image for a game.");
+            await ShowErrorMessage("You can't upload more than one image for a game.");
         }
 
         using var ms = new MemoryStream();
@@ -161,7 +161,7 @@
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 
-    private async void ShowErrorMessage(string text)
+    private async Task ShowErrorMessage(string text)
     {
         await DialogService.ShowMessageBox("Error", text);
     }

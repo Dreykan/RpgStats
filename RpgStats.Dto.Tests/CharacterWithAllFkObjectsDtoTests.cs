@@ -27,14 +27,13 @@ public class CharacterWithAllFkObjectsDtoTests
         var character = new CharacterWithAllFkObjectsDto
         {
             Id = 1,
-            Name = null,
             Picture = null,
             GameWithoutFkObjectsDto = null,
             StatValuesWithStatObjectDtos = null
         };
 
         Assert.Equal(1, character.Id);
-        Assert.Null(character.Name);
+        Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
         Assert.Null(character.GameWithoutFkObjectsDto);
         Assert.Null(character.StatValuesWithStatObjectDtos);
@@ -46,7 +45,7 @@ public class CharacterWithAllFkObjectsDtoTests
         var character = new CharacterWithAllFkObjectsDto();
 
         Assert.Equal(0, character.Id);
-        Assert.Null(character.Name);
+        Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
         Assert.Null(character.GameWithoutFkObjectsDto);
         Assert.Null(character.StatValuesWithStatObjectDtos);

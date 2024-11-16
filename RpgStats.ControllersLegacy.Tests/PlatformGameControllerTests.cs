@@ -3,7 +3,7 @@ using Moq;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 
-namespace RpgStats.Controllers.Tests;
+namespace RpgStats.ControllersLegacy.Tests;
 
 public class PlatformGameControllerTests
 {

@@ -7,7 +7,7 @@ public class PlatformDtoTests
     {
         var platformDto = new PlatformDto();
         Assert.Equal(0, platformDto.Id);
-        Assert.Null(platformDto.Name);
+        Assert.Equal(string.Empty, platformDto.Name);
         Assert.Null(platformDto.PlatformGames);
     }
 
@@ -28,16 +28,16 @@ public class PlatformDtoTests
     }
 
     [Fact]
-    public void PlatformDto_Should_Handle_Null_Name()
+    public void PlatformDto_Should_Handle_Empty_Name()
     {
         var platformDto = new PlatformDto
         {
             Id = 1,
-            Name = null,
+            Name = string.Empty,
             PlatformGames = new List<PlatformGameDto>()
         };
 
-        Assert.Null(platformDto.Name);
+        Assert.Equal(string.Empty, platformDto.Name);
     }
 
     [Fact]

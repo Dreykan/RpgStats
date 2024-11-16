@@ -211,7 +211,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(platformDetailDto);
         Assert.Equal(0, platformDetailDto.Id);
-        Assert.Null(platformDetailDto.Name);
+        Assert.Equal(string.Empty, platformDetailDto.Name);
     }
     
     [Fact]
@@ -221,7 +221,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(platformDetailDto);
         Assert.Equal(0, platformDetailDto.Id);
-        Assert.Null(platformDetailDto.Name);
+        Assert.Equal(string.Empty, platformDetailDto.Name);
     }
     
     [Fact]
@@ -231,7 +231,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(platformDetailDto);
         Assert.Equal(0, platformDetailDto.Id);
-        Assert.Null(platformDetailDto.Name);
+        Assert.Equal(string.Empty, platformDetailDto.Name);
     }
     
     [Fact]

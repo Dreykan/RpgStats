@@ -149,7 +149,8 @@ else
 
     private void PrefillForm()
     {
-        _gameForUpdateDto.Name = _game?.Name;
+        if (_game == null) return;
+        _gameForUpdateDto.Name = _game.Name;
 
         if (_game?.PlatformWithoutFkObjectsDtos != null)
             foreach (var platform in _game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
@@ -171,7 +172,7 @@ else
         return id;
     }
 
-    private async void UploadFiles(IBrowserFile? file)
+    private async Task UploadFiles(IBrowserFile? file)
     {
         if (_files.Count <= 0)
         {

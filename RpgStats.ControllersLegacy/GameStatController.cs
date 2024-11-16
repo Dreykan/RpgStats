@@ -2,7 +2,7 @@
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace RpgStats.Controllers;
+namespace RpgStats.ControllersLegacy;
 
 [ApiController]
 [Route("api/gameStats")]

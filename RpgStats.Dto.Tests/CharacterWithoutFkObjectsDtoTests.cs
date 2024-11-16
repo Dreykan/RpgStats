@@ -17,10 +17,10 @@ public class CharacterWithoutFkObjectsDtoTests
     }
 
     [Fact]
-    public void Name_ShouldAllowNull()
+    public void Name_ShouldBeEmpty()
     {
-        var dto = new CharacterWithoutFkObjectsDto { Name = null };
-        Assert.Null(dto.Name);
+        var dto = new CharacterWithoutFkObjectsDto();
+        Assert.Equal(string.Empty, dto.Name);
     }
 
     [Fact]

@@ -268,6 +268,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var characterDetailDto = await _service.GetCharacterDetailDtoByIdAsync(100);
         
         Assert.NotNull(characterDetailDto);
-        Assert.Null(characterDetailDto.Name);
+        Assert.Equal(string.Empty, characterDetailDto.Name);
     }
 }

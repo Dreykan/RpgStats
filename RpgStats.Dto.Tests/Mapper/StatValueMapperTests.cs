@@ -66,7 +66,7 @@ public class StatValueMapperTests
             ContainedBonusPercent = 5,
             Character = new Character
             {
-                /* initialize properties */
+                Name = "TestCharacter"
             }
         };
 

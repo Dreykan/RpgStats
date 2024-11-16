@@ -7,7 +7,7 @@ public class GameForCreationDtoTests
     [Fact]
     public void Name_IsRequired()
     {
-        var dto = new GameForCreationDto { Name = null };
+        var dto = new GameForCreationDto();
         var context = new ValidationContext(dto, null, null);
         var results = new List<ValidationResult>();
 

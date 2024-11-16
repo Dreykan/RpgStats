@@ -245,7 +245,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(gameDetailDto);
         Assert.Equal(0, gameDetailDto.Id);
-        Assert.Null(gameDetailDto.Name);
+        Assert.Equal(string.Empty, gameDetailDto.Name);
     }
     
     [Fact]
@@ -255,7 +255,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(gameDetailDto);
         Assert.Equal(0, gameDetailDto.Id);
-        Assert.Null(gameDetailDto.Name);
+        Assert.Equal(string.Empty, gameDetailDto.Name);
     }
     
     [Fact]
@@ -265,7 +265,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(gameDetailDto);
         Assert.Equal(0, gameDetailDto.Id);
-        Assert.Null(gameDetailDto.Name);
+        Assert.Equal(string.Empty, gameDetailDto.Name);
     }
     
     [Fact]

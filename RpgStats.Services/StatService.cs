@@ -34,7 +34,7 @@ public class StatService : IStatService
     {
         var stats = await _dbContext.Stats
             .Include(s => s.StatValues)
-            .Where(s => s.Name != null && s.Name.ToLower().Contains(name.ToLower()))
+            .Where(s => s.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         return stats.Adapt<List<StatDto>>();
@@ -70,7 +70,7 @@ public class StatService : IStatService
     {
         var stats = await _dbContext.Stats
             .Include(s => s.StatValues)
-            .Where(s => s.Name != null && s.Name.ToLower().Contains(name.ToLower()))
+            .Where(s => s.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         var statValues = await _dbContext.StatValues

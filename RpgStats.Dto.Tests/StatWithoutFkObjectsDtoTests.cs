@@ -24,10 +24,10 @@ public class StatWithoutFkObjectsDtoTests
     }
 
     [Fact]
-    public void Name_Should_Be_Null_By_Default()
+    public void Name_Should_Be_Empty_By_Default()
     {
         var dto = new StatWithoutFkObjectsDto();
-        Assert.Null(dto.Name);
+        Assert.Equal(string.Empty, dto.Name);
     }
 
     [Fact]

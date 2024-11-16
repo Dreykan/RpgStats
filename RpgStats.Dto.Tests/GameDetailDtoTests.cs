@@ -8,7 +8,7 @@ public class GameDetailDtoTests
         var dto = new GameDetailDto();
 
         Assert.Equal(0, dto.Id);
-        Assert.Null(dto.Name);
+        Assert.Equal(string.Empty, dto.Name);
         Assert.Null(dto.Picture);
         Assert.Null(dto.CharacterWithoutFkObjectsDtos);
         Assert.Null(dto.StatWithoutFkObjectsDtos);
@@ -46,7 +46,6 @@ public class GameDetailDtoTests
         var dto = new GameDetailDto
         {
             Id = 1,
-            Name = null,
             Picture = null,
             CharacterWithoutFkObjectsDtos = null,
             StatWithoutFkObjectsDtos = null,
@@ -54,7 +53,7 @@ public class GameDetailDtoTests
         };
 
         Assert.Equal(1, dto.Id);
-        Assert.Null(dto.Name);
+        Assert.Equal(string.Empty, dto.Name);
         Assert.Null(dto.Picture);
         Assert.Null(dto.CharacterWithoutFkObjectsDtos);
         Assert.Null(dto.StatWithoutFkObjectsDtos);

@@ -154,7 +154,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(statDetailDto);
         Assert.Equal(0, statDetailDto.Id);
-        Assert.Null(statDetailDto.Name);
+        Assert.Equal(string.Empty, statDetailDto.Name);
     }
     
     [Fact]
@@ -164,7 +164,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(statDetailDto);
         Assert.Equal(0, statDetailDto.Id);
-        Assert.Null(statDetailDto.Name);
+        Assert.Equal(string.Empty, statDetailDto.Name);
     }
     
     [Fact]
@@ -174,7 +174,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         
         Assert.NotNull(statDetailDto);
         Assert.Equal(0, statDetailDto.Id);
-        Assert.Null(statDetailDto.Name);
+        Assert.Equal(string.Empty, statDetailDto.Name);
     }
     
     [Fact]

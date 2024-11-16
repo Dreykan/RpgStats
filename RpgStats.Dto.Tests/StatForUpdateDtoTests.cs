@@ -7,7 +7,7 @@ public class StatForUpdateDtoTests
     [Fact]
     public void Name_IsRequired()
     {
-        var dto = new StatForUpdateDto { Name = null };
+        var dto = new StatForUpdateDto();
         var validationResults = new List<ValidationResult>();
         var context = new ValidationContext(dto, null, null);
         var isValid = Validator.TryValidateObject(dto, context, validationResults, true);

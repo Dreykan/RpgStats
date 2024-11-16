@@ -7,7 +7,7 @@ public class StatForCreationDtoTests
     [Fact]
     public void Name_IsRequired()
     {
-        var dto = new StatForCreationDto { Name = null };
+        var dto = new StatForCreationDto();
         var validationResults = ValidateModel(dto);
         Assert.Contains(validationResults, v => v.ErrorMessage == "A name for the stat is required.");
     }

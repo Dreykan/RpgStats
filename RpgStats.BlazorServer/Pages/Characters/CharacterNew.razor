@@ -80,7 +80,7 @@
         }
         else
         {
-            ShowErrorMessage("Es ist ein Fehler aufgetreten.");
+            await ShowErrorMessage("Es ist ein Fehler aufgetreten.");
         }
     }
 
@@ -92,7 +92,7 @@
         }
         else
         {
-            ShowErrorMessage("Es kann nur ein Bild hochgeladen werden.");
+            await ShowErrorMessage("Es kann nur ein Bild hochgeladen werden.");
         }
 
         using MemoryStream ms = new();
@@ -105,7 +105,7 @@
         _characterForCreationDto.Picture = resizedImageBytes;
     }
 
-    private async void ShowErrorMessage(string text)
+    private async Task ShowErrorMessage(string text)
     {
         await DialogService.ShowMessageBox("Error", text);
     }
@@ -126,7 +126,7 @@
     {
         if (string.IsNullOrEmpty(GameName)) return Task.CompletedTask;
         var gameDto = _gameDtos.FirstOrDefault(x => x.Name == GameName);
-        if (gameDto == null || gameDto.Name == null) return Task.CompletedTask;
+        if (gameDto == null) return Task.CompletedTask;
         SelectedGame = new HashSet<string> { gameDto.Name };
         _value = gameDto.Name;
         return Task.CompletedTask;

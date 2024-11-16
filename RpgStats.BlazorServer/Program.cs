@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddControllers().AddApplicationPart(typeof(RpgStats.Controllers.AssemblyReference).Assembly);
+builder.Services.AddControllers().AddApplicationPart(typeof(RpgStats.ControllersLegacy.AssemblyReference).Assembly);
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();

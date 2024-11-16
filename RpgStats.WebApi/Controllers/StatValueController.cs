@@ -3,7 +3,7 @@ using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace RpgStats.Controllers;
+namespace RpgStats.WebApi.Controllers;
 
 [ApiController]
 [Route("api/statValues")]

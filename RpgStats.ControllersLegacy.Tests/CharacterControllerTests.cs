@@ -3,7 +3,7 @@ using Moq;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 
-namespace RpgStats.Controllers.Tests;
+namespace RpgStats.ControllersLegacy.Tests;
 
 public class CharacterControllerTests
 {
@@ -192,7 +192,7 @@ public class CharacterControllerTests
         _mockService.Setup(x => x.UpdateCharacterAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CharacterForUpdateDto>()))
             .ReturnsAsync((CharacterDto?)null);
 
-        var result = await _controller.UpdateCharacter(new CharacterForUpdateDto(), 1, 1);
+        var result = await _controller.UpdateCharacter(new CharacterForUpdateDto{ Name = "TestCharacter" }, 1, 1);
 
         Assert.IsType<BadRequestResult>(result);
     }

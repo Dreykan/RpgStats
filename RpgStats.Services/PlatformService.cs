@@ -106,7 +106,7 @@ public class PlatformService : IPlatformService
     {
         var platforms = await _dbContext.Platforms
             .Include(p => p.PlatformGames)
-            .Where(p => p.Name != null && p.Name.ToLower().Contains(name.ToLower()))
+            .Where(p => p.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         var games = await _dbContext.Games
