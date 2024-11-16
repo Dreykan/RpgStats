@@ -2,12 +2,10 @@
 @page "/newCharacter/{GameName?}"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
 @using SkiaSharp
-@inject ICharacterService CharacterService
-@inject IGameService GameService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
 
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle einen neuen Charakter</MudText>
 
@@ -21,9 +19,12 @@
                               Immediate="true"/>
                 <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value"
                            @bind-SelectedValues="SelectedGame" Clearable="true">
-                    @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                    @if (_gameDtos != null)
                     {
-                        <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                        foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                        {
+                            <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                        }
                     }
                 </MudSelect>
                 <MudGrid>
@@ -64,7 +65,7 @@
 
 @code {
     private readonly CharacterForCreationDto _characterForCreationDto = new();
-    private List<GameDto> _gameDtos = new();
+    private List<GameDto>? _gameDtos = new();
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
@@ -77,23 +78,35 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _gameDtos = await GameService.GetAllGamesAsync();
+        _gameDtos = await HttpClient.GetFromJsonAsync<List<GameDto>>("api/games");
         await PrefillForm();
     }
 
     private async Task Create()
     {
-        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
-        var result = selectedGame != null ? await CharacterService.CreateCharacterAsync(selectedGame.Id, _characterForCreationDto) : null;
-
-        if (result?.Id != null)
+        if (!SelectedGame.Any() || _gameDtos == null)
         {
-            NavigationManager.NavigateTo($"/characterDetail/{result.Id}");
+            await ShowErrorMessage("Es wurde kein Spiel ausgewählt.");
+            return;
         }
-        else
+
+        var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
+
+        if (selectedGame == null)
+        {
+            await ShowErrorMessage("Das ausgewählte Spiel existiert nicht.");
+            return;
+        }
+
+        var response = await HttpClient.PostAsJsonAsync($"api/characters/{selectedGame.Id}", _characterForCreationDto);
+
+        if (!response.IsSuccessStatusCode)
         {
             await ShowErrorMessage("Es ist ein Fehler aufgetreten.");
+            return;
         }
+
+        NavigationManager.NavigateTo("/allCharacters/");
     }
 
     private async Task UploadFile(IBrowserFile? file)
@@ -137,7 +150,7 @@
     private Task PrefillForm()
     {
         if (string.IsNullOrEmpty(GameName)) return Task.CompletedTask;
-        var gameDto = _gameDtos.FirstOrDefault(x => x.Name == GameName);
+        var gameDto = _gameDtos?.FirstOrDefault(x => x.Name == GameName);
         if (gameDto == null) return Task.CompletedTask;
         SelectedGame = new HashSet<string> { gameDto.Name };
         _value = gameDto.Name;

@@ -80,7 +80,7 @@ public class CharacterController : ControllerBase
         return Ok(character);
     }
 
-    [HttpPost]
+    [HttpPost("{gameId:long}")]
     [SwaggerOperation(Summary = "Create a Character")]
     public async Task<IActionResult> CreateCharacter([FromBody] CharacterForCreationDto characterForCreationDto,
         long gameId)
@@ -92,7 +92,7 @@ public class CharacterController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut]
+    [HttpPut("{gameId:long}/{characterId:long}")]
     [SwaggerOperation(Summary = "Update a Character")]
     public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto,
         long characterId, long gameId)
