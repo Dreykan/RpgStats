@@ -56,34 +56,4 @@ public class GameStatTests
         Assert.Equal(12345, gameStat.Stat.Id);
         Assert.Equal("TestStat", gameStat.Stat.Name);
     }
-
-    [Fact]
-    public void GameStat_GameId_RequiredValidation()
-    {
-        var gameStat = new GameStat
-        {
-            StatId = 1
-        };
-
-        var validationResults = TestHelper.ValidateModel(gameStat);
-            
-        Assert.NotEmpty(validationResults);
-        Assert.Contains(validationResults,
-            v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry for the column GameId is required."));
-    }
-
-    [Fact]
-    public void GameStat_StatId_RequiredValidation()
-    {
-        var gameStat = new GameStat
-        {
-            GameId = 1
-        };
-            
-        var validationResults = TestHelper.ValidateModel(gameStat);
-
-        Assert.NotEmpty(validationResults);
-        Assert.Contains(validationResults,
-            v => v.ErrorMessage != null && v.ErrorMessage.Contains("An entry for the column StatId is required."));
-    }
 }

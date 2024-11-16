@@ -86,7 +86,7 @@ public class StatValueControllerTests
         var statValueForCreationDto = new StatValueForCreationDto { Value = 1 };
         const int characterId = 1;
         const int statId = 1;
-        var response = new StatValueDto { Id = 5, CharacterId = characterId, StatId = statId, Value = (int)statValueForCreationDto.Value };
+        var response = new StatValueDto { Id = 5, CharacterId = characterId, StatId = statId, Value = statValueForCreationDto.Value };
         _mockService.Setup(x => x.CreateStatValueAsync(characterId, statId, statValueForCreationDto))
             .ReturnsAsync(response);
 
@@ -118,7 +118,7 @@ public class StatValueControllerTests
         const int statValueId = 1;
         const int characterId = 1;
         const int statId = 1;
-        var response = new StatValueDto { Id = statValueId, CharacterId = characterId, StatId = statId, Value = (int)statValueForUpdateDto.Value };
+        var response = new StatValueDto { Id = statValueId, CharacterId = characterId, StatId = statId, Value = statValueForUpdateDto.Value };
         _mockService.Setup(x => x.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto))
             .ReturnsAsync(response);
 

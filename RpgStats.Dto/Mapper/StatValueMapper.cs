@@ -10,10 +10,10 @@ public static class StatValueMapper
         var statValueWithStatObjectDto = new StatValueWithStatObjectDto
         {
             Id = statValue.Id,
-            Level = statValue.Level ?? 0,
-            Value = statValue.Value ?? 0,
-            ContainedBonusNum = statValue.ContainedBonusNum ?? 0,
-            ContainedBonusPercent = statValue.ContainedBonusPercent ?? 0
+            Level = statValue.Level,
+            Value = statValue.Value,
+            ContainedBonusNum = statValue.ContainedBonusNum,
+            ContainedBonusPercent = statValue.ContainedBonusPercent
         };
 
         if (statValue.Stat != null)
@@ -29,10 +29,10 @@ public static class StatValueMapper
         var statValueWithCharacterObjectDto = new StatValueWithCharacterObjectDto
         {
             Id = statValue.Id,
-            Level = statValue.Level ?? 0,
-            Value = statValue.Value ?? 0,
-            ContainedBonusNum = statValue.ContainedBonusNum ?? 0,
-            ContainedBonusPercent = statValue.ContainedBonusPercent ?? 0
+            Level = statValue.Level,
+            Value = statValue.Value,
+            ContainedBonusNum = statValue.ContainedBonusNum,
+            ContainedBonusPercent = statValue.ContainedBonusPercent
         };
 
         if (statValue.Character != null)
