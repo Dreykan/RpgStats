@@ -24,7 +24,7 @@ public class StatValueController : ControllerBase
         return Ok(statValues);
     }
 
-    [HttpGet("byCharacter")]
+    [HttpGet("byCharacter/{characterId:long}")]
     [SwaggerOperation(Summary = "Get all StatValues by Character")]
     public async Task<IActionResult> GetAllStatValuesByCharacter(long characterId)
     {

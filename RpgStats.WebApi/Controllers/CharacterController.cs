@@ -72,7 +72,7 @@ public class CharacterController : ControllerBase
         return Ok(character);
     }
 
-    [HttpGet("details{characterId:long}")]
+    [HttpGet("details/{characterId:long}")]
     [SwaggerOperation(Summary = "Get a Character with Details by Id")]
     public async Task<IActionResult> GetCharacterDetailDtoById(long characterId)
     {
@@ -92,7 +92,7 @@ public class CharacterController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut("updateCharacter")]
+    [HttpPut]
     [SwaggerOperation(Summary = "Update a Character")]
     public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto,
         long characterId, long gameId)
@@ -103,7 +103,7 @@ public class CharacterController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete("deleteCharacter")]
+    [HttpDelete("{characterId:long}")]
     [SwaggerOperation(Summary = "Delete a Character")]
     public async Task<IActionResult> DeleteCharacter(long characterId)
     {
