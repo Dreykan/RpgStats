@@ -1,4 +1,5 @@
 ﻿using RpgStats.Domain.Entities;
+
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities;

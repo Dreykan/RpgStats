@@ -36,13 +36,13 @@
     private readonly StatDto _stat = new();
     private bool _isSubmitDisabled = true;
     private MudTextField<string>? _shortNameTextField;
-    
+
     protected override void OnInitialized()
     {
         _stat.Name = Stat.Name;
         _stat.ShortName = Stat.ShortName;
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -66,7 +66,7 @@
     {
         _isSubmitDisabled = string.IsNullOrWhiteSpace(_stat.Name) || string.IsNullOrWhiteSpace(_stat.ShortName);
     }
-    
+
     private void HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter" && _isSubmitDisabled == false)
@@ -74,4 +74,5 @@
             Submit();
         }
     }
+
 }

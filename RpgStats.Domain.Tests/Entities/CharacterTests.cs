@@ -1,4 +1,5 @@
 ﻿using RpgStats.Domain.Entities;
+
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities;
@@ -12,12 +13,12 @@ public class CharacterTests
         {
             Name = "TestCharacter"
         };
-            
+
         character.Id = 12345;
-            
+
         Assert.Equal(12345, character.Id);
     }
-        
+
     [Fact]
     public void Character_Name_ShouldBeSetAndRetrievedCorrectly()
     {
@@ -25,10 +26,10 @@ public class CharacterTests
         {
             Name = "TestCharacter"
         };
-            
+
         Assert.Equal("TestCharacter", character.Name);
     }
-        
+
     [Fact]
     public void Character_Picture_ShouldBeSetAndRetrievedCorrectly()
     {
@@ -36,12 +37,12 @@ public class CharacterTests
         {
             Name = "TestCharacter"
         };
-            
+
         character.Picture = [0x01, 0x02, 0x03];
-            
+
         Assert.Equal([0x01, 0x02, 0x03], character.Picture);
     }
-        
+
     [Fact]
     public void Character_GameId_ShouldBeSetAndRetrievedCorrectly()
     {
@@ -49,12 +50,12 @@ public class CharacterTests
         {
             Name = "TestCharacter"
         };
-            
+
         character.GameId = 12345;
-            
+
         Assert.Equal(12345, character.GameId);
     }
-        
+
     [Fact]
     public void Character_Game_ShouldBeSetAndRetrievedCorrectly()
     {
@@ -62,13 +63,13 @@ public class CharacterTests
         {
             Name = "TestCharacter"
         };
-            
+
         character.Game = new Game { Id = 12345, Name = "TestGame" };
-            
+
         Assert.Equal(12345, character.Game.Id);
         Assert.Equal("TestGame", character.Game.Name);
     }
-        
+
     [Fact]
     public void Character_StatValues_ShouldBeSetAndRetrievedCorrectly()
     {
@@ -76,10 +77,10 @@ public class CharacterTests
         {
             Name = "TestCharacter"
         };
-            
+
         character.StatValues = new List<StatValue> { new() { Id = 12345, Value = 10 } };
-            
-        Assert.Equal( 12345, character.StatValues.First().Id);
+
+        Assert.Equal(12345, character.StatValues.First().Id);
         Assert.Equal(10, character.StatValues.First().Value);
     }
 
@@ -91,7 +92,7 @@ public class CharacterTests
             Name = new string('a', 61),
             GameId = 1
         };
-            
+
         var validationResults = TestHelper.ValidateModel(character);
 
         Assert.NotEmpty(validationResults);

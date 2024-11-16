@@ -5,9 +5,9 @@ namespace RpgStats.BlazorServer.Shared;
 
 public partial class AppBar
 {
-    private bool _isLightMode = true;
     private MudTheme _currentTheme = new();
     private PaletteDark _darkPalette = new();
+    private bool _isLightMode = true;
     private PaletteLight _lightPalette = new();
 
     [Parameter] public EventCallback OnSidebarToggled { get; set; }

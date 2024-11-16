@@ -14,7 +14,7 @@ public class PlatformAndGameDoesNotBelongToEachOtherExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void PlatformAndGameDoesNotBelongToEachOtherException_Type_IsCorrect()
     {
@@ -31,7 +31,8 @@ public class PlatformAndGameDoesNotBelongToEachOtherExceptionTests
     {
         const long platformId = 1;
         const long gameId = 2;
-        string expectedMessage = $"The Game with the identifier {gameId} is in no relationship to the Platform with the identifier {platformId}.";
+        var expectedMessage =
+            $"The Game with the identifier {gameId} is in no relationship to the Platform with the identifier {platformId}.";
 
         var exception = new PlatformAndGameDoesNotBelongToEachOtherException(platformId, gameId);
 

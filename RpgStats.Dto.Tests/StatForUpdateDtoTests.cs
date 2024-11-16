@@ -25,7 +25,8 @@ public class StatForUpdateDtoTests
         var isValid = Validator.TryValidateObject(dto, context, validationResults, true);
 
         Assert.False(isValid);
-        Assert.Contains(validationResults, v => v.ErrorMessage == "The name for the stat can't be longer than 50 characters.");
+        Assert.Contains(validationResults,
+            v => v.ErrorMessage == "The name for the stat can't be longer than 50 characters.");
     }
 
     [Fact]
@@ -48,7 +49,8 @@ public class StatForUpdateDtoTests
         var isValid = Validator.TryValidateObject(dto, context, validationResults, true);
 
         Assert.False(isValid);
-        Assert.Contains(validationResults, v => v.ErrorMessage == "The shortname for the stat can't be longer than 8 characters.");
+        Assert.Contains(validationResults,
+            v => v.ErrorMessage == "The shortname for the stat can't be longer than 8 characters.");
     }
 
     [Fact]

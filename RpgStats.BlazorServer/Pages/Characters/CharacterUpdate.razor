@@ -1,7 +1,7 @@
 ﻿@page "/updateCharacter/{id:int}"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @using SkiaSharp
 @inject ICharacterService CharacterService
 @inject IGameService GameService
@@ -10,7 +10,7 @@
 
 @if (_character == null)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
 }
 else
 {
@@ -20,8 +20,12 @@ else
         <MudItem xs="12">
             <MudPaper Class="pa-0">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Der Charakter sollte schon einen Namen haben..." @bind-Value="@_characterForUpdateDto.Name" TextChanged="OnNameChanged" Immediate="true"/>
-                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value" @bind-SelectedValues="SelectedGame" Clearable="true">
+                    <MudTextField Clearable="true" T="string" Label="Name" Required="true"
+                                  RequiredError="Der Charakter sollte schon einen Namen haben..."
+                                  @bind-Value="@_characterForUpdateDto.Name" TextChanged="OnNameChanged"
+                                  Immediate="true"/>
+                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value"
+                               @bind-SelectedValues="SelectedGame" Clearable="true">
                         @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
                         {
                             <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
@@ -29,24 +33,32 @@ else
                     </MudSelect>
                     <MudGrid>
                         <MudItem lg="6" md="6" sm="12" xs="12">
-                            <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFile" MaximumFileCount="1">
+                            <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFile"
+                                           MaximumFileCount="1">
                                 <ButtonTemplate>
-                                    <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Image" for="@context">
+                                    <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.Image" for="@context">
                                         Upload Image (jpg, png)
                                     </MudButton>
                                 </ButtonTemplate>
                             </MudFileUpload>
                             <MudToolBar DisableGutters="true" Class="gap-4">
                                 <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
-                                <MudButton OnClick="ClearImage" Disabled="@(!_files.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+                                <MudButton OnClick="ClearImage" Disabled="@(!_files.Any())" Color="Color.Error"
+                                           Variant="Variant.Filled">Clear
+                                </MudButton>
                             </MudToolBar>
                         </MudItem>
                         <MudItem lg="1" md="3" sm="12" xs="12">
-                            <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill" Alt="Bild des Charakters" Elevation="0" Fluid="true" Class="roundes-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                            <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill"
+                                      Alt="Bild des Charakters" Elevation="0" Fluid="true"
+                                      Class="roundes-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
                         </MudItem>
                     </MudGrid>
                     <div class="align-content-center mt-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Ändern</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                                   Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Ändern
+                        </MudButton>
                     </div>
                 </MudForm>
             </MudPaper>
@@ -57,12 +69,15 @@ else
 
 
 @* ReSharper disable NotAccessedField.Local *@
+
 @code {
     private CharacterDetailDto? _character;
+
     private readonly CharacterForUpdateDto _characterForUpdateDto = new()
     {
         Name = "TestCharacter"
     };
+
     private List<GameDto> _gameDtos = new();
     private MudForm? _form;
     private bool _success;
@@ -72,8 +87,7 @@ else
     private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private byte[] _imageBytes = Array.Empty<byte>();
 
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -89,7 +103,6 @@ else
 
     private async Task Update()
     {
-
         if (_files.Count == 0)
         {
             _characterForUpdateDto.Picture = _character?.Picture;
@@ -171,6 +184,7 @@ else
         {
             _imageBytes = _character.Picture;
         }
+
         return Task.CompletedTask;
     }
 
@@ -180,6 +194,8 @@ else
         {
             _success = !string.IsNullOrWhiteSpace(value);
         }
-	}
+    }
+
 }
+
 @* ReSharper restore NotAccessedField.Local *@

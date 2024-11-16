@@ -7,15 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.7.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.7.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RpgStats.Repo\RpgStats.Repo.csproj" />
-      <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj" />
-      <ProjectReference Include="..\RpgStats.Services\RpgStats.Services.csproj" />
+        <ProjectReference Include="..\RpgStats.Repo\RpgStats.Repo.csproj"/>
+        <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj"/>
+        <ProjectReference Include="..\RpgStats.Services\RpgStats.Services.csproj"/>
     </ItemGroup>
 
 </Project>

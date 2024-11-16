@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 namespace RpgStats.BlazorServer;
+
 public class DbConnectionJson
 {
     [JsonProperty(nameof(ConnectionStrings))]
@@ -9,7 +10,6 @@ public class DbConnectionJson
 
 public class ConnectionStrings
 {
-
     [JsonProperty(nameof(RpgStatsPostgresql))]
     public string? RpgStatsPostgresql { get; set; }
 }

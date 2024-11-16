@@ -1,7 +1,7 @@
 ﻿@page "/characterDetail/{Id:int}"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject ICharacterService CharacterService
 @inject IStatValueService StatValueService
 @inject IStatService StatService
@@ -10,7 +10,7 @@
 
 @if (_character == null)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
 }
 else
 {
@@ -21,11 +21,13 @@ else
         <MudItem lg="4" md="6" sm="12">
             @if (_character.Picture == null)
             {
-                <MudCardMedia Image="images/placeholder-3.png" Title="placeholder-3" />
+                <MudCardMedia Image="images/placeholder-3.png" Title="placeholder-3"/>
             }
             else
             {
-                <MudImage Src="@TurnByteArrayToImage(_character.Picture)" ObjectFit="ObjectFit.Fill" Alt="Picture of this Character" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block" Style="max-width: 400px;"></MudImage>
+                <MudImage Src="@TurnByteArrayToImage(_character.Picture)" ObjectFit="ObjectFit.Fill"
+                          Alt="Picture of this Character" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block"
+                          Style="max-width: 400px;"></MudImage>
             }
         </MudItem>
         <MudItem lg="8" md="6" sm="12">
@@ -43,7 +45,8 @@ else
                             else
                             {
                                 <MudAvatar Size="Size.Large">
-                                    <MudImage Src="@TurnByteArrayToImage(_character.GameWithoutFkObjectsDto.Picture)"></MudImage>
+                                    <MudImage
+                                        Src="@TurnByteArrayToImage(_character.GameWithoutFkObjectsDto.Picture)"></MudImage>
                                 </MudAvatar>
                             }
                             @_character.GameWithoutFkObjectsDto.Name
@@ -53,10 +56,16 @@ else
             </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">
                 <MudItem xs="6">
-                    <MudButton Href="@($"/updateCharacter/{_character.Id}")" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" StartIcon="@Icons.Material.Filled.Update">Ändern</MudButton>
+                    <MudButton Href="@($"/updateCharacter/{_character.Id}")" ButtonType="ButtonType.Button"
+                               Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                               StartIcon="@Icons.Material.Filled.Update">Ändern
+                    </MudButton>
                 </MudItem>
                 <MudItem xs="6" Class="text-right">
-                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error" FullWidth="true" StartIcon="@Icons.Material.Filled.Delete" OnClick="DeleteCharacter">Löschen</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error"
+                               FullWidth="true" StartIcon="@Icons.Material.Filled.Delete" OnClick="DeleteCharacter">
+                        Löschen
+                    </MudButton>
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -79,8 +88,7 @@ else
     private List<StatValueDto> _statValues = new();
     private readonly List<StatDto> _stats = new();
 
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -135,11 +143,12 @@ else
         };
         var dialog = await DialogService.ShowAsync<DeleteDialog>("Löschen", parameters, options);
         var result = await dialog.Result;
-        
+
         if (result.Canceled == false)
         {
             await CharacterService.DeleteCharacterAsync(Id);
             NavigationManager.NavigateTo("/allCharacters");
         }
     }
+
 }

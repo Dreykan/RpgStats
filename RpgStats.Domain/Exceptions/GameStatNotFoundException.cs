@@ -2,7 +2,8 @@
 
 public class GameStatNotFoundException : NotFoundException
 {
-    public GameStatNotFoundException(long gameStatId) : base($"The GameStat with the identifier {gameStatId} was not found.")
+    public GameStatNotFoundException(long gameStatId) : base(
+        $"The GameStat with the identifier {gameStatId} was not found.")
     {
     }
 }

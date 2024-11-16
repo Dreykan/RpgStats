@@ -27,7 +27,8 @@ public class PlatformForCreationDtoTests
         var isValid = Validator.TryValidateObject(dto, context, results, true);
 
         Assert.False(isValid);
-        Assert.Contains(results, r => r.ErrorMessage == "The name for the platform can't be longer than 60 characters.");
+        Assert.Contains(results,
+            r => r.ErrorMessage == "The name for the platform can't be longer than 60 characters.");
     }
 
     [Fact]

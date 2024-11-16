@@ -8,5 +8,4 @@ public class StatValueWithStatObjectDto
     public int Value { get; set; }
     public int ContainedBonusNum { get; set; }
     public int ContainedBonusPercent { get; set; }
-
 }

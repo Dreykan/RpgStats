@@ -13,7 +13,7 @@ public class GameNotFoundExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void GameNotFoundException_Type_IsCorrect()
     {
@@ -28,7 +28,7 @@ public class GameNotFoundExceptionTests
     public void GameNotFoundException_Message_IsCorrect()
     {
         const long gameId = 456;
-        string expectedMessage = $"The Game with the identifier {gameId} was not found.";
+        var expectedMessage = $"The Game with the identifier {gameId} was not found.";
 
         var exception = new GameNotFoundException(gameId);
 

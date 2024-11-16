@@ -13,7 +13,7 @@ public class PlatformNotFoundExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void PlatformNotFoundException_Type_IsCorrect()
     {
@@ -28,7 +28,7 @@ public class PlatformNotFoundExceptionTests
     public void PlatformNotFoundException_Message_IsCorrect()
     {
         const long platformId = 456;
-        string expectedMessage = $"The Platform with the identifier {platformId} was not found.";
+        var expectedMessage = $"The Platform with the identifier {platformId} was not found.";
 
         var exception = new PlatformNotFoundException(platformId);
 

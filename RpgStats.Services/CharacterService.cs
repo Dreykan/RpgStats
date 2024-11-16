@@ -161,7 +161,9 @@ public class CharacterService : ICharacterService
 
         if (character == null) return characterDetailDto;
 
-        characterDetailDto = CharacterMapper.MapToCharacterDetailDto(character, (character.StatValues ?? new List<StatValue>()).ToList());
+        characterDetailDto =
+            CharacterMapper.MapToCharacterDetailDto(character,
+                (character.StatValues ?? new List<StatValue>()).ToList());
 
         return characterDetailDto;
     }

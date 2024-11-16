@@ -11,7 +11,7 @@ public class CharacterForCreationDtoTests
         var validationResults = new List<ValidationResult>();
         var context = new ValidationContext(character);
 
-        bool isValid = Validator.TryValidateObject(character, context, validationResults, true);
+        var isValid = Validator.TryValidateObject(character, context, validationResults, true);
 
         Assert.False(isValid);
         Assert.Contains(validationResults, v => v.ErrorMessage == "A name for a character is required.");
@@ -24,7 +24,7 @@ public class CharacterForCreationDtoTests
         var validationResults = new List<ValidationResult>();
         var context = new ValidationContext(character);
 
-        bool isValid = Validator.TryValidateObject(character, context, validationResults, true);
+        var isValid = Validator.TryValidateObject(character, context, validationResults, true);
 
         Assert.False(isValid);
         Assert.Contains(validationResults, v => v.ErrorMessage == "The name can't be longer than 60 characters.");
@@ -37,7 +37,7 @@ public class CharacterForCreationDtoTests
         var validationResults = new List<ValidationResult>();
         var context = new ValidationContext(character);
 
-        bool isValid = Validator.TryValidateObject(character, context, validationResults, true);
+        var isValid = Validator.TryValidateObject(character, context, validationResults, true);
 
         Assert.True(isValid);
     }
@@ -49,7 +49,7 @@ public class CharacterForCreationDtoTests
         var validationResults = new List<ValidationResult>();
         var context = new ValidationContext(character);
 
-        bool isValid = Validator.TryValidateObject(character, context, validationResults, true);
+        var isValid = Validator.TryValidateObject(character, context, validationResults, true);
 
         Assert.True(isValid);
     }
@@ -61,7 +61,7 @@ public class CharacterForCreationDtoTests
         var validationResults = new List<ValidationResult>();
         var context = new ValidationContext(character);
 
-        bool isValid = Validator.TryValidateObject(character, context, validationResults, true);
+        var isValid = Validator.TryValidateObject(character, context, validationResults, true);
 
         Assert.True(isValid);
     }

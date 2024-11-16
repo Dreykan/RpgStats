@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RpgStats.Domain.Entities;
 
@@ -17,12 +17,9 @@ public class Game
 
     public byte[]? Picture { get; set; }
 
-    [InverseProperty("Game")]
-    public ICollection<PlatformGame>? PlatformGames { get; set; }
+    [InverseProperty("Game")] public ICollection<PlatformGame>? PlatformGames { get; set; }
 
-    [InverseProperty("Game")]
-    public ICollection<GameStat>? GameStats { get; set; }
+    [InverseProperty("Game")] public ICollection<GameStat>? GameStats { get; set; }
 
-    [InverseProperty("Game")]
-    public ICollection<Character>? Characters { get; set; }
+    [InverseProperty("Game")] public ICollection<Character>? Characters { get; set; }
 }

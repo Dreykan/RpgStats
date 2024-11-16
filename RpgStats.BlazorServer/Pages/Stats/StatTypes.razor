@@ -1,6 +1,6 @@
 ﻿@page "/allStatTypes"
-@using RpgStats.Services.Abstractions
 @using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject IStatService StatService
 @inject IDialogService DialogService
 
@@ -8,20 +8,24 @@
     @if (_stats == null)
     {
         <MudItem xs="12">
-            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
         </MudItem>
     }
     else
     {
         <MudItem xs="12">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew" FullWidth="true" Size="Size.Large" OnClick="@(async () => await ShowNewStatTypeDialog())">Neuer Status Typ</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.OpenInNew"
+                       FullWidth="true" Size="Size.Large" OnClick="@(async () => await ShowNewStatTypeDialog())">Neuer
+                Status Typ
+            </MudButton>
         </MudItem>
 
         @foreach (var stat in _stats)
         {
             <MudItem xs="12">
                 <MudText Typo="Typo.h4">@stat.ShortName --- @stat.Name
-                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" OnClick="@(async () => await ShowUpdateStatTypeDialog(stat.Id))"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Primary"
+                                   OnClick="@(async () => await ShowUpdateStatTypeDialog(stat.Id))"/>
                 </MudText>
             </MudItem>
         }
@@ -70,7 +74,7 @@
         {
             return;
         }
-        
+
         await GetStats();
     }
 
@@ -83,12 +87,12 @@
             {
                 return;
             }
-        
-            var closeOnEscapeKey = new DialogOptions { CloseOnEscapeKey = true};
-        
+
+            var closeOnEscapeKey = new DialogOptions { CloseOnEscapeKey = true };
+
             var parameters = new DialogParameters { { "Stat", stat } };
 
-            var dialog = await DialogService.ShowAsync<StatTypeDialog>("Status Typ bearbeiten", parameters , closeOnEscapeKey);
+            var dialog = await DialogService.ShowAsync<StatTypeDialog>("Status Typ bearbeiten", parameters, closeOnEscapeKey);
             var result = await dialog.Result;
 
             if (result.Canceled == false)
@@ -114,6 +118,8 @@
                 return;
             }
         }
+
         await GetStats();
     }
+
 }

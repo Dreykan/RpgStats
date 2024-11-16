@@ -48,10 +48,7 @@ public class PlatformGameService : IPlatformGameService
         var platformGame = await _dbContext.PlatformGames
             .FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
-        if (platformGame == null)
-        {
-            throw new PlatformGameNotFoundException(platformGameId);
-        }
+        if (platformGame == null) throw new PlatformGameNotFoundException(platformGameId);
 
         return platformGame.Adapt<PlatformGameDto>();
     }
@@ -60,24 +57,17 @@ public class PlatformGameService : IPlatformGameService
     {
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
 
-        if (platform == null)
-        {
-            throw new PlatformNotFoundException(platformId);
-        }
+        if (platform == null) throw new PlatformNotFoundException(platformId);
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         var platformGame = new PlatformGameDto().Adapt<PlatformGame>();
         platformGame.PlatformId = platformId;
         platformGame.Platform = platform;
         platformGame.GameId = gameId;
         platformGame.Game = game;
-
 
 
         _dbContext.PlatformGames.Add(platformGame);
@@ -90,24 +80,15 @@ public class PlatformGameService : IPlatformGameService
     {
         var platformGame = await _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
-        if (platformGame == null)
-        {
-            throw new PlatformGameNotFoundException(platformGameId);
-        }
+        if (platformGame == null) throw new PlatformGameNotFoundException(platformGameId);
 
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
 
-        if (platform == null)
-        {
-            throw new PlatformNotFoundException(platformId);
-        }
+        if (platform == null) throw new PlatformNotFoundException(platformId);
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            throw new GameNotFoundException(gameId);
-        }
+        if (game == null) throw new GameNotFoundException(gameId);
 
         platformGame.PlatformId = platform.Id;
         platformGame.Platform = platform;
@@ -125,15 +106,12 @@ public class PlatformGameService : IPlatformGameService
     {
         var platformGame = await _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
-        if (platformGame == null)
-        {
-            return Task.CompletedTask;
-        }
+        if (platformGame == null) return Task.CompletedTask;
 
         _dbContext.Remove(platformGame);
 
         await _dbContext.SaveChangesAsync();
-        
+
         return Task.CompletedTask;
     }
 
@@ -142,13 +120,9 @@ public class PlatformGameService : IPlatformGameService
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToList();
 
         if (platformGames.Count == 0) return Task.CompletedTask;
-        foreach (var platformGame in platformGames)
-        {
-            await DeletePlatformGameAsync(platformGame.Id);
-        }
-            
-        return Task.CompletedTask;
+        foreach (var platformGame in platformGames) await DeletePlatformGameAsync(platformGame.Id);
 
+        return Task.CompletedTask;
     }
 
     public async Task<Task> DeletePlatformGameByPlatformIdAsync(long platformId)
@@ -156,12 +130,8 @@ public class PlatformGameService : IPlatformGameService
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.PlatformId == platformId).ToList();
 
         if (platformGames.Count == 0) return Task.CompletedTask;
-        foreach (var platformGame in platformGames)
-        {
-            await DeletePlatformGameAsync(platformGame.Id);
-        }
-            
-        return Task.CompletedTask;
+        foreach (var platformGame in platformGames) await DeletePlatformGameAsync(platformGame.Id);
 
+        return Task.CompletedTask;
     }
 }

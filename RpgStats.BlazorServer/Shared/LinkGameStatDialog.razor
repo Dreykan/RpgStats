@@ -4,10 +4,12 @@
 
 <MudDialog>
     <DialogContent>
-        <MudSelect T="string" Required="true" Label="Status-Typ" MultiSelection="false" @bind-Value="_stat" @bind-SelectedValues="SelectedStat" Clearable="true">
+        <MudSelect T="string" Required="true" Label="Status-Typ" MultiSelection="false" @bind-Value="_stat"
+                   @bind-SelectedValues="SelectedStat" Clearable="true">
             @foreach (var statDto in _stats.OrderBy(x => x.ShortName).ToList())
             {
-                <MudSelectItem T="string" Value="@statDto.ShortName">@statDto.ShortName --- @statDto.Name</MudSelectItem>
+                <MudSelectItem T="string"
+                               Value="@statDto.ShortName">@statDto.ShortName --- @statDto.Name</MudSelectItem>
             }
         </MudSelect>
     </DialogContent>
@@ -18,11 +20,9 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter]
-    MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter]
-    public GameDetailDto? Game { get; set; }
+    [Parameter] public GameDetailDto? Game { get; set; }
 
     private List<StatDto> _stats = new();
     private string _stat = "Nothing selected.";

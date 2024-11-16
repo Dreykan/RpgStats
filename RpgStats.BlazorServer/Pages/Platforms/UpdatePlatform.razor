@@ -1,12 +1,12 @@
 ﻿@page "/updatePlatform/{Id:int}"
-@using RpgStats.Services.Abstractions
 @using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject IPlatformService PlatformService
 @inject NavigationManager NavigationManager
 
 @if (_platform == null)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em" />
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" Style="margin-top: 2em"/>
 }
 else
 {
@@ -16,9 +16,13 @@ else
         <MudItem xs="12" sm="12">
             <MudPaper Class="pa-0">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true" RequiredError="Ein Name ist schon erforderlich..." @bind-Value="@_platformForUpdateDto.Name"/>
+                    <MudTextField Clearable="true" T="string" Label="Name" Required="true"
+                                  RequiredError="Ein Name ist schon erforderlich..."
+                                  @bind-Value="@_platformForUpdateDto.Name"/>
                     <div class="align-content-center mt-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="m-auto" OnClick="@(async () => await Update())">Ändern</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="m-auto"
+                                   OnClick="@(async () => await Update())">Ändern
+                        </MudButton>
                     </div>
                 </MudForm>
             </MudPaper>
@@ -35,8 +39,7 @@ else
     private bool _success;
     private string[] _errors = { };
 
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,11 +58,14 @@ else
         {
             return;
         }
+
         var result = await PlatformService.UpdatePlatformAsync(Id, _platformForUpdateDto);
         if (result is null)
         {
             return;
         }
+
         NavigationManager.NavigateTo("/allPlatforms");
     }
+
 }

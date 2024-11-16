@@ -7,5 +7,4 @@ public class CharacterDto
     public byte[]? Picture { get; set; }
     public long GameId { get; set; }
     public IEnumerable<StatValueDto>? StatValues { get; set; }
-
 }

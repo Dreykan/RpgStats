@@ -1,7 +1,7 @@
 ﻿@page "/gameDetail/{Id:int}"
-@using RpgStats.Services.Abstractions
-@using RpgStats.Dto
 @using RpgStats.BizLogic
+@using RpgStats.Dto
+@using RpgStats.Services.Abstractions
 @inject IGameService GameService
 @inject IGameStatService GameStatService
 @inject IDialogService DialogService
@@ -24,7 +24,9 @@ else
             }
             else
             {
-                <MudImage Src="@TurnByteArrayToImage(_game.Picture)" ObjectFit="ObjectFit.Fill" Alt="Picture of this Game" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block" Style="max-width: 400px;"></MudImage>
+                <MudImage Src="@TurnByteArrayToImage(_game.Picture)" ObjectFit="ObjectFit.Fill"
+                          Alt="Picture of this Game" Elevation="2" Fluid="true" Class="rounded-3 m-auto d-block"
+                          Style="max-width: 400px;"></MudImage>
             }
         </MudItem>
         <MudItem lg="8" md="6" sm="12">
@@ -42,14 +44,16 @@ else
 
                     <MudText Typo="Typo.h5" Class="mt-4">
                         Characters
-                        <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Info" Href="@($"/newCharacter/{_game.Name}")"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Info"
+                                       Href="@($"/newCharacter/{_game.Name}")"/>
                     </MudText>
                     <MudGrid Class="my-4">
                         @if (_game.CharacterWithoutFkObjectsDtos != null)
                         {
                             foreach (var character in _game.CharacterWithoutFkObjectsDtos)
                             {
-                                <MudLink Class="mx-5" Typo="Typo.body1" Color="Color.Info" Href="@($"/characterDetail/{character.Id}")">
+                                <MudLink Class="mx-5" Typo="Typo.body1" Color="Color.Info"
+                                         Href="@($"/characterDetail/{character.Id}")">
                                     @if (character.Picture == null)
                                     {
                                         <MudAvatar Size="Size.Large">
@@ -67,10 +71,12 @@ else
                             }
                         }
                     </MudGrid>
-                    <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="Diese Statuswerte-Typen kommen in diesem Spiel vor.">
+                    <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top"
+                                Text="Diese Statuswerte-Typen kommen in diesem Spiel vor.">
                         <MudText Typo="Typo.h5">
                             Status-Typen
-                            <MudIconButton Icon="@Icons.Material.Filled.AddLink" Color="Color.Info" OnClick="async () => await LinkGameStat()"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.AddLink" Color="Color.Info"
+                                           OnClick="async () => await LinkGameStat()"/>
                         </MudText>
                     </MudTooltip>
                     <MudGrid Class="my-4">
@@ -78,7 +84,8 @@ else
                         {
                             foreach (var statusType in _game.StatWithoutFkObjectsDtos)
                             {
-                                <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top" Text="@statusType.Name">
+                                <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top"
+                                            Text="@statusType.Name">
                                     <MudChip Class="mx-9" Color="Color.Secondary">@statusType.ShortName</MudChip>
                                 </MudTooltip>
                             }
@@ -90,10 +97,15 @@ else
             </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">
                 <MudItem xs="6">
-                    <MudButton Href="@($"/updateGame/{_game.Id}")" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" StartIcon="@Icons.Material.Filled.Update">Ändern</MudButton>
+                    <MudButton Href="@($"/updateGame/{_game.Id}")" ButtonType="ButtonType.Button"
+                               Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                               StartIcon="@Icons.Material.Filled.Update">Ändern
+                    </MudButton>
                 </MudItem>
                 <MudItem xs="6" Class="text-right">
-                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error" FullWidth="true" StartIcon="@Icons.Material.Filled.Delete" OnClick="DeleteGame">Löschen</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error"
+                               FullWidth="true" StartIcon="@Icons.Material.Filled.Delete" OnClick="DeleteGame">Löschen
+                    </MudButton>
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -103,8 +115,7 @@ else
 @code {
     private GameDetailDto? _game;
 
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -138,7 +149,7 @@ else
 
         var dialog = await DialogService.ShowAsync<DeleteDialog>("Löschen", parameters, options);
         var result = await dialog.Result;
-        
+
         if (result.Canceled == false)
         {
             await GameService.DeleteGameAsync(Id);
@@ -186,6 +197,7 @@ else
         {
             await GameStatService.CreateGameStatAsync(gameStat.GameId, gameStat.StatId);
         }
+
         await GetGame();
     }
 
@@ -195,4 +207,5 @@ else
         var gameStatExist = gameStats.Any(x => x.StatId == gameStat.StatId);
         return gameStatExist;
     }
+
 }

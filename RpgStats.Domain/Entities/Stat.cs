@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RpgStats.Domain.Entities;
 
@@ -18,9 +18,7 @@ public class Stat
     [StringLength(8, ErrorMessage = "The shortname for the stat can't be longer than 8 characters.")]
     public string? ShortName { get; set; }
 
-    [InverseProperty("Stat")]
-    public ICollection<StatValue>? StatValues { get; set; }
+    [InverseProperty("Stat")] public ICollection<StatValue>? StatValues { get; set; }
 
-    [InverseProperty("Stat")]
-    public ICollection<GameStat>? GameStats { get; set; }
+    [InverseProperty("Stat")] public ICollection<GameStat>? GameStats { get; set; }
 }

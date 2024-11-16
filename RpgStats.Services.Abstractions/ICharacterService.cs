@@ -9,7 +9,10 @@ public interface ICharacterService
     Task<List<CharacterDto>> GetAllCharactersByNameAsync(string name);
     Task<CharacterDto?> GetCharacterByIdAsync(long characterId);
     Task<CharacterDto?> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto);
-    Task<CharacterDto?> UpdateCharacterAsync(long characterId, long gameId , CharacterForUpdateDto characterForUpdateDto);
+
+    Task<CharacterDto?> UpdateCharacterAsync(long characterId, long gameId,
+        CharacterForUpdateDto characterForUpdateDto);
+
     Task<Task> DeleteCharacterAsync(long characterId);
     Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosAsync();
     Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosByGameIdAsync(long gameId);

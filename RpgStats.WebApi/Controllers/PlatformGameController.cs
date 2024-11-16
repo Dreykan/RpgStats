@@ -49,7 +49,7 @@ public class PlatformGameController : ControllerBase
 
     [HttpPost]
     [SwaggerOperation(Summary = "Create a PlatformGame")]
-    public async Task<IActionResult> CreatePlatformGame( long platformId, long gameId)
+    public async Task<IActionResult> CreatePlatformGame(long platformId, long gameId)
     {
         var response = await _platformGameService.CreatePlatformGameAsync(platformId, gameId);
         if (response != null)
@@ -73,10 +73,10 @@ public class PlatformGameController : ControllerBase
     public async Task<IActionResult> DeletePlatformGame(long platformGameId)
     {
         var response = await _platformGameService.DeletePlatformGameAsync(platformGameId);
-        if (response == Task.CompletedTask) return Ok(); 
+        if (response == Task.CompletedTask) return Ok();
         return BadRequest();
     }
-    
+
     [HttpDelete("byGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Delete all PlatformGames by Game")]
     public async Task<IActionResult> DeletePlatformGameByGame(long gameId)
@@ -85,7 +85,7 @@ public class PlatformGameController : ControllerBase
         if (response == Task.CompletedTask) return Ok();
         return BadRequest();
     }
-    
+
     [HttpDelete("byPlatform/{platformId:long}")]
     [SwaggerOperation(Summary = "Delete all PlatformGames by Platform")]
     public async Task<IActionResult> DeletePlatformGameByPlatform(long platformId)

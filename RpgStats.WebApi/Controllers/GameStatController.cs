@@ -54,8 +54,8 @@ public class GameStatController : ControllerBase
         var response = await _gameStatService.CreateGameStatAsync(gameId, statId);
         if (response != null)
             return CreatedAtAction(nameof(GetGameStatById),
-                               new { gameStatId = response.Id, gameId = response.GameId, statId = response.StatId },
-                                              response);
+                new { gameStatId = response.Id, gameId = response.GameId, statId = response.StatId },
+                response);
         return BadRequest();
     }
 
@@ -78,7 +78,7 @@ public class GameStatController : ControllerBase
             return Ok();
         return BadRequest();
     }
-    
+
     [HttpDelete("byGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Delete all GameStats by Game")]
     public async Task<IActionResult> DeleteGameStatByGame(long gameId)
@@ -88,7 +88,7 @@ public class GameStatController : ControllerBase
             return Ok();
         return BadRequest();
     }
-    
+
     [HttpDelete("byStat/{statId:long}")]
     [SwaggerOperation(Summary = "Delete all GameStats by Stat")]
     public async Task<IActionResult> DeleteGameStatByStat(long statId)

@@ -8,11 +8,8 @@ public static class ImageService
     {
         using var ms = new MemoryStream(imageBytes);
         using var sourceBitmap = SKBitmap.Decode(ms);
-        if (sourceBitmap == null)
-        {
-            throw new ArgumentException("Invalid image data");
-        }
-        double ratio = (double)sourceBitmap.Width / sourceBitmap.Height;
+        if (sourceBitmap == null) throw new ArgumentException("Invalid image data");
+        var ratio = (double)sourceBitmap.Width / sourceBitmap.Height;
 
         int width;
         int height;

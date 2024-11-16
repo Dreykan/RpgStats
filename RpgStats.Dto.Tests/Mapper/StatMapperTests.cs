@@ -21,8 +21,13 @@ public class StatMapperTests
     [Fact]
     public void MapToStatDetailDto_MapsCorrectly()
     {
-        var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR", GameStats = new List<GameStat> { new() { Game = new Game { Id = 1, Name = "Game1" } } } };
-        var statValues = new List<StatValue> { new() { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
+        var stat = new Stat
+        {
+            Id = 1, Name = "Strength", ShortName = "STR",
+            GameStats = new List<GameStat> { new() { Game = new Game { Id = 1, Name = "Game1" } } }
+        };
+        var statValues = new List<StatValue>
+            { new() { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
 
         var result = StatMapper.MapToStatDetailDto(stat, statValues);
 
@@ -38,7 +43,8 @@ public class StatMapperTests
     public void MapToStatDetailDto_HandlesEmptyGameStats()
     {
         var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR", GameStats = new List<GameStat>() };
-        var statValues = new List<StatValue> { new() { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
+        var statValues = new List<StatValue>
+            { new() { Id = 1, Value = 10, Level = 1, ContainedBonusPercent = 5, ContainedBonusNum = 0 } };
 
         var result = StatMapper.MapToStatDetailDto(stat, statValues);
 
@@ -53,7 +59,11 @@ public class StatMapperTests
     [Fact]
     public void MapToStatDetailDto_HandlesEmptyStatValues()
     {
-        var stat = new Stat { Id = 1, Name = "Strength", ShortName = "STR", GameStats = new List<GameStat> { new() { Game = new Game { Id = 1, Name = "Game1" } } } };
+        var stat = new Stat
+        {
+            Id = 1, Name = "Strength", ShortName = "STR",
+            GameStats = new List<GameStat> { new() { Game = new Game { Id = 1, Name = "Game1" } } }
+        };
         var statValues = new List<StatValue>();
 
         var result = StatMapper.MapToStatDetailDto(stat, statValues);

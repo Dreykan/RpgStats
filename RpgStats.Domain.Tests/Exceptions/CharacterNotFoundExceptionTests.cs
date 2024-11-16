@@ -13,7 +13,7 @@ public class CharacterNotFoundExceptionTests
 
         Assert.NotNull(exception);
     }
-        
+
     [Fact]
     public void CharacterNotFoundException_Type_IsCorrect()
     {
@@ -28,7 +28,7 @@ public class CharacterNotFoundExceptionTests
     public void CharacterNotFoundException_Message_IsCorrect()
     {
         const long characterId = 123;
-        string expectedMessage = $"The Character with the identifier {characterId} was not found.";
+        var expectedMessage = $"The Character with the identifier {characterId} was not found.";
 
         var exception = new CharacterNotFoundException(characterId);
 

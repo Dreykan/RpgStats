@@ -7,24 +7,24 @@ namespace RpgStats.ControllersLegacy.Tests;
 
 public class PlatformGameControllerTests
 {
-    private readonly Mock<IPlatformGameService> _mockService;
     private readonly PlatformGameController _controller;
+    private readonly Mock<IPlatformGameService> _mockService;
     private readonly List<PlatformGameDto> _platformGames;
 
     public PlatformGameControllerTests()
     {
         _mockService = new Mock<IPlatformGameService>();
         _controller = new PlatformGameController(_mockService.Object);
-        
+
         _platformGames = new List<PlatformGameDto>
         {
-            new() { Id = 1, PlatformId = 1, GameId = 1},
-            new() { Id = 2, PlatformId = 2, GameId = 2},
-            new() { Id = 3, PlatformId = 1, GameId = 3},
-            new() { Id = 4, PlatformId = 3, GameId = 1}
+            new() { Id = 1, PlatformId = 1, GameId = 1 },
+            new() { Id = 2, PlatformId = 2, GameId = 2 },
+            new() { Id = 3, PlatformId = 1, GameId = 3 },
+            new() { Id = 4, PlatformId = 3, GameId = 1 }
         };
     }
-    
+
     [Fact]
     public async Task GetAllPlatformGames_ReturnsAllPlatformGames()
     {
@@ -37,7 +37,7 @@ public class PlatformGameControllerTests
         var returnValue = Assert.IsType<List<PlatformGameDto>>(okResult.Value);
         Assert.Equal(_platformGames.Count, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllPlatformGamesByPlatform_ReturnsPlatformGamesByPlatform()
     {
@@ -51,7 +51,7 @@ public class PlatformGameControllerTests
         var returnValue = Assert.IsType<List<PlatformGameDto>>(okResult.Value);
         Assert.Equal(2, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetAllPlatformGamesByGame_ReturnsPlatformGamesByGame()
     {
@@ -65,7 +65,7 @@ public class PlatformGameControllerTests
         var returnValue = Assert.IsType<List<PlatformGameDto>>(okResult.Value);
         Assert.Equal(2, returnValue.Count);
     }
-    
+
     [Fact]
     public async Task GetPlatformGameById_ReturnsPlatformGameById()
     {
@@ -79,7 +79,7 @@ public class PlatformGameControllerTests
         var returnValue = Assert.IsType<PlatformGameDto>(okResult.Value);
         Assert.Equal(platformGameId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task CreatePlatformGame_ReturnsCreatedPlatformGame()
     {
@@ -98,7 +98,7 @@ public class PlatformGameControllerTests
         Assert.Equal(response.PlatformId, createdResult.RouteValues?["platformId"]);
         Assert.Equal(response, createdResult.Value);
     }
-    
+
     [Fact]
     public async Task CreatePlatformGame_ReturnsBadRequest()
     {
@@ -111,7 +111,7 @@ public class PlatformGameControllerTests
 
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task UpdatePlatformGame_ReturnsUpdatedPlatformGame()
     {
@@ -128,7 +128,7 @@ public class PlatformGameControllerTests
         var returnValue = Assert.IsType<PlatformGameDto>(okResult.Value);
         Assert.Equal(platformGameId, returnValue.Id);
     }
-    
+
     [Fact]
     public async Task UpdatePlatformGame_ReturnsBadRequest()
     {
@@ -148,64 +148,64 @@ public class PlatformGameControllerTests
     {
         _mockService.Setup(x => x.DeletePlatformGameAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.CompletedTask);
-        
+
         var result = await _controller.DeletePlatformGame(1);
-        
+
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeletePlatformGame_ReturnsBadRequest()
     {
         _mockService.Setup(x => x.DeletePlatformGameAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.FromException(new Exception()));
-        
+
         var result = await _controller.DeletePlatformGame(1);
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task DeletePlatformGameByGame_ReturnsOk()
     {
         _mockService.Setup(x => x.DeletePlatformGameByGameIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.CompletedTask);
-        
+
         var result = await _controller.DeletePlatformGameByGame(1);
-        
+
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeletePlatformGameByGame_ReturnsBadRequest()
     {
         _mockService.Setup(x => x.DeletePlatformGameByGameIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.FromException(new Exception()));
-        
+
         var result = await _controller.DeletePlatformGameByGame(1);
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
-    
+
     [Fact]
     public async Task DeletePlatformGameByPlatform_ReturnsOk()
     {
         _mockService.Setup(x => x.DeletePlatformGameByPlatformIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.CompletedTask);
-        
+
         var result = await _controller.DeletePlatformGameByPlatform(1);
-        
+
         Assert.IsType<OkResult>(result);
     }
-    
+
     [Fact]
     public async Task DeletePlatformGameByPlatform_ReturnsBadRequest()
     {
         _mockService.Setup(x => x.DeletePlatformGameByPlatformIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.FromException(new Exception()));
-        
+
         var result = await _controller.DeletePlatformGameByPlatform(1);
-        
+
         Assert.IsType<BadRequestResult>(result);
     }
 }

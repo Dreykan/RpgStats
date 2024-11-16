@@ -17,7 +17,11 @@ public class CharacterMapperTests
             Game = new Game { Id = 1, Name = "Test Game" },
             StatValues = new List<StatValue>
             {
-                new() { Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 5, Stat = new Stat { Id = 1, Name = "Strength" } }
+                new()
+                {
+                    Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 5,
+                    Stat = new Stat { Id = 1, Name = "Strength" }
+                }
             }
         };
 
@@ -49,7 +53,11 @@ public class CharacterMapperTests
         };
         var statValues = new List<StatValue>
         {
-            new() { Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 0, Stat = new Stat { Id = 1, Name = "Strength" } }
+            new()
+            {
+                Id = 1, Value = 10, Level = 1, ContainedBonusNum = 5, ContainedBonusPercent = 0,
+                Stat = new Stat { Id = 1, Name = "Strength" }
+            }
         };
 
         // Act

@@ -1,4 +1,5 @@
 ﻿using RpgStats.Domain.Entities;
+
 // ReSharper disable UseObjectOrCollectionInitializer
 
 namespace RpgStats.Domain.Tests.Entities;
@@ -95,6 +96,7 @@ public class StatTests
 
         Assert.NotEmpty(validationResults);
         Assert.Contains(validationResults,
-            v => v.ErrorMessage != null && v.ErrorMessage.Contains("The shortname for the stat can't be longer than 8 characters."));
+            v => v.ErrorMessage != null &&
+                 v.ErrorMessage.Contains("The shortname for the stat can't be longer than 8 characters."));
     }
 }

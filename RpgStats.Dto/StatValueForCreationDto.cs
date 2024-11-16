@@ -15,5 +15,4 @@ public class StatValueForCreationDto
 
     [Required(ErrorMessage = "A bonus contained herein in percent for this entry is required.")]
     public int ContainedBonusPercent { get; set; }
-
 }
