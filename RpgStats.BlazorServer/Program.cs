@@ -1,42 +1,20 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
-using Newtonsoft.Json;
-using RpgStats.BlazorServer;
-using RpgStats.ControllersLegacy;
-using RpgStats.Repo;
-using RpgStats.Services;
-using RpgStats.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// read appsettings for "api" section
+builder.Configuration.GetSection("Api").Bind(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddControllers().AddApplicationPart(typeof(AssemblyReference).Assembly);
-builder.Services.AddSwaggerGen(c =>
-{
-    c.EnableAnnotations();
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RpgStats", Version = "v1" });
-});
 builder.Services.AddMudServices();
-builder.Services.AddTransient<ICharacterService, CharacterService>();
-builder.Services.AddTransient<IGameService, GameService>();
-builder.Services.AddTransient<IGameStatService, GameStatService>();
-builder.Services.AddTransient<IPlatformService, PlatformService>();
-builder.Services.AddTransient<IPlatformGameService, PlatformGameService>();
-builder.Services.AddTransient<IStatService, StatService>();
-builder.Services.AddTransient<IStatValueService, StatValueService>();
-builder.Services.AddDbContextPool<RpgStatsContext>(options =>
+builder.Services.AddHttpClient("RpgStatsApi", client =>
 {
-    var connectionString = GetConnectionString();
-
-    if (connectionString != null) options.UseNpgsql(connectionString);
+    client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"] ?? string.Empty);
 });
 
 var app = builder.Build();
-
-await ApplyMigration(app.Services);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -49,8 +27,6 @@ if (!app.Environment.IsDevelopment())
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web v1"));
 }
 
 app.UseHttpsRedirection();
@@ -67,27 +43,3 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
-return;
-
-
-static string? GetConnectionString()
-{
-    var connectionString = string.Empty;
-
-    var streamReader = new StreamReader("dbConnection.json");
-    var jsonValues = streamReader.ReadToEnd();
-    var dbConnectionJson = JsonConvert.DeserializeObject<DbConnectionJson>(jsonValues);
-    if (dbConnectionJson?.ConnectionStrings != null)
-        connectionString = dbConnectionJson.ConnectionStrings.RpgStatsPostgresql;
-
-    return connectionString;
-}
-
-static async Task ApplyMigration(IServiceProvider serviceProvider)
-{
-    using var scope = serviceProvider.CreateScope();
-
-    await using var dbContext = scope.ServiceProvider.GetRequiredService<RpgStatsContext>();
-
-    await dbContext.Database.MigrateAsync();
-}

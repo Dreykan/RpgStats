@@ -1,15 +1,19 @@
 ﻿@using RpgStats.Dto
-@using RpgStats.Services.Abstractions
-@inject IStatService StatService
+@inject IHttpClientFactory HttpClientFactory
 
 <MudDialog>
     <DialogContent>
         <MudSelect T="string" Required="true" Label="Status-Typ" MultiSelection="false" @bind-Value="_stat"
                    @bind-SelectedValues="SelectedStat" Clearable="true">
-            @foreach (var statDto in _stats.OrderBy(x => x.ShortName).ToList())
+            @if (_stats != null)
             {
-                <MudSelectItem T="string"
-                               Value="@statDto.ShortName">@statDto.ShortName --- @statDto.Name</MudSelectItem>
+                foreach (var statDto in _stats.OrderBy(x => x.ShortName).ToList())
+                {
+                    <MudSelectItem T="string"
+                                   Value="@statDto.ShortName">
+                        @statDto.ShortName --- @statDto.Name
+                    </MudSelectItem>
+                }
             }
         </MudSelect>
     </DialogContent>
@@ -24,14 +28,15 @@
 
     [Parameter] public GameDetailDto? Game { get; set; }
 
-    private List<StatDto> _stats = new();
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
+    private List<StatDto>? _stats = new();
     private string _stat = "Nothing selected.";
     private IEnumerable<string> SelectedStat { get; set; } = new HashSet<string>();
     private readonly GameStatDto _gameStatDto = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _stats = await StatService.GetAllStatsAsync();
+        _stats = await HttpClient.GetFromJsonAsync<List<StatDto>>("api/Stat/GetStats");
     }
 
     private void Cancel()
@@ -42,7 +47,7 @@
     private void Submit()
     {
         if (Game != null) _gameStatDto.GameId = Game.Id;
-        _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
+        if (_stats != null) _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
         MudDialog?.Close(DialogResult.Ok(_gameStatDto));
     }
 

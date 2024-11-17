@@ -1,11 +1,9 @@
 ﻿@page "/gameDetail/{Id:int}"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
-@inject IGameService GameService
-@inject IGameStatService GameStatService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
 
 @if (_game == null)
 {
@@ -113,6 +111,7 @@ else
 }
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private GameDetailDto? _game;
 
     [Parameter] public int Id { get; set; }
@@ -124,7 +123,7 @@ else
 
     private async Task GetGame()
     {
-        _game = await GameService.GetGameDetailDtoByIdAsync(Id);
+        _game = await HttpClient.GetFromJsonAsync<GameDetailDto>($"api/Game/GetGameDetailById/{Id}");
     }
 
     private static string TurnByteArrayToImage(byte[] imageBytes)
@@ -152,7 +151,7 @@ else
 
         if (result.Canceled == false)
         {
-            await GameService.DeleteGameAsync(Id);
+            await HttpClient.DeleteAsync($"api/Game/DeleteGame/{Id}");
             NavigationManager.NavigateTo("/allGames");
         }
     }
@@ -195,7 +194,7 @@ else
         }
         else
         {
-            await GameStatService.CreateGameStatAsync(gameStat.GameId, gameStat.StatId);
+            await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/{gameStat.GameId}/{gameStat.StatId}", "");
         }
 
         await GetGame();
@@ -203,8 +202,9 @@ else
 
     private async Task<bool> CheckGameStatExist(GameStatDto gameStat)
     {
-        var gameStats = await GameStatService.GetAllGameStatsByGameIdAsync(gameStat.GameId);
-        var gameStatExist = gameStats.Any(x => x.StatId == gameStat.StatId);
+        // TODO: Hier einen eigenen Endpunkt erstellen für die Überprüfung ob es diesen GameStat schon gibt
+        var gameStats = await HttpClient.GetFromJsonAsync<List<GameStatDto>>($"api/GameStat/GetGameStatsByGame/{gameStat.GameId}");
+        var gameStatExist = gameStats != null && gameStats.Any(x => x.StatId == gameStat.StatId);
         return gameStatExist;
     }
 

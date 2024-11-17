@@ -1,13 +1,10 @@
 ﻿@page "/newGame"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
 @using SkiaSharp
-@inject IGameService GameService
-@inject IPlatformService PlatformService
-@inject IPlatformGameService PlatformGameService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
 
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle ein neues Spiel</MudText>
 
@@ -20,9 +17,12 @@
                               TextChanged="OnNameChanged" Immediate="true"/>
                 <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value"
                            @bind-SelectedValues="SelectedPlatforms" Clearable="true">
-                    @foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
+                    @if (_platformDtos != null)
                     {
-                        <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                        foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
+                        {
+                            <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                        }
                     }
                 </MudSelect>
                 <MudGrid>
@@ -65,8 +65,9 @@
 @* ReSharper disable NotAccessedField.Local *@
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private readonly GameForCreationDto _gameForCreationDto = new();
-    private List<PlatformDto> _platformDtos = new();
+    private List<PlatformDto>? _platformDtos = new();
     private string _value = "Nothing selected.";
     private IEnumerable<string> SelectedPlatforms { get; set; } = new HashSet<string>();
     private MudForm? _form;
@@ -82,7 +83,8 @@
 
     private async Task Create()
     {
-        await GameService.CreateGameAsync(_gameForCreationDto);
+        var response = await HttpClient.PostAsJsonAsync("api/Game/CreateGame", _gameForCreationDto);
+        response.EnsureSuccessStatusCode();
 
         var gameId = await GetIdOfCreatedGame(_gameForCreationDto.Name);
 
@@ -95,7 +97,7 @@
 
         foreach (var selectedPlatformId in selectedPlatformIds)
         {
-            await PlatformGameService.CreatePlatformGameAsync(selectedPlatformId, gameId);
+            await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{selectedPlatformId}/{gameId}", "");
         }
 
         _gameForCreationDto.Name = "";
@@ -127,21 +129,21 @@
 
     private async Task GetPlatforms()
     {
-        _platformDtos = await PlatformService.GetAllPlatformsAsync();
+        _platformDtos = await HttpClient.GetFromJsonAsync<List<PlatformDto>>("api/Platform/GetPlatforms");
     }
 
     private async Task<long> GetIdOfCreatedGame(string gameName)
     {
-        var gameList = await GameService.GetAllGamesByNameAsync(gameName);
-        var game = gameList.FirstOrDefault();
+        var gameList = await HttpClient.GetFromJsonAsync<List<GameDto>>($"api/Game/GetGamesByName/{gameName}");
+        var game = gameList?.FirstOrDefault();
         var id = game?.Id ?? 0;
         return id;
     }
 
     private async Task<long> GetIdOfPlatform(string platformName)
     {
-        var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
-        var platform = platformList.FirstOrDefault();
+        var platformList = await HttpClient.GetFromJsonAsync<List<PlatformDetailDto>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
+        var platform = platformList?.FirstOrDefault();
         var id = platform?.Id ?? 0;
         return id;
     }

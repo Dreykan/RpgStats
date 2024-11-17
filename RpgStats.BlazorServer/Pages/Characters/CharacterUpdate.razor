@@ -1,12 +1,10 @@
 ﻿@page "/updateCharacter/{id:int}"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
 @using SkiaSharp
-@inject ICharacterService CharacterService
-@inject IGameService GameService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
 
 @if (_character == null)
 {
@@ -26,9 +24,12 @@ else
                                   Immediate="true"/>
                     <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value"
                                @bind-SelectedValues="SelectedGame" Clearable="true">
-                        @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                        @if (_gameDtos != null)
                         {
-                            <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                            foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                            {
+                                <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                            }
                         }
                     </MudSelect>
                     <MudGrid>
@@ -71,6 +72,7 @@ else
 @* ReSharper disable NotAccessedField.Local *@
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
 
     private readonly CharacterForUpdateDto _characterForUpdateDto = new()
@@ -78,7 +80,7 @@ else
         Name = "TestCharacter"
     };
 
-    private List<GameDto> _gameDtos = new();
+    private List<GameDto>? _gameDtos = new();
     private MudForm? _form;
     private bool _success;
     private string[] _errors = { };
@@ -92,13 +94,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetCharacter();
-        _gameDtos = await GameService.GetAllGamesAsync();
+        _gameDtos = await HttpClient.GetFromJsonAsync<List<GameDto>>("api/Game/GetGames");
         await PrefillForm();
     }
 
     private async Task GetCharacter()
     {
-        _character = await CharacterService.GetCharacterDetailDtoByIdAsync(Id);
+        _character = await HttpClient.GetFromJsonAsync<CharacterDetailDto>($"api/Character/GetCharacterDetailById/{Id}");
     }
 
     private async Task Update()
@@ -106,6 +108,12 @@ else
         if (_files.Count == 0)
         {
             _characterForUpdateDto.Picture = _character?.Picture;
+        }
+
+        if (_gameDtos == null)
+        {
+            await ShowErrorMessage("Keine Spiele gefunden.");
+            return;
         }
 
         var selectedGame = _gameDtos.FirstOrDefault(x => x.Name == SelectedGame.FirstOrDefault());
@@ -116,16 +124,15 @@ else
             return;
         }
 
-        var result = await CharacterService.UpdateCharacterAsync(_character.Id, selectedGame.Id, _characterForUpdateDto);
+        var result = await HttpClient.PutAsJsonAsync($"api/Character/UpdateCharacter/{selectedGame.Id}/{_character.Id}", _characterForUpdateDto);
 
-        if (result?.Id != null)
+        if (!result.IsSuccessStatusCode)
         {
-            NavigationManager.NavigateTo($"/characterDetail/{result.Id}");
+            await ShowErrorMessage("Fehler beim Update.");
+            return;
         }
-        else
-        {
-            await ShowErrorMessage("Es ist ein Fehler aufgetreten.");
-        }
+
+        NavigationManager.NavigateTo("/allCharacters/");
     }
 
     private async Task UploadFile(IBrowserFile? file)

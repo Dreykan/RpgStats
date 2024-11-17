@@ -1,8 +1,7 @@
 ﻿@page "/allCharacters"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
-@inject ICharacterService CharacterService
+@inject IHttpClientFactory HttpClientFactory
 
 <MudGrid>
     @if (_characters == null)
@@ -52,6 +51,7 @@
 </MudGrid>
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private List<CharacterDetailDto>? _characters;
 
     protected override async Task OnInitializedAsync()
@@ -61,8 +61,8 @@
 
     private async Task GetCharacters()
     {
-        _characters = await CharacterService.GetAllCharacterDetailDtosAsync();
-        _characters = _characters.OrderBy(x => x.GameWithoutFkObjectsDto?.Name).ToList();
+        _characters = await HttpClient.GetFromJsonAsync<List<CharacterDetailDto>>("api/Character/GetCharactersDetail");
+        _characters = _characters?.OrderBy(x => x.GameWithoutFkObjectsDto?.Name).ToList();
     }
 
     private static string TurnByteArrayToImage(CharacterDetailDto character)

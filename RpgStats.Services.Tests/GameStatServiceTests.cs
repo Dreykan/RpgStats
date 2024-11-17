@@ -209,7 +209,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(27)]
     public async Task DeleteGameStatByGameIdAsync_DoesNothing_WhenGameIdIsNotFound()
     {
-        await _service.DeleteGameStatByGameIdAsync(100);
+        await _service.DeleteGameStatsByGameIdAsync(100);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
@@ -221,7 +221,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(28)]
     public async Task DeleteGameStatByGameIdAsync_DoesNothing_WhenGameIdIsZero()
     {
-        await _service.DeleteGameStatByGameIdAsync(0);
+        await _service.DeleteGameStatsByGameIdAsync(0);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
@@ -233,7 +233,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(29)]
     public async Task DeleteGameStatByGameIdAsync_DoesNothing_WhenGameIdIsNegative()
     {
-        await _service.DeleteGameStatByGameIdAsync(-1);
+        await _service.DeleteGameStatsByGameIdAsync(-1);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
@@ -245,7 +245,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(30)]
     public async Task DeleteGameStatByGameIdAsync_DeletesGameStatByGameId()
     {
-        await _service.DeleteGameStatByGameIdAsync(1);
+        await _service.DeleteGameStatsByGameIdAsync(1);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
@@ -257,7 +257,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(31)]
     public async Task DeleteGameStatByStatIdAsync_DeletesGameStatByStatId_WhenStatIdIsZero()
     {
-        await _service.DeleteGameStatByStatIdAsync(0);
+        await _service.DeleteGameStatsByStatIdAsync(0);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
@@ -269,7 +269,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(32)]
     public async Task DeleteGameStatByStatIdAsync_DeletesGameStatByStatId_WhenStatIdIsNegative()
     {
-        await _service.DeleteGameStatByStatIdAsync(-1);
+        await _service.DeleteGameStatsByStatIdAsync(-1);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
@@ -281,7 +281,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(33)]
     public async Task DeleteGameStatByStatIdAsync_DoesNothing_WhenStatIdIsNotFound()
     {
-        await _service.DeleteGameStatByStatIdAsync(100);
+        await _service.DeleteGameStatsByStatIdAsync(100);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
@@ -293,7 +293,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(34)]
     public async Task DeleteGameStatByStatIdAsync_DeletesGameStatByStatId()
     {
-        await _service.DeleteGameStatByStatIdAsync(1);
+        await _service.DeleteGameStatsByStatIdAsync(1);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 

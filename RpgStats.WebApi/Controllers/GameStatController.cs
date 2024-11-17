@@ -5,7 +5,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RpgStats.WebApi.Controllers;
 
 [ApiController]
-[Route("api/gameStats")]
+[Route("/api/[controller]")]
 public class GameStatController : ControllerBase
 {
     private readonly IGameStatService _gameStatService;
@@ -15,31 +15,31 @@ public class GameStatController : ControllerBase
         _gameStatService = gameStatService;
     }
 
-    [HttpGet]
+    [HttpGet("GetGameStats")]
     [SwaggerOperation(Summary = "Get all GameStats")]
-    public async Task<IActionResult> GetAllGameStats()
+    public async Task<IActionResult> GetGameStats()
     {
         var gameStats = await _gameStatService.GetAllGameStatsAsync();
         return Ok(gameStats);
     }
 
-    [HttpGet("byGame")]
+    [HttpGet("GetGameStatsByGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Get all GameStats by Game")]
-    public async Task<IActionResult> GetAllGameStatsByGame(long gameId)
+    public async Task<IActionResult> GetGameStatsByGame(long gameId)
     {
         var gameStats = await _gameStatService.GetAllGameStatsByGameIdAsync(gameId);
         return Ok(gameStats);
     }
 
-    [HttpGet("byStat")]
+    [HttpGet("GetGameStatsByStat/{statId:long}")]
     [SwaggerOperation(Summary = "Get all GameStats by Stat")]
-    public async Task<IActionResult> GetAllGameStatsByStat(long statId)
+    public async Task<IActionResult> GetGameStatsByStat(long statId)
     {
         var gameStats = await _gameStatService.GetAllGameStatsByStatIdAsync(statId);
         return Ok(gameStats);
     }
 
-    [HttpGet("{gameStatId:long}")]
+    [HttpGet("GetGameStatById/{gameStatId:long}")]
     [SwaggerOperation(Summary = "Get a GameStat by Id")]
     public async Task<IActionResult> GetGameStatById(long gameStatId)
     {
@@ -47,7 +47,7 @@ public class GameStatController : ControllerBase
         return Ok(gameStat);
     }
 
-    [HttpPost]
+    [HttpPost("CreateGameStat/{gameId:long}/{statId:long}")]
     [SwaggerOperation(Summary = "Create a GameStat")]
     public async Task<IActionResult> CreateGameStat(long gameId, long statId)
     {
@@ -59,7 +59,7 @@ public class GameStatController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut("{gameStatId:long}")]
+    [HttpPut("UpdateGameStat/{gameStatId:long}/{gameId:long}/{statId:long}")]
     [SwaggerOperation(Summary = "Update a GameStat")]
     public async Task<IActionResult> UpdateGameStat(long gameStatId, long gameId, long statId)
     {
@@ -69,7 +69,7 @@ public class GameStatController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete("{gameStatId:long}")]
+    [HttpDelete("DeleteGameStat/{gameStatId:long}")]
     [SwaggerOperation(Summary = "Delete a GameStat")]
     public async Task<IActionResult> DeleteGameStat(long gameStatId)
     {
@@ -79,21 +79,21 @@ public class GameStatController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete("byGame/{gameId:long}")]
+    [HttpDelete("DeleteGameStatsByGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Delete all GameStats by Game")]
-    public async Task<IActionResult> DeleteGameStatByGame(long gameId)
+    public async Task<IActionResult> DeleteGameStatsByGame(long gameId)
     {
-        var response = await _gameStatService.DeleteGameStatByGameIdAsync(gameId);
+        var response = await _gameStatService.DeleteGameStatsByGameIdAsync(gameId);
         if (response == Task.CompletedTask)
             return Ok();
         return BadRequest();
     }
 
-    [HttpDelete("byStat/{statId:long}")]
+    [HttpDelete("DeleteGameStatsByStat/{statId:long}")]
     [SwaggerOperation(Summary = "Delete all GameStats by Stat")]
     public async Task<IActionResult> DeleteGameStatByStat(long statId)
     {
-        var response = await _gameStatService.DeleteGameStatByStatIdAsync(statId);
+        var response = await _gameStatService.DeleteGameStatsByStatIdAsync(statId);
         if (response == Task.CompletedTask)
             return Ok();
         return BadRequest();

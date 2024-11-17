@@ -1,12 +1,9 @@
 ﻿@page "/characterDetail/{Id:int}"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
-@inject ICharacterService CharacterService
-@inject IStatValueService StatValueService
-@inject IStatService StatService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
 
 @if (_character == null)
 {
@@ -84,8 +81,9 @@ else
 }
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
-    private List<StatValueDto> _statValues = new();
+    private List<StatValueDto>? _statValues = new();
     private readonly List<StatDto> _stats = new();
 
     [Parameter] public int Id { get; set; }
@@ -101,26 +99,28 @@ else
     {
         if (_character != null)
         {
-            _statValues = await StatValueService.GetAllStatValuesByCharacterIdAsync(_character.Id);
+            _statValues = await HttpClient.GetFromJsonAsync<List<StatValueDto>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
         }
     }
 
     private async Task GetStats()
     {
         // Ermittle alle Stats, die zu den StatValues gehören und füge sie der Liste _stats hinzu, wenn noch nicht vorhanden
-        foreach (var statValue in _statValues)
-        {
-            var stat = await StatService.GetStatByIdAsync(statValue.StatId);
-            if (stat != null && _stats.Contains(stat) == false)
+        //TODO: Hierfür sollte ein separater Endpunkt im Controller erstellt werden. GetStatsByGameId
+        if (_statValues != null)
+            foreach (var statValue in _statValues)
             {
-                _stats.Add(stat);
+                var stat = await HttpClient.GetFromJsonAsync<StatDto>($"api/Stat/GetStatById/{statValue.StatId}");
+                if (stat != null && _stats.Contains(stat) == false)
+                {
+                    _stats.Add(stat);
+                }
             }
-        }
     }
 
     private async Task GetCharacter()
     {
-        _character = await CharacterService.GetCharacterDetailDtoByIdAsync(Id);
+        _character = await HttpClient.GetFromJsonAsync<CharacterDetailDto>($"api/Character/GetCharacterDetailById/{Id}");
     }
 
     private static string TurnByteArrayToImage(byte[] imageBytes)
@@ -146,7 +146,7 @@ else
 
         if (result.Canceled == false)
         {
-            await CharacterService.DeleteCharacterAsync(Id);
+            await HttpClient.DeleteAsync($"api/Character/DeleteCharacter/{Id}");
             NavigationManager.NavigateTo("/allCharacters");
         }
     }

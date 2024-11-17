@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RpgStats.WebApi.Controllers;
 
 [ApiController]
-[Route("api/characters")]
+[Route("/api/[controller]")]
 public class CharacterController : ControllerBase
 {
     private readonly ICharacterService _characterService;
@@ -16,55 +16,55 @@ public class CharacterController : ControllerBase
         _characterService = characterService;
     }
 
-    [HttpGet]
+    [HttpGet("GetCharacters")]
     [SwaggerOperation(Summary = "Get all Characters")]
-    public async Task<IActionResult> GetAllCharacters()
+    public async Task<IActionResult> GetCharacters()
     {
         var characters = await _characterService.GetAllCharactersAsync();
         return Ok(characters);
     }
 
-    [HttpGet("byGame")]
+    [HttpGet("GetCharactersByGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Get all Characters by Game")]
-    public async Task<IActionResult> GetAllCharactersByGame(long gameId)
+    public async Task<IActionResult> GetCharactersByGame(long gameId)
     {
         var characters = await _characterService.GetAllCharactersByGameIdAsync(gameId);
         return Ok(characters);
     }
 
-    [HttpGet("byName")]
+    [HttpGet("GetCharactersByName/{name}")]
     [SwaggerOperation(Summary = "Get all Characters by Name")]
-    public async Task<IActionResult> GetAllCharactersByName(string name)
+    public async Task<IActionResult> GetCharactersByName(string name)
     {
         var characters = await _characterService.GetAllCharactersByNameAsync(name);
         return Ok(characters);
     }
 
-    [HttpGet("details")]
+    [HttpGet("GetCharactersDetail")]
     [SwaggerOperation(Summary = "Get all Characters with Details")]
-    public async Task<IActionResult> GetAllCharacterDetailDtos()
+    public async Task<IActionResult> GetCharactersDetail()
     {
         var characters = await _characterService.GetAllCharacterDetailDtosAsync();
         return Ok(characters);
     }
 
-    [HttpGet("detailsByGame")]
+    [HttpGet("GetCharactersDetailByGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Get all Characters with Details by Game")]
-    public async Task<IActionResult> GetAllCharacterDetailDtosByGame(long gameId)
+    public async Task<IActionResult> GetCharactersDetailByGame(long gameId)
     {
         var characters = await _characterService.GetAllCharacterDetailDtosByGameIdAsync(gameId);
         return Ok(characters);
     }
 
-    [HttpGet("detailsByName")]
+    [HttpGet("GetCharactersDetailByName/{name}")]
     [SwaggerOperation(Summary = "Get all Characters with Details by Name")]
-    public async Task<IActionResult> GetAllCharacterDetailDtosByName(string name)
+    public async Task<IActionResult> GetCharactersDetailByName(string name)
     {
         var characters = await _characterService.GetAllCharacterDetailDtosByNameAsync(name);
         return Ok(characters);
     }
 
-    [HttpGet("{characterId:long}")]
+    [HttpGet("GetCharacterById/{characterId:long}")]
     [SwaggerOperation(Summary = "Get a Character by Id")]
     public async Task<IActionResult> GetCharacterById(long characterId)
     {
@@ -72,15 +72,15 @@ public class CharacterController : ControllerBase
         return Ok(character);
     }
 
-    [HttpGet("details{characterId:long}")]
+    [HttpGet("GetCharacterDetailById/{characterId:long}")]
     [SwaggerOperation(Summary = "Get a Character with Details by Id")]
-    public async Task<IActionResult> GetCharacterDetailDtoById(long characterId)
+    public async Task<IActionResult> GetCharacterDetailById(long characterId)
     {
         var character = await _characterService.GetCharacterDetailDtoByIdAsync(characterId);
         return Ok(character);
     }
 
-    [HttpPost]
+    [HttpPost("CreateCharacter/{gameId:long}")]
     [SwaggerOperation(Summary = "Create a Character")]
     public async Task<IActionResult> CreateCharacter([FromBody] CharacterForCreationDto characterForCreationDto,
         long gameId)
@@ -92,7 +92,7 @@ public class CharacterController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut("updateCharacter")]
+    [HttpPut("UpdateCharacter/{gameId:long}/{characterId:long}")]
     [SwaggerOperation(Summary = "Update a Character")]
     public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto,
         long characterId, long gameId)
@@ -103,7 +103,7 @@ public class CharacterController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete("deleteCharacter")]
+    [HttpDelete("DeleteCharacter/{characterId:long}")]
     [SwaggerOperation(Summary = "Delete a Character")]
     public async Task<IActionResult> DeleteCharacter(long characterId)
     {

@@ -1,8 +1,7 @@
 ﻿@page "/allGames"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
-@inject IGameService GameService
+@inject IHttpClientFactory HttpClientFactory
 
 <MudGrid>
     @if (_games == null)
@@ -56,7 +55,7 @@
 </MudGrid>
 
 @code {
-
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private List<GameDetailDto>? _games;
 
     protected override async Task OnInitializedAsync()
@@ -66,8 +65,8 @@
 
     private async Task GetGames()
     {
-        _games = await GameService.GetAllGameDetailDtosAsync();
-        _games = _games.OrderBy(x => x.Name).ToList();
+        _games = await HttpClient.GetFromJsonAsync<List<GameDetailDto>>("api/Game/GetGamesDetail");
+        _games = _games?.OrderBy(x => x.Name).ToList();
     }
 
     private static string TurnByteArrayToImage(GameDetailDto game)
