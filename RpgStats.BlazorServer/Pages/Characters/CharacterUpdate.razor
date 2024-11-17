@@ -24,9 +24,12 @@ else
                                   Immediate="true"/>
                     <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value"
                                @bind-SelectedValues="SelectedGame" Clearable="true">
-                        @foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                        @if (_gameDtos != null)
                         {
-                            <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                            foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                            {
+                                <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                            }
                         }
                     </MudSelect>
                     <MudGrid>

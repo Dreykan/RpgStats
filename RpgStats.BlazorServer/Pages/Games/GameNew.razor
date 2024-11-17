@@ -1,13 +1,10 @@
 ﻿@page "/newGame"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
 @using SkiaSharp
-@inject IGameService GameService
-@inject IPlatformService PlatformService
-@inject IPlatformGameService PlatformGameService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
 
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle ein neues Spiel</MudText>
 
@@ -82,7 +79,8 @@
 
     private async Task Create()
     {
-        await GameService.CreateGameAsync(_gameForCreationDto);
+        var response = await HttpClient.PostAsJsonAsync("api/Game/CreateGame", _gameForCreationDto);
+        response.EnsureSuccessStatusCode();
 
         var gameId = await GetIdOfCreatedGame(_gameForCreationDto.Name);
 
@@ -95,7 +93,7 @@
 
         foreach (var selectedPlatformId in selectedPlatformIds)
         {
-            await PlatformGameService.CreatePlatformGameAsync(selectedPlatformId, gameId);
+            await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{selectedPlatformId}/{gameId}", "");
         }
 
         _gameForCreationDto.Name = "";

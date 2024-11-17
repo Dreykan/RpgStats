@@ -193,7 +193,7 @@ else
         }
         else
         {
-            await GameStatService.CreateGameStatAsync(gameStat.GameId, gameStat.StatId);
+            await HttpClient.PostAsJsonAsync("api/GameStat/CreateGameStat", gameStat);
         }
 
         await GetGame();
@@ -201,8 +201,9 @@ else
 
     private async Task<bool> CheckGameStatExist(GameStatDto gameStat)
     {
-        var gameStats = await GameStatService.GetAllGameStatsByGameIdAsync(gameStat.GameId);
-        var gameStatExist = gameStats.Any(x => x.StatId == gameStat.StatId);
+        // TODO: Hier einen eigenen Endpunkt erstellen für die Überprüfung ob es diesen GameStat schon gibt
+        var gameStats = await HttpClient.GetFromJsonAsync<List<GameStatDto>>($"api/GameStat/GetGameStatsByGame/{gameStat.GameId}");
+        var gameStatExist = gameStats != null && gameStats.Any(x => x.StatId == gameStat.StatId);
         return gameStatExist;
     }
 
