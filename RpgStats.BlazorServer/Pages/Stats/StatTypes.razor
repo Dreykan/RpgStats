@@ -1,8 +1,7 @@
 ﻿@page "/allStatTypes"
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
-@inject IStatService StatService
 @inject IDialogService DialogService
+@inject IHttpClientFactory HttpClientFactory
 
 <MudGrid>
     @if (_stats == null)
@@ -33,6 +32,7 @@
 </MudGrid>
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private List<StatDto>? _stats;
     private StatForCreationDto? _statForCreationDto = new();
     private StatForUpdateDto? _statForUpdateDto = new();
@@ -44,8 +44,8 @@
 
     private async Task GetStats()
     {
-        _stats = await StatService.GetAllStatsAsync();
-        _stats = _stats.OrderBy(x => x.Name).ToList();
+        _stats = await HttpClient.GetFromJsonAsync<List<StatDto>>("api/Stat/GetStats");
+        _stats = _stats?.OrderBy(x => x.Name).ToList();
     }
 
     private async Task ShowNewStatTypeDialog()
@@ -69,13 +69,12 @@
 
     private async Task CreateNewStatType()
     {
-        var result = await StatService.CreateStatAsync(_statForCreationDto);
-        if (result is null)
-        {
-            return;
-        }
+        var response = await HttpClient.PostAsJsonAsync("api/Stat/CreateStat", _statForCreationDto);
 
-        await GetStats();
+        if (response.IsSuccessStatusCode)
+        {
+            await GetStats();
+        }
     }
 
     private async Task ShowUpdateStatTypeDialog(long id)
@@ -112,14 +111,13 @@
     {
         if (_statForUpdateDto != null)
         {
-            var result = await StatService.UpdateStatAsync(id, _statForUpdateDto);
-            if (result is null)
+            var response = await HttpClient.PutAsJsonAsync($"api/Stat/UpdateStat/{id}", _statForUpdateDto);
+
+            if (response.IsSuccessStatusCode)
             {
-                return;
+                await GetStats();
             }
         }
-
-        await GetStats();
     }
 
 }

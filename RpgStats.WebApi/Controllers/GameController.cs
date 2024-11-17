@@ -56,7 +56,7 @@ public class GameController : ControllerBase
         return Ok(game);
     }
 
-    [HttpGet("GetGameDetailById{gameId:long}")]
+    [HttpGet("GetGameDetailById/{gameId:long}")]
     [SwaggerOperation(Summary = "Get a Game with Details by Id")]
     public async Task<IActionResult> GetGameDetailById(long gameId)
     {

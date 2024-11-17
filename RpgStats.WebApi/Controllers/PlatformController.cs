@@ -32,7 +32,7 @@ public class PlatformController : ControllerBase
         return Ok(platforms);
     }
 
-    [HttpGet("GetPlatformsDetailByName")]
+    [HttpGet("GetPlatformsDetailByName/{name}")]
     [SwaggerOperation(Summary = "Get all Platforms with Details by Name")]
     public async Task<IActionResult> GetPlatformsDetailByName(string name)
     {

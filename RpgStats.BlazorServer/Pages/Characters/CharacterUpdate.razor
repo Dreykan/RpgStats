@@ -4,7 +4,7 @@
 @using SkiaSharp
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
 
 @if (_character == null)
 {
@@ -72,6 +72,7 @@ else
 @* ReSharper disable NotAccessedField.Local *@
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
 
     private readonly CharacterForUpdateDto _characterForUpdateDto = new()

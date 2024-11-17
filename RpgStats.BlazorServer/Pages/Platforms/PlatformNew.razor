@@ -1,8 +1,7 @@
 ﻿@page "/newPlatform"
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
-@inject IPlatformService PlatformService
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
 
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle eine neue Platform</MudText>
 
@@ -25,6 +24,7 @@
 </MudGrid>
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private readonly PlatformForCreationDto _platformForCreationDto = new();
     private MudForm? _form;
     private bool _success;
@@ -37,13 +37,15 @@
             return;
         }
 
-        var result = await PlatformService.CreatePlatformAsync(_platformForCreationDto);
-        if (result is null)
+        var result = await HttpClient.PostAsJsonAsync("api/Platform/CreatePlatform", _platformForCreationDto);
+        if (result.IsSuccessStatusCode)
         {
-            return;
+            NavigationManager.NavigateTo("/allPlatforms");
         }
-
-        NavigationManager.NavigateTo("/allPlatforms");
+        else
+        {
+            _errors = new[] { "Error while creating the platform" };
+        }
     }
 
     private void OnNameChanged(string value)

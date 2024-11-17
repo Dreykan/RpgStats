@@ -3,7 +3,7 @@
 @using RpgStats.Dto
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
 
 @if (_character == null)
 {
@@ -81,6 +81,7 @@ else
 }
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
     private List<StatValueDto>? _statValues = new();
     private readonly List<StatDto> _stats = new();

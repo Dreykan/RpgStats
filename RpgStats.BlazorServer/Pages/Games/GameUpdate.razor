@@ -1,13 +1,10 @@
 ﻿@page "/updateGame/{Id:int}"
 @using RpgStats.BizLogic
 @using RpgStats.Dto
-@using RpgStats.Services.Abstractions
 @using SkiaSharp
 @inject NavigationManager NavigationManager
-@inject IGameService GameService
-@inject IPlatformService PlatformService
-@inject IPlatformGameService PlatformGameService
 @inject IDialogService DialogService
+@inject IHttpClientFactory HttpClientFactory
 
 @if (_game == null)
 {
@@ -26,9 +23,12 @@ else
                                   TextChanged="OnNameChanged" Immediate="true"/>
                     <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value"
                                @bind-SelectedValues="SelectedPlatforms" Clearable="true">
-                        @foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
+                        @if (_platformDtos != null)
                         {
-                            <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                            foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
+                            {
+                                <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                            }
                         }
                     </MudSelect>
                     <MudGrid>
@@ -72,9 +72,10 @@ else
 @* ReSharper disable NotAccessedField.Local *@
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private GameDetailDto? _game;
     private readonly GameForUpdateDto _gameForUpdateDto = new();
-    private List<PlatformDto> _platformDtos = new();
+    private List<PlatformDto>? _platformDtos = new();
     private IEnumerable<string?> SelectedPlatforms { get; set; } = new HashSet<string>();
     private readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
     private string _value = "Nothing selected.";
@@ -94,7 +95,7 @@ else
 
     private async Task GetGame()
     {
-        _game = await GameService.GetGameDetailDtoByIdAsync(Id);
+        _game = await HttpClient.GetFromJsonAsync<GameDetailDto>($"api/Game/GetGameDetailById/{Id}");
     }
 
     private async Task Update()
@@ -104,9 +105,9 @@ else
             _gameForUpdateDto.Picture = _game?.Picture;
         }
 
-        await GameService.UpdateGameAsync(Id, _gameForUpdateDto);
+        await HttpClient.PutAsJsonAsync($"api/Game/UpdateGame/{Id}", _gameForUpdateDto);
 
-        await PlatformGameService.DeletePlatformGameByGameIdAsync(Id);
+        await HttpClient.DeleteAsync($"api/PlatformGame/DeletePlatformGamesByGame/{Id}");
 
         List<long> selectPlatformIds = new();
         foreach (var platformName in SelectedPlatforms)
@@ -122,7 +123,7 @@ else
 
         foreach (var platformId in selectPlatformIds)
         {
-            await PlatformGameService.CreatePlatformGameAsync(platformId, Id);
+            await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{platformId}/{Id}", "");
         }
 
         _gameForUpdateDto.Name = "";
@@ -155,7 +156,8 @@ else
 
     private async Task GetPlatforms()
     {
-        _platformDtos = await PlatformService.GetAllPlatformsAsync();
+        // _platformDtos = await PlatformService.GetAllPlatformsAsync();
+        _platformDtos = await HttpClient.GetFromJsonAsync<List<PlatformDto>>("api/Platform/GetPlatforms");
     }
 
     private void PrefillForm()
@@ -177,8 +179,9 @@ else
 
     private async Task<long> GetIdOfPlatform(string platformName)
     {
-        var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
-        var platform = platformList.FirstOrDefault();
+        // var platformList = await PlatformService.GetAllPlatformDetailDtosByNameAsync(platformName);
+        var platformList = await HttpClient.GetFromJsonAsync<List<PlatformDto>>($"api/Platform/GetPlatformsByName/{platformName}");
+        var platform = platformList?.FirstOrDefault();
         var id = platform?.Id ?? 0;
         return id;
     }

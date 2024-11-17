@@ -1,5 +1,5 @@
 ﻿@using RpgStats.Dto
-@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
 
 <MudDialog>
     <DialogContent>
@@ -28,6 +28,7 @@
 
     [Parameter] public GameDetailDto? Game { get; set; }
 
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private List<StatDto>? _stats = new();
     private string _stat = "Nothing selected.";
     private IEnumerable<string> SelectedStat { get; set; } = new HashSet<string>();

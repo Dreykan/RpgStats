@@ -3,7 +3,7 @@
 @using RpgStats.Dto
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
 
 @if (_game == null)
 {
@@ -111,6 +111,7 @@ else
 }
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private GameDetailDto? _game;
 
     [Parameter] public int Id { get; set; }
@@ -122,7 +123,7 @@ else
 
     private async Task GetGame()
     {
-        _game = await HttpClient.GetFromJsonAsync<GameDetailDto>($"api/Game/GetGameDetailById{Id}");
+        _game = await HttpClient.GetFromJsonAsync<GameDetailDto>($"api/Game/GetGameDetailById/{Id}");
     }
 
     private static string TurnByteArrayToImage(byte[] imageBytes)
@@ -193,7 +194,7 @@ else
         }
         else
         {
-            await HttpClient.PostAsJsonAsync("api/GameStat/CreateGameStat", gameStat);
+            await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/{gameStat.GameId}/{gameStat.StatId}", "");
         }
 
         await GetGame();

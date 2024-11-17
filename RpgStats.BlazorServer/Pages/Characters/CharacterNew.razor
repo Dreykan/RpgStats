@@ -5,7 +5,7 @@
 @using SkiaSharp
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
 
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle einen neuen Charakter</MudText>
 
@@ -64,6 +64,7 @@
 @* ReSharper disable NotAccessedField.Local *@
 
 @code {
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private readonly CharacterForCreationDto _characterForCreationDto = new();
     private List<GameDto>? _gameDtos = new();
     private MudForm? _form;
