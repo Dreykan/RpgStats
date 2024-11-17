@@ -35,7 +35,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _stats = await HttpClient.GetFromJsonAsync<List<StatDto>>("api/stats");
+        _stats = await HttpClient.GetFromJsonAsync<List<StatDto>>("api/Stat/GetStats");
     }
 
     private void Cancel()

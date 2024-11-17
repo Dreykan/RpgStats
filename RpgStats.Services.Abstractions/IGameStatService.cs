@@ -11,6 +11,6 @@ public interface IGameStatService
     Task<GameStatDto?> CreateGameStatAsync(long gameId, long statId);
     Task<GameStatDto?> UpdateGameStatAsync(long gameStatId, long gameId, long statId);
     Task<Task> DeleteGameStatAsync(long gameStatId);
-    Task<Task> DeleteGameStatByGameIdAsync(long gameId);
-    Task<Task> DeleteGameStatByStatIdAsync(long statId);
+    Task<Task> DeleteGameStatsByGameIdAsync(long gameId);
+    Task<Task> DeleteGameStatsByStatIdAsync(long statId);
 }

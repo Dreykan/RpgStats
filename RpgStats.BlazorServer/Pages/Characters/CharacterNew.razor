@@ -78,7 +78,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _gameDtos = await HttpClient.GetFromJsonAsync<List<GameDto>>("api/games");
+        _gameDtos = await HttpClient.GetFromJsonAsync<List<GameDto>>("api/Game/GetGames");
         await PrefillForm();
     }
 
@@ -98,7 +98,7 @@
             return;
         }
 
-        var response = await HttpClient.PostAsJsonAsync($"api/characters/{selectedGame.Id}", _characterForCreationDto);
+        var response = await HttpClient.PostAsJsonAsync($"api/Character/CreateCharacter/{selectedGame.Id}", _characterForCreationDto);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -106,7 +106,7 @@
             return;
         }
 
-        NavigationManager.NavigateTo("/allCharacters/");
+        NavigationManager.NavigateTo($"/gameDetail/{selectedGame.Id}");
     }
 
     private async Task UploadFile(IBrowserFile? file)

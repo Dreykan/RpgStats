@@ -60,8 +60,7 @@
 
     private async Task GetCharacters()
     {
-        // _characters = await CharacterService.GetAllCharacterDetailDtosAsync();
-        _characters = await HttpClient.GetFromJsonAsync<List<CharacterDetailDto>>("api/characters");
+        _characters = await HttpClient.GetFromJsonAsync<List<CharacterDetailDto>>("api/Character/GetCharactersDetail");
         _characters = _characters?.OrderBy(x => x.GameWithoutFkObjectsDto?.Name).ToList();
     }
 

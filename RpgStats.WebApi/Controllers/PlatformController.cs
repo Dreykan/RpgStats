@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RpgStats.WebApi.Controllers;
 
 [ApiController]
-[Route("api/platforms")]
+[Route("/api/[controller]")]
 public class PlatformController : ControllerBase
 {
     private readonly IPlatformService _platformService;
@@ -16,31 +16,31 @@ public class PlatformController : ControllerBase
         _platformService = platformService;
     }
 
-    [HttpGet]
+    [HttpGet("GetPlatforms")]
     [SwaggerOperation(Summary = "Get all Platforms")]
-    public async Task<IActionResult> GetAllPlatforms()
+    public async Task<IActionResult> GetPlatforms()
     {
         var platforms = await _platformService.GetAllPlatformsAsync();
         return Ok(platforms);
     }
 
-    [HttpGet("details")]
+    [HttpGet("GetPlatformsDetail")]
     [SwaggerOperation(Summary = "Get all Platforms with Details")]
-    public async Task<IActionResult> GetAllPlatformDetailDtos()
+    public async Task<IActionResult> GetPlatformsDetail()
     {
         var platforms = await _platformService.GetAllPlatformDetailDtosAsync();
         return Ok(platforms);
     }
 
-    [HttpGet("detailsByName")]
+    [HttpGet("GetPlatformsDetailByName")]
     [SwaggerOperation(Summary = "Get all Platforms with Details by Name")]
-    public async Task<IActionResult> GetAllPlatformDetailDtosByName(string name)
+    public async Task<IActionResult> GetPlatformsDetailByName(string name)
     {
         var platforms = await _platformService.GetAllPlatformDetailDtosByNameAsync(name);
         return Ok(platforms);
     }
 
-    [HttpGet("{platformId:long}")]
+    [HttpGet("GetPlatformById/{platformId:long}")]
     [SwaggerOperation(Summary = "Get a Platform by Id")]
     public async Task<IActionResult> GetPlatformById(long platformId)
     {
@@ -48,17 +48,17 @@ public class PlatformController : ControllerBase
         return Ok(platform);
     }
 
-    [HttpGet("details{platformId:long}")]
+    [HttpGet("GetPlatformDetailById/{platformId:long}")]
     [SwaggerOperation(Summary = "Get a Platform with Details by Id")]
-    public async Task<IActionResult> GetPlatformDetailDtoById(long platformId)
+    public async Task<IActionResult> GetPlatformDetailById(long platformId)
     {
         var platform = await _platformService.GetPlatformDetailDtoByIdAsync(platformId);
         return Ok(platform);
     }
 
-    [HttpPost]
+    [HttpPost("CreatePlatform")]
     [SwaggerOperation(Summary = "Create a Platform")]
-    public async Task<IActionResult> CreatePlatform(PlatformForCreationDto platformForCreationDto)
+    public async Task<IActionResult> CreatePlatform([FromBody] PlatformForCreationDto platformForCreationDto)
     {
         var response = await _platformService.CreatePlatformAsync(platformForCreationDto);
         if (response != null)
@@ -66,9 +66,9 @@ public class PlatformController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut]
+    [HttpPut("UpdatePlatform/{platformId:long}")]
     [SwaggerOperation(Summary = "Update a Platform")]
-    public async Task<IActionResult> UpdatePlatform(long platformId, PlatformForUpdateDto platformForUpdateDto)
+    public async Task<IActionResult> UpdatePlatform(long platformId, [FromBody] PlatformForUpdateDto platformForUpdateDto)
     {
         var response = await _platformService.UpdatePlatformAsync(platformId, platformForUpdateDto);
         if (response != null)
@@ -76,7 +76,7 @@ public class PlatformController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete]
+    [HttpDelete("DeletePlatform/{platformId:long}")]
     [SwaggerOperation(Summary = "Delete a Platform")]
     public async Task<IActionResult> DeletePlatform(long platformId)
     {

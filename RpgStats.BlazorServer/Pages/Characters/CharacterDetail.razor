@@ -98,18 +98,18 @@ else
     {
         if (_character != null)
         {
-            _statValues = await HttpClient.GetFromJsonAsync<List<StatValueDto>>($"api/statValues/byCharacter/{_character.Id}");
-            // _statValues = await StatValueService.GetAllStatValuesByCharacterIdAsync(_character.Id);
+            _statValues = await HttpClient.GetFromJsonAsync<List<StatValueDto>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
         }
     }
 
     private async Task GetStats()
     {
         // Ermittle alle Stats, die zu den StatValues gehören und füge sie der Liste _stats hinzu, wenn noch nicht vorhanden
+        //TODO: Hierfür sollte ein separater Endpunkt im Controller erstellt werden. GetStatsByGameId
         if (_statValues != null)
             foreach (var statValue in _statValues)
             {
-                var stat = await HttpClient.GetFromJsonAsync<StatDto>($"api/stats/{statValue.StatId}");
+                var stat = await HttpClient.GetFromJsonAsync<StatDto>($"api/Stat/GetStatById/{statValue.StatId}");
                 if (stat != null && _stats.Contains(stat) == false)
                 {
                     _stats.Add(stat);
@@ -119,7 +119,7 @@ else
 
     private async Task GetCharacter()
     {
-        _character = await HttpClient.GetFromJsonAsync<CharacterDetailDto>($"api/characters/details/{Id}");
+        _character = await HttpClient.GetFromJsonAsync<CharacterDetailDto>($"api/Character/GetCharacterDetailById/{Id}");
     }
 
     private static string TurnByteArrayToImage(byte[] imageBytes)
@@ -145,7 +145,7 @@ else
 
         if (result.Canceled == false)
         {
-            await HttpClient.DeleteAsync($"api/characters/{Id}");
+            await HttpClient.DeleteAsync($"api/Character/DeleteCharacter/{Id}");
             NavigationManager.NavigateTo("/allCharacters");
         }
     }

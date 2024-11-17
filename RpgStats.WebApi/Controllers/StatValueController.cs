@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RpgStats.WebApi.Controllers;
 
 [ApiController]
-[Route("api/statValues")]
+[Route("/api/[controller]")]
 public class StatValueController : ControllerBase
 {
     private readonly IStatValueService _statValueService;
@@ -16,31 +16,31 @@ public class StatValueController : ControllerBase
         _statValueService = statValueService;
     }
 
-    [HttpGet]
+    [HttpGet("GetStatValues")]
     [SwaggerOperation(Summary = "Get all StatValues")]
-    public async Task<IActionResult> GetAllStatValues()
+    public async Task<IActionResult> GetStatValues()
     {
         var statValues = await _statValueService.GetAllStatValuesAsync();
         return Ok(statValues);
     }
 
-    [HttpGet("byCharacter/{characterId:long}")]
+    [HttpGet("GetStatValuesByCharacter/{characterId:long}")]
     [SwaggerOperation(Summary = "Get all StatValues by Character")]
-    public async Task<IActionResult> GetAllStatValuesByCharacter(long characterId)
+    public async Task<IActionResult> GetStatValuesByCharacter(long characterId)
     {
         var statValues = await _statValueService.GetAllStatValuesByCharacterIdAsync(characterId);
         return Ok(statValues);
     }
 
-    [HttpGet("byStat")]
+    [HttpGet("GetStatValuesByStat/{statId:long}")]
     [SwaggerOperation(Summary = "Get all StatValues by Stat")]
-    public async Task<IActionResult> GetAllStatValuesByStat(long statId)
+    public async Task<IActionResult> GetStatValuesByStat(long statId)
     {
         var statValues = await _statValueService.GetAllStatValuesByStatIdAsync(statId);
         return Ok(statValues);
     }
 
-    [HttpGet("{statValueId:long}")]
+    [HttpGet("GetStatValueById/{statValueId:long}")]
     [SwaggerOperation(Summary = "Get StatValues by Id")]
     public async Task<IActionResult> GetStatValueById(long statValueId)
     {
@@ -48,7 +48,7 @@ public class StatValueController : ControllerBase
         return Ok(statValue);
     }
 
-    [HttpPost]
+    [HttpPost("CreateStatValue/{characterId:long}/{statId:long}")]
     [SwaggerOperation(Summary = "Create a StatValue")]
     public async Task<IActionResult> CreateStatValue([FromBody] StatValueForCreationDto statValueForCreationDto,
         long characterId, long statId)
@@ -61,7 +61,7 @@ public class StatValueController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut("{statValueId:long}")]
+    [HttpPut("UpdateStatValue/{statValueId:long}/{characterId:long}/{statId:long}")]
     [SwaggerOperation(Summary = "Update a StatValue")]
     public async Task<IActionResult> UpdateStatValue([FromBody] StatValueForUpdateDto statValueForUpdateDto,
         long statValueId, long characterId, long statId)
@@ -73,7 +73,7 @@ public class StatValueController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete("{statValueId:long}")]
+    [HttpDelete("DeleteStatValue/{statValueId:long}")]
     [SwaggerOperation(Summary = "Delete a StatValue")]
     public async Task<IActionResult> DeleteStatValue(long statValueId)
     {

@@ -113,7 +113,7 @@ public class GameStatService : IGameStatService
         return Task.CompletedTask;
     }
 
-    public async Task<Task> DeleteGameStatByGameIdAsync(long gameId)
+    public async Task<Task> DeleteGameStatsByGameIdAsync(long gameId)
     {
         var gameStats = await _dbContext.GameStats.Where(gs => gs.GameId == gameId).ToListAsync();
 
@@ -123,7 +123,7 @@ public class GameStatService : IGameStatService
         return Task.CompletedTask;
     }
 
-    public async Task<Task> DeleteGameStatByStatIdAsync(long statId)
+    public async Task<Task> DeleteGameStatsByStatIdAsync(long statId)
     {
         var gameStats = await _dbContext.GameStats.Where(gs => gs.StatId == statId).ToListAsync();
 

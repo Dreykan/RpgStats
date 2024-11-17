@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace RpgStats.WebApi.Controllers;
 
 [ApiController]
-[Route("api/games")]
+[Route("/api/[controller]")]
 public class GameController : ControllerBase
 {
     private readonly IGameService _gameService;
@@ -16,39 +16,39 @@ public class GameController : ControllerBase
         _gameService = gameService;
     }
 
-    [HttpGet]
+    [HttpGet("GetGames")]
     [SwaggerOperation(Summary = "Get all Games")]
-    public async Task<IActionResult> GetAllGames()
+    public async Task<IActionResult> GetGames()
     {
         var games = await _gameService.GetAllGamesAsync();
         return Ok(games);
     }
 
-    [HttpGet("byName")]
+    [HttpGet("GetGamesByName/{name}")]
     [SwaggerOperation(Summary = "Get all Games by Name")]
-    public async Task<IActionResult> GetAllGamesByName(string name)
+    public async Task<IActionResult> GetGamesByName(string name)
     {
         var games = await _gameService.GetAllGamesByNameAsync(name);
         return Ok(games);
     }
 
-    [HttpGet("details")]
+    [HttpGet("GetGamesDetail")]
     [SwaggerOperation(Summary = "Get all Games with Details")]
-    public async Task<IActionResult> GetAllGameDetailDtos()
+    public async Task<IActionResult> GetGamesDetail()
     {
         var games = await _gameService.GetAllGameDetailDtosAsync();
         return Ok(games);
     }
 
-    [HttpGet("detailsByName")]
+    [HttpGet("GetGamesDetailByName/{name}")]
     [SwaggerOperation(Summary = "Get all Games with Details by Name")]
-    public async Task<IActionResult> GetAllGameDetailDtosByName(string name)
+    public async Task<IActionResult> GetGamesDetailByName(string name)
     {
         var games = await _gameService.GetAllGameDetailDtosByNameAsync(name);
         return Ok(games);
     }
 
-    [HttpGet("{gameId:long}")]
+    [HttpGet("GetGameById/{gameId:long}")]
     [SwaggerOperation(Summary = "Get a Game by Id")]
     public async Task<IActionResult> GetGameById(long gameId)
     {
@@ -56,15 +56,15 @@ public class GameController : ControllerBase
         return Ok(game);
     }
 
-    [HttpGet("details{gameId:long}")]
+    [HttpGet("GetGameDetailById{gameId:long}")]
     [SwaggerOperation(Summary = "Get a Game with Details by Id")]
-    public async Task<IActionResult> GetGameDetailDtoById(long gameId)
+    public async Task<IActionResult> GetGameDetailById(long gameId)
     {
         var game = await _gameService.GetGameDetailDtoByIdAsync(gameId);
         return Ok(game);
     }
 
-    [HttpPost]
+    [HttpPost("CreateGame")]
     [SwaggerOperation(Summary = "Create a Game")]
     public async Task<IActionResult> CreateGame([FromBody] GameForCreationDto gameForCreationDto)
     {
@@ -73,7 +73,7 @@ public class GameController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut]
+    [HttpPut("UpdateGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Update a Game")]
     public async Task<IActionResult> UpdateGame([FromBody] GameForUpdateDto gameForUpdateDto, long gameId)
     {
@@ -82,7 +82,7 @@ public class GameController : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete]
+    [HttpDelete("DeleteGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Delete a Game")]
     public async Task<IActionResult> DeleteGame(long gameId)
     {

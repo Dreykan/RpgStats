@@ -164,7 +164,7 @@ public class GameStatControllerTests
     [Fact]
     public async Task DeleteGameStatByGame_ReturnsOk()
     {
-        _mockService.Setup(x => x.DeleteGameStatByGameIdAsync(It.IsAny<long>()))
+        _mockService.Setup(x => x.DeleteGameStatsByGameIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.CompletedTask);
 
         var result = await _controller.DeleteGameStatByGame(1);
@@ -175,7 +175,7 @@ public class GameStatControllerTests
     [Fact]
     public async Task DeleteGameStatByStat_ReturnsOk()
     {
-        _mockService.Setup(x => x.DeleteGameStatByStatIdAsync(It.IsAny<long>()))
+        _mockService.Setup(x => x.DeleteGameStatsByStatIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.CompletedTask);
 
         var result = await _controller.DeleteGameStatByStat(1);
@@ -186,7 +186,7 @@ public class GameStatControllerTests
     [Fact]
     public async Task DeleteGameStatByGame_ReturnsBadRequest()
     {
-        _mockService.Setup(x => x.DeleteGameStatByGameIdAsync(It.IsAny<long>()))
+        _mockService.Setup(x => x.DeleteGameStatsByGameIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.FromException(new Exception()));
 
         var result = await _controller.DeleteGameStatByGame(1);
@@ -197,7 +197,7 @@ public class GameStatControllerTests
     [Fact]
     public async Task DeleteGameStatByStat_ReturnsBadRequest()
     {
-        _mockService.Setup(x => x.DeleteGameStatByStatIdAsync(It.IsAny<long>()))
+        _mockService.Setup(x => x.DeleteGameStatsByStatIdAsync(It.IsAny<long>()))
             .ReturnsAsync(Task.FromException(new Exception()));
 
         var result = await _controller.DeleteGameStatByStat(1);
