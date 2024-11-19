@@ -1,0 +1,19 @@
+meta {
+  name: 06-CreateGameStat
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{host}}/{{basePath}}/{{gameStatPath}}/CreateGameStat/{{gameId}}/{{statId}}
+  body: json
+  auth: none
+}
+
+vars:post-response {
+  gameStatId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

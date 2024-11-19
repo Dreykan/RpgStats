@@ -1,0 +1,27 @@
+meta {
+  name: 02-CreateGame
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/{{basePath}}/{{gamePath}}/CreateGame
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "TestGame",
+    "picture": ""
+  }
+}
+
+vars:post-response {
+  gameId: res.body.id
+  gameName: res.body.name
+}
+
+assert {
+  res.status: eq 201
+}

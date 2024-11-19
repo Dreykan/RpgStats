@@ -1,0 +1,28 @@
+meta {
+  name: 07-CreateStatValue
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{host}}/{{basePath}}/{{statValue}}/CreateStatValue/{{characterId}}/{{statId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "level": 1,
+    "value": 100,
+    "containedBonusNum": 5,
+    "containedBonusPercent": 2
+  }
+}
+
+vars:post-response {
+  statValueId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

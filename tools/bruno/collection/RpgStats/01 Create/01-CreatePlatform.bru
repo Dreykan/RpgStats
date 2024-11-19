@@ -1,0 +1,25 @@
+meta {
+  name: 01-CreatePlatform
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/{{basePath}}/{{platformPath}}/CreatePlatform
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "TestPlatform"
+  }
+}
+
+vars:post-response {
+  platformId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

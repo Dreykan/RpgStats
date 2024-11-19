@@ -1,0 +1,15 @@
+meta {
+  name: GetCharactersDetailByName
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{characterPath}}/GetCharactersDetailByName/Cloud
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

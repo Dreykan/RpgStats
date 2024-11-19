@@ -1,0 +1,26 @@
+meta {
+  name: 04-CreateCharacter
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/{{basePath}}/{{characterPath}}/CreateCharacter/{{gameId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "TestChar",
+    "picture": ""
+  }
+}
+
+vars:post-response {
+  characterId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
