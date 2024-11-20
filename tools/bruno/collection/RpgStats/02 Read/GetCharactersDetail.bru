@@ -1,0 +1,15 @@
+meta {
+  name: GetCharactersDetail
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{characterPath}}/GetCharactersDetail
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

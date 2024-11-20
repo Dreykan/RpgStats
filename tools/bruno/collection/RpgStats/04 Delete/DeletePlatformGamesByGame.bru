@@ -1,0 +1,15 @@
+meta {
+  name: DeletePlatformGamesByGame
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{host}}/{{basePath}}/{{platformGamePath}}/DeletePlatformGamesByGame/{{gameId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

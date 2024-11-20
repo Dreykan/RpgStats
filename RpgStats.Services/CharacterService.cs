@@ -50,15 +50,16 @@ public class CharacterService : ICharacterService
         return characters.Adapt<List<CharacterDto>>();
     }
 
-    public async Task<CharacterDto?> GetCharacterByIdAsync(long characterId)
+    public async Task<ServiceResult<CharacterDto>> GetCharacterByIdAsync(long characterId)
     {
         var character = await _dbContext.Characters
             .Include(c => c.StatValues)
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
-        if (character == null) throw new CharacterNotFoundException(characterId);
+        if (character == null)
+            return ServiceResult<CharacterDto>.ErrorResult($"Character with ID {characterId} not found");
 
-        return character.Adapt<CharacterDto>();
+        return ServiceResult<CharacterDto>.SuccessResult(character.Adapt<CharacterDto>());
     }
 
     public async Task<CharacterDto?> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto)
@@ -103,7 +104,7 @@ public class CharacterService : ICharacterService
     {
         var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
 
-        if (character == null) return Task.CompletedTask;
+        if (character == null) throw new CharacterNotFoundException(characterId);
 
         _dbContext.Remove(character);
 

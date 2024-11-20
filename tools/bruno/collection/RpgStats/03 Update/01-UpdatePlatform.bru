@@ -1,0 +1,26 @@
+meta {
+  name: 01-UpdatePlatform
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{host}}/{{basePath}}/{{platformPath}}/UpdatePlatform/{{platformId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "UpdatedPlatform"
+  }
+}
+
+vars:post-response {
+  platformId: res.body.id
+  platformName: res.body.name
+}
+
+assert {
+  res.status: eq 200
+}

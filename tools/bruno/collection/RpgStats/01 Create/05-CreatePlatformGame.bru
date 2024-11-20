@@ -1,0 +1,19 @@
+meta {
+  name: 05-CreatePlatformGame
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{host}}/{{basePath}}/{{platformGamePath}}/CreatePlatformGame/{{platformId}}/{{gameId}}
+  body: json
+  auth: none
+}
+
+vars:post-response {
+  platformGameId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

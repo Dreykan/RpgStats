@@ -1,0 +1,28 @@
+meta {
+  name: 03-UpdateStat
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{host}}/{{basePath}}/{{statPath}}/UpdateStat/{{statId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "UpdatedStat",
+    "shortName": "US"
+  }
+}
+
+vars:post-response {
+  statId: res.body.id
+  statName: res.body.name
+  statShortName: res.body.shortName
+}
+
+assert {
+  res.status: eq 200
+}

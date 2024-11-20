@@ -1,0 +1,19 @@
+meta {
+  name: 05-UpdatePlatformGame
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/{{basePath}}/{{platformGamePath}}/UpdatePlatformGame/{{platformGameId}}/{{platformId}}/{{gameId}}
+  body: json
+  auth: none
+}
+
+vars:post-response {
+  platformGameId: res.body.id
+}
+
+assert {
+  res.status: eq 200
+}
