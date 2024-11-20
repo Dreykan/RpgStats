@@ -1,0 +1,15 @@
+meta {
+  name: DeleteGameStatsByGame
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{host}}/{{basePath}}/{{gameStatPath}}/DeleteGameStatsByGame/{{gameId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

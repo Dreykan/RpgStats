@@ -108,8 +108,10 @@ public class CharacterController : ControllerBase
     public async Task<IActionResult> DeleteCharacter(long characterId)
     {
         var response = await _characterService.DeleteCharacterAsync(characterId);
-        if (response == Task.CompletedTask)
-            return Ok();
+
+        if (response.IsCompletedSuccessfully)
+            return Ok(response);
+
         return BadRequest();
     }
 }

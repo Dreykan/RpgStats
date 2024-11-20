@@ -1,19 +1,19 @@
 meta {
-  name: 03-CreateStat
+  name: 03-UpdateStat
   type: http
   seq: 3
 }
 
-post {
-  url: {{host}}/{{basePath}}/{{statPath}}/CreateStat
+put {
+  url: {{host}}/{{basePath}}/{{statPath}}/UpdateStat/{{statId}}
   body: json
   auth: none
 }
 
 body:json {
   {
-    "name": "TestStat",
-    "shortName": "TS"
+    "name": "UpdatedStat",
+    "shortName": "US"
   }
 }
 
@@ -24,5 +24,5 @@ vars:post-response {
 }
 
 assert {
-  res.status: eq 201
+  res.status: eq 200
 }

@@ -1,0 +1,15 @@
+meta {
+  name: DeleteCharacter
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{host}}/{{basePath}}/{{characterPath}}/DeleteCharacter/{{characterId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

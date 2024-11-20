@@ -1,0 +1,15 @@
+meta {
+  name: DeleteStat
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{host}}/{{basePath}}/{{statPath}}/DeleteStat/{{statId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

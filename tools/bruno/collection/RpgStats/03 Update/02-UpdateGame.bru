@@ -1,0 +1,27 @@
+meta {
+  name: 02-UpdateGame
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{host}}/{{basePath}}/{{gamePath}}/UpdateGame/{{gameId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "UpdatedGame",
+    "picture": ""
+  }
+}
+
+vars:post-response {
+  gameId: res.body.id
+  gameName: res.body.name
+}
+
+assert {
+  res.status: eq 200
+}

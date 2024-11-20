@@ -1,0 +1,15 @@
+meta {
+  name: DeletePlatform
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{host}}/{{basePath}}/{{platformPath}}/DeletePlatform/{{platformId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

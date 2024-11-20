@@ -1,0 +1,26 @@
+meta {
+  name: 04-UpdateCharacter
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{host}}/{{basePath}}/{{characterPath}}/UpdateCharacter/{{gameId}}/{{characterId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "UpdatedChar",
+    "picture": ""
+  }
+}
+
+vars:post-response {
+  characterId: res.body.id
+}
+
+assert {
+  res.status: eq 200
+}

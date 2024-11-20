@@ -1,0 +1,15 @@
+meta {
+  name: GetStatValues
+  type: http
+  seq: 36
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{statValuePath}}/GetStatValues
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

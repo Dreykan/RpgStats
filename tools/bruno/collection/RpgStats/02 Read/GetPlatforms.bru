@@ -1,0 +1,15 @@
+meta {
+  name: GetPlatforms
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{platformPath}}/GetPlatforms
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

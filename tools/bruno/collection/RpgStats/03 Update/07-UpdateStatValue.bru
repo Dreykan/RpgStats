@@ -1,0 +1,28 @@
+meta {
+  name: 07-UpdateStatValue
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{host}}/{{basePath}}/{{statValuePath}}/UpdateStatValue/{{statValueId}}/{{characterId}}/{{statId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "level": 2,
+    "value": 234,
+    "containedBonusNum": 6,
+    "containedBonusPercent": 3
+  }
+}
+
+vars:post-response {
+  statValueId: res.body.id
+}
+
+assert {
+  res.status: eq 200
+}

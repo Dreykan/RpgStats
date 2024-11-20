@@ -71,10 +71,10 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task GetCharacterById_ReturnsCharacter()
     {
-        var character = await _service.GetCharacterByIdAsync(1);
+        var result = await _service.GetCharacterByIdAsync(1);
 
-        Assert.NotNull(character);
-        Assert.Equal("Test1", character.Name);
+        Assert.NotNull(result.Data);
+        Assert.Equal("Test1", result.Data.Name);
     }
 
     [Fact]

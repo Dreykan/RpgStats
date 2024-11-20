@@ -1,0 +1,19 @@
+meta {
+  name: 06-UpdateGameStat
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{host}}/{{basePath}}/{{gameStatPath}}/UpdateGameStat/{{gameStatId}}/{{gameId}}/{{statId}}
+  body: json
+  auth: none
+}
+
+vars:post-response {
+  gameStatId: res.body.id
+}
+
+assert {
+  res.status: eq 200
+}
