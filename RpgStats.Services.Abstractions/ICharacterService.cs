@@ -4,18 +4,18 @@ namespace RpgStats.Services.Abstractions;
 
 public interface ICharacterService
 {
-    Task<List<CharacterDto>> GetAllCharactersAsync();
-    Task<List<CharacterDto>> GetAllCharactersByGameIdAsync(long gameId);
-    Task<List<CharacterDto>> GetAllCharactersByNameAsync(string name);
+    Task<ServiceResult<List<CharacterDto>>> GetAllCharactersAsync();
+    Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByGameIdAsync(long gameId);
+    Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByNameAsync(string name);
     Task<ServiceResult<CharacterDto>> GetCharacterByIdAsync(long characterId);
-    Task<CharacterDto?> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto);
+    Task<ServiceResult<CharacterDto>> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto);
 
-    Task<CharacterDto?> UpdateCharacterAsync(long characterId, long gameId,
+    Task<ServiceResult<CharacterDto>> UpdateCharacterAsync(long characterId, long gameId,
         CharacterForUpdateDto characterForUpdateDto);
 
-    Task<Task> DeleteCharacterAsync(long characterId);
-    Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosAsync();
-    Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosByGameIdAsync(long gameId);
-    Task<List<CharacterDetailDto>> GetAllCharacterDetailDtosByNameAsync(string name);
-    Task<CharacterDetailDto> GetCharacterDetailDtoByIdAsync(long characterId);
+    Task<ServiceResult<CharacterDto>> DeleteCharacterAsync(long characterId);
+    Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosAsync();
+    Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosByGameIdAsync(long gameId);
+    Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosByNameAsync(string name);
+    Task<ServiceResult<CharacterDetailDto>> GetCharacterDetailDtoByIdAsync(long characterId);
 }

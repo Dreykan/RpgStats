@@ -1,10 +1,10 @@
-namespace RpgStats.Services;
+namespace RpgStats.Services.Abstractions;
 
 public class ServiceResult<T>
 {
-    public bool Success { get; set; }
-    public T? Data { get; set; }
+    public bool Success { get; private set; }
     public string? ErrorMessage { get; set; }
+    public T? Data { get; private set; }
 
     public static ServiceResult<T> SuccessResult(T data)
     {

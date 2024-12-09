@@ -20,64 +20,78 @@ public class CharacterController : ControllerBase
     [SwaggerOperation(Summary = "Get all Characters")]
     public async Task<IActionResult> GetCharacters()
     {
-        var characters = await _characterService.GetAllCharactersAsync();
-        return Ok(characters);
+        var result = await _characterService.GetAllCharactersAsync();
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetCharactersByGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Get all Characters by Game")]
     public async Task<IActionResult> GetCharactersByGame(long gameId)
     {
-        var characters = await _characterService.GetAllCharactersByGameIdAsync(gameId);
-        return Ok(characters);
+        var result = await _characterService.GetAllCharactersByGameIdAsync(gameId);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetCharactersByName/{name}")]
     [SwaggerOperation(Summary = "Get all Characters by Name")]
     public async Task<IActionResult> GetCharactersByName(string name)
     {
-        var characters = await _characterService.GetAllCharactersByNameAsync(name);
-        return Ok(characters);
+        var result = await _characterService.GetAllCharactersByNameAsync(name);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetCharactersDetail")]
     [SwaggerOperation(Summary = "Get all Characters with Details")]
     public async Task<IActionResult> GetCharactersDetail()
     {
-        var characters = await _characterService.GetAllCharacterDetailDtosAsync();
-        return Ok(characters);
+        var result = await _characterService.GetAllCharacterDetailDtosAsync();
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetCharactersDetailByGame/{gameId:long}")]
     [SwaggerOperation(Summary = "Get all Characters with Details by Game")]
     public async Task<IActionResult> GetCharactersDetailByGame(long gameId)
     {
-        var characters = await _characterService.GetAllCharacterDetailDtosByGameIdAsync(gameId);
-        return Ok(characters);
+        var result = await _characterService.GetAllCharacterDetailDtosByGameIdAsync(gameId);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetCharactersDetailByName/{name}")]
     [SwaggerOperation(Summary = "Get all Characters with Details by Name")]
     public async Task<IActionResult> GetCharactersDetailByName(string name)
     {
-        var characters = await _characterService.GetAllCharacterDetailDtosByNameAsync(name);
-        return Ok(characters);
+        var result = await _characterService.GetAllCharacterDetailDtosByNameAsync(name);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetCharacterById/{characterId:long}")]
     [SwaggerOperation(Summary = "Get a Character by Id")]
     public async Task<IActionResult> GetCharacterById(long characterId)
     {
-        var character = await _characterService.GetCharacterByIdAsync(characterId);
-        return Ok(character);
+        var result = await _characterService.GetCharacterByIdAsync(characterId);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetCharacterDetailById/{characterId:long}")]
     [SwaggerOperation(Summary = "Get a Character with Details by Id")]
     public async Task<IActionResult> GetCharacterDetailById(long characterId)
     {
-        var character = await _characterService.GetCharacterDetailDtoByIdAsync(characterId);
-        return Ok(character);
+        var result = await _characterService.GetCharacterDetailDtoByIdAsync(characterId);
+        return Ok(result);
     }
 
     [HttpPost("CreateCharacter/{gameId:long}")]
@@ -85,11 +99,15 @@ public class CharacterController : ControllerBase
     public async Task<IActionResult> CreateCharacter([FromBody] CharacterForCreationDto characterForCreationDto,
         long gameId)
     {
-        var response = await _characterService.CreateCharacterAsync(gameId, characterForCreationDto);
-        if (response != null)
-            return CreatedAtAction(nameof(GetCharacterById),
-                new { characterId = response.Id, gameId = response.GameId }, response);
-        return BadRequest();
+        var result = await _characterService.CreateCharacterAsync(gameId, characterForCreationDto);
+        // if (result != null)
+        //     return CreatedAtAction(nameof(GetCharacterById),
+        //         new { characterId = result.Id, gameId = result.GameId }, result);
+        // return BadRequest();
+
+        if (result.Success)
+            return CreatedAtAction(nameof(GetCharacterById), new { characterId = result.Data?.Id }, result);
+        return BadRequest(result);
     }
 
     [HttpPut("UpdateCharacter/{gameId:long}/{characterId:long}")]
@@ -97,21 +115,28 @@ public class CharacterController : ControllerBase
     public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto,
         long characterId, long gameId)
     {
-        var response = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
-        if (response != null)
-            return Ok(response);
-        return BadRequest();
+        var result = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
+        // if (result != null)
+        //     return Ok(result);
+        // return BadRequest();
+        if (result.Success)
+            return CreatedAtAction(nameof(GetCharacterById), new { characterId = result.Data?.Id }, result);
+        return BadRequest(result);
     }
 
     [HttpDelete("DeleteCharacter/{characterId:long}")]
     [SwaggerOperation(Summary = "Delete a Character")]
     public async Task<IActionResult> DeleteCharacter(long characterId)
     {
-        var response = await _characterService.DeleteCharacterAsync(characterId);
+        var result = await _characterService.DeleteCharacterAsync(characterId);
 
-        if (response.IsCompletedSuccessfully)
-            return Ok(response);
+        // if (result.IsCompletedSuccessfully)
+        //     return Ok(result);
+        //
+        // return BadRequest();
 
-        return BadRequest();
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 }
