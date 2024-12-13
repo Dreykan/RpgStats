@@ -83,7 +83,7 @@ public class GameController : ControllerBase
         var result = await _gameService.CreateGameAsync(gameForCreationDto);
         if (result.Success)
             return CreatedAtAction(nameof(GetGameById), new { gameId = result.Data?.Id }, result);
-        return BadRequest();
+        return BadRequest(result);
     }
 
     [HttpPut("UpdateGame/{gameId:long}")]
@@ -93,7 +93,7 @@ public class GameController : ControllerBase
         var result = await _gameService.UpdateGameAsync(gameId, gameForUpdateDto);
         if (result.Success)
             return CreatedAtAction(nameof(GetGameById), new { gameId = result.Data?.Id }, result);
-        return BadRequest();
+        return BadRequest(result);
     }
 
     [HttpDelete("DeleteGame/{gameId:long}")]
@@ -103,6 +103,6 @@ public class GameController : ControllerBase
         var result = await _gameService.DeleteGameAsync(gameId);
         if (result.Success)
             return Ok(result);
-        return BadRequest();
+        return NotFound(result);
     }
 }

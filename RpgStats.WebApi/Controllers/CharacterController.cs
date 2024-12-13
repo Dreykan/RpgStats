@@ -63,7 +63,7 @@ public class CharacterController : ControllerBase
         var result = await _characterService.GetAllCharacterDetailDtosByGameIdAsync(gameId);
         if (result.Success)
             return Ok(result);
-        return BadRequest(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetCharactersDetailByName/{name}")]
@@ -91,7 +91,9 @@ public class CharacterController : ControllerBase
     public async Task<IActionResult> GetCharacterDetailById(long characterId)
     {
         var result = await _characterService.GetCharacterDetailDtoByIdAsync(characterId);
-        return Ok(result);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpPost("CreateCharacter/{gameId:long}")]
