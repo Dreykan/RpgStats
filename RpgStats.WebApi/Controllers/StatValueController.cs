@@ -17,7 +17,7 @@ public class StatValueController : ControllerBase
     }
 
     [HttpGet("GetStatValues")]
-    [SwaggerOperation(Summary = "Get all StatValues")] 
+    [SwaggerOperation(Summary = "Get all StatValues")]
     public async Task<IActionResult> GetStatValues()
     {
         var result = await _statValueService.GetAllStatValuesAsync();

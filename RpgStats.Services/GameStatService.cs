@@ -1,7 +1,6 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
-using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
@@ -17,51 +16,61 @@ public class GameStatService : IGameStatService
         _dbContext = dbContext;
     }
 
-    public async Task<List<GameStatDto>> GetAllGameStatsAsync()
+    public async Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsAsync()
     {
         var gameStats = await _dbContext.GameStats
             .ToListAsync();
 
-        return gameStats.Adapt<List<GameStatDto>>();
+        if (gameStats.Count == 0)
+            return ServiceResult<List<GameStatDto>>.ErrorResult("No GameStats found");
+
+        return ServiceResult<List<GameStatDto>>.SuccessResult(gameStats.Adapt<List<GameStatDto>>());
     }
 
-    public async Task<List<GameStatDto>> GetAllGameStatsByGameIdAsync(long gameId)
+    public async Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsByGameIdAsync(long gameId)
     {
         var gameStats = await _dbContext.GameStats
             .Where(gs => gs.GameId == gameId)
             .ToListAsync();
 
-        return gameStats.Adapt<List<GameStatDto>>();
+        if (gameStats.Count == 0)
+            return ServiceResult<List<GameStatDto>>.ErrorResult("No GameStats found");
+
+        return ServiceResult<List<GameStatDto>>.SuccessResult(gameStats.Adapt<List<GameStatDto>>());
     }
 
-    public async Task<List<GameStatDto>> GetAllGameStatsByStatIdAsync(long statId)
+    public async Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsByStatIdAsync(long statId)
     {
         var gameStats = await _dbContext.GameStats
             .Where(gs => gs.StatId == statId)
             .ToListAsync();
 
-        return gameStats.Adapt<List<GameStatDto>>();
+        if (gameStats.Count == 0)
+            return ServiceResult<List<GameStatDto>>.ErrorResult("No GameStats found");
+
+        return ServiceResult<List<GameStatDto>>.SuccessResult(gameStats.Adapt<List<GameStatDto>>());
     }
 
-    public async Task<GameStatDto?> GetGameStatByIdAsync(long gameStatId)
+    public async Task<ServiceResult<GameStatDto>> GetGameStatByIdAsync(long gameStatId)
     {
         var gameStat = await _dbContext.GameStats
             .FirstOrDefaultAsync(gs => gs.Id == gameStatId);
 
-        if (gameStat == null) throw new GameStatNotFoundException(gameStatId);
+        if (gameStat == null)
+            return ServiceResult<GameStatDto>.ErrorResult("No GameStat found");
 
-        return gameStat.Adapt<GameStatDto>();
+        return ServiceResult<GameStatDto>.SuccessResult(gameStat.Adapt<GameStatDto>());
     }
 
-    public async Task<GameStatDto?> CreateGameStatAsync(long gameId, long statId)
+    public async Task<ServiceResult<GameStatDto>> CreateGameStatAsync(long gameId, long statId)
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
-
-        if (game == null) throw new GameNotFoundException(gameId);
+        if (game == null)
+            return ServiceResult<GameStatDto>.ErrorResult($"Game with ID {gameId} not found");
 
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
-
-        if (stat == null) throw new StatNotFoundException(statId);
+        if (stat == null)
+            return ServiceResult<GameStatDto>.ErrorResult($"Stat with ID {statId} not found");
 
         var gameStat = new GameStatDto().Adapt<GameStat>();
         gameStat.GameId = gameId;
@@ -70,24 +79,25 @@ public class GameStatService : IGameStatService
         gameStat.Stat = stat;
 
         _dbContext.GameStats.Add(gameStat);
-        await _dbContext.SaveChangesAsync();
+        var result = await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<GameStatDto>.ErrorResult("GameStat could not be created");
 
-        return gameStat.Adapt<GameStatDto>();
+        return ServiceResult<GameStatDto>.SuccessResult(gameStat.Adapt<GameStatDto>());
     }
 
-    public async Task<GameStatDto?> UpdateGameStatAsync(long gameStatId, long gameId, long statId)
+    public async Task<ServiceResult<GameStatDto>> UpdateGameStatAsync(long gameStatId, long gameId, long statId)
     {
         var gameStat = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
-
-        if (gameStat == null) throw new GameStatNotFoundException(gameStatId);
+        if (gameStat == null)
+            return ServiceResult<GameStatDto>.ErrorResult($"GameStat with ID {gameStatId} not found");
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
-
-        if (game == null) throw new GameNotFoundException(gameId);
+        if (game == null) return ServiceResult<GameStatDto>.ErrorResult($"Game with ID {gameId} not found");
 
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
-
-        if (stat == null) throw new StatNotFoundException(statId);
+        if (stat == null)
+            return ServiceResult<GameStatDto>.ErrorResult($"Stat with ID {statId} not found");
 
         gameStat.StatId = statId;
         gameStat.Stat = stat;
@@ -95,41 +105,54 @@ public class GameStatService : IGameStatService
         gameStat.Game = game;
 
         _dbContext.Entry(gameStat).State = EntityState.Modified;
-        await _dbContext.SaveChangesAsync();
+        var result = await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<GameStatDto>.ErrorResult("GameStat could not be updated");
 
-        return gameStat.Adapt<GameStatDto>();
+        return ServiceResult<GameStatDto>.SuccessResult(gameStat.Adapt<GameStatDto>());
     }
 
-    public async Task<Task> DeleteGameStatAsync(long gameStatId)
+    public async Task<ServiceResult<GameStatDto>> DeleteGameStatAsync(long gameStatId)
     {
-        var gameStats = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
+        var gameStat = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
+        if (gameStat == null)
+            return ServiceResult<GameStatDto>.ErrorResult($"GameStat with ID {gameStatId} not found");
 
-        if (gameStats == null) return Task.CompletedTask;
+        _dbContext.Remove(gameStat);
 
-        _dbContext.Remove(gameStats);
+        var result = await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<GameStatDto>.ErrorResult("GameStat could not be deleted");
 
-        await _dbContext.SaveChangesAsync();
-
-        return Task.CompletedTask;
+        return ServiceResult<GameStatDto>.SuccessResult(gameStat.Adapt<GameStatDto>());
     }
 
-    public async Task<Task> DeleteGameStatsByGameIdAsync(long gameId)
+    public async Task<ServiceResult<List<GameStatDto>>> DeleteGameStatsByGameIdAsync(long gameId)
     {
         var gameStats = await _dbContext.GameStats.Where(gs => gs.GameId == gameId).ToListAsync();
+        if (gameStats.Count == 0)
+            return ServiceResult<List<GameStatDto>>.ErrorResult("No GameStats found");
 
-        if (gameStats.Count == 0) return Task.CompletedTask;
-        foreach (var gameStat in gameStats) await DeleteGameStatAsync(gameStat.Id);
 
-        return Task.CompletedTask;
+        _dbContext.RemoveRange(gameStats);
+        var result = await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<List<GameStatDto>>.ErrorResult("GameStats could not be deleted");
+
+        return ServiceResult<List<GameStatDto>>.SuccessResult(gameStats.Adapt<List<GameStatDto>>());
     }
 
-    public async Task<Task> DeleteGameStatsByStatIdAsync(long statId)
+    public async Task<ServiceResult<List<GameStatDto>>> DeleteGameStatsByStatIdAsync(long statId)
     {
         var gameStats = await _dbContext.GameStats.Where(gs => gs.StatId == statId).ToListAsync();
+        if (gameStats.Count == 0)
+            return ServiceResult<List<GameStatDto>>.ErrorResult("No GameStats found");
 
-        if (gameStats.Count == 0) return Task.CompletedTask;
-        foreach (var gameStat in gameStats) await DeleteGameStatAsync(gameStat.Id);
+        _dbContext.RemoveRange(gameStats);
+        var result = await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<List<GameStatDto>>.ErrorResult("GameStats could not be deleted");
 
-        return Task.CompletedTask;
+        return ServiceResult<List<GameStatDto>>.SuccessResult(gameStats.Adapt<List<GameStatDto>>());
     }
 }
