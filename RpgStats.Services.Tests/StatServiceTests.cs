@@ -18,7 +18,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsAsync();
 
         Assert.NotNull(stats);
-        Assert.Equal(6, stats.Count);
+        Assert.Equal(6, stats.Data?.Count);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsByNameAsync("good");
 
         Assert.NotNull(stats);
-        Assert.Equal(2, stats.Count);
+        Assert.Equal(2, stats.Data?.Count);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsByNameAsync("GOOD");
 
         Assert.NotNull(stats);
-        Assert.Equal(2, stats.Count);
+        Assert.Equal(2, stats.Data?.Count);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsByNameAsync("NonExistentStat");
 
         Assert.NotNull(stats);
-        Assert.Empty(stats);
+        Assert.Equal(0, stats.Data?.Count);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsByShortNameAsync("gsv");
 
         Assert.NotNull(stats);
-        Assert.Equal(2, stats.Count);
+        Assert.Equal(2, stats.Data?.Count);
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsByShortNameAsync("GSV");
 
         Assert.NotNull(stats);
-        Assert.Equal(2, stats.Count);
+        Assert.Equal(2, stats.Data?.Count);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsByShortNameAsync("NonExistentStat");
 
         Assert.NotNull(stats);
-        Assert.Empty(stats);
+        Assert.Equal(0, stats.Data?.Count);
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDtos = await _service.GetAllStatDetailDtosAsync();
 
         Assert.NotNull(statDetailDtos);
-        Assert.Equal(6, statDetailDtos.Count);
+        Assert.Equal(6, statDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDtos = await _service.GetAllStatDetailDtosByNameAsync("good");
 
         Assert.NotNull(statDetailDtos);
-        Assert.Equal(2, statDetailDtos.Count);
+        Assert.Equal(2, statDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDtos = await _service.GetAllStatDetailDtosByNameAsync("GOOD");
 
         Assert.NotNull(statDetailDtos);
-        Assert.Equal(2, statDetailDtos.Count);
+        Assert.Equal(2, statDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDtos = await _service.GetAllStatDetailDtosByNameAsync("NonExistentStat");
 
         Assert.NotNull(statDetailDtos);
-        Assert.Empty(statDetailDtos);
+        Assert.Equal(0, statDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDtos = await _service.GetAllStatDetailDtosByShortNameAsync("gsv");
 
         Assert.NotNull(statDetailDtos);
-        Assert.Equal(2, statDetailDtos.Count);
+        Assert.Equal(2, statDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDtos = await _service.GetAllStatDetailDtosByShortNameAsync("GSV");
 
         Assert.NotNull(statDetailDtos);
-        Assert.Equal(2, statDetailDtos.Count);
+        Assert.Equal(2, statDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDtos = await _service.GetAllStatDetailDtosByShortNameAsync("NonExistentStat");
 
         Assert.NotNull(statDetailDtos);
-        Assert.Empty(statDetailDtos);
+        Assert.Equal(0, statDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -144,7 +144,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDto = await _service.GetStatDetailDtoByIdAsync(1);
 
         Assert.NotNull(statDetailDto);
-        Assert.Equal(1, statDetailDto.Id);
+        Assert.Equal(1, statDetailDto.Data?.Id);
     }
 
     [Fact]
@@ -153,8 +153,8 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDto = await _service.GetStatDetailDtoByIdAsync(100);
 
         Assert.NotNull(statDetailDto);
-        Assert.Equal(0, statDetailDto.Id);
-        Assert.Equal(string.Empty, statDetailDto.Name);
+        Assert.Equal(0, statDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, statDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -163,8 +163,8 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDto = await _service.GetStatDetailDtoByIdAsync(0);
 
         Assert.NotNull(statDetailDto);
-        Assert.Equal(0, statDetailDto.Id);
-        Assert.Equal(string.Empty, statDetailDto.Name);
+        Assert.Equal(0, statDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, statDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -173,8 +173,8 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDetailDto = await _service.GetStatDetailDtoByIdAsync(-1);
 
         Assert.NotNull(statDetailDto);
-        Assert.Equal(0, statDetailDto.Id);
-        Assert.Equal(string.Empty, statDetailDto.Name);
+        Assert.Equal(0, statDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, statDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -183,7 +183,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDto = await _service.GetStatByIdAsync(1);
 
         Assert.NotNull(statDto);
-        Assert.Equal(1, statDto.Id);
+        Assert.Equal(1, statDto.Data?.Id);
     }
 
     [Fact]
@@ -216,10 +216,10 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDto = await _service.CreateStatAsync(statForCreationDto);
 
         Assert.NotNull(statDto);
-        Assert.Equal("NewStat", statDto.Name);
-        Assert.Equal("NS", statDto.ShortName);
+        Assert.Equal("NewStat", statDto.Data?.Name);
+        Assert.Equal("NS", statDto.Data?.ShortName);
 
-        await _service.DeleteStatAsync(statDto.Id);
+        if (statDto.Data != null) await _service.DeleteStatAsync(statDto.Data.Id);
     }
 
     [Fact]
@@ -234,8 +234,8 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var statDto = await _service.UpdateStatAsync(1, statForUpdateDto);
 
         Assert.NotNull(statDto);
-        Assert.Equal("UpdatedStat", statDto.Name);
-        Assert.Equal("US", statDto.ShortName);
+        Assert.Equal("UpdatedStat", statDto.Data?.Name);
+        Assert.Equal("US", statDto.Data?.ShortName);
     }
 
     [Fact]
@@ -285,12 +285,12 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
 
         var statDto = await _service.CreateStatAsync(statForCreationDto);
 
-        if (statDto != null) await _service.DeleteStatAsync(statDto.Id);
+        if (statDto.Data != null) await _service.DeleteStatAsync(statDto.Data.Id);
 
         var stats = await _service.GetAllStatsAsync();
 
         Assert.NotNull(stats);
-        Assert.Equal(6, stats.Count);
+        Assert.Equal(6, stats.Data?.Count);
     }
 
     [Fact]
@@ -301,7 +301,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsAsync();
 
         Assert.NotNull(stats);
-        Assert.Equal(6, stats.Count);
+        Assert.Equal(6, stats.Data?.Count);
     }
 
     [Fact]
@@ -312,7 +312,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsAsync();
 
         Assert.NotNull(stats);
-        Assert.Equal(6, stats.Count);
+        Assert.Equal(6, stats.Data?.Count);
     }
 
     [Fact]
@@ -323,6 +323,6 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var stats = await _service.GetAllStatsAsync();
 
         Assert.NotNull(stats);
-        Assert.Equal(6, stats.Count);
+        Assert.Equal(6, stats.Data?.Count);
     }
 }

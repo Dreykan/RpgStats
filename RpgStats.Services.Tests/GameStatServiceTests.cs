@@ -20,7 +20,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
+        Assert.Equal(12, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsByGameIdAsync(1);
 
         Assert.NotNull(gameStats);
-        Assert.Equal(4, gameStats.Count);
+        Assert.Equal(4, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsByStatIdAsync(1);
 
         Assert.NotNull(gameStats);
-        Assert.Equal(3, gameStats.Count);
+        Assert.Equal(3, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStat = await _service.GetGameStatByIdAsync(1);
 
         Assert.NotNull(gameStat);
-        Assert.Equal(1, gameStat.Id);
+        Assert.Equal(1, gameStat.Data?.Id);
     }
 
     [Fact]
@@ -67,11 +67,11 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStat = await _service.CreateGameStatAsync(1, 1);
 
         Assert.NotNull(gameStat);
-        Assert.Equal(13, gameStat.Id);
-        Assert.Equal(1, gameStat.GameId);
-        Assert.Equal(1, gameStat.StatId);
+        Assert.Equal(13, gameStat.Data?.Id);
+        Assert.Equal(1, gameStat.Data?.GameId);
+        Assert.Equal(1, gameStat.Data?.StatId);
 
-        await _service.DeleteGameStatAsync(gameStat.Id);
+        if (gameStat.Data != null) await _service.DeleteGameStatAsync(gameStat.Data.Id);
     }
 
     [Fact]
@@ -123,9 +123,9 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStat = await _service.UpdateGameStatAsync(1, 1, 1);
 
         Assert.NotNull(gameStat);
-        Assert.Equal(1, gameStat.Id);
-        Assert.Equal(1, gameStat.GameId);
-        Assert.Equal(1, gameStat.StatId);
+        Assert.Equal(1, gameStat.Data?.Id);
+        Assert.Equal(1, gameStat.Data?.GameId);
+        Assert.Equal(1, gameStat.Data?.StatId);
     }
 
     [Fact]
@@ -197,12 +197,12 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     {
         var gameStat = await _service.CreateGameStatAsync(1, 1);
 
-        if (gameStat != null) await _service.DeleteGameStatAsync(gameStat.Id);
+        if (gameStat.Data != null) await _service.DeleteGameStatAsync(gameStat.Data.Id);
 
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
+        Assert.Equal(12, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
+        Assert.Equal(12, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -226,7 +226,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
+        Assert.Equal(12, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -238,7 +238,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
+        Assert.Equal(12, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -250,7 +250,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
+        Assert.Equal(8, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -262,7 +262,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
+        Assert.Equal(8, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -274,7 +274,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
+        Assert.Equal(8, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -286,7 +286,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
+        Assert.Equal(8, gameStats.Data?.Count);
     }
 
     [Fact]
@@ -298,6 +298,6 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var gameStats = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(gameStats);
-        Assert.Equal(6, gameStats.Count);
+        Assert.Equal(6, gameStats.Data?.Count);
     }
 }

@@ -20,7 +20,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(12, platformGames.Count);
+        Assert.Equal(12, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesByPlatformIdAsync(1);
 
         Assert.NotNull(platformGames);
-        Assert.Equal(4, platformGames.Count);
+        Assert.Equal(4, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesByPlatformIdAsync(100);
 
         Assert.NotNull(platformGames);
-        Assert.Empty(platformGames);
+        Assert.Equal(0, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesByGameIdAsync(1);
 
         Assert.NotNull(platformGames);
-        Assert.Equal(3, platformGames.Count);
+        Assert.Equal(3, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesByGameIdAsync(100);
 
         Assert.NotNull(platformGames);
-        Assert.Empty(platformGames);
+        Assert.Equal(0, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGame = await _service.GetPlatformGameByIdAsync(1);
 
         Assert.NotNull(platformGame);
-        Assert.Equal(1, platformGame.Id);
+        Assert.Equal(1, platformGame.Data?.Id);
     }
 
     [Fact]
@@ -87,10 +87,10 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGame = await _service.CreatePlatformGameAsync(1, 1);
 
         Assert.NotNull(platformGame);
-        Assert.Equal(1, platformGame.PlatformId);
-        Assert.Equal(1, platformGame.GameId);
+        Assert.Equal(1, platformGame.Data?.PlatformId);
+        Assert.Equal(1, platformGame.Data?.GameId);
 
-        await _service.DeletePlatformGameAsync(platformGame.Id);
+        if (platformGame.Data != null) await _service.DeletePlatformGameAsync(platformGame.Data.Id);
     }
 
     [Fact]
@@ -113,13 +113,13 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
     {
         var platformGame = await _service.CreatePlatformGameAsync(1, 1);
 
-        if (platformGame != null) platformGame = await _service.UpdatePlatformGameAsync(platformGame.Id, 2, 2);
+        if (platformGame.Data != null) platformGame = await _service.UpdatePlatformGameAsync(platformGame.Data.Id, 2, 2);
 
         Assert.NotNull(platformGame);
-        Assert.Equal(2, platformGame.PlatformId);
-        Assert.Equal(2, platformGame.GameId);
+        Assert.Equal(2, platformGame.Data?.PlatformId);
+        Assert.Equal(2, platformGame.Data?.GameId);
 
-        await _service.DeletePlatformGameAsync(platformGame.Id);
+        if (platformGame.Data != null) await _service.DeletePlatformGameAsync(platformGame.Data.Id);
     }
 
     [Fact]
@@ -149,12 +149,12 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
     {
         var platformGame = await _service.CreatePlatformGameAsync(1, 1);
 
-        if (platformGame != null) await _service.DeletePlatformGameAsync(platformGame.Id);
+        if (platformGame.Data != null) await _service.DeletePlatformGameAsync(platformGame.Data.Id);
 
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(12, platformGames.Count);
+        Assert.Equal(12, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(12, platformGames.Count);
+        Assert.Equal(12, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -178,7 +178,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(12, platformGames.Count);
+        Assert.Equal(12, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -190,7 +190,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(12, platformGames.Count);
+        Assert.Equal(12, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -202,7 +202,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(12, platformGames.Count);
+        Assert.Equal(12, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(9, platformGames.Count);
+        Assert.Equal(9, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -226,7 +226,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(9, platformGames.Count);
+        Assert.Equal(9, platformGames.Data?.Count);
     }
 
     [Fact]
@@ -238,6 +238,6 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var platformGames = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(platformGames);
-        Assert.Equal(6, platformGames.Count);
+        Assert.Equal(6, platformGames.Data?.Count);
     }
 }

@@ -18,7 +18,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var games = await _service.GetAllGamesAsync();
 
         Assert.NotNull(games);
-        Assert.Equal(6, games.Count);
+        Assert.Equal(6, games.Data?.Count);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var games = await _service.GetAllGamesByNameAsync("GoodGame");
 
         Assert.NotNull(games);
-        Assert.Equal(2, games.Count);
+        Assert.Equal(2, games.Data?.Count);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var games = await _service.GetAllGamesByNameAsync("goodgame");
 
         Assert.NotNull(games);
-        Assert.Equal(2, games.Count);
+        Assert.Equal(2, games.Data?.Count);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var games = await _service.GetAllGamesByNameAsync("NonExistentGame");
 
         Assert.NotNull(games);
-        Assert.Empty(games);
+        Assert.Equal(0, games.Data?.Count);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var game = await _service.GetGameByIdAsync(1);
 
         Assert.NotNull(game);
-        Assert.Equal(1, game.Id);
+        Assert.Equal(1, game.Data?.Id);
     }
 
     [Fact]
@@ -71,9 +71,9 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var game = await _service.CreateGameAsync(gameForCreationDto);
 
         Assert.NotNull(game);
-        Assert.Equal("NewGame", game.Name);
+        Assert.Equal("NewGame", game.Data?.Name);
 
-        await _service.DeleteGameAsync(game.Id);
+        if (game.Data != null) await _service.DeleteGameAsync(game.Data.Id);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var updatedGame = await _service.UpdateGameAsync(4, gameForUpdateDto);
 
         Assert.NotNull(updatedGame);
-        Assert.Equal("UpdatedGame", updatedGame.Name);
+        Assert.Equal("UpdatedGame", updatedGame.Data?.Name);
     }
 
     [Fact]
@@ -113,12 +113,12 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
     {
         var game = await _service.CreateGameAsync(new GameForCreationDto { Name = "NewGame" });
 
-        if (game != null) await _service.DeleteGameAsync(game.Id);
+        if (game.Data != null) await _service.DeleteGameAsync(game.Data.Id);
 
         var games = await _service.GetAllGamesAsync();
 
         Assert.NotNull(games);
-        Assert.Equal(6, games.Count);
+        Assert.Equal(6, games.Data?.Count);
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var games = await _service.GetAllGamesAsync();
 
         Assert.NotNull(games);
-        Assert.Equal(6, games.Count);
+        Assert.Equal(6, games.Data?.Count);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var games = await _service.GetAllGamesAsync();
 
         Assert.NotNull(games);
-        Assert.Equal(6, games.Count);
+        Assert.Equal(6, games.Data?.Count);
     }
 
     [Fact]
@@ -151,7 +151,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var games = await _service.GetAllGamesAsync();
 
         Assert.NotNull(games);
-        Assert.Equal(6, games.Count);
+        Assert.Equal(6, games.Data?.Count);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDtos = await _service.GetAllGameDetailDtosAsync();
 
         Assert.NotNull(gameDetailDtos);
-        Assert.Equal(6, gameDetailDtos.Count);
+        Assert.Equal(6, gameDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -169,12 +169,15 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDtos = await _service.GetAllGameDetailDtosAsync();
 
         Assert.NotNull(gameDetailDtos);
-        Assert.Equal(6, gameDetailDtos.Count);
+        Assert.Equal(6, gameDetailDtos.Data?.Count);
 
-        var gameDetailDto = gameDetailDtos.First();
+        if (gameDetailDtos.Data != null)
+        {
+            var gameDetailDto = gameDetailDtos.Data.First();
 
-        Assert.NotNull(gameDetailDto.CharacterWithoutFkObjectsDtos);
-        Assert.Single(gameDetailDto.CharacterWithoutFkObjectsDtos);
+            Assert.NotNull(gameDetailDto.CharacterWithoutFkObjectsDtos);
+            Assert.Single(gameDetailDto.CharacterWithoutFkObjectsDtos);
+        }
     }
 
     [Fact]
@@ -183,12 +186,15 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDtos = await _service.GetAllGameDetailDtosAsync();
 
         Assert.NotNull(gameDetailDtos);
-        Assert.Equal(6, gameDetailDtos.Count);
+        Assert.Equal(6, gameDetailDtos.Data?.Count);
 
-        var gameDetailDto = gameDetailDtos.First();
+        if (gameDetailDtos.Data != null)
+        {
+            var gameDetailDto = gameDetailDtos.Data.First();
 
-        Assert.NotNull(gameDetailDto.StatWithoutFkObjectsDtos);
-        Assert.Equal(4, gameDetailDto.StatWithoutFkObjectsDtos.Count());
+            Assert.NotNull(gameDetailDto.StatWithoutFkObjectsDtos);
+            Assert.Equal(4, gameDetailDto.StatWithoutFkObjectsDtos.Count());
+        }
     }
 
     [Fact]
@@ -197,12 +203,15 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDtos = await _service.GetAllGameDetailDtosAsync();
 
         Assert.NotNull(gameDetailDtos);
-        Assert.Equal(6, gameDetailDtos.Count);
+        Assert.Equal(6, gameDetailDtos.Data?.Count);
 
-        var gameDetailDto = gameDetailDtos.First();
+        if (gameDetailDtos.Data != null)
+        {
+            var gameDetailDto = gameDetailDtos.Data.First();
 
-        Assert.NotNull(gameDetailDto.PlatformWithoutFkObjectsDtos);
-        Assert.Equal(3, gameDetailDto.PlatformWithoutFkObjectsDtos.Count());
+            Assert.NotNull(gameDetailDto.PlatformWithoutFkObjectsDtos);
+            Assert.Equal(3, gameDetailDto.PlatformWithoutFkObjectsDtos.Count());
+        }
     }
 
     [Fact]
@@ -211,7 +220,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDtos = await _service.GetAllGameDetailDtosByNameAsync("GoodGame");
 
         Assert.NotNull(gameDetailDtos);
-        Assert.Equal(2, gameDetailDtos.Count);
+        Assert.Equal(2, gameDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -220,7 +229,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDtos = await _service.GetAllGameDetailDtosByNameAsync("goodgame");
 
         Assert.NotNull(gameDetailDtos);
-        Assert.Equal(2, gameDetailDtos.Count);
+        Assert.Equal(2, gameDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -229,7 +238,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDtos = await _service.GetAllGameDetailDtosByNameAsync("NonExistentGame");
 
         Assert.NotNull(gameDetailDtos);
-        Assert.Empty(gameDetailDtos);
+        Assert.Equal(0, gameDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -238,7 +247,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
 
         Assert.NotNull(gameDetailDto);
-        Assert.Equal(1, gameDetailDto.Id);
+        Assert.Equal(1, gameDetailDto.Data?.Id);
     }
 
     [Fact]
@@ -247,8 +256,8 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(100);
 
         Assert.NotNull(gameDetailDto);
-        Assert.Equal(0, gameDetailDto.Id);
-        Assert.Equal(string.Empty, gameDetailDto.Name);
+        Assert.Equal(0, gameDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, gameDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -257,8 +266,8 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(0);
 
         Assert.NotNull(gameDetailDto);
-        Assert.Equal(0, gameDetailDto.Id);
-        Assert.Equal(string.Empty, gameDetailDto.Name);
+        Assert.Equal(0, gameDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, gameDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -267,8 +276,8 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(-1);
 
         Assert.NotNull(gameDetailDto);
-        Assert.Equal(0, gameDetailDto.Id);
-        Assert.Equal(string.Empty, gameDetailDto.Name);
+        Assert.Equal(0, gameDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, gameDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -277,8 +286,8 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
 
         Assert.NotNull(gameDetailDto);
-        Assert.NotNull(gameDetailDto.CharacterWithoutFkObjectsDtos);
-        Assert.Single(gameDetailDto.CharacterWithoutFkObjectsDtos);
+        Assert.NotNull(gameDetailDto.Data?.CharacterWithoutFkObjectsDtos);
+        Assert.Equal(1, gameDetailDto.Data?.CharacterWithoutFkObjectsDtos.Count());
     }
 
     [Fact]
@@ -287,8 +296,8 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
 
         Assert.NotNull(gameDetailDto);
-        Assert.NotNull(gameDetailDto.StatWithoutFkObjectsDtos);
-        Assert.Equal(4, gameDetailDto.StatWithoutFkObjectsDtos.Count());
+        Assert.NotNull(gameDetailDto.Data?.StatWithoutFkObjectsDtos);
+        Assert.Equal(4, gameDetailDto.Data?.StatWithoutFkObjectsDtos.Count());
     }
 
     [Fact]
@@ -297,7 +306,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
 
         Assert.NotNull(gameDetailDto);
-        Assert.NotNull(gameDetailDto.PlatformWithoutFkObjectsDtos);
-        Assert.Equal(3, gameDetailDto.PlatformWithoutFkObjectsDtos.Count());
+        Assert.NotNull(gameDetailDto.Data?.PlatformWithoutFkObjectsDtos);
+        Assert.Equal(3, gameDetailDto.Data?.PlatformWithoutFkObjectsDtos.Count());
     }
 }

@@ -18,7 +18,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platforms = await _service.GetAllPlatformsAsync();
 
         Assert.NotNull(platforms);
-        Assert.Equal(6, platforms.Count);
+        Assert.Equal(6, platforms.Data?.Count);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platform = await _service.GetPlatformByIdAsync(1);
 
         Assert.NotNull(platform);
-        Assert.Equal(1, platform.Id);
+        Assert.Equal(1, platform.Data?.Id);
     }
 
     [Fact]
@@ -44,9 +44,9 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platform = await _service.CreatePlatformAsync(platformForCreationDto);
 
         Assert.NotNull(platform);
-        Assert.Equal("NewPlatform", platform.Name);
+        Assert.Equal("NewPlatform", platform.Data?.Name);
 
-        await _service.DeletePlatformAsync(platform.Id);
+        if (platform.Data != null) await _service.DeletePlatformAsync(platform.Data.Id);
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platform = await _service.UpdatePlatformAsync(1, platformForUpdateDto);
 
         Assert.NotNull(platform);
-        Assert.Equal("UpdatedPlatform", platform.Name);
+        Assert.Equal("UpdatedPlatform", platform.Data?.Name);
     }
 
     [Fact]
@@ -92,12 +92,12 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
     {
         var platform = await _service.CreatePlatformAsync(new PlatformForCreationDto { Name = "NewPlatform" });
 
-        if (platform != null) await _service.DeletePlatformAsync(platform.Id);
+        if (platform.Data != null) await _service.DeletePlatformAsync(platform.Data.Id);
 
         var platforms = await _service.GetAllPlatformsAsync();
 
         Assert.NotNull(platform);
-        Assert.Equal(6, platforms.Count);
+        Assert.Equal(6, platforms.Data?.Count);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platforms = await _service.GetAllPlatformsAsync();
 
         Assert.NotNull(platforms);
-        Assert.Equal(6, platforms.Count);
+        Assert.Equal(6, platforms.Data?.Count);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platforms = await _service.GetAllPlatformsAsync();
 
         Assert.NotNull(platforms);
-        Assert.Equal(6, platforms.Count);
+        Assert.Equal(6, platforms.Data?.Count);
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platforms = await _service.GetAllPlatformsAsync();
 
         Assert.NotNull(platforms);
-        Assert.Equal(6, platforms.Count);
+        Assert.Equal(6, platforms.Data?.Count);
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDtos = await _service.GetAllPlatformDetailDtosAsync();
 
         Assert.NotNull(platformDetailDtos);
-        Assert.Equal(6, platformDetailDtos.Count);
+        Assert.Equal(6, platformDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -148,11 +148,11 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDtos = await _service.GetAllPlatformDetailDtosAsync();
 
         Assert.NotNull(platformDetailDtos);
-        Assert.Equal(6, platformDetailDtos.Count);
+        Assert.Equal(6, platformDetailDtos.Data?.Count);
 
-        var platformDetailDto = platformDetailDtos.First();
+        var platformDetailDto = platformDetailDtos.Data?.First();
 
-        Assert.NotNull(platformDetailDto.GameWithoutFkObjectsDtos);
+        Assert.NotNull(platformDetailDto?.GameWithoutFkObjectsDtos);
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDtos = await _service.GetAllPlatformDetailDtosByNameAsync("Platform");
 
         Assert.NotNull(platformDetailDtos);
-        Assert.Equal(6, platformDetailDtos.Count);
+        Assert.Equal(6, platformDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDtos = await _service.GetAllPlatformDetailDtosByNameAsync("NonExistingPlatform");
 
         Assert.NotNull(platformDetailDtos);
-        Assert.Empty(platformDetailDtos);
+        Assert.Equal(0, platformDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -179,7 +179,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDtos = await _service.GetAllPlatformDetailDtosByNameAsync("platform");
 
         Assert.NotNull(platformDetailDtos);
-        Assert.Equal(6, platformDetailDtos.Count);
+        Assert.Equal(6, platformDetailDtos.Data?.Count);
     }
 
     [Fact]
@@ -188,11 +188,11 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDtos = await _service.GetAllPlatformDetailDtosByNameAsync("Platform");
 
         Assert.NotNull(platformDetailDtos);
-        Assert.Equal(6, platformDetailDtos.Count);
+        Assert.Equal(6, platformDetailDtos.Data?.Count);
 
-        var platformDetailDto = platformDetailDtos.First();
+        var platformDetailDto = platformDetailDtos.Data?.First();
 
-        Assert.NotNull(platformDetailDto.GameWithoutFkObjectsDtos);
+        Assert.NotNull(platformDetailDto?.GameWithoutFkObjectsDtos);
     }
 
     [Fact]
@@ -201,7 +201,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDto = await _service.GetPlatformDetailDtoByIdAsync(1);
 
         Assert.NotNull(platformDetailDto);
-        Assert.Equal(1, platformDetailDto.Id);
+        Assert.Equal(1, platformDetailDto.Data?.Id);
     }
 
     [Fact]
@@ -210,8 +210,8 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDto = await _service.GetPlatformDetailDtoByIdAsync(100);
 
         Assert.NotNull(platformDetailDto);
-        Assert.Equal(0, platformDetailDto.Id);
-        Assert.Equal(string.Empty, platformDetailDto.Name);
+        Assert.Equal(0, platformDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, platformDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -220,8 +220,8 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDto = await _service.GetPlatformDetailDtoByIdAsync(0);
 
         Assert.NotNull(platformDetailDto);
-        Assert.Equal(0, platformDetailDto.Id);
-        Assert.Equal(string.Empty, platformDetailDto.Name);
+        Assert.Equal(0, platformDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, platformDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -230,8 +230,8 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDto = await _service.GetPlatformDetailDtoByIdAsync(-1);
 
         Assert.NotNull(platformDetailDto);
-        Assert.Equal(0, platformDetailDto.Id);
-        Assert.Equal(string.Empty, platformDetailDto.Name);
+        Assert.Equal(0, platformDetailDto.Data?.Id);
+        Assert.Equal(string.Empty, platformDetailDto.Data?.Name);
     }
 
     [Fact]
@@ -240,7 +240,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var platformDetailDto = await _service.GetPlatformDetailDtoByIdAsync(1);
 
         Assert.NotNull(platformDetailDto);
-        Assert.Equal(1, platformDetailDto.Id);
-        Assert.NotNull(platformDetailDto.GameWithoutFkObjectsDtos);
+        Assert.Equal(1, platformDetailDto.Data?.Id);
+        Assert.NotNull(platformDetailDto.Data?.GameWithoutFkObjectsDtos);
     }
 }
