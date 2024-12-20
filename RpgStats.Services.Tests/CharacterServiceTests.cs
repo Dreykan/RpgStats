@@ -1,4 +1,3 @@
-using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 
 namespace RpgStats.Services.Tests;
@@ -15,268 +14,241 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task GetAllCharactersAsync_ReturnsAllCharacters()
     {
-        var characters = await _service.GetAllCharactersAsync();
+        var result = await _service.GetAllCharactersAsync();
 
-        Assert.NotNull(characters);
-        Assert.Equal(5, characters.Data?.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(5, result.Data?.Count);
     }
 
     [Fact]
     public async Task GetAllCharactersByGameIdAsync_ReturnsCharactersByGameId()
     {
-        var characters = await _service.GetAllCharactersByGameIdAsync(2);
+        var result = await _service.GetAllCharactersByGameIdAsync(2);
 
-        Assert.NotNull(characters);
-        Assert.Equal(2, characters.Data?.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(2, result.Data?.Count);
     }
 
     [Fact]
-    public async Task GetAllCharactersByGameIdAsync_ReturnsEmptyList()
+    public async Task GetAllCharactersByGameIdAsync_Error_WhenGameNotFound()
     {
-        var characters = await _service.GetAllCharactersByGameIdAsync(100);
+        var result = await _service.GetAllCharactersByGameIdAsync(100);
 
-        Assert.NotNull(characters);
-        if (characters.Data != null) Assert.Empty(characters.Data);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Equal("No characters found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task GetAllCharactersByNameAsync_ReturnsCharactersByName()
     {
-        var characters = await _service.GetAllCharactersByNameAsync("Char1");
+        var result = await _service.GetAllCharactersByNameAsync("Char1");
 
-        Assert.NotNull(characters);
-        Assert.Equal("Char1", characters.Data?[0].Name);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal("Char1", result.Data?[0].Name);
     }
 
     [Fact]
     public async Task GetAllCharactersByNameAsync_ReturnsCharactersByNameCaseInsensitive()
     {
-        var characters = await _service.GetAllCharactersByNameAsync("char1");
+        var result = await _service.GetAllCharactersByNameAsync("char1");
 
-        Assert.NotNull(characters);
-        Assert.Equal("Char1", characters.Data?[0].Name);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal("Char1", result.Data?[0].Name);
     }
 
     [Fact]
-    public async Task GetAllCharactersByNameAsync_ReturnsEmptyList()
+    public async Task GetAllCharactersByNameAsync_Error_WhenNameNotFound()
     {
-        var characters = await _service.GetAllCharactersByNameAsync("Char4");
+        var result = await _service.GetAllCharactersByNameAsync("Char4");
 
-        Assert.NotNull(characters);
-        if (characters.Data != null) Assert.Empty(characters.Data);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Equal("No characters found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task GetCharacterById_ReturnsCharacter()
     {
-        var character = await _service.GetCharacterByIdAsync(1);
+        var result = await _service.GetCharacterByIdAsync(1);
 
-        Assert.NotNull(character.Data);
-        Assert.Equal("Test1", character.Data.Name);
+        Assert.NotNull(result.Data);
+        Assert.True(result.Success);
+        Assert.Equal("Test1", result.Data.Name);
     }
 
     [Fact]
-    public async Task GetCharacterById_ThrowsCharacterNotFoundException()
+    public async Task GetCharacterById_Error_WhenCharacterNotFound()
     {
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() => _service.GetCharacterByIdAsync(100));
+        var result = await _service.GetCharacterByIdAsync(100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.NotNull(result.ErrorMessage);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task CreateCharacterAsync_ReturnsCharacter()
     {
-        var character = await _service.CreateCharacterAsync(1, new CharacterForCreationDto { Name = "NewChar" });
+        var result = await _service.CreateCharacterAsync(1, new CharacterForCreationDto { Name = "NewChar" });
 
-        Assert.NotNull(character);
-        Assert.Equal("NewChar", character.Data?.Name);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal("NewChar", result.Data?.Name);
     }
 
     [Fact]
-    public async Task CreateCharacterAsync_ThrowsGameNotFoundException()
+    public async Task CreateCharacterAsync_Error_WhenGameIdIsNotFound()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.CreateCharacterAsync(100, new CharacterForCreationDto { Name = "NewChar" }));
-    }
+            var result = await _service.CreateCharacterAsync(100, new CharacterForCreationDto { Name = "NewChar" });
 
-    [Fact]
-    public async Task CreateCharacterAsync_ThrowsGameNotFoundException_WhenGameIdIsNull()
-    {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.CreateCharacterAsync(0, new CharacterForCreationDto { Name = "NewChar" }));
-    }
-
-    [Fact]
-    public async Task CreateCharacterAsync_ThrowsGameNotFoundException_WhenGameIdIsNegative()
-    {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.CreateCharacterAsync(-1, new CharacterForCreationDto { Name = "NewChar" }));
-    }
-
-    [Fact]
-    public async Task CreateCharacterAsync_ThrowsGameNotFoundException_WhenGameIdIsZero()
-    {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.CreateCharacterAsync(0, new CharacterForCreationDto { Name = "NewChar" }));
-    }
-
-    [Fact]
-    public async Task CreateCharacterAsync_ThrowsGameNotFoundException_WhenGameIdIsNegativeAndGameIsNull()
-    {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.CreateCharacterAsync(-1, new CharacterForCreationDto { Name = "NewChar" }));
+            Assert.NotNull(result);
+            Assert.False(result.Success);
+            Assert.Null(result.Data);
+            Assert.NotNull(result.ErrorMessage);
+            Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task UpdateCharacterAsync_ReturnsCharacter()
     {
-        var character = await _service.UpdateCharacterAsync(2, 1, new CharacterForUpdateDto { Name = "UpdatedChar" });
+        var result = await _service.UpdateCharacterAsync(2, 1, new CharacterForUpdateDto { Name = "UpdatedChar" });
 
-        Assert.NotNull(character);
-        Assert.Equal("UpdatedChar", character.Data?.Name);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal("UpdatedChar", result.Data?.Name);
     }
 
     [Fact]
-    public async Task UpdateCharacterAsync_ThrowsCharacterNotFoundException()
+    public async Task UpdateCharacterAsync_Error_WhenCharacterNotFound()
     {
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() =>
-            _service.UpdateCharacterAsync(100, 1, new CharacterForUpdateDto { Name = "UpdatedChar" }));
+        var result = await _service.UpdateCharacterAsync(100, 1, new CharacterForUpdateDto { Name = "UpdatedChar" });
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
+        Assert.Null(result.Data);
     }
 
     [Fact]
-    public async Task UpdateCharacterAsync_ThrowsGameNotFoundException()
+    public async Task UpdateCharacterAsync_Error_WhenGameNotFound()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.UpdateCharacterAsync(1, 100, new CharacterForUpdateDto { Name = "UpdatedChar" }));
-    }
+        var result = await _service.UpdateCharacterAsync(1, 100, new CharacterForUpdateDto { Name = "UpdatedChar" });
 
-    [Fact]
-    public async Task UpdateCharacterAsync_ThrowsCharacterNotFoundException_WhenCharacterIdIsZero()
-    {
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() =>
-            _service.UpdateCharacterAsync(0, 1, new CharacterForUpdateDto { Name = "UpdatedChar" }));
-    }
-
-    [Fact]
-    public async Task UpdateCharacterAsync_ThrowsCharacterNotFoundException_WhenCharacterIdIsNegative()
-    {
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() =>
-            _service.UpdateCharacterAsync(-1, 1, new CharacterForUpdateDto { Name = "UpdatedChar" }));
-    }
-
-    [Fact]
-    public async Task UpdateCharacterAsync_ThrowsGameNotFoundException_WhenGameIdIsZero()
-    {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.UpdateCharacterAsync(1, 0, new CharacterForUpdateDto { Name = "UpdatedChar" }));
-    }
-
-    [Fact]
-    public async Task UpdateCharacterAsync_ThrowsGameNotFoundException_WhenGameIdIsNegative()
-    {
-        await Assert.ThrowsAsync<GameNotFoundException>(() =>
-            _service.UpdateCharacterAsync(1, -1, new CharacterForUpdateDto { Name = "UpdatedChar" }));
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
+        Assert.Null(result.Data);
     }
 
     [Fact]
     public async Task DeleteCharacterAsync_DeletesCharacter()
     {
-        await _service.DeleteCharacterAsync(3);
+        var result = await _service.DeleteCharacterAsync(3);
 
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() => _service.GetCharacterByIdAsync(3));
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal("Test3", result.Data?.Name);
     }
 
     [Fact]
-    public async Task DeleteCharacterAsync_DoesNothing_WhenCharacterIdNotFound()
+    public async Task DeleteCharacterAsync_Error_WhenCharacterIdNotFound()
     {
-        await _service.DeleteCharacterAsync(100);
+        var result = await _service.DeleteCharacterAsync(100);
 
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() => _service.GetCharacterByIdAsync(100));
-    }
-
-    [Fact]
-    public async Task DeleteCharacterAsync_DoesNothing_WhenCharacterIdIsZero()
-    {
-        await _service.DeleteCharacterAsync(0);
-
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() => _service.GetCharacterByIdAsync(0));
-    }
-
-    [Fact]
-    public async Task DeleteCharacterAsync_DoesNothing_WhenCharacterIdIsNegative()
-    {
-        await _service.DeleteCharacterAsync(-1);
-
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() => _service.GetCharacterByIdAsync(-1));
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.NotNull(result.ErrorMessage);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task GetAllCharacterDetailDtosAsync_ReturnsAllCharacterDetailDtos()
     {
-        var characterDetailDtos = await _service.GetAllCharacterDetailDtosAsync();
+        var result = await _service.GetAllCharacterDetailDtosAsync();
 
-        Assert.NotNull(characterDetailDtos);
-        Assert.Equal(6, characterDetailDtos.Data?.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(6, result.Data?.Count);
     }
 
     [Fact]
     public async Task GetAllCharacterDetailDtosByGameIdAsync_ReturnsCharactersByGameId()
     {
-        var characterDetailDtos = await _service.GetAllCharacterDetailDtosByGameIdAsync(2);
+        var result = await _service.GetAllCharacterDetailDtosByGameIdAsync(2);
 
-        Assert.NotNull(characterDetailDtos);
-        Assert.Equal(1, characterDetailDtos.Data?.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Count);
     }
 
     [Fact]
-    public async Task GetAllCharacterDetailDtosByGameIdAsync_ReturnsEmptyList()
+    public async Task GetAllCharacterDetailDtosByGameIdAsync_Error_WhenGameNotFound()
     {
-        var characterDetailDtos = await _service.GetAllCharacterDetailDtosByGameIdAsync(100);
+        var result = await _service.GetAllCharacterDetailDtosByGameIdAsync(100);
 
-        Assert.NotNull(characterDetailDtos);
-        Assert.Equal(0, characterDetailDtos.Data?.Count);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Equal("No characters found", result.ErrorMessage);
+        Assert.Null(result.Data);
     }
 
     [Fact]
     public async Task GetAllCharacterDetailDtosByNameAsync_ReturnsCharactersByName()
     {
-        var characterDetailDtos = await _service.GetAllCharacterDetailDtosByNameAsync("Char1");
+        var result = await _service.GetAllCharacterDetailDtosByNameAsync("Char1");
 
-        Assert.NotNull(characterDetailDtos);
-        Assert.Equal(1, characterDetailDtos.Data?.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Count);
     }
 
     [Fact]
     public async Task GetAllCharacterDetailDtosByNameAsync_ReturnsCharactersByNameCaseInsensitive()
     {
-        var characterDetailDtos = await _service.GetAllCharacterDetailDtosByNameAsync("char1");
+        var result = await _service.GetAllCharacterDetailDtosByNameAsync("char1");
 
-        Assert.NotNull(characterDetailDtos);
-        Assert.Equal(1, characterDetailDtos.Data?.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Count);
     }
 
     [Fact]
-    public async Task GetAllCharacterDetailDtosByNameAsync_ReturnsEmptyList()
+    public async Task GetAllCharacterDetailDtosByNameAsync_Error_WhenNameNotFound()
     {
-        var characterDetailDtos = await _service.GetAllCharacterDetailDtosByNameAsync("Char4");
+        var result = await _service.GetAllCharacterDetailDtosByNameAsync("Char4");
 
-        Assert.NotNull(characterDetailDtos);
-        Assert.Equal(0, characterDetailDtos.Data?.Count);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("No characters found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task GetCharacterDetailDtoById_ReturnsCharacterDetailDto()
     {
-        var characterDetailDto = await _service.GetCharacterDetailDtoByIdAsync(1);
+        var result = await _service.GetCharacterDetailDtoByIdAsync(1);
 
-        Assert.NotNull(characterDetailDto);
-        Assert.Equal("Test1", characterDetailDto.Data?.Name);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal("Test1", result.Data?.Name);
     }
 
     [Fact]
-    public async Task GetCharacterDetailDtoById_GetEmptyCharacterDetailDto()
+    public async Task GetCharacterDetailDtoById_Error_WhenCharacterNotFound()
     {
-        var characterDetailDto = await _service.GetCharacterDetailDtoByIdAsync(100);
+        var result = await _service.GetCharacterDetailDtoByIdAsync(100);
 
-        Assert.NotNull(characterDetailDto);
-        Assert.Equal(string.Empty, characterDetailDto.Data?.Name);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 }
