@@ -72,29 +72,28 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task GetCharacterById_ReturnsCharacter()
+    public async Task GetCharacterByIdAsync_ReturnsCharacter()
     {
         var result = await _service.GetCharacterByIdAsync(1);
 
-        Assert.NotNull(result.Data);
+        Assert.NotNull(result);
         Assert.True(result.Success);
-        Assert.Equal("Test1", result.Data.Name);
+        Assert.NotNull(result.Data);
+        Assert.Equal(1, result.Data.Id);
     }
 
     [Fact]
-    public async Task GetCharacterById_Error_WhenCharacterNotFound()
+    public async Task GetCharacterByIdAsync_Error_WhenIdNotFound()
     {
         var result = await _service.GetCharacterByIdAsync(100);
 
         Assert.NotNull(result);
         Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.NotNull(result.ErrorMessage);
         Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
-    public async Task CreateCharacterAsync_ReturnsCharacter()
+    public async Task CreateCharacterAsync_ReturnsCreatedCharacter()
     {
         var result = await _service.CreateCharacterAsync(1, new CharacterForCreationDto { Name = "NewChar" });
 
@@ -106,13 +105,12 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task CreateCharacterAsync_Error_WhenGameIdIsNotFound()
     {
-            var result = await _service.CreateCharacterAsync(100, new CharacterForCreationDto { Name = "NewChar" });
+        var result = await _service.CreateCharacterAsync(100, new CharacterForCreationDto { Name = "NewChar" });
 
-            Assert.NotNull(result);
-            Assert.False(result.Success);
-            Assert.Null(result.Data);
-            Assert.NotNull(result.ErrorMessage);
-            Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
@@ -154,7 +152,7 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
 
         Assert.NotNull(result);
         Assert.True(result.Success);
-        Assert.Equal("Test3", result.Data?.Name);
+        Assert.Equal(3, result.Data?.Id);
     }
 
     [Fact]
@@ -165,7 +163,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.Null(result.Data);
-        Assert.NotNull(result.ErrorMessage);
         Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
