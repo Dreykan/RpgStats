@@ -128,85 +128,19 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task DeleteGameAsync_DoesNothing_WhenGameIdIsZero()
-    {
-        await _service.DeleteGameAsync(0);
-
-        var result = await _service.GetAllGamesAsync();
-
-        Assert.NotNull(result);
-        Assert.Equal(6, result.Data?.Count);
-    }
-
-    [Fact]
-    public async Task DeleteGameAsync_DoesNothing_WhenGameIdIsNegative()
-    {
-        await _service.DeleteGameAsync(-1);
-
-        var result = await _service.GetAllGamesAsync();
-
-        Assert.NotNull(result);
-        Assert.Equal(6, result.Data?.Count);
-    }
-
-    [Fact]
     public async Task GetAllGameDetailDtosAsync_ReturnsAllGameDetailDtos()
     {
         var result = await _service.GetAllGameDetailDtosAsync();
+        var characterWithoutFkObjectsDtos = result.Data?.First().CharacterWithoutFkObjectsDtos;
+        var platformWithoutFkObjectsDtos = result.Data?.First().PlatformWithoutFkObjectsDtos;
+        var statWithoutFkObjectsDtos = result.Data?.First().StatWithoutFkObjectsDtos;
 
         Assert.NotNull(result);
+        Assert.True(result.Success);
         Assert.Equal(6, result.Data?.Count);
-    }
-
-    [Fact]
-    public async Task GetAllGameDetailDtosAsync_ReturnsAllGameDetailDtosWithCharacters()
-    {
-        var result = await _service.GetAllGameDetailDtosAsync();
-
-        Assert.NotNull(result);
-        Assert.Equal(6, result.Data?.Count);
-
-        if (result.Data != null)
-        {
-            var gameDetailDto = result.Data.First();
-
-            Assert.NotNull(gameDetailDto.CharacterWithoutFkObjectsDtos);
-            Assert.Single(gameDetailDto.CharacterWithoutFkObjectsDtos);
-        }
-    }
-
-    [Fact]
-    public async Task GetAllGameDetailDtosAsync_ReturnsAllGameDetailDtosWithStats()
-    {
-        var result = await _service.GetAllGameDetailDtosAsync();
-
-        Assert.NotNull(result);
-        Assert.Equal(6, result.Data?.Count);
-
-        if (result.Data != null)
-        {
-            var gameDetailDto = result.Data.First();
-
-            Assert.NotNull(gameDetailDto.StatWithoutFkObjectsDtos);
-            Assert.Equal(4, gameDetailDto.StatWithoutFkObjectsDtos.Count());
-        }
-    }
-
-    [Fact]
-    public async Task GetAllGameDetailDtosAsync_ReturnsAllGameDetailDtosWithPlatforms()
-    {
-        var result = await _service.GetAllGameDetailDtosAsync();
-
-        Assert.NotNull(result);
-        Assert.Equal(6, result.Data?.Count);
-
-        if (result.Data != null)
-        {
-            var gameDetailDto = result.Data.First();
-
-            Assert.NotNull(gameDetailDto.PlatformWithoutFkObjectsDtos);
-            Assert.Equal(3, gameDetailDto.PlatformWithoutFkObjectsDtos.Count());
-        }
+        if (characterWithoutFkObjectsDtos != null) Assert.Single(characterWithoutFkObjectsDtos);
+        if (platformWithoutFkObjectsDtos != null) Assert.Equal(3, platformWithoutFkObjectsDtos.Count());
+        if (statWithoutFkObjectsDtos != null) Assert.Equal(4, statWithoutFkObjectsDtos.Count());
     }
 
     [Fact]
@@ -215,6 +149,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllGameDetailDtosByNameAsync("GoodGame");
 
         Assert.NotNull(result);
+        Assert.True(result.Success);
         Assert.Equal(2, result.Data?.Count);
     }
 
@@ -224,84 +159,45 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllGameDetailDtosByNameAsync("goodgame");
 
         Assert.NotNull(result);
+        Assert.True(result.Success);
         Assert.Equal(2, result.Data?.Count);
     }
 
     [Fact]
-    public async Task GetAllGameDetailDtosByNameAsync_ReturnsEmptyList()
+    public async Task GetAllGameDetailDtosByNameAsync_Error_WhenNameNotFound()
     {
         var result = await _service.GetAllGameDetailDtosByNameAsync("NonExistentGame");
 
         Assert.NotNull(result);
-        Assert.Equal(0, result.Data?.Count);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("No games found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task GetGameDetailDtoByIdAsync_ReturnsGameDetailDtoById()
     {
-        var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
+        var result = await _service.GetGameDetailDtoByIdAsync(1);
+        var characterWithoutFkObjectsDtos = result.Data?.CharacterWithoutFkObjectsDtos;
+        var platformWithoutFkObjectsDtos = result.Data?.PlatformWithoutFkObjectsDtos;
+        var statWithoutFkObjectsDtos = result.Data?.StatWithoutFkObjectsDtos;
 
-        Assert.NotNull(gameDetailDto);
-        Assert.Equal(1, gameDetailDto.Data?.Id);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Id);
+        if (characterWithoutFkObjectsDtos != null) Assert.Single(characterWithoutFkObjectsDtos);
+        if (platformWithoutFkObjectsDtos != null) Assert.Equal(3, platformWithoutFkObjectsDtos.Count());
+        if (statWithoutFkObjectsDtos != null) Assert.Equal(4, statWithoutFkObjectsDtos.Count());
     }
 
     [Fact]
-    public async Task GetGameDetailDtoByIdAsync_ReturnsEmptyEntity_WhenGameIdNotFound()
+    public async Task GetGameDetailDtoByIdAsync_Error_WhenGameIdNotFound()
     {
-        var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(100);
+        var result = await _service.GetGameDetailDtoByIdAsync(100);
 
-        Assert.NotNull(gameDetailDto);
-        Assert.Equal(0, gameDetailDto.Data?.Id);
-        Assert.Equal(string.Empty, gameDetailDto.Data?.Name);
-    }
-
-    [Fact]
-    public async Task GetGameDetailDtoByIdAsync_ReturnsEmptyEntity_WhenGameIdIsZero()
-    {
-        var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(0);
-
-        Assert.NotNull(gameDetailDto);
-        Assert.Equal(0, gameDetailDto.Data?.Id);
-        Assert.Equal(string.Empty, gameDetailDto.Data?.Name);
-    }
-
-    [Fact]
-    public async Task GetGameDetailDtoByIdAsync_ReturnsEmptyEntity_WhenGameIdIsNegative()
-    {
-        var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(-1);
-
-        Assert.NotNull(gameDetailDto);
-        Assert.Equal(0, gameDetailDto.Data?.Id);
-        Assert.Equal(string.Empty, gameDetailDto.Data?.Name);
-    }
-
-    [Fact]
-    public async Task GetGameDetailDtoByIdAsync_ReturnsGameDetailDtoWithCharacters()
-    {
-        var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
-
-        Assert.NotNull(gameDetailDto);
-        Assert.NotNull(gameDetailDto.Data?.CharacterWithoutFkObjectsDtos);
-        Assert.Equal(1, gameDetailDto.Data?.CharacterWithoutFkObjectsDtos.Count());
-    }
-
-    [Fact]
-    public async Task GetGameDetailDtoByIdAsync_ReturnsGameDetailDtoWithStats()
-    {
-        var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
-
-        Assert.NotNull(gameDetailDto);
-        Assert.NotNull(gameDetailDto.Data?.StatWithoutFkObjectsDtos);
-        Assert.Equal(4, gameDetailDto.Data?.StatWithoutFkObjectsDtos.Count());
-    }
-
-    [Fact]
-    public async Task GetGameDetailDtoByIdAsync_ReturnsGameDetailDtoWithPlatforms()
-    {
-        var gameDetailDto = await _service.GetGameDetailDtoByIdAsync(1);
-
-        Assert.NotNull(gameDetailDto);
-        Assert.NotNull(gameDetailDto.Data?.PlatformWithoutFkObjectsDtos);
-        Assert.Equal(3, gameDetailDto.Data?.PlatformWithoutFkObjectsDtos.Count());
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
     }
 }

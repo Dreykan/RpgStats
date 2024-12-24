@@ -192,8 +192,7 @@ public class GameService : IGameService
             .FirstOrDefaultAsync(g => g.Id == gameId);
 
         if (game == null)
-            ServiceResult<GameDetailDto>.ErrorResult($"Game with ID {gameId} not found");
-
+            return ServiceResult<GameDetailDto>.ErrorResult($"Game with ID {gameId} not found");
 
         var platforms = await _dbContext.Platforms
             .ToListAsync();

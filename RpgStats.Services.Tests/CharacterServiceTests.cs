@@ -239,7 +239,7 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task GetCharacterDetailDtoById_Error_WhenCharacterNotFound()
+    public async Task GetCharacterDetailDtoById_Error_WhenCharacterIdNotFound()
     {
         var result = await _service.GetCharacterDetailDtoByIdAsync(100);
 
