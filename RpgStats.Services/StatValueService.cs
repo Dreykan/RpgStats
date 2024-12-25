@@ -25,7 +25,7 @@ public class StatValueService : IStatValueService
             .ToListAsync();
 
         if (statValues.Count == 0)
-            return ServiceResult<List<StatValueDto>>.ErrorResult("No stat values found");
+            return ServiceResult<List<StatValueDto>>.ErrorResult("No StatValues found");
 
         return ServiceResult<List<StatValueDto>>.SuccessResult(statValues.Adapt<List<StatValueDto>>());
     }
@@ -39,7 +39,7 @@ public class StatValueService : IStatValueService
             .ToListAsync();
 
         if (statValues.Count == 0)
-            return ServiceResult<List<StatValueDto>>.ErrorResult("No stat values found");
+            return ServiceResult<List<StatValueDto>>.ErrorResult("No StatValues found");
 
         return ServiceResult<List<StatValueDto>>.SuccessResult(statValues.Adapt<List<StatValueDto>>());
     }
@@ -53,7 +53,7 @@ public class StatValueService : IStatValueService
             .ToListAsync();
 
         if (statValues.Count == 0)
-            return ServiceResult<List<StatValueDto>>.ErrorResult("No stat values found");
+            return ServiceResult<List<StatValueDto>>.ErrorResult("No StatValues found");
 
         return ServiceResult<List<StatValueDto>>.SuccessResult(statValues.Adapt<List<StatValueDto>>());
     }
@@ -66,7 +66,7 @@ public class StatValueService : IStatValueService
             .FirstOrDefaultAsync(sv => sv.Id == statId);
 
         if (statValue == null)
-            return ServiceResult<StatValueDto>.ErrorResult($"Stat value with ID {statId} not found");
+            return ServiceResult<StatValueDto>.ErrorResult($"StatValue with ID {statId} not found");
 
         return ServiceResult<StatValueDto>.SuccessResult(statValue.Adapt<StatValueDto>());
     }
@@ -101,7 +101,7 @@ public class StatValueService : IStatValueService
     {
         var statValue = await _dbContext.StatValues.FirstOrDefaultAsync(sv => sv.Id == statValueId);
         if (statValue == null)
-            return ServiceResult<StatValueDto>.ErrorResult($"Stat value with ID {statValueId} not found");
+            return ServiceResult<StatValueDto>.ErrorResult($"StatValue with ID {statValueId} not found");
 
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
         if (character == null)
@@ -133,7 +133,7 @@ public class StatValueService : IStatValueService
     {
         var statValue = _dbContext.StatValues.FirstOrDefaultAsync(sv => sv.Id == statId).Result;
         if (statValue == null)
-            return ServiceResult<StatValueDto>.ErrorResult($"Stat value with ID {statId} not found");
+            return ServiceResult<StatValueDto>.ErrorResult($"StatValue with ID {statId} not found");
 
         _dbContext.Remove(statValue);
         var result = await _dbContext.SaveChangesAsync();

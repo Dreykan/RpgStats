@@ -1,4 +1,3 @@
-using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 
 namespace RpgStats.Services.Tests;

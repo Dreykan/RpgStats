@@ -1,4 +1,3 @@
-using RpgStats.Domain.Exceptions;
 using Xunit.Priority;
 
 namespace RpgStats.Services.Tests;
