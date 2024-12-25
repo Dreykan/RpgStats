@@ -100,6 +100,11 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         Assert.NotNull(result);
         Assert.True(result.Success);
         Assert.Equal("NewChar", result.Data?.Name);
+
+        if (result.Data != null)
+        {
+            await _service.DeleteCharacterAsync(result.Data.Id);
+        }
     }
 
     [Fact]
@@ -173,7 +178,7 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
 
         Assert.NotNull(result);
         Assert.True(result.Success);
-        Assert.Equal(6, result.Data?.Count);
+        Assert.Equal(5, result.Data?.Count);
     }
 
     [Fact]

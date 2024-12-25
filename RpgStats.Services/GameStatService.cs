@@ -57,7 +57,7 @@ public class GameStatService : IGameStatService
             .FirstOrDefaultAsync(gs => gs.Id == gameStatId);
 
         if (gameStat == null)
-            return ServiceResult<GameStatDto>.ErrorResult("No GameStat found");
+            return ServiceResult<GameStatDto>.ErrorResult($"GameStat with ID {gameStatId} not found");
 
         return ServiceResult<GameStatDto>.SuccessResult(gameStat.Adapt<GameStatDto>());
     }

@@ -90,7 +90,7 @@ public class DatabaseFixture : IDisposable
         Context.GameStats.Add(new GameStat { GameId = 2, StatId = 5 });
         Context.GameStats.Add(new GameStat { GameId = 3, StatId = 1 });
         Context.GameStats.Add(new GameStat { GameId = 3, StatId = 2 });
-        Context.GameStats.Add(new GameStat { GameId = 3, StatId = 5 });
+        Context.GameStats.Add(new GameStat { GameId = 3, StatId = 4 });
         Context.GameStats.Add(new GameStat { GameId = 3, StatId = 6 });
     }
 

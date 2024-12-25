@@ -57,7 +57,7 @@ public class PlatformGameService : IPlatformGameService
             .FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
         if (platformGame == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult("No PlatformGame found");
+            return ServiceResult<PlatformGameDto>.ErrorResult($"PlatformGame with ID {platformGameId} not found");
 
         return ServiceResult<PlatformGameDto>.SuccessResult(platformGame.Adapt<PlatformGameDto>());
     }
