@@ -1,5 +1,6 @@
 ﻿@page "/characterDetail/{Id:int}"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
@@ -99,7 +100,8 @@ else
     {
         if (_character != null)
         {
-            _statValues = await HttpClient.GetFromJsonAsync<List<StatValueDto>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
+            var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
+            _statValues = serviceResult?.Data;
         }
     }
 
@@ -110,7 +112,8 @@ else
         if (_statValues != null)
             foreach (var statValue in _statValues)
             {
-                var stat = await HttpClient.GetFromJsonAsync<StatDto>($"api/Stat/GetStatById/{statValue.StatId}");
+                var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<StatDto>>($"api/Stat/GetStatById/{statValue.StatId}");
+                var stat = serviceResult?.Data;
                 if (stat != null && _stats.Contains(stat) == false)
                 {
                     _stats.Add(stat);
@@ -120,7 +123,8 @@ else
 
     private async Task GetCharacter()
     {
-        _character = await HttpClient.GetFromJsonAsync<CharacterDetailDto>($"api/Character/GetCharacterDetailById/{Id}");
+        var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
+        _character = serviceResult?.Data;
     }
 
     private static string TurnByteArrayToImage(byte[] imageBytes)
@@ -146,8 +150,13 @@ else
 
         if (result.Canceled == false)
         {
-            await HttpClient.DeleteAsync($"api/Character/DeleteCharacter/{Id}");
-            NavigationManager.NavigateTo("/allCharacters");
+            var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<CharacterDto>>($"api/Character/DeleteCharacter/{Id}");
+            if (serviceResult?.Success == true)
+                NavigationManager.NavigateTo("/allCharacters");
+            else
+            {
+                await DialogService.ShowMessageBox("Fehler", "Charakter konnte nicht gelöscht werden.");
+            }
         }
     }
 

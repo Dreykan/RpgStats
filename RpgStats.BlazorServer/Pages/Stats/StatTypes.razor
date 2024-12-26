@@ -1,4 +1,5 @@
 ﻿@page "/allStatTypes"
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IDialogService DialogService
 @inject IHttpClientFactory HttpClientFactory
@@ -44,8 +45,8 @@
 
     private async Task GetStats()
     {
-        _stats = await HttpClient.GetFromJsonAsync<List<StatDto>>("api/Stat/GetStats");
-        _stats = _stats?.OrderBy(x => x.Name).ToList();
+        var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<List<StatDto>>>("api/Stat/GetStats");
+        _stats = serviceResult?.Data?.OrderBy(x => x.Name).ToList();
     }
 
     private async Task ShowNewStatTypeDialog()
