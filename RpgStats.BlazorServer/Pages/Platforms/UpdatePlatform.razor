@@ -1,7 +1,9 @@
 ﻿@page "/updatePlatform/{Id:int}"
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
+@inject IDialogService DialogService
 
 @if (_platform == null)
 {
@@ -49,7 +51,8 @@ else
 
     private async Task GetPlatform()
     {
-        _platform = await HttpClient.GetFromJsonAsync<PlatformDetailDto>($"api/Platform/GetPlatformDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<PlatformDetailDto>>($"api/Platform/GetPlatformDetailById/{Id}");
+        _platform = response?.Data;
     }
 
     private async Task Update()
@@ -59,15 +62,17 @@ else
             return;
         }
 
-        var result = await HttpClient.PutAsJsonAsync($"api/Platform/UpdatePlatform/{Id}", _platformForUpdateDto);
-        if (result.IsSuccessStatusCode)
+        var response = await HttpClient.PutAsJsonAsync($"api/Platform/UpdatePlatform/{Id}", _platformForUpdateDto);
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformDto>>();
+        if (!response.IsSuccessStatusCode || result?.Success == false)
         {
-            NavigationManager.NavigateTo("/allPlatforms");
+            await ShowErrorMessage(result?.ErrorMessage ?? "Error");
         }
-        else
-        {
-            _errors = new[] {"Error while updating the platform"};
-        }
+        NavigationManager.NavigateTo("/allPlatforms");
     }
 
+    private async Task ShowErrorMessage(string text)
+    {
+        await DialogService.ShowMessageBox("Error", text);
+    }
 }

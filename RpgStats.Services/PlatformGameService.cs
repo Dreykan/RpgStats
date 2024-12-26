@@ -133,7 +133,7 @@ public class PlatformGameService : IPlatformGameService
     {
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToList();
         if (platformGames.Count == 0)
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult("No PlatformGames found");
+            return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
 
         _dbContext.RemoveRange(platformGames);
         var result = await _dbContext.SaveChangesAsync();

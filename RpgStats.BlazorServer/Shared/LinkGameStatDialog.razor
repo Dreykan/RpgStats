@@ -1,4 +1,5 @@
-﻿@using RpgStats.Dto
+﻿@using RpgStats.BlazorServer.Model
+@using RpgStats.Dto
 @inject IHttpClientFactory HttpClientFactory
 
 <MudDialog>
@@ -36,7 +37,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _stats = await HttpClient.GetFromJsonAsync<List<StatDto>>("api/Stat/GetStats");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatDto>>>("api/Stat/GetStats");
+        _stats = response?.Data;
     }
 
     private void Cancel()

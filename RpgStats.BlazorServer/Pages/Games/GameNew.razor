@@ -1,5 +1,6 @@
 ﻿@page "/newGame"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @using SkiaSharp
 @inject IDialogService DialogService
@@ -84,7 +85,13 @@
     private async Task Create()
     {
         var response = await HttpClient.PostAsJsonAsync("api/Game/CreateGame", _gameForCreationDto);
-        response.EnsureSuccessStatusCode();
+
+        var gameContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameDto>>();
+        if (gameContent == null)
+        {
+            await ShowErrorMessage(gameContent?.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
+            return;
+        }
 
         var gameId = await GetIdOfCreatedGame(_gameForCreationDto.Name);
 
@@ -97,7 +104,11 @@
 
         foreach (var selectedPlatformId in selectedPlatformIds)
         {
-            await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{selectedPlatformId}/{gameId}", "");
+            response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{selectedPlatformId}/{gameId}", "");
+            var pgContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformGameDto>>();
+            if (pgContent != null) continue;
+            await ShowErrorMessage(pgContent?.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
+            return;
         }
 
         _gameForCreationDto.Name = "";
@@ -129,12 +140,14 @@
 
     private async Task GetPlatforms()
     {
-        _platformDtos = await HttpClient.GetFromJsonAsync<List<PlatformDto>>("api/Platform/GetPlatforms");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>("api/Platform/GetPlatforms");
+        _platformDtos = response?.Data;
     }
 
     private async Task<long> GetIdOfCreatedGame(string gameName)
     {
-        var gameList = await HttpClient.GetFromJsonAsync<List<GameDto>>($"api/Game/GetGamesByName/{gameName}");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDto>>>($"api/Game/GetGamesByName/{gameName}");
+        var gameList = response?.Data;
         var game = gameList?.FirstOrDefault();
         var id = game?.Id ?? 0;
         return id;
@@ -142,7 +155,8 @@
 
     private async Task<long> GetIdOfPlatform(string platformName)
     {
-        var platformList = await HttpClient.GetFromJsonAsync<List<PlatformDetailDto>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDetailDto>>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
+        var platformList = response?.Data;
         var platform = platformList?.FirstOrDefault();
         var id = platform?.Id ?? 0;
         return id;

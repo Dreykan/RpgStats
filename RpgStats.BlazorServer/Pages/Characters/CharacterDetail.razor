@@ -100,8 +100,8 @@ else
     {
         if (_character != null)
         {
-            var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
-            _statValues = serviceResult?.Data;
+            var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
+            _statValues = response?.Data;
         }
     }
 
@@ -112,8 +112,8 @@ else
         if (_statValues != null)
             foreach (var statValue in _statValues)
             {
-                var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<StatDto>>($"api/Stat/GetStatById/{statValue.StatId}");
-                var stat = serviceResult?.Data;
+                var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<StatDto>>($"api/Stat/GetStatById/{statValue.StatId}");
+                var stat = response?.Data;
                 if (stat != null && _stats.Contains(stat) == false)
                 {
                     _stats.Add(stat);
@@ -123,8 +123,8 @@ else
 
     private async Task GetCharacter()
     {
-        var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
-        _character = serviceResult?.Data;
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
+        _character = response?.Data;
     }
 
     private static string TurnByteArrayToImage(byte[] imageBytes)
@@ -150,8 +150,10 @@ else
 
         if (result.Canceled == false)
         {
-            var serviceResult = await HttpClient.GetFromJsonAsync<ServiceResult<CharacterDto>>($"api/Character/DeleteCharacter/{Id}");
-            if (serviceResult?.Success == true)
+            // var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<CharacterDto>>($"api/Character/DeleteCharacter/{Id}");
+            var response = await HttpClient.DeleteAsync($"api/Character/DeleteCharacter/{Id}");
+            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<CharacterDto>>();
+            if (response.IsSuccessStatusCode && content?.Success == true)
                 NavigationManager.NavigateTo("/allCharacters");
             else
             {

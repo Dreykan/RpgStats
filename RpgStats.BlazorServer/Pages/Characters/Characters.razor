@@ -1,5 +1,6 @@
 ﻿@page "/allCharacters"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IHttpClientFactory HttpClientFactory
 
@@ -61,8 +62,8 @@
 
     private async Task GetCharacters()
     {
-        _characters = await HttpClient.GetFromJsonAsync<List<CharacterDetailDto>>("api/Character/GetCharactersDetail");
-        _characters = _characters?.OrderBy(x => x.GameWithoutFkObjectsDto?.Name).ToList();
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<CharacterDetailDto>>>("api/Character/GetCharactersDetail");
+        _characters = response?.Data?.OrderBy(x => x.GameWithoutFkObjectsDto?.Name).ToList();
     }
 
     private static string TurnByteArrayToImage(CharacterDetailDto character)

@@ -1,7 +1,9 @@
 ﻿@page "/newPlatform"
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
+@inject IDialogService DialogService
 
 <MudText Typo="Typo.h4" Align="Align.Center">Erstelle eine neue Platform</MudText>
 
@@ -37,15 +39,15 @@
             return;
         }
 
-        var result = await HttpClient.PostAsJsonAsync("api/Platform/CreatePlatform", _platformForCreationDto);
-        if (result.IsSuccessStatusCode)
+        var response = await HttpClient.PostAsJsonAsync("api/Platform/CreatePlatform", _platformForCreationDto);
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformDto>>();
+        if (!response.IsSuccessStatusCode || result?.Success == false)
         {
-            NavigationManager.NavigateTo("/allPlatforms");
+            await ShowErrorMessage(result?.ErrorMessage ?? "Error");
+            return;
         }
-        else
-        {
-            _errors = new[] { "Error while creating the platform" };
-        }
+
+        NavigationManager.NavigateTo("/allPlatforms");
     }
 
     private void OnNameChanged(string value)
@@ -53,4 +55,8 @@
         _success = !string.IsNullOrWhiteSpace(value);
     }
 
+    private async Task ShowErrorMessage(string text)
+    {
+        await DialogService.ShowMessageBox("Error", text);
+    }
 }

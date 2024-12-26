@@ -1,6 +1,7 @@
 ﻿@page "/newCharacter"
 @page "/newCharacter/{GameName?}"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @using SkiaSharp
 @inject IDialogService DialogService
@@ -79,7 +80,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _gameDtos = await HttpClient.GetFromJsonAsync<List<GameDto>>("api/Game/GetGames");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDto>>>("api/Game/GetGames");
+        _gameDtos = response?.Data;
         await PrefillForm();
     }
 
@@ -100,10 +102,10 @@
         }
 
         var response = await HttpClient.PostAsJsonAsync($"api/Character/CreateCharacter/{selectedGame.Id}", _characterForCreationDto);
-
-        if (!response.IsSuccessStatusCode)
+        var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<CharacterDto>>();
+        if (!response.IsSuccessStatusCode && content?.Success == false)
         {
-            await ShowErrorMessage("Es ist ein Fehler aufgetreten.");
+            await ShowErrorMessage(content.ErrorMessage ?? "Fehler beim Erstellen des Charakters.");
             return;
         }
 
