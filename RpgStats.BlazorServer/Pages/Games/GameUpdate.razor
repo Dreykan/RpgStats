@@ -3,9 +3,9 @@
 @using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @using SkiaSharp
-@inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 @inject IHttpClientFactory HttpClientFactory
+@inject IJSRuntime JsRuntime
 
 @if (_game == null)
 {
@@ -150,7 +150,7 @@ else
 
         await ShowSuccessDialog();
 
-        NavigationManager.NavigateTo($"/gameDetail/{Id}");
+        await JsRuntime.InvokeVoidAsync("history.back");
     }
 
     private async Task ShowSuccessDialog()

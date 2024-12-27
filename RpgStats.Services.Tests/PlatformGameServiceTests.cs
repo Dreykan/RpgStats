@@ -232,7 +232,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.Null(result.Data);
-        Assert.Equal("No PlatformGames found", result.ErrorMessage);
+        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
@@ -255,6 +255,6 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.Null(result.Data);
-        Assert.Equal("No PlatformGames found", result.ErrorMessage);
+        Assert.Equal("Platform with ID 100 not found", result.ErrorMessage);
     }
 }

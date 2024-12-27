@@ -131,6 +131,9 @@ public class PlatformGameService : IPlatformGameService
 
     public async Task<ServiceResult<List<PlatformGameDto>>> DeletePlatformGameByGameIdAsync(long gameId)
     {
+        if (!await GameExists(gameId))
+            return ServiceResult<List<PlatformGameDto>>.ErrorResult($"Game with ID {gameId} not found");
+
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToList();
         if (platformGames.Count == 0)
             return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
@@ -145,9 +148,12 @@ public class PlatformGameService : IPlatformGameService
 
     public async Task<ServiceResult<List<PlatformGameDto>>> DeletePlatformGameByPlatformIdAsync(long platformId)
     {
+        if (!await PlatformExists(platformId))
+            return ServiceResult<List<PlatformGameDto>>.ErrorResult($"Platform with ID {platformId} not found");
+
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.PlatformId == platformId).ToList();
         if (platformGames.Count == 0)
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult("No PlatformGames found");
+            return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
 
         _dbContext.RemoveRange(platformGames);
         var result = await _dbContext.SaveChangesAsync();
@@ -155,5 +161,20 @@ public class PlatformGameService : IPlatformGameService
             return ServiceResult<List<PlatformGameDto>>.ErrorResult("PlatformGames could not be deleted");
 
         return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
+    }
+
+    private async Task<bool> PlatformGameExists(long id)
+    {
+        return await _dbContext.PlatformGames.AnyAsync(e => e.Id == id);
+    }
+
+    private async Task<bool> PlatformExists(long id)
+    {
+        return await _dbContext.Platforms.AnyAsync(e => e.Id == id);
+    }
+
+    private async Task<bool> GameExists(long id)
+    {
+        return await _dbContext.Games.AnyAsync(e => e.Id == id);
     }
 }

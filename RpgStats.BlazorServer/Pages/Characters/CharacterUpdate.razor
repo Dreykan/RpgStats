@@ -4,8 +4,8 @@
 @using RpgStats.Dto
 @using SkiaSharp
 @inject IDialogService DialogService
-@inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
+@inject IJSRuntime JsRuntime
 
 @if (_character == null)
 {
@@ -135,7 +135,7 @@ else
             return;
         }
 
-        NavigationManager.NavigateTo("/allCharacters/");
+        await JsRuntime.InvokeVoidAsync("history.back");
     }
 
     private async Task UploadFile(IBrowserFile? file)

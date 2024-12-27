@@ -43,7 +43,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.Null(result.Data);
-        Assert.Equal("No StatValues found", result.ErrorMessage);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.Null(result.Data);
-        Assert.Equal("No StatValues found", result.ErrorMessage);
+        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
