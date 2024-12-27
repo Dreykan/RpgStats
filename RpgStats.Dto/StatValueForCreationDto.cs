@@ -2,7 +2,7 @@
 
 namespace RpgStats.Dto;
 
-public class StatValueForCreationDto
+public record StatValueForCreationDto
 {
     [Required(ErrorMessage = "A Level entry is required.")]
     public int Level { get; set; }

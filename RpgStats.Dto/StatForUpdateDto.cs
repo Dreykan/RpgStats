@@ -2,7 +2,7 @@
 
 namespace RpgStats.Dto;
 
-public class StatForUpdateDto
+public record StatForUpdateDto
 {
     [Required(ErrorMessage = "A name for the stat is required.")]
     [StringLength(50, ErrorMessage = "The name for the stat can't be longer than 50 characters.")]
