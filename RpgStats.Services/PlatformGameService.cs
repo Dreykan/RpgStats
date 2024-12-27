@@ -64,6 +64,9 @@ public class PlatformGameService : IPlatformGameService
 
     public async Task<ServiceResult<PlatformGameDto>> CreatePlatformGameAsync(long platformId, long gameId)
     {
+        if (await PlatformGameExists(platformId, gameId))
+            return ServiceResult<PlatformGameDto>.ErrorResult($"PlatformGame with PlatformId: {platformId} and GameId: {gameId} already exists");
+
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
         if (platform == null)
             return ServiceResult<PlatformGameDto>.ErrorResult($"Platform with ID {platformId} not found");
@@ -163,9 +166,9 @@ public class PlatformGameService : IPlatformGameService
         return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
     }
 
-    private async Task<bool> PlatformGameExists(long id)
+    private async Task<bool> PlatformGameExists(long platformId, long gameId)
     {
-        return await _dbContext.PlatformGames.AnyAsync(e => e.Id == id);
+        return await _dbContext.PlatformGames.AnyAsync(e => e.PlatformId == platformId && e.GameId == gameId);
     }
 
     private async Task<bool> PlatformExists(long id)
