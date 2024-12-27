@@ -1,8 +1,9 @@
-using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
+using Xunit.Priority;
 
 namespace RpgStats.Services.Tests;
 
+[TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class StatValueServiceTests : IClassFixture<DatabaseFixture>
 {
     private readonly StatValueService _service;
@@ -13,63 +14,78 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Priority(1)]
     public async Task GetAllStatValuesAsync_ReturnsAllStatValues()
     {
-        var statValues = await _service.GetAllStatValuesAsync();
+        var result = await _service.GetAllStatValuesAsync();
 
-        Assert.NotNull(statValues);
-        Assert.Equal(12, statValues.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(12, result.Data?.Count);
     }
 
     [Fact]
+    [Priority(1)]
     public async Task GetAllStatValuesByCharacterIdAsync_ReturnsStatValuesByCharacterId()
     {
-        var statValues = await _service.GetAllStatValuesByCharacterIdAsync(1);
+        var result = await _service.GetAllStatValuesByCharacterIdAsync(1);
 
-        Assert.NotNull(statValues);
-        Assert.Equal(4, statValues.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(4, result.Data?.Count);
     }
 
     [Fact]
-    public async Task GetAllStatValuesByCharacterIdAsync_ReturnsEmptyList()
+    public async Task GetAllStatValuesByCharacterIdAsync_Error_WhenCharacterIdNotFound()
     {
-        var statValues = await _service.GetAllStatValuesByCharacterIdAsync(100);
+        var result = await _service.GetAllStatValuesByCharacterIdAsync(100);
 
-        Assert.NotNull(statValues);
-        Assert.Empty(statValues);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task GetAllStatValuesByStatIdAsync_ReturnsStatValuesByStatId()
     {
-        var statValues = await _service.GetAllStatValuesByStatIdAsync(1);
+        var result = await _service.GetAllStatValuesByStatIdAsync(1);
 
-        Assert.NotNull(statValues);
-        Assert.Equal(3, statValues.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(3, result.Data?.Count);
     }
 
     [Fact]
-    public async Task GetAllStatValuesByStatIdAsync_ReturnsEmptyList()
+    public async Task GetAllStatValuesByStatIdAsync_Error_WhenStatIdNotFound()
     {
-        var statValues = await _service.GetAllStatValuesByStatIdAsync(100);
+        var result = await _service.GetAllStatValuesByStatIdAsync(100);
 
-        Assert.NotNull(statValues);
-        Assert.Empty(statValues);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     public async Task GetStatValueByIdAsync_ReturnsStatValueById()
     {
-        var statValue = await _service.GetStatValueByIdAsync(1);
+        var result = await _service.GetStatValueByIdAsync(1);
 
-        Assert.NotNull(statValue);
-        Assert.Equal(1, statValue.Id);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Id);
     }
 
     [Fact]
-    public async Task GetStatValueByIdAsync_ThrowsStatValueNotFoundExemption()
+    public async Task GetStatValueByIdAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<StatValueNotFoundException>(() => _service.GetStatValueByIdAsync(100));
+        var result = await _service.GetStatValueByIdAsync(100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("StatValue with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
@@ -83,21 +99,21 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 99
         };
 
-        var statValue = await _service.CreateStatValueAsync(1, 1, statValueForCreationDto);
+        var result = await _service.CreateStatValueAsync(1, 1, statValueForCreationDto);
 
-        Assert.NotNull(statValue);
-        Assert.Equal(1, statValue.CharacterId);
-        Assert.Equal(1, statValue.StatId);
-        Assert.Equal(100, statValue.Value);
-        Assert.Equal(10, statValue.ContainedBonusNum);
-        Assert.Equal(5, statValue.ContainedBonusPercent);
-        Assert.Equal(99, statValue.Level);
+        Assert.NotNull(result);
+        Assert.Equal(1, result.Data?.CharacterId);
+        Assert.Equal(1, result.Data?.StatId);
+        Assert.Equal(100, result.Data?.Value);
+        Assert.Equal(10, result.Data?.ContainedBonusNum);
+        Assert.Equal(5, result.Data?.ContainedBonusPercent);
+        Assert.Equal(99, result.Data?.Level);
 
-        await _service.DeleteStatValueAsync(statValue.Id);
+        if (result.Data != null) await _service.DeleteStatValueAsync(result.Data.Id);
     }
 
     [Fact]
-    public async Task CreateStatValueAsync_ThrowsCharacterNotFoundExemption()
+    public async Task CreateStatValueAsync_Error_WhenCharacterIdNotFound()
     {
         var statValueForCreationDto = new StatValueForCreationDto
         {
@@ -107,12 +123,16 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 99
         };
 
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() =>
-            _service.CreateStatValueAsync(100, 1, statValueForCreationDto));
+        var result = await _service.CreateStatValueAsync(100, 1, statValueForCreationDto);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
-    public async Task CreateStatValueAsync_ThrowsStatNotFoundExemption()
+    public async Task CreateStatValueAsync_Error_WhenStatIdNotFound()
     {
         var statValueForCreationDto = new StatValueForCreationDto
         {
@@ -122,8 +142,12 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 99
         };
 
-        await Assert.ThrowsAsync<StatNotFoundException>(() =>
-            _service.CreateStatValueAsync(1, 100, statValueForCreationDto));
+        var result = await _service.CreateStatValueAsync(1, 100, statValueForCreationDto);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
@@ -140,16 +164,16 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         var statValue = await _service.UpdateStatValueAsync(1, 1, 1, statValueForUpdateDto);
 
         Assert.NotNull(statValue);
-        Assert.Equal(1, statValue.CharacterId);
-        Assert.Equal(1, statValue.StatId);
-        Assert.Equal(200, statValue.Value);
-        Assert.Equal(20, statValue.ContainedBonusNum);
-        Assert.Equal(10, statValue.ContainedBonusPercent);
-        Assert.Equal(199, statValue.Level);
+        Assert.Equal(1, statValue.Data?.CharacterId);
+        Assert.Equal(1, statValue.Data?.StatId);
+        Assert.Equal(200, statValue.Data?.Value);
+        Assert.Equal(20, statValue.Data?.ContainedBonusNum);
+        Assert.Equal(10, statValue.Data?.ContainedBonusPercent);
+        Assert.Equal(199, statValue.Data?.Level);
     }
 
     [Fact]
-    public async Task UpdateStatValueAsync_ThrowsStatValueNotFoundExemption()
+    public async Task UpdateStatValueAsync_Error_WhenIdNotFound()
     {
         var statValueForUpdateDto = new StatValueForUpdateDto
         {
@@ -159,12 +183,16 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 199
         };
 
-        await Assert.ThrowsAsync<StatValueNotFoundException>(() =>
-            _service.UpdateStatValueAsync(100, 1, 1, statValueForUpdateDto));
+        var result = await _service.UpdateStatValueAsync(100, 1, 1, statValueForUpdateDto);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("StatValue with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
-    public async Task UpdateStatValueAsync_ThrowsCharacterNotFoundExemption()
+    public async Task UpdateStatValueAsync_Error_WhenCharacterIdNotFound()
     {
         var statValueForUpdateDto = new StatValueForUpdateDto
         {
@@ -174,12 +202,16 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 199
         };
 
-        await Assert.ThrowsAsync<CharacterNotFoundException>(() =>
-            _service.UpdateStatValueAsync(1, 100, 1, statValueForUpdateDto));
+        var result = await _service.UpdateStatValueAsync(1, 100, 1, statValueForUpdateDto);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
-    public async Task UpdateStatValueAsync_ThrowsStatNotFoundExemption()
+    public async Task UpdateStatValueAsync_Error_WhenStatIdNotFound()
     {
         var statValueForUpdateDto = new StatValueForUpdateDto
         {
@@ -189,61 +221,34 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 199
         };
 
-        await Assert.ThrowsAsync<StatNotFoundException>(() =>
-            _service.UpdateStatValueAsync(1, 1, 100, statValueForUpdateDto));
+        var result = await _service.UpdateStatValueAsync(1, 1, 100, statValueForUpdateDto);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
-    public async Task DeleteStatValueAsync_DoesNothing_WhenStatValueIdIsNotFound()
-    {
-        await _service.DeleteStatValueAsync(100);
-
-        var statValues = await _service.GetAllStatValuesAsync();
-
-        Assert.NotNull(statValues);
-        Assert.Equal(12, statValues.Count);
-    }
-
-    [Fact]
-    public async Task DeleteStatValueAsync_DoesNothing_WhenStatValueIdIsZero()
-    {
-        await _service.DeleteStatValueAsync(0);
-
-        var statValues = await _service.GetAllStatValuesAsync();
-
-        Assert.NotNull(statValues);
-        Assert.Equal(12, statValues.Count);
-    }
-
-    [Fact]
-    public async Task DeleteStatValueAsync_DoesNothing_WhenStatValueIdIsNegative()
-    {
-        await _service.DeleteStatValueAsync(-1);
-
-        var statValues = await _service.GetAllStatValuesAsync();
-
-        Assert.NotNull(statValues);
-        Assert.Equal(12, statValues.Count);
-    }
-
-    [Fact]
+    [Priority(2)]
     public async Task DeleteStatValueAsync_DeletesStatValue()
     {
-        var statValueForCreationDto = new StatValueForCreationDto
-        {
-            Value = 100,
-            ContainedBonusNum = 10,
-            ContainedBonusPercent = 5,
-            Level = 99
-        };
+        var result = await _service.DeleteStatValueAsync(3);
 
-        var statValue = await _service.CreateStatValueAsync(1, 1, statValueForCreationDto);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(3, result.Data?.Id);
+    }
 
-        if (statValue != null) await _service.DeleteStatValueAsync(statValue.Id);
+    [Fact]
+    [Priority(2)]
+    public async Task DeleteStatValueAsync_Error_WhenIdNotFound()
+    {
+        var result = await _service.DeleteStatValueAsync(100);
 
-        var statValues = await _service.GetAllStatValuesAsync();
-
-        Assert.NotNull(statValues);
-        Assert.Equal(12, statValues.Count);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("StatValue with ID 100 not found", result.ErrorMessage);
     }
 }

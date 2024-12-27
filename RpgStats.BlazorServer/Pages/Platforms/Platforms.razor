@@ -1,5 +1,6 @@
 ﻿@page "/allPlatforms"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IDialogService DialogService
 @inject IHttpClientFactory HttpClientFactory
@@ -78,8 +79,8 @@
 
     private async Task GetPlatforms()
     {
-        _platforms = await HttpClient.GetFromJsonAsync<List<PlatformDetailDto>>("/api/Platform/GetPlatformsDetail");
-        _platforms = _platforms?.OrderBy(x => x.Name).ToList();
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDetailDto>>>("/api/Platform/GetPlatformsDetail");
+        _platforms = response?.Data?.OrderBy(x => x.Name).ToList();
     }
 
     private async Task DeletePlatform(long id)
@@ -102,7 +103,13 @@
 
         if (result.Canceled == false)
         {
-            await HttpClient.DeleteAsync($"/api/Platform/DeletePlatform/{id}");
+            var response = await HttpClient.DeleteAsync($"/api/Platform/DeletePlatform/{id}");
+            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformDto>>();
+            if (!response.IsSuccessStatusCode || content?.Success == false)
+            {
+                await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Löschen der Plattform.");
+                return;
+            }
             await GetPlatforms();
         }
     }
@@ -112,4 +119,8 @@
         return ImageService.ConvertByteArrayToImage(imageBytes);
     }
 
+    private async Task ShowErrorMessage(string text)
+    {
+        await DialogService.ShowMessageBox("Error", text);
+    }
 }

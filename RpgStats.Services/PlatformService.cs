@@ -21,74 +21,93 @@ public class PlatformService : IPlatformService
         _dbContext = dbContext;
     }
 
-    public async Task<List<PlatformDto>> GetAllPlatformsAsync()
+    public async Task<ServiceResult<List<PlatformDto>>> GetAllPlatformsAsync()
     {
         var platforms = await _dbContext.Platforms
             .Include(p => p.PlatformGames)
             .ToListAsync();
 
-        return platforms.Adapt<List<PlatformDto>>();
+        if (platforms.Count == 0)
+            return ServiceResult<List<PlatformDto>>.ErrorResult("No platforms found");
+
+        return ServiceResult<List<PlatformDto>>.SuccessResult(platforms.Adapt<List<PlatformDto>>());
     }
 
-    public async Task<PlatformDto?> GetPlatformByIdAsync(long platformId)
+    public async Task<ServiceResult<PlatformDto>> GetPlatformByIdAsync(long platformId)
     {
         var platform = await _dbContext.Platforms
             .Include(p => p.PlatformGames)
             .FirstOrDefaultAsync(p => p.Id == platformId);
 
-        if (platform == null) throw new PlatformNotFoundException(platformId);
+        if (platform == null)
+            return ServiceResult<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found");
 
-        return platform.Adapt<PlatformDto>();
+        return ServiceResult<PlatformDto>.SuccessResult(platform.Adapt<PlatformDto>());
     }
 
-    public async Task<PlatformDto?> CreatePlatformAsync(PlatformForCreationDto platformForCreationDto)
+    public async Task<ServiceResult<PlatformDto>> CreatePlatformAsync(PlatformForCreationDto platformForCreationDto)
     {
         var platform = platformForCreationDto.Adapt<Platform>();
 
         _dbContext.Platforms.Add(platform);
-        await _dbContext.SaveChangesAsync();
+        var result = await _dbContext.SaveChangesAsync();
 
-        return platform.Adapt<PlatformDto>();
+        if (result == 0)
+            return ServiceResult<PlatformDto>.ErrorResult("Platform could not be created");
+
+        return ServiceResult<PlatformDto>.SuccessResult(platform.Adapt<PlatformDto>());
     }
 
-    public async Task<PlatformDto?> UpdatePlatformAsync(long platformId, PlatformForUpdateDto platformForUpdateDto)
+    public async Task<ServiceResult<PlatformDto>> UpdatePlatformAsync(long platformId, PlatformForUpdateDto platformForUpdateDto)
     {
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
-
-        if (platform == null) throw new PlatformNotFoundException(platformId);
+        if (platform == null)
+            return ServiceResult<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found");
 
         platform.Name = platformForUpdateDto.Name;
 
         _dbContext.Entry(platform).State = EntityState.Modified;
-        await _dbContext.SaveChangesAsync();
+        var result = await _dbContext.SaveChangesAsync();
 
-        return platform.Adapt<PlatformDto>();
+        if (result == 0)
+            return ServiceResult<PlatformDto>.ErrorResult("Platform could not be updated");
+
+        return ServiceResult<PlatformDto>.SuccessResult(platform.Adapt<PlatformDto>());
     }
 
-    public async Task<Task> DeletePlatformAsync(long platformId)
+    public async Task<ServiceResult<PlatformDto>> DeletePlatformAsync(long platformId)
     {
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
 
-        if (platform == null) return Task.CompletedTask;
+        if (platform == null)
+            return ServiceResult<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found");
 
         _dbContext.Remove(platform);
+        var result =await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<PlatformDto>.ErrorResult("Platform could not be deleted");
 
-        await _dbContext.SaveChangesAsync();
-
-        return Task.CompletedTask;
+        return ServiceResult<PlatformDto>.SuccessResult(platform.Adapt<PlatformDto>());
     }
 
-    public async Task<List<PlatformDetailDto>> GetAllPlatformDetailDtosAsync()
+    public async Task<ServiceResult<List<PlatformDetailDto>>> GetAllPlatformDetailDtosAsync()
     {
         var platforms = await _dbContext.Platforms
             .Include(p => p.PlatformGames)
             .ToListAsync();
+
+        if (platforms.Count == 0)
+            return ServiceResult<List<PlatformDetailDto>>.ErrorResult("No platforms found");
 
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
             .ToListAsync();
 
         var platformDetailDtos = new List<PlatformDetailDto>();
+
+        if (games.Count == 0)
+            return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platformDetailDtos
+                .Adapt<List<PlatformDetailDto>>());
 
         foreach (var platform in platforms)
         {
@@ -99,21 +118,28 @@ public class PlatformService : IPlatformService
             platformDetailDtos.Add(PlatformMapper.MapToPlatformDetailDto(platform, tmpGames));
         }
 
-        return platformDetailDtos;
+        return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platformDetailDtos.Adapt<List<PlatformDetailDto>>());
     }
 
-    public async Task<List<PlatformDetailDto>> GetAllPlatformDetailDtosByNameAsync(string name)
+    public async Task<ServiceResult<List<PlatformDetailDto>>> GetAllPlatformDetailDtosByNameAsync(string name)
     {
         var platforms = await _dbContext.Platforms
             .Include(p => p.PlatformGames)
             .Where(p => p.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
+        if (platforms.Count == 0)
+            return ServiceResult<List<PlatformDetailDto>>.ErrorResult("No platforms found");
+
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
             .ToListAsync();
 
         var platformDetailDtos = new List<PlatformDetailDto>();
+
+        if (games.Count == 0)
+            return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platformDetailDtos
+                .Adapt<List<PlatformDetailDto>>());
 
         foreach (var platform in platforms)
         {
@@ -124,14 +150,18 @@ public class PlatformService : IPlatformService
             platformDetailDtos.Add(PlatformMapper.MapToPlatformDetailDto(platform, tmpGames));
         }
 
-        return platformDetailDtos;
+        return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platformDetailDtos
+            .Adapt<List<PlatformDetailDto>>());
     }
 
-    public async Task<PlatformDetailDto> GetPlatformDetailDtoByIdAsync(long platformId)
+    public async Task<ServiceResult<PlatformDetailDto>> GetPlatformDetailDtoByIdAsync(long platformId)
     {
         var platform = await _dbContext.Platforms
             .Include(p => p.PlatformGames)
             .FirstOrDefaultAsync(p => p.Id == platformId);
+
+        if (platform == null)
+            return ServiceResult<PlatformDetailDto>.ErrorResult($"Platform with ID {platformId} not found");
 
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
@@ -139,11 +169,13 @@ public class PlatformService : IPlatformService
 
         var platformDetailDto = new PlatformDetailDto();
 
-        if (platform?.PlatformGames == null) return platformDetailDto;
+        if (games.Count == 0 || platform.PlatformGames == null)
+            return ServiceResult<PlatformDetailDto>.SuccessResult(platformDetailDto.Adapt<PlatformDetailDto>());
+
         var tmpGames = platform.PlatformGames.Select(pg => games.FirstOrDefault(g => g.Id == pg.GameId)).ToList();
         platformDetailDto = PlatformMapper.MapToPlatformDetailDto(platform, tmpGames);
 
 
-        return platformDetailDto;
+        return ServiceResult<PlatformDetailDto>.SuccessResult(platformDetailDto.Adapt<PlatformDetailDto>());
     }
 }

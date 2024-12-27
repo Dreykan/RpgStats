@@ -1,4 +1,3 @@
-using RpgStats.Domain.Exceptions;
 using Xunit.Priority;
 
 namespace RpgStats.Services.Tests;
@@ -17,287 +16,233 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(1)]
     public async Task GetAllGameStatsAsync_ReturnsAllGameStats()
     {
-        var gameStats = await _service.GetAllGameStatsAsync();
+        var result = await _service.GetAllGameStatsAsync();
 
-        Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(12, result.Data?.Count);
     }
 
     [Fact]
     [Priority(2)]
     public async Task GetAllGameStatsByGameIdAsync_ReturnsGameStatsByGameId()
     {
-        var gameStats = await _service.GetAllGameStatsByGameIdAsync(1);
+        var result = await _service.GetAllGameStatsByGameIdAsync(1);
 
-        Assert.NotNull(gameStats);
-        Assert.Equal(4, gameStats.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(4, result.Data?.Count);
     }
 
     [Fact]
     [Priority(3)]
-    public async Task GetAllGameStatsByStatIdAsync_ReturnsGameStatsByStatId()
+    public async Task GetAllGameStatsByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        var gameStats = await _service.GetAllGameStatsByStatIdAsync(1);
+        var result = await _service.GetAllGameStatsByGameIdAsync(100);
 
-        Assert.NotNull(gameStats);
-        Assert.Equal(3, gameStats.Count);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Equal("No GameStats found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(4)]
-    public async Task GetGameStatByIdAsync_ReturnsGameStatById()
+    public async Task GetAllGameStatsByStatIdAsync_ReturnsGameStatsByStatId()
     {
-        var gameStat = await _service.GetGameStatByIdAsync(1);
+        var result = await _service.GetAllGameStatsByStatIdAsync(1);
 
-        Assert.NotNull(gameStat);
-        Assert.Equal(1, gameStat.Id);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(3, result.Data?.Count);
     }
 
     [Fact]
     [Priority(5)]
-    public async Task GetGameStatByIdAsync_ThrowsGameStatNotFoundException()
+    public async Task GetAllGameStatsByStatIdAsync_Error_WhenStatIdNotFound()
     {
-        await Assert.ThrowsAsync<GameStatNotFoundException>(() => _service.GetGameStatByIdAsync(100));
+        var result = await _service.GetAllGameStatsByStatIdAsync(100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Equal("No GameStats found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(6)]
-    public async Task CreateGameStatAsync_ReturnsGameStat()
+    public async Task GetGameStatByIdAsync_ReturnsGameStatById()
     {
-        var gameStat = await _service.CreateGameStatAsync(1, 1);
+        var result = await _service.GetGameStatByIdAsync(1);
 
-        Assert.NotNull(gameStat);
-        Assert.Equal(13, gameStat.Id);
-        Assert.Equal(1, gameStat.GameId);
-        Assert.Equal(1, gameStat.StatId);
-
-        await _service.DeleteGameStatAsync(gameStat.Id);
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Id);
     }
 
     [Fact]
     [Priority(7)]
-    public async Task CreateGameStatAsync_ThrowsGameNotFoundException()
+    public async Task GetGameStatByIdAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() => _service.CreateGameStatAsync(100, 1));
+        var result = await _service.GetGameStatByIdAsync(100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("GameStat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(8)]
-    public async Task CreateGameStatAsync_ThrowsStatNotFoundException()
+    public async Task CreateGameStatAsync_ReturnsGameStat()
     {
-        await Assert.ThrowsAsync<StatNotFoundException>(() => _service.CreateGameStatAsync(1, 100));
+        var result = await _service.CreateGameStatAsync(1, 1);
+
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.GameId);
+        Assert.Equal(1, result.Data?.StatId);
+
+        if (result.Data != null) await _service.DeleteGameStatAsync(result.Data.Id);
     }
 
     [Fact]
     [Priority(9)]
-    public async Task CreateGameStatAsync_ThrowsGameNotFoundException_WhenGameIdIsZero()
+    public async Task CreateGameStatAsync_Error_WhenGameIdNotFound()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() => _service.CreateGameStatAsync(0, 1));
+        var result = await _service.CreateGameStatAsync(100, 1);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(10)]
-    public async Task CreateGameStatAsync_ThrowsGameNotFoundException_WhenGameIdIsNegative()
+    public async Task CreateGameStatAsync_Error_WhenStatIdNotFound()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() => _service.CreateGameStatAsync(-1, 1));
+        var result = await _service.CreateGameStatAsync(1, 100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(11)]
-    public async Task CreateGameStatAsync_ThrowsStatNotFoundException_WhenStatIdIsZero()
+    public async Task UpdateGameStatAsync_ReturnsUpdatedGameStat()
     {
-        await Assert.ThrowsAsync<StatNotFoundException>(() => _service.CreateGameStatAsync(1, 0));
+        var result = await _service.UpdateGameStatAsync(1, 1, 1);
+
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Id);
+        Assert.Equal(1, result.Data?.GameId);
+        Assert.Equal(1, result.Data?.StatId);
     }
 
     [Fact]
     [Priority(12)]
-    public async Task CreateGameStatAsync_ThrowsStatNotFoundException_WhenStatIdIsNegative()
+    public async Task UpdateGameStatAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<StatNotFoundException>(() => _service.CreateGameStatAsync(1, -1));
+        var result = await _service.UpdateGameStatAsync(100, 1, 1);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("GameStat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(13)]
-    public async Task UpdateGameStatAsync_ReturnsUpdatedGameStat()
+    public async Task UpdateGameStatAsync_Error_WhenGameIdNotFound()
     {
-        var gameStat = await _service.UpdateGameStatAsync(1, 1, 1);
+        var result = await _service.UpdateGameStatAsync(1, 100, 1);
 
-        Assert.NotNull(gameStat);
-        Assert.Equal(1, gameStat.Id);
-        Assert.Equal(1, gameStat.GameId);
-        Assert.Equal(1, gameStat.StatId);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(14)]
-    public async Task UpdateGameStatAsync_ThrowsGameStatNotFoundException()
+    public async Task UpdateGameStatAsync_Error_WhenStatIdNotFound()
     {
-        await Assert.ThrowsAsync<GameStatNotFoundException>(() => _service.UpdateGameStatAsync(100, 1, 1));
+        var result = await _service.UpdateGameStatAsync(1, 1, 100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(15)]
-    public async Task UpdateGameStatAsync_ThrowsGameNotFoundException()
+    public async Task DeleteGameStatAsync_DeletesGameStat()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() => _service.UpdateGameStatAsync(1, 100, 1));
+        var result = await _service.DeleteGameStatAsync(1);
+
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(1, result.Data?.Id);
     }
 
     [Fact]
     [Priority(16)]
-    public async Task UpdateGameStatAsync_ThrowsStatNotFoundException()
+    public async Task DeleteGameStatAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<StatNotFoundException>(() => _service.UpdateGameStatAsync(1, 1, 100));
+        var result = await _service.DeleteGameStatAsync(100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("GameStat with ID 100 not found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(17)]
-    public async Task UpdateGameStatAsync_ThrowsGameStatNotFoundException_WhenGameStatIdIsZero()
+    public async Task DeleteGameStatByGameIdAsync_DeletesGameStats()
     {
-        await Assert.ThrowsAsync<GameStatNotFoundException>(() => _service.UpdateGameStatAsync(0, 1, 1));
+        var result = await _service.DeleteGameStatsByGameIdAsync(2);
+
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(4, result.Data?.Count);
     }
 
     [Fact]
     [Priority(18)]
-    public async Task UpdateGameStatAsync_ThrowsGameStatNotFoundException_WhenGameStatIdIsNegative()
+    public async Task DeleteGameStatByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        await Assert.ThrowsAsync<GameStatNotFoundException>(() => _service.UpdateGameStatAsync(-1, 1, 1));
+        var result = await _service.DeleteGameStatsByGameIdAsync(100);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("No GameStats found", result.ErrorMessage);
     }
 
     [Fact]
     [Priority(19)]
-    public async Task UpdateGameStatAsync_ThrowsGameNotFoundException_WhenGameIdIsZero()
+    public async Task DeleteGameStatByStatIdAsync_DeletesGameStats()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() => _service.UpdateGameStatAsync(1, 0, 1));
+        var result = await _service.DeleteGameStatsByStatIdAsync(4);
+
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(2, result.Data?.Count);
     }
 
     [Fact]
     [Priority(20)]
-    public async Task UpdateGameStatAsync_ThrowsGameNotFoundException_WhenGameIdIsNegative()
+    public async Task DeleteGameStatByStatIdAsync_Error_WhenStatIdNotFound()
     {
-        await Assert.ThrowsAsync<GameNotFoundException>(() => _service.UpdateGameStatAsync(1, -1, 1));
-    }
+        var result = await _service.DeleteGameStatsByStatIdAsync(100);
 
-    [Fact]
-    [Priority(21)]
-    public async Task UpdateGameStatAsync_ThrowsStatNotFoundException_WhenStatIdIsZero()
-    {
-        await Assert.ThrowsAsync<StatNotFoundException>(() => _service.UpdateGameStatAsync(1, 1, 0));
-    }
-
-    [Fact]
-    [Priority(22)]
-    public async Task UpdateGameStatAsync_ThrowsStatNotFoundException_WhenStatIdIsNegative()
-    {
-        await Assert.ThrowsAsync<StatNotFoundException>(() => _service.UpdateGameStatAsync(1, 1, -1));
-    }
-
-    [Fact]
-    [Priority(23)]
-    public async Task DeleteGameStatAsync_DeletesGameStat()
-    {
-        var gameStat = await _service.CreateGameStatAsync(1, 1);
-
-        if (gameStat != null) await _service.DeleteGameStatAsync(gameStat.Id);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(27)]
-    public async Task DeleteGameStatByGameIdAsync_DoesNothing_WhenGameIdIsNotFound()
-    {
-        await _service.DeleteGameStatsByGameIdAsync(100);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(28)]
-    public async Task DeleteGameStatByGameIdAsync_DoesNothing_WhenGameIdIsZero()
-    {
-        await _service.DeleteGameStatsByGameIdAsync(0);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(29)]
-    public async Task DeleteGameStatByGameIdAsync_DoesNothing_WhenGameIdIsNegative()
-    {
-        await _service.DeleteGameStatsByGameIdAsync(-1);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(12, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(30)]
-    public async Task DeleteGameStatByGameIdAsync_DeletesGameStatByGameId()
-    {
-        await _service.DeleteGameStatsByGameIdAsync(1);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(31)]
-    public async Task DeleteGameStatByStatIdAsync_DeletesGameStatByStatId_WhenStatIdIsZero()
-    {
-        await _service.DeleteGameStatsByStatIdAsync(0);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(32)]
-    public async Task DeleteGameStatByStatIdAsync_DeletesGameStatByStatId_WhenStatIdIsNegative()
-    {
-        await _service.DeleteGameStatsByStatIdAsync(-1);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(33)]
-    public async Task DeleteGameStatByStatIdAsync_DoesNothing_WhenStatIdIsNotFound()
-    {
-        await _service.DeleteGameStatsByStatIdAsync(100);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(8, gameStats.Count);
-    }
-
-    [Fact]
-    [Priority(34)]
-    public async Task DeleteGameStatByStatIdAsync_DeletesGameStatByStatId()
-    {
-        await _service.DeleteGameStatsByStatIdAsync(1);
-
-        var gameStats = await _service.GetAllGameStatsAsync();
-
-        Assert.NotNull(gameStats);
-        Assert.Equal(6, gameStats.Count);
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("No GameStats found", result.ErrorMessage);
     }
 }

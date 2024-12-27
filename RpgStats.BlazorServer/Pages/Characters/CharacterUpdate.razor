@@ -1,10 +1,11 @@
 ﻿@page "/updateCharacter/{id:int}"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @using SkiaSharp
 @inject IDialogService DialogService
-@inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
+@inject IJSRuntime JsRuntime
 
 @if (_character == null)
 {
@@ -94,13 +95,15 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetCharacter();
-        _gameDtos = await HttpClient.GetFromJsonAsync<List<GameDto>>("api/Game/GetGames");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDto>>>("api/Game/GetGames");
+        _gameDtos = response?.Data;
         await PrefillForm();
     }
 
     private async Task GetCharacter()
     {
-        _character = await HttpClient.GetFromJsonAsync<CharacterDetailDto>($"api/Character/GetCharacterDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
+        _character = response?.Data;
     }
 
     private async Task Update()
@@ -124,15 +127,15 @@ else
             return;
         }
 
-        var result = await HttpClient.PutAsJsonAsync($"api/Character/UpdateCharacter/{selectedGame.Id}/{_character.Id}", _characterForUpdateDto);
-
-        if (!result.IsSuccessStatusCode)
+        var response = await HttpClient.PutAsJsonAsync($"api/Character/UpdateCharacter/{selectedGame.Id}/{_character.Id}", _characterForUpdateDto);
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<CharacterDto>>();
+        if (!response.IsSuccessStatusCode || result?.Success == false)
         {
-            await ShowErrorMessage("Fehler beim Update.");
+            await ShowErrorMessage(result?.ErrorMessage ?? "Fehler beim Aktualisieren des Charakters.");
             return;
         }
 
-        NavigationManager.NavigateTo("/allCharacters/");
+        await JsRuntime.InvokeVoidAsync("history.back");
     }
 
     private async Task UploadFile(IBrowserFile? file)

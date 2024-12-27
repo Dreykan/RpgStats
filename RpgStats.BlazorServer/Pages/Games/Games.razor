@@ -1,5 +1,6 @@
 ﻿@page "/allGames"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IHttpClientFactory HttpClientFactory
 
@@ -65,8 +66,8 @@
 
     private async Task GetGames()
     {
-        _games = await HttpClient.GetFromJsonAsync<List<GameDetailDto>>("api/Game/GetGamesDetail");
-        _games = _games?.OrderBy(x => x.Name).ToList();
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDetailDto>>>("api/Game/GetGamesDetail");
+        _games = response?.Data?.OrderBy(x => x.Name).ToList();
     }
 
     private static string TurnByteArrayToImage(GameDetailDto game)

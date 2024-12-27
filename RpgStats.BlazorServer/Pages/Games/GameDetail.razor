@@ -1,5 +1,6 @@
 ﻿@page "/gameDetail/{Id:int}"
 @using RpgStats.BizLogic
+@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
@@ -123,7 +124,8 @@ else
 
     private async Task GetGame()
     {
-        _game = await HttpClient.GetFromJsonAsync<GameDetailDto>($"api/Game/GetGameDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<GameDetailDto>>($"api/Game/GetGameDetailById/{Id}");
+        _game = response?.Data;
     }
 
     private static string TurnByteArrayToImage(byte[] imageBytes)
@@ -151,8 +153,15 @@ else
 
         if (result.Canceled == false)
         {
-            await HttpClient.DeleteAsync($"api/Game/DeleteGame/{Id}");
+            var response = await HttpClient.DeleteAsync($"api/Game/DeleteGame/{Id}");
+            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameDto>>();
+            if (!response.IsSuccessStatusCode || content?.Success == false)
+            {
+                await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Löschen des Spiels.");
+                return;
+            }
             NavigationManager.NavigateTo("/allGames");
+
         }
     }
 
@@ -194,7 +203,13 @@ else
         }
         else
         {
-            await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/{gameStat.GameId}/{gameStat.StatId}", "");
+            var response = await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/{gameStat.GameId}/{gameStat.StatId}", "");
+            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameStatDto>>();
+            if (!response.IsSuccessStatusCode || content?.Success == false)
+            {
+                await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Verknüpfen des Status-Typs mit dem Spiel.");
+                return;
+            }
         }
 
         await GetGame();
@@ -203,9 +218,13 @@ else
     private async Task<bool> CheckGameStatExist(GameStatDto gameStat)
     {
         // TODO: Hier einen eigenen Endpunkt erstellen für die Überprüfung ob es diesen GameStat schon gibt
-        var gameStats = await HttpClient.GetFromJsonAsync<List<GameStatDto>>($"api/GameStat/GetGameStatsByGame/{gameStat.GameId}");
-        var gameStatExist = gameStats != null && gameStats.Any(x => x.StatId == gameStat.StatId);
+        var gameStats = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>($"api/GameStat/GetGameStatsByGame/{gameStat.GameId}");
+        var gameStatExist = gameStats?.Data != null && gameStats.Data.Any(x => x.StatId == gameStat.StatId);
         return gameStatExist;
     }
 
+    private async Task ShowErrorMessage(string text)
+    {
+        await DialogService.ShowMessageBox("Error", text);
+    }
 }

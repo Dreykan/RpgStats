@@ -4,13 +4,13 @@ namespace RpgStats.Services.Abstractions;
 
 public interface IGameStatService
 {
-    Task<List<GameStatDto>> GetAllGameStatsAsync();
-    Task<List<GameStatDto>> GetAllGameStatsByGameIdAsync(long gameId);
-    Task<List<GameStatDto>> GetAllGameStatsByStatIdAsync(long statId);
-    Task<GameStatDto?> GetGameStatByIdAsync(long gameStatId);
-    Task<GameStatDto?> CreateGameStatAsync(long gameId, long statId);
-    Task<GameStatDto?> UpdateGameStatAsync(long gameStatId, long gameId, long statId);
-    Task<Task> DeleteGameStatAsync(long gameStatId);
-    Task<Task> DeleteGameStatsByGameIdAsync(long gameId);
-    Task<Task> DeleteGameStatsByStatIdAsync(long statId);
+    Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsAsync();
+    Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsByGameIdAsync(long gameId);
+    Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsByStatIdAsync(long statId);
+    Task<ServiceResult<GameStatDto>> GetGameStatByIdAsync(long gameStatId);
+    Task<ServiceResult<GameStatDto>> CreateGameStatAsync(long gameId, long statId);
+    Task<ServiceResult<GameStatDto>> UpdateGameStatAsync(long gameStatId, long gameId, long statId);
+    Task<ServiceResult<GameStatDto>> DeleteGameStatAsync(long gameStatId);
+    Task<ServiceResult<List<GameStatDto>>> DeleteGameStatsByGameIdAsync(long gameId);
+    Task<ServiceResult<List<GameStatDto>>> DeleteGameStatsByStatIdAsync(long statId);
 }

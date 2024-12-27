@@ -20,72 +20,89 @@ public class StatController : ControllerBase
     [SwaggerOperation(Summary = "Get all Stats")]
     public async Task<IActionResult> GetStats()
     {
-        var stats = await _statService.GetAllStatsAsync();
-        return Ok(stats);
+        var result = await _statService.GetAllStatsAsync();
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetStatsByName/{name}")]
     [SwaggerOperation(Summary = "Get all Stats by Name")]
     public async Task<IActionResult> GetStatsByName(string name)
     {
-        var stats = await _statService.GetAllStatsByNameAsync(name);
-        return Ok(stats);
+        var result = await _statService.GetAllStatsByNameAsync(name);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetStatsByShortname/{shortName}")]
     [SwaggerOperation(Summary = "Get all Stats by Shortname")]
     public async Task<IActionResult> GetStatsByShortname(string shortName)
     {
-        var stats = await _statService.GetAllStatsByShortNameAsync(shortName);
-        return Ok(stats);
+        var result = await _statService.GetAllStatsByShortNameAsync(shortName);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetStatsDetail")]
     [SwaggerOperation(Summary = "Get all Stats with Details")]
     public async Task<IActionResult> GetStatsDetail()
     {
-        var stats = await _statService.GetAllStatDetailDtosAsync();
-        return Ok(stats);
+        var result = await _statService.GetAllStatDetailDtosAsync();
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetStatsDetailByName/{name}")]
     [SwaggerOperation(Summary = "Get all Stats with Details by Name")]
     public async Task<IActionResult> GetStatsDetailByName(string name)
     {
-        var stats = await _statService.GetAllStatDetailDtosByNameAsync(name);
-        return Ok(stats);
+        var result = await _statService.GetAllStatDetailDtosByNameAsync(name);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetStatsDetailByShortName/{shortName}")]
     [SwaggerOperation(Summary = "Get all Stats with Details by ShortName")]
     public async Task<IActionResult> GetStatsDetailByShortName(string shortName)
     {
-        var stats = await _statService.GetAllStatDetailDtosByShortNameAsync(shortName);
-        return Ok(stats);
+        var result = await _statService.GetAllStatDetailDtosByShortNameAsync(shortName);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetStatById/{statId:long}")]
     [SwaggerOperation(Summary = "Get a Stat")]
     public async Task<IActionResult> GetStatById(long statId)
     {
-        var stat = await _statService.GetStatByIdAsync(statId);
-        return Ok(stat);
+        var result = await _statService.GetStatByIdAsync(statId);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpGet("GetStatDetailById/{statId:long}")]
     [SwaggerOperation(Summary = "Get a Stat with Details by Id")]
     public async Task<IActionResult> GetStatDetailById(long statId)
     {
-        var stat = await _statService.GetStatDetailDtoByIdAsync(statId);
-        return Ok(stat);
+        var result = await _statService.GetStatDetailDtoByIdAsync(statId);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpPost("CreateStat")]
     [SwaggerOperation(Summary = "Create a Stat")]
     public async Task<IActionResult> CreateStat([FromBody] StatForCreationDto? statForCreationDto)
     {
-        var response = await _statService.CreateStatAsync(statForCreationDto);
-        if (response != null) return CreatedAtAction(nameof(GetStatById), new { statId = response.Id }, response);
+        var result = await _statService.CreateStatAsync(statForCreationDto);
+        if (result.Success)
+            return CreatedAtAction(nameof(GetStatById), new { statId = result.Data?.Id }, result);
         return BadRequest();
     }
 
@@ -93,8 +110,9 @@ public class StatController : ControllerBase
     [SwaggerOperation(Summary = "Update a Stat")]
     public async Task<IActionResult> UpdateStat(long statId, [FromBody] StatForUpdateDto statForUpdateDto)
     {
-        var response = await _statService.UpdateStatAsync(statId, statForUpdateDto);
-        if (response != null) return Ok(response);
+        var result = await _statService.UpdateStatAsync(statId, statForUpdateDto);
+        if (result.Success)
+            return CreatedAtAction(nameof(GetStatById), new { statId = result.Data?.Id }, result);
         return BadRequest();
     }
 
@@ -102,8 +120,9 @@ public class StatController : ControllerBase
     [SwaggerOperation(Summary = "Delete a Stat")]
     public async Task<IActionResult> DeleteStat(long statId)
     {
-        var response = await _statService.DeleteStatAsync(statId);
-        if (response == Task.CompletedTask) return Ok();
+        var result = await _statService.DeleteStatAsync(statId);
+        if (result.Success)
+            return Ok();
         return BadRequest();
     }
 }

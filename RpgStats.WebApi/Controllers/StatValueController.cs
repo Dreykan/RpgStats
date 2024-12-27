@@ -20,32 +20,40 @@ public class StatValueController : ControllerBase
     [SwaggerOperation(Summary = "Get all StatValues")]
     public async Task<IActionResult> GetStatValues()
     {
-        var statValues = await _statValueService.GetAllStatValuesAsync();
-        return Ok(statValues);
+        var result = await _statValueService.GetAllStatValuesAsync();
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetStatValuesByCharacter/{characterId:long}")]
     [SwaggerOperation(Summary = "Get all StatValues by Character")]
     public async Task<IActionResult> GetStatValuesByCharacter(long characterId)
     {
-        var statValues = await _statValueService.GetAllStatValuesByCharacterIdAsync(characterId);
-        return Ok(statValues);
+        var result = await _statValueService.GetAllStatValuesByCharacterIdAsync(characterId);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetStatValuesByStat/{statId:long}")]
     [SwaggerOperation(Summary = "Get all StatValues by Stat")]
     public async Task<IActionResult> GetStatValuesByStat(long statId)
     {
-        var statValues = await _statValueService.GetAllStatValuesByStatIdAsync(statId);
-        return Ok(statValues);
+        var result = await _statValueService.GetAllStatValuesByStatIdAsync(statId);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpGet("GetStatValueById/{statValueId:long}")]
     [SwaggerOperation(Summary = "Get StatValues by Id")]
     public async Task<IActionResult> GetStatValueById(long statValueId)
     {
-        var statValue = await _statValueService.GetStatValueByIdAsync(statValueId);
-        return Ok(statValue);
+        var result = await _statValueService.GetStatValueByIdAsync(statValueId);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 
     [HttpPost("CreateStatValue/{characterId:long}/{statId:long}")]
@@ -53,12 +61,10 @@ public class StatValueController : ControllerBase
     public async Task<IActionResult> CreateStatValue([FromBody] StatValueForCreationDto statValueForCreationDto,
         long characterId, long statId)
     {
-        var response = await _statValueService.CreateStatValueAsync(characterId, statId, statValueForCreationDto);
-        if (response != null)
-            return CreatedAtAction(nameof(GetStatValueById),
-                new { statValueId = response.Id, statId = response.StatId, characterId = response.CharacterId },
-                response);
-        return BadRequest();
+        var result = await _statValueService.CreateStatValueAsync(characterId, statId, statValueForCreationDto);
+        if (result.Success)
+            return CreatedAtAction(nameof(GetStatValueById), new {statValueId = result.Data?.Id}, result);
+        return BadRequest(result);
     }
 
     [HttpPut("UpdateStatValue/{statValueId:long}/{characterId:long}/{statId:long}")]
@@ -66,19 +72,19 @@ public class StatValueController : ControllerBase
     public async Task<IActionResult> UpdateStatValue([FromBody] StatValueForUpdateDto statValueForUpdateDto,
         long statValueId, long characterId, long statId)
     {
-        var response =
-            await _statValueService.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto);
-        if (response != null)
-            return Ok(response);
-        return BadRequest();
+        var result = await _statValueService.UpdateStatValueAsync(statValueId, characterId, statId, statValueForUpdateDto);
+        if (result.Success)
+            return CreatedAtAction(nameof(GetStatValueById), new {statValueId = result.Data?.Id}, result);
+        return BadRequest(result);
     }
 
     [HttpDelete("DeleteStatValue/{statValueId:long}")]
     [SwaggerOperation(Summary = "Delete a StatValue")]
     public async Task<IActionResult> DeleteStatValue(long statValueId)
     {
-        var response = await _statValueService.DeleteStatValueAsync(statValueId);
-        if (response == Task.CompletedTask) return Ok();
-        return BadRequest();
+        var result = await _statValueService.DeleteStatValueAsync(statValueId);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
     }
 }
