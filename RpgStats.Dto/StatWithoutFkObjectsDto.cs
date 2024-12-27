@@ -1,6 +1,6 @@
 ﻿namespace RpgStats.Dto;
 
-public class StatWithoutFkObjectsDto
+public record StatWithoutFkObjectsDto
 {
     public long Id { get; set; }
     public string Name { get; set; } = string.Empty;

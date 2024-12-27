@@ -1,6 +1,6 @@
 ﻿namespace RpgStats.Dto;
 
-public class PlatformGameDto
+public record PlatformGameDto
 {
     public long Id { get; set; }
     public long PlatformId { get; set; }

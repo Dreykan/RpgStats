@@ -1,6 +1,6 @@
 ﻿namespace RpgStats.Dto;
 
-public class CharacterDto
+public record CharacterDto
 {
     public long Id { get; set; }
     public string Name { get; set; } = string.Empty;

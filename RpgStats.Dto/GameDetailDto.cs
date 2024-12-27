@@ -1,6 +1,6 @@
 ﻿namespace RpgStats.Dto;
 
-public class GameDetailDto
+public record GameDetailDto
 {
     public long Id { get; set; }
     public string Name { get; set; } = string.Empty;

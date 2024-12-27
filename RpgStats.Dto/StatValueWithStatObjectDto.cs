@@ -1,6 +1,6 @@
 ﻿namespace RpgStats.Dto;
 
-public class StatValueWithStatObjectDto
+public record StatValueWithStatObjectDto
 {
     public long Id { get; set; }
     public int Level { get; set; }
