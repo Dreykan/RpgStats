@@ -94,12 +94,12 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
     [Priority(8)]
     public async Task CreatePlatformGameAsync_ReturnsPlatformGameDto()
     {
-        var result = await _service.CreatePlatformGameAsync(1, 1);
+        var result = await _service.CreatePlatformGameAsync(6, 6);
 
         Assert.NotNull(result);
         Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.PlatformId);
-        Assert.Equal(1, result.Data?.GameId);
+        Assert.Equal(6, result.Data?.PlatformId);
+        Assert.Equal(6, result.Data?.GameId);
 
         if (result.Data != null) await _service.DeletePlatformGameAsync(result.Data.Id);
     }
@@ -133,10 +133,26 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Priority(10)]
+    public async Task CreatePlatformGameAsync_Error_WhenPlatformGameExists()
+    {
+        var result = await _service.CreatePlatformGameAsync(1, 1);
+
+        if (result.Data != null) result = await _service.CreatePlatformGameAsync(1, 1);
+
+        Assert.NotNull(result);
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal("PlatformGame with PlatformId: 1 and GameId: 1 already exists", result.ErrorMessage);
+
+        if (result.Data != null) await _service.DeletePlatformGameAsync(result.Data.Id);
+    }
+
+    [Fact]
     [Priority(11)]
     public async Task UpdatePlatformGameAsync_UpdatesPlatformGame()
     {
-        var result = await _service.CreatePlatformGameAsync(1, 1);
+        var result = await _service.CreatePlatformGameAsync(6, 1);
 
         if (result.Data != null) result = await _service.UpdatePlatformGameAsync(result.Data.Id, 2, 2);
 
@@ -189,7 +205,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
     [Priority(15)]
     public async Task DeletePlatformGameAsync_DeletesPlatformGame()
     {
-        var result = await _service.CreatePlatformGameAsync(1, 1);
+        var result = await _service.CreatePlatformGameAsync(5, 6);
 
         var id = result.Data?.Id;
 
