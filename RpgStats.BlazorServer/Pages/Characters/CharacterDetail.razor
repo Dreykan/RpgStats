@@ -68,15 +68,43 @@ else
             </MudGrid>
         </MudItem>
         <MudItem xs="12">
-            <MudTable Items="@_statValues">
-                <HeaderContent>
-                    <MudTh>Level</MudTh>
-                    @foreach (var stat in _stats)
-                    {
-                        <MudTh>@stat.ShortName</MudTh>
-                    }
-                </HeaderContent>
-            </MudTable>
+            <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
+                <MudText Typo="Typo.h5" class="mb-4" Align="Align.Center">Statuswerte</MudText>
+                <MudTable Items="@GetStatValuesByLevel()" Dense="true" Hover="true" Breakpoint="Breakpoint.None" FixedHeader="true">
+                    <HeaderContent>
+                        <MudTh><strong>Level</strong></MudTh>
+                        @foreach (var stat in _stats.OrderBy(s => s.ShortName))
+                        {
+                            <MudTh>
+                                <MudTooltip Text="@stat.Name">
+                                    <strong>@stat.ShortName</strong>
+                                </MudTooltip>
+                            </MudTh>
+                        }
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Key</MudTd>
+                        @foreach (var stat in _stats.OrderBy(s => s.ShortName))
+                        {
+                            <MudTd>
+                                @{
+                                    var statValue = context.Value.FirstOrDefault(sv => sv.StatId == stat.Id);
+                                    if (statValue != null)
+                                    {
+                                        <MudTooltip Text="@($"Basis: {statValue.Value}{Environment.NewLine}Bonus: +{statValue.ContainedBonusNum} / +{statValue.ContainedBonusNum}%")">
+                                            <MudText>@statValue.Value</MudText>
+                                        </MudTooltip>
+                                    }
+                                    else
+                                    {
+                                        <MudText>-</MudText>
+                                    }
+                                }
+                            </MudTd>
+                        }
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
         </MudItem>
     </MudGrid>
 }
@@ -85,7 +113,7 @@ else
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
     private List<StatValueDto>? _statValues = new();
-    private readonly List<StatDto> _stats = new();
+    private List<StatDto> _stats = new();
 
     [Parameter] public int Id { get; set; }
 
@@ -107,18 +135,8 @@ else
 
     private async Task GetStats()
     {
-        // Ermittle alle Stats, die zu den StatValues gehören und füge sie der Liste _stats hinzu, wenn noch nicht vorhanden
-        //TODO: Hierfür sollte ein separater Endpunkt im Controller erstellt werden. GetStatsByGameId
-        if (_statValues != null)
-            foreach (var statValue in _statValues)
-            {
-                var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<StatDto>>($"api/Stat/GetStatById/{statValue.StatId}");
-                var stat = response?.Data;
-                if (stat != null && _stats.Contains(stat) == false)
-                {
-                    _stats.Add(stat);
-                }
-            }
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatDto>>>($"api/Stat/GetStatsByGameId/{_character?.GameWithoutFkObjectsDto?.Id}");
+        _stats = response?.Data ?? new List<StatDto>();
     }
 
     private async Task GetCharacter()
@@ -150,7 +168,6 @@ else
 
         if (result.Canceled == false)
         {
-            // var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<CharacterDto>>($"api/Character/DeleteCharacter/{Id}");
             var response = await HttpClient.DeleteAsync($"api/Character/DeleteCharacter/{Id}");
             var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<CharacterDto>>();
             if (response.IsSuccessStatusCode && content?.Success == true)
@@ -160,6 +177,16 @@ else
                 await DialogService.ShowMessageBox("Fehler", "Charakter konnte nicht gelöscht werden.");
             }
         }
+    }
+
+    private Dictionary<int, List<StatValueDto>> GetStatValuesByLevel()
+    {
+        if (_statValues == null) return new Dictionary<int, List<StatValueDto>>();
+
+        return _statValues
+            .GroupBy(sv => sv.Level)
+            .OrderBy(g => g.Key)
+            .ToDictionary(g => g.Key, g => g.ToList());
     }
 
 }

@@ -57,6 +57,18 @@ public class StatService : IStatService
         return ServiceResult<List<StatDto>>.SuccessResult(stats.Adapt<List<StatDto>>());
     }
 
+    public async Task<ServiceResult<List<StatDto>>> GetAllStatsByGameIdAsync(long gameId)
+    {
+        if (!await GameExists(gameId))
+            return ServiceResult<List<StatDto>>.ErrorResult($"Game with Id {gameId} not found");
+
+        var stats = await _dbContext.Stats
+            .Where(s => s.GameStats != null && s.GameStats.Any(gs => gs.GameId == gameId))
+            .ToListAsync();
+
+        return ServiceResult<List<StatDto>>.SuccessResult(stats.Adapt<List<StatDto>>());
+    }
+
     public async Task<ServiceResult<List<StatDetailDto>>> GetAllStatDetailDtosAsync()
     {
         var stats = await _dbContext.Stats
@@ -94,6 +106,20 @@ public class StatService : IStatService
 
         return ServiceResult<List<StatDetailDto>>.SuccessResult(stats.Adapt<List<StatDetailDto>>());
     }
+
+    public async Task<ServiceResult<List<StatDetailDto>>> GetAllStatDetailDtosByGameIdAsync(long gameId)
+    {
+        if (!await GameExists(gameId))
+            return ServiceResult<List<StatDetailDto>>.ErrorResult($"Game with Id {gameId} not found");
+
+        var stats = await _dbContext.Stats
+            .Include(s => s.StatValues)
+            .Where(s => s.GameStats != null && s.GameStats.Any(gs => gs.GameId == gameId))
+            .ToListAsync();
+
+        return ServiceResult<List<StatDetailDto>>.SuccessResult(stats.Adapt<List<StatDetailDto>>());
+    }
+
 
     public async Task<ServiceResult<StatDto>> GetStatByIdAsync(long statId)
     {
@@ -166,5 +192,10 @@ public class StatService : IStatService
             return ServiceResult<StatDto>.ErrorResult("Stat could not be deleted");
 
         return ServiceResult<StatDto>.SuccessResult(stat.Adapt<StatDto>());
+    }
+
+    private async Task<bool> GameExists(long gameId)
+    {
+        return await _dbContext.Games.AnyAsync(g => g.Id == gameId);
     }
 }

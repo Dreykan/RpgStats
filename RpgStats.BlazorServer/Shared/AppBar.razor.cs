@@ -5,13 +5,19 @@ namespace RpgStats.BlazorServer.Shared;
 
 public partial class AppBar
 {
-    private MudTheme _currentTheme = new();
     private PaletteDark _darkPalette = new();
-    private bool _isLightMode = true;
     private PaletteLight _lightPalette = new();
+    private MudTheme _currentTheme = new();
+    private bool _isLightMode = false;
 
     [Parameter] public EventCallback OnSidebarToggled { get; set; }
     [Parameter] public EventCallback<MudTheme> OnThemeToggled { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        _currentTheme.Palette = _darkPalette;
+        return base.OnInitializedAsync();
+    }
 
     private async Task ToggleTheme()
     {
