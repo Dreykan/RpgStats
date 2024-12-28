@@ -46,6 +46,16 @@ public class StatController : ControllerBase
         return BadRequest(result);
     }
 
+    [HttpGet("GetStatsByGameId/{gameId:long}")]
+    [SwaggerOperation(Summary = "Get all Stats by GameId")]
+    public async Task<IActionResult> GetStatsByGameId(long gameId)
+    {
+        var result = await _statService.GetAllStatsByGameIdAsync(gameId);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
+    }
+
     [HttpGet("GetStatsDetail")]
     [SwaggerOperation(Summary = "Get all Stats with Details")]
     public async Task<IActionResult> GetStatsDetail()
@@ -71,6 +81,16 @@ public class StatController : ControllerBase
     public async Task<IActionResult> GetStatsDetailByShortName(string shortName)
     {
         var result = await _statService.GetAllStatDetailDtosByShortNameAsync(shortName);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
+    }
+
+    [HttpGet("GetStatsDetailByGameId/{gameId:long}")]
+    [SwaggerOperation(Summary = "Get all Stats with Details by GameId")]
+    public async Task<IActionResult> GetStatsDetailByGameId(long gameId)
+    {
+        var result = await _statService.GetAllStatDetailDtosByGameIdAsync(gameId);
         if (result.Success)
             return Ok(result);
         return BadRequest(result);

@@ -22,6 +22,12 @@
     private MudTheme _currentTheme = new();
     private bool _sidebarOpen;
 
+    protected override Task OnInitializedAsync()
+    {
+        _currentTheme.Palette = new PaletteDark();
+        return base.OnInitializedAsync();
+    }
+
     private void ToggleTheme(MudTheme changedTheme)
     {
         _currentTheme = changedTheme;
