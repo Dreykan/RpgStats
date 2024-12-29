@@ -69,7 +69,12 @@ else
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
-                <MudText Typo="Typo.h5" class="mb-4" Align="Align.Center">Statuswerte</MudText>
+                <div style="display: flex; align-items: center;">
+                    <MudText Typo="Typo.h5" class="mb-4" Align="Align.Center" style="flex-grow: 1; text-align: center;">Statuswerte</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddNewStat" style="margin-left: auto;">
+                        Neu
+                    </MudButton>
+                </div>
                 <MudTable Items="@GetStatValuesByLevel()" Dense="true" Hover="true" Breakpoint="Breakpoint.None" FixedHeader="true">
                     <HeaderContent>
                         <MudTh><strong>Level</strong></MudTh>
@@ -91,7 +96,7 @@ else
                                     var statValue = context.Value.FirstOrDefault(sv => sv.StatId == stat.Id);
                                     if (statValue != null)
                                     {
-                                        <MudTooltip Text="@($"Basis: {statValue.Value}{Environment.NewLine}Bonus: +{statValue.ContainedBonusNum} / +{statValue.ContainedBonusNum}%")">
+                                        <MudTooltip Text="@($"Basis: {statValue.Value}{Environment.NewLine}Bonus: +{statValue.ContainedBonusNum} / +{statValue.ContainedBonusPercent}%")">
                                             <MudText>@statValue.Value</MudText>
                                         </MudTooltip>
                                     }
@@ -189,4 +194,11 @@ else
             .ToDictionary(g => g.Key, g => g.ToList());
     }
 
+    private void AddNewStat()
+    {
+        var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
+        var dialogParameter = new DialogParameters { { "Character", _character }, { "Stats", _stats } };
+        var dialog = DialogService.Show<StatValueCreate>("Neuer Statuswert", dialogParameter, dialogOptions);
+        var result = dialog.Result;
+    }
 }
