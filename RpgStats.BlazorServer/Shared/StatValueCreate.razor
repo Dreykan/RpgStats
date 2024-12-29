@@ -1,0 +1,99 @@
+@using RpgStats.BlazorServer.Model
+@using RpgStats.Dto
+@inject IHttpClientFactory HttpClientFactory
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField Label="Level" @bind-Value="Level" Numeric="true" />
+        <MudDivider />
+        @if (Stats != null)
+        {
+            foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
+            {
+                var statValueDto = _statValues.FirstOrDefault(sv => sv.StatId == statDto.Id);
+                if (statValueDto == null)
+                {
+                    statValueDto = new StatValueDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
+                    _statValues.Add(statValueDto);
+                }
+                <MudItem>
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudTextField Label="@statDto.ShortName" @bind-Value="statValueDto.Value" Numeric="true"/>
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Label="+BonusNum" @bind-Value="statValueDto.ContainedBonusNum" Numeric="true"/>
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField Label="+BonusPercent" @bind-Value="statValueDto.ContainedBonusPercent" Numeric="true"/>
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+            }
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Primary">Speichern</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public List<StatDto>? Stats { get; set; }
+    [Parameter] public CharacterDetailDto? Character { get; set; }
+
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
+    private readonly List<StatValueDto> _statValues = new();
+    private int Level { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Stats != null)
+        {
+            foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
+            {
+                var statValueDto = new StatValueDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
+                _statValues.Add(statValueDto);
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog?.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        foreach (var statValueDto in _statValues)
+        {
+            var svCreationDto = new StatValueForCreationDto()
+            {
+                Level = Level,
+                Value = statValueDto.Value,
+                ContainedBonusNum = statValueDto.ContainedBonusNum,
+                ContainedBonusPercent = statValueDto.ContainedBonusPercent
+            };
+
+            var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateStatValue/{Character?.Id}/{statValueDto.StatId}", svCreationDto);
+            var responseContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<StatValueDto>>();
+
+            if (response.IsSuccessStatusCode) return;
+            await ShowErrorMessage("Fehler beim Speichern der Werte.");
+
+            if (responseContent?.Success != false) continue;
+            await ShowErrorMessage(responseContent.ErrorMessage);
+
+            return;
+        }
+        MudDialog?.Close();
+    }
+
+    private async Task ShowErrorMessage(string text)
+    {
+        await DialogService.ShowMessageBox("Error", text);
+    }
+}
