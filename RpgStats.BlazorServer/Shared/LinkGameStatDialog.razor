@@ -17,6 +17,9 @@
                 }
             }
         </MudSelect>
+        <MudItem xs="6">
+            <MudTextField Label="Sortier-Index" @bind-Value="_gameStatDto.SortIndex" Numeric="true"/>
+        </MudItem>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Abbrechen</MudButton>

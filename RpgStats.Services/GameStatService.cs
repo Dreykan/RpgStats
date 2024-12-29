@@ -62,7 +62,7 @@ public class GameStatService : IGameStatService
         return ServiceResult<GameStatDto>.SuccessResult(gameStat.Adapt<GameStatDto>());
     }
 
-    public async Task<ServiceResult<GameStatDto>> CreateGameStatAsync(long gameId, long statId)
+    public async Task<ServiceResult<GameStatDto>> CreateGameStatAsync(long gameId, long statId, int sortIndex)
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
@@ -73,6 +73,7 @@ public class GameStatService : IGameStatService
             return ServiceResult<GameStatDto>.ErrorResult($"Stat with ID {statId} not found");
 
         var gameStat = new GameStatDto().Adapt<GameStat>();
+        gameStat.SortIndex = sortIndex;
         gameStat.GameId = gameId;
         gameStat.Game = game;
         gameStat.StatId = statId;
@@ -86,7 +87,7 @@ public class GameStatService : IGameStatService
         return ServiceResult<GameStatDto>.SuccessResult(gameStat.Adapt<GameStatDto>());
     }
 
-    public async Task<ServiceResult<GameStatDto>> UpdateGameStatAsync(long gameStatId, long gameId, long statId)
+    public async Task<ServiceResult<GameStatDto>> UpdateGameStatAsync(long gameStatId, long gameId, long statId, int sortIndex)
     {
         var gameStat = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
         if (gameStat == null)
@@ -99,6 +100,7 @@ public class GameStatService : IGameStatService
         if (stat == null)
             return ServiceResult<GameStatDto>.ErrorResult($"Stat with ID {statId} not found");
 
+        gameStat.SortIndex = sortIndex;
         gameStat.StatId = statId;
         gameStat.Stat = stat;
         gameStat.GameId = gameId;

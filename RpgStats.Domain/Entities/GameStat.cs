@@ -11,6 +11,9 @@ public class GameStat
     [Column("GameStatId")]
     public long Id { get; set; }
 
+    [Required(ErrorMessage = "An entry for the column SortIndex is required.")]
+    public int SortIndex { get; set; }
+
     [Required(ErrorMessage = "An entry for the column GameId is required.")]
     [ForeignKey(nameof(Game))]
     public long GameId { get; set; }
