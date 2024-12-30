@@ -178,6 +178,7 @@ else
         if (gameStats == null)
             return;
 
+        _stats.Clear();
         foreach (var gameStat in gameStats)
         {
             var stat = await HttpClient.GetFromJsonAsync<RpgStatsResponse<StatDto>>($"api/Stat/GetStatById/{gameStat.StatId}");
@@ -193,55 +194,10 @@ else
         var dialogParameter = new DialogParameters { { "Game", _game } };
         var dialog = await DialogService.ShowAsync<LinkGameStatDialog>($"Status-Typ mit dem Spiel: {_game?.Name} verknüpfen.", dialogParameter, dialogOptions);
         var result = await dialog.Result;
-
         if (result.Canceled == false)
         {
-            if (result.Data is GameStatDto gameStat)
-            {
-                await CreateGameStat(gameStat);
-            }
+            await GetStatsInCorrectOrder();
         }
-    }
-
-    private async Task CreateGameStat(GameStatDto gameStat)
-    {
-        if (await CheckGameStatExist(gameStat))
-        {
-            var parameters = new DialogParameters
-            {
-                { "ContentText", "Dieser Status-Typ ist schon mit dem Spiel verknüpft." },
-                { "ButtonText", "OK" },
-                { "Color", Color.Info }
-            };
-
-            var options = new DialogOptions
-            {
-                CloseButton = true,
-                MaxWidth = MaxWidth.Small
-            };
-
-            await DialogService.ShowAsync<MessageDialog>("Fehler", parameters, options);
-        }
-        else
-        {
-            var response = await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/{gameStat.GameId}/{gameStat.StatId}", "");
-            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameStatDto>>();
-            if (!response.IsSuccessStatusCode || content?.Success == false)
-            {
-                await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Verknüpfen des Status-Typs mit dem Spiel.");
-                return;
-            }
-        }
-
-        await GetGame();
-    }
-
-    private async Task<bool> CheckGameStatExist(GameStatDto gameStat)
-    {
-        // TODO: Hier einen eigenen Endpunkt erstellen für die Überprüfung ob es diesen GameStat schon gibt
-        var gameStats = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>($"api/GameStat/GetGameStatsByGame/{gameStat.GameId}");
-        var gameStatExist = gameStats?.Data != null && gameStats.Data.Any(x => x.StatId == gameStat.StatId);
-        return gameStatExist;
     }
 
     private async Task ShowErrorMessage(string text)
