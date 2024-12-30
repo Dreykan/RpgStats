@@ -9,7 +9,7 @@
         <MudDivider />
         @if (Stats != null)
         {
-            foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
+            foreach (var statDto in Stats)
             {
                 var statValueDto = _statValues.FirstOrDefault(sv => sv.StatId == statDto.Id);
                 if (statValueDto == null)

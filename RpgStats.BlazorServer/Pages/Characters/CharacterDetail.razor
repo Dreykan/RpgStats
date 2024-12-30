@@ -78,7 +78,7 @@ else
                 <MudTable Items="@GetStatValuesByLevel()" Dense="true" Hover="true" Breakpoint="Breakpoint.None" FixedHeader="true">
                     <HeaderContent>
                         <MudTh><strong>Level</strong></MudTh>
-                        @foreach (var stat in _stats.OrderBy(s => s.ShortName))
+                        @foreach (var stat in _stats)
                         {
                             <MudTh>
                                 <MudTooltip Text="@stat.Name">
@@ -89,7 +89,7 @@ else
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd>@context.Key</MudTd>
-                        @foreach (var stat in _stats.OrderBy(s => s.ShortName))
+                        @foreach (var stat in _stats)
                         {
                             <MudTd>
                                 @{
@@ -118,7 +118,7 @@ else
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
     private List<StatValueDto>? _statValues = new();
-    private List<StatDto> _stats = new();
+    private readonly List<StatDto> _stats = new();
 
     [Parameter] public int Id { get; set; }
 
@@ -140,8 +140,18 @@ else
 
     private async Task GetStats()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatDto>>>($"api/Stat/GetStatsByGameId/{_character?.GameWithoutFkObjectsDto?.Id}");
-        _stats = response?.Data ?? new List<StatDto>();
+        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
+        var gameStats = response?.Data?.OrderBy(x => x.SortIndex).ToList();
+
+        if (gameStats == null)
+            return;
+
+        foreach (var gameStat in gameStats)
+        {
+            var stat = await HttpClient.GetFromJsonAsync<RpgStatsResponse<StatDto>>($"api/Stat/GetStatById/{gameStat.StatId}");
+            if (stat != null && stat.Data != null)
+                _stats.Add(stat.Data);
+        }
     }
 
     private async Task GetCharacter()

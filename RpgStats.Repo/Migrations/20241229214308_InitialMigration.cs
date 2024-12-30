@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -7,11 +8,156 @@
 namespace RpgStats.Repo.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedData : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Games",
+                columns: table => new
+                {
+                    GameId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Picture = table.Column<byte[]>(type: "bytea", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Games", x => x.GameId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Platforms",
+                columns: table => new
+                {
+                    PlatformId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Platforms", x => x.PlatformId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stats",
+                columns: table => new
+                {
+                    StatId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    ShortName = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stats", x => x.StatId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Characters",
+                columns: table => new
+                {
+                    CharacterId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    Picture = table.Column<byte[]>(type: "bytea", nullable: true),
+                    GameId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Characters", x => x.CharacterId);
+                    table.ForeignKey(
+                        name: "FK_Characters_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlatformsGames",
+                columns: table => new
+                {
+                    PlatformGameId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PlatformId = table.Column<long>(type: "bigint", nullable: false),
+                    GameId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlatformsGames", x => x.PlatformGameId);
+                    table.ForeignKey(
+                        name: "FK_PlatformsGames_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlatformsGames_Platforms_PlatformId",
+                        column: x => x.PlatformId,
+                        principalTable: "Platforms",
+                        principalColumn: "PlatformId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GamesStats",
+                columns: table => new
+                {
+                    GameStatId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SortIndex = table.Column<int>(type: "integer", nullable: false),
+                    GameId = table.Column<long>(type: "bigint", nullable: false),
+                    StatId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GamesStats", x => x.GameStatId);
+                    table.ForeignKey(
+                        name: "FK_GamesStats_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GamesStats_Stats_StatId",
+                        column: x => x.StatId,
+                        principalTable: "Stats",
+                        principalColumn: "StatId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StatValues",
+                columns: table => new
+                {
+                    StatValueId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    CharacterId = table.Column<long>(type: "bigint", nullable: false),
+                    StatId = table.Column<long>(type: "bigint", nullable: false),
+                    Value = table.Column<int>(type: "integer", nullable: false),
+                    ContainedBonusNum = table.Column<int>(type: "integer", nullable: false),
+                    ContainedBonusPercent = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StatValues", x => x.StatValueId);
+                    table.ForeignKey(
+                        name: "FK_StatValues_Characters_CharacterId",
+                        column: x => x.CharacterId,
+                        principalTable: "Characters",
+                        principalColumn: "CharacterId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StatValues_Stats_StatId",
+                        column: x => x.StatId,
+                        principalTable: "Stats",
+                        principalColumn: "StatId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Games",
                 columns: new[] { "GameId", "Name", "Picture" },
@@ -55,7 +201,8 @@ namespace RpgStats.Repo.Migrations
                     { 12L, "Speed", "SPD" },
                     { 13L, "Accuracy", "ACC" },
                     { 14L, "Critical", "CRIT" },
-                    { 15L, "Evasion", "EVA" }
+                    { 15L, "Evasion", "EVA" },
+                    { 16L, "Specialpoints", "SP" }
                 });
 
             migrationBuilder.InsertData(
@@ -73,31 +220,31 @@ namespace RpgStats.Repo.Migrations
 
             migrationBuilder.InsertData(
                 table: "GamesStats",
-                columns: new[] { "GameStatId", "GameId", "StatId" },
+                columns: new[] { "GameStatId", "GameId", "SortIndex", "StatId" },
                 values: new object[,]
                 {
-                    { 1L, 1L, 1L },
-                    { 2L, 1L, 2L },
-                    { 3L, 1L, 3L },
-                    { 4L, 1L, 4L },
-                    { 5L, 1L, 5L },
-                    { 6L, 1L, 6L },
-                    { 7L, 1L, 7L },
-                    { 8L, 1L, 8L },
-                    { 9L, 1L, 9L },
-                    { 10L, 1L, 10L },
-                    { 11L, 1L, 11L },
-                    { 12L, 1L, 12L },
-                    { 13L, 2L, 1L },
-                    { 14L, 2L, 2L },
-                    { 15L, 2L, 3L },
-                    { 16L, 2L, 4L },
-                    { 17L, 2L, 5L },
-                    { 18L, 2L, 6L },
-                    { 19L, 2L, 12L },
-                    { 20L, 2L, 13L },
-                    { 21L, 2L, 14L },
-                    { 22L, 2L, 15L }
+                    { 1L, 1L, 1, 1L },
+                    { 2L, 1L, 2, 2L },
+                    { 3L, 1L, 3, 3L },
+                    { 4L, 1L, 4, 4L },
+                    { 5L, 1L, 5, 5L },
+                    { 6L, 1L, 6, 6L },
+                    { 7L, 1L, 7, 7L },
+                    { 8L, 1L, 8, 8L },
+                    { 9L, 1L, 9, 9L },
+                    { 10L, 1L, 10, 10L },
+                    { 11L, 1L, 11, 11L },
+                    { 12L, 1L, 12, 12L },
+                    { 13L, 2L, 1, 1L },
+                    { 14L, 2L, 2, 16L },
+                    { 15L, 2L, 3, 3L },
+                    { 16L, 2L, 4, 4L },
+                    { 17L, 2L, 5, 5L },
+                    { 18L, 2L, 6, 6L },
+                    { 19L, 2L, 7, 13L },
+                    { 20L, 2L, 8, 12L },
+                    { 21L, 2L, 9, 14L },
+                    { 22L, 2L, 10, 15L }
                 });
 
             migrationBuilder.InsertData(
@@ -145,435 +292,66 @@ namespace RpgStats.Repo.Migrations
                     { 23L, 1L, 0, 0, 8, 11L, 19 },
                     { 24L, 1L, 0, 0, 8, 12L, 13 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Characters_GameId",
+                table: "Characters",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GamesStats_GameId",
+                table: "GamesStats",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GamesStats_StatId",
+                table: "GamesStats",
+                column: "StatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlatformsGames_GameId",
+                table: "PlatformsGames",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlatformsGames_PlatformId",
+                table: "PlatformsGames",
+                column: "PlatformId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StatValues_CharacterId",
+                table: "StatValues",
+                column: "CharacterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StatValues_StatId",
+                table: "StatValues",
+                column: "StatId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "Characters",
-                keyColumn: "CharacterId",
-                keyValue: 2L);
+            migrationBuilder.DropTable(
+                name: "GamesStats");
 
-            migrationBuilder.DeleteData(
-                table: "Characters",
-                keyColumn: "CharacterId",
-                keyValue: 3L);
+            migrationBuilder.DropTable(
+                name: "PlatformsGames");
 
-            migrationBuilder.DeleteData(
-                table: "Characters",
-                keyColumn: "CharacterId",
-                keyValue: 4L);
+            migrationBuilder.DropTable(
+                name: "StatValues");
 
-            migrationBuilder.DeleteData(
-                table: "Characters",
-                keyColumn: "CharacterId",
-                keyValue: 5L);
+            migrationBuilder.DropTable(
+                name: "Platforms");
 
-            migrationBuilder.DeleteData(
-                table: "Characters",
-                keyColumn: "CharacterId",
-                keyValue: 6L);
+            migrationBuilder.DropTable(
+                name: "Characters");
 
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 1L);
+            migrationBuilder.DropTable(
+                name: "Stats");
 
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 2L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 3L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 4L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 5L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 6L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 7L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 8L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 9L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 10L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 11L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 12L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 13L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 14L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 15L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 16L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 17L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 18L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 19L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 20L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 21L);
-
-            migrationBuilder.DeleteData(
-                table: "GamesStats",
-                keyColumn: "GameStatId",
-                keyValue: 22L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 2L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 3L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 4L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 1L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 2L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 3L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 4L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 5L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 6L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 7L);
-
-            migrationBuilder.DeleteData(
-                table: "PlatformsGames",
-                keyColumn: "PlatformGameId",
-                keyValue: 8L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 1L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 2L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 3L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 4L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 5L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 6L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 7L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 8L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 9L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 10L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 11L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 12L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 13L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 14L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 15L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 16L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 17L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 18L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 19L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 20L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 21L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 22L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 23L);
-
-            migrationBuilder.DeleteData(
-                table: "StatValues",
-                keyColumn: "StatValueId",
-                keyValue: 24L);
-
-            migrationBuilder.DeleteData(
-                table: "Characters",
-                keyColumn: "CharacterId",
-                keyValue: 1L);
-
-            migrationBuilder.DeleteData(
-                table: "Games",
-                keyColumn: "GameId",
-                keyValue: 2L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 1L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 5L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 6L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 7L);
-
-            migrationBuilder.DeleteData(
-                table: "Platforms",
-                keyColumn: "PlatformId",
-                keyValue: 8L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 1L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 2L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 3L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 4L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 5L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 6L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 7L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 8L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 9L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 10L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 11L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 12L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 13L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 14L);
-
-            migrationBuilder.DeleteData(
-                table: "Stats",
-                keyColumn: "StatId",
-                keyValue: 15L);
-
-            migrationBuilder.DeleteData(
-                table: "Games",
-                keyColumn: "GameId",
-                keyValue: 1L);
+            migrationBuilder.DropTable(
+                name: "Games");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace RpgStats.Repo.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -45,7 +45,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Characters", (string)null);
+                    b.ToTable("Characters");
 
                     b.HasData(
                         new
@@ -111,7 +111,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Games");
 
                     b.HasData(
                         new
@@ -140,6 +140,9 @@ namespace RpgStats.Repo.Migrations
                     b.Property<long>("GameId")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("SortIndex")
+                        .HasColumnType("integer");
+
                     b.Property<long>("StatId")
                         .HasColumnType("bigint");
 
@@ -149,139 +152,161 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("StatId");
 
-                    b.ToTable("GamesStats", (string)null);
+                    b.ToTable("GamesStats");
 
                     b.HasData(
                         new
                         {
                             Id = 1L,
                             GameId = 1L,
+                            SortIndex = 1,
                             StatId = 1L
                         },
                         new
                         {
                             Id = 2L,
                             GameId = 1L,
+                            SortIndex = 2,
                             StatId = 2L
                         },
                         new
                         {
                             Id = 3L,
                             GameId = 1L,
+                            SortIndex = 3,
                             StatId = 3L
                         },
                         new
                         {
                             Id = 4L,
                             GameId = 1L,
+                            SortIndex = 4,
                             StatId = 4L
                         },
                         new
                         {
                             Id = 5L,
                             GameId = 1L,
+                            SortIndex = 5,
                             StatId = 5L
                         },
                         new
                         {
                             Id = 6L,
                             GameId = 1L,
+                            SortIndex = 6,
                             StatId = 6L
                         },
                         new
                         {
                             Id = 7L,
                             GameId = 1L,
+                            SortIndex = 7,
                             StatId = 7L
                         },
                         new
                         {
                             Id = 8L,
                             GameId = 1L,
+                            SortIndex = 8,
                             StatId = 8L
                         },
                         new
                         {
                             Id = 9L,
                             GameId = 1L,
+                            SortIndex = 9,
                             StatId = 9L
                         },
                         new
                         {
                             Id = 10L,
                             GameId = 1L,
+                            SortIndex = 10,
                             StatId = 10L
                         },
                         new
                         {
                             Id = 11L,
                             GameId = 1L,
+                            SortIndex = 11,
                             StatId = 11L
                         },
                         new
                         {
                             Id = 12L,
                             GameId = 1L,
+                            SortIndex = 12,
                             StatId = 12L
                         },
                         new
                         {
                             Id = 13L,
                             GameId = 2L,
+                            SortIndex = 1,
                             StatId = 1L
                         },
                         new
                         {
                             Id = 14L,
                             GameId = 2L,
-                            StatId = 2L
+                            SortIndex = 2,
+                            StatId = 16L
                         },
                         new
                         {
                             Id = 15L,
                             GameId = 2L,
+                            SortIndex = 3,
                             StatId = 3L
                         },
                         new
                         {
                             Id = 16L,
                             GameId = 2L,
+                            SortIndex = 4,
                             StatId = 4L
                         },
                         new
                         {
                             Id = 17L,
                             GameId = 2L,
+                            SortIndex = 5,
                             StatId = 5L
                         },
                         new
                         {
                             Id = 18L,
                             GameId = 2L,
+                            SortIndex = 6,
                             StatId = 6L
                         },
                         new
                         {
                             Id = 19L,
                             GameId = 2L,
-                            StatId = 12L
+                            SortIndex = 7,
+                            StatId = 13L
                         },
                         new
                         {
                             Id = 20L,
                             GameId = 2L,
-                            StatId = 13L
+                            SortIndex = 8,
+                            StatId = 12L
                         },
                         new
                         {
                             Id = 21L,
                             GameId = 2L,
+                            SortIndex = 9,
                             StatId = 14L
                         },
                         new
                         {
                             Id = 22L,
                             GameId = 2L,
+                            SortIndex = 10,
                             StatId = 15L
                         });
                 });
@@ -302,7 +327,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Platforms", (string)null);
+                    b.ToTable("Platforms");
 
                     b.HasData(
                         new
@@ -368,7 +393,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("PlatformId");
 
-                    b.ToTable("PlatformsGames", (string)null);
+                    b.ToTable("PlatformsGames");
 
                     b.HasData(
                         new
@@ -441,7 +466,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stats", (string)null);
+                    b.ToTable("Stats");
 
                     b.HasData(
                         new
@@ -533,6 +558,12 @@ namespace RpgStats.Repo.Migrations
                             Id = 15L,
                             Name = "Evasion",
                             ShortName = "EVA"
+                        },
+                        new
+                        {
+                            Id = 16L,
+                            Name = "Specialpoints",
+                            ShortName = "SP"
                         });
                 });
 
@@ -569,7 +600,7 @@ namespace RpgStats.Repo.Migrations
 
                     b.HasIndex("StatId");
 
-                    b.ToTable("StatValues", (string)null);
+                    b.ToTable("StatValues");
 
                     b.HasData(
                         new

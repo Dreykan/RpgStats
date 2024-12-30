@@ -17,6 +17,16 @@ public class GameStatTests
     }
 
     [Fact]
+    public void GameStat_SortIndex_ShouldBeSetAndRetrievedCorrectly()
+    {
+        var gameStat = new GameStat();
+
+        gameStat.SortIndex = 12345;
+
+        Assert.Equal(12345, gameStat.SortIndex);
+    }
+
+    [Fact]
     public void GameStat_GameId_ShouldBeSetAndRetrievedCorrectly()
     {
         var gameStat = new GameStat();

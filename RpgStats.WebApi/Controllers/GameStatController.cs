@@ -55,21 +55,21 @@ public class GameStatController : ControllerBase
         return NotFound(result);
     }
 
-    [HttpPost("CreateGameStat/{gameId:long}/{statId:long}")]
+    [HttpPost("CreateGameStat/{gameId:long}/{statId:long}/{sortIndex:int}")]
     [SwaggerOperation(Summary = "Create a GameStat")]
-    public async Task<IActionResult> CreateGameStat(long gameId, long statId)
+    public async Task<IActionResult> CreateGameStat(long gameId, long statId, int sortIndex)
     {
-        var result = await _gameStatService.CreateGameStatAsync(gameId, statId);
+        var result = await _gameStatService.CreateGameStatAsync(gameId, statId, sortIndex);
         if (result.Success)
             return CreatedAtAction(nameof(GetGameStatById), new { gameStatId = result.Data?.Id }, result);
         return BadRequest(result);
     }
 
-    [HttpPut("UpdateGameStat/{gameStatId:long}/{gameId:long}/{statId:long}")]
+    [HttpPut("UpdateGameStat/{gameStatId:long}/{gameId:long}/{statId:long}/{sortIndex:int}")]
     [SwaggerOperation(Summary = "Update a GameStat")]
-    public async Task<IActionResult> UpdateGameStat(long gameStatId, long gameId, long statId)
+    public async Task<IActionResult> UpdateGameStat(long gameStatId, long gameId, long statId, int sortIndex)
     {
-        var result = await _gameStatService.UpdateGameStatAsync(gameStatId, gameId, statId);
+        var result = await _gameStatService.UpdateGameStatAsync(gameStatId, gameId, statId, sortIndex);
         if (result.Success)
             return CreatedAtAction(nameof(GetGameStatById), new { gameStatId = result.Data?.Id }, result);
         return BadRequest(result);

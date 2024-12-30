@@ -1,6 +1,7 @@
 ﻿@using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IHttpClientFactory HttpClientFactory
+@inject IDialogService DialogService
 
 <MudDialog>
     <DialogContent>
@@ -17,6 +18,9 @@
                 }
             }
         </MudSelect>
+        <MudItem xs="6">
+            <MudTextField Label="Sortier-Index" @bind-Value="_gameStatDto.SortIndex" Numeric="true"/>
+        </MudItem>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Abbrechen</MudButton>
@@ -46,12 +50,62 @@
         MudDialog?.Cancel();
     }
 
-    private void Submit()
+    private async Task Submit()
     {
         if (Game != null) _gameStatDto.GameId = Game.Id;
         if (_stats != null) _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
-        MudDialog?.Close(DialogResult.Ok(_gameStatDto));
+        await CreateGameStat();
     }
 
+    private async Task CreateGameStat()
+    {
+        if (await CheckGameStatExist())
+        {
+            var parameters = new DialogParameters
+            {
+                { "ContentText", "Dieser Status-Typ ist schon mit dem Spiel verknüpft." },
+                { "ButtonText", "OK" },
+                { "Color", Color.Info }
+            };
 
+            var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+            await DialogService.ShowAsync<MessageDialog>("Fehler", parameters, options);
+        }
+        else
+        {
+            var response = await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/{_gameStatDto.GameId}/{_gameStatDto.StatId}/{_gameStatDto.SortIndex}", "");
+            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameStatDto>>();
+            if (!response.IsSuccessStatusCode || content?.Success == false)
+            {
+                await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Verknüpfen des Status-Typs mit dem Spiel.");
+            }
+            else
+            {
+                MudDialog?.Close(DialogResult.Ok(_gameStatDto));
+            }
+        }
+    }
+
+    private async Task<bool> CheckGameStatExist()
+    {
+        // TODO: Hier einen eigenen Endpunkt erstellen für die Überprüfung ob es diesen GameStat schon gibt
+        var response = await HttpClient.GetAsync($"api/GameStat/GetGameStatsByGame/{_gameStatDto.GameId}");
+        if (response.IsSuccessStatusCode == false) return false;
+
+        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>();
+        if (rpgStatsResponse?.Success == false) return false;
+
+        var gameStatExist = rpgStatsResponse?.Data != null && rpgStatsResponse.Data.Any(x => x.StatId == _gameStatDto.StatId);
+        return gameStatExist;
+    }
+
+    private async Task ShowErrorMessage(string text)
+    {
+        await DialogService.ShowMessageBox("Error", text);
+    }
 }
