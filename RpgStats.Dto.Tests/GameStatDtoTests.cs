@@ -8,6 +8,8 @@ public class GameStatDtoTests
         var dto = new GameStatDto();
         Assert.Equal(0, dto.Id);
         Assert.Equal(0, dto.SortIndex);
+        Assert.Equal(string.Empty, dto.CustomStatName);
+        Assert.Equal(string.Empty, dto.CustomStatShortName);
         Assert.Equal(0, dto.GameId);
         Assert.Equal(0, dto.StatId);
     }
@@ -20,12 +22,16 @@ public class GameStatDtoTests
             Id = 1,
             GameId = 2,
             StatId = 3,
-            SortIndex = 4
+            SortIndex = 4,
+            CustomStatName = "TestCustomStatName",
+            CustomStatShortName = "TestCustomStatShortName"
         };
         Assert.Equal(1, dto.Id);
         Assert.Equal(2, dto.GameId);
         Assert.Equal(3, dto.StatId);
         Assert.Equal(4, dto.SortIndex);
+        Assert.Equal("TestCustomStatName", dto.CustomStatName);
+        Assert.Equal("TestCustomStatShortName", dto.CustomStatShortName);
     }
 
     [Fact]
