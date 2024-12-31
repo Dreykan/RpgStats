@@ -24,7 +24,7 @@ internal class StatConfiguration : IEntityTypeConfiguration<Stat>
             new Stat { Id = 13, Name = "Accuracy", ShortName = "ACC" },
             new Stat { Id = 14, Name = "Critical", ShortName = "CRIT" },
             new Stat { Id = 15, Name = "Evasion", ShortName = "EVA" },
-            new Stat { Id = 16, Name = "Specialpoints", ShortName = "SP" }
+            new Stat { Id = 16, Name = "Skillpoints", ShortName = "SP" }
         );
     }
 }

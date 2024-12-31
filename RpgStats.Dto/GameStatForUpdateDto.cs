@@ -1,16 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using RpgStats.Domain.Entities;
 
-namespace RpgStats.Domain.Entities;
+namespace RpgStats.Dto;
 
-[Table("GamesStats")]
-public class GameStat
+public class GameStatForUpdateDto
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    [Column("GameStatId")]
-    public long Id { get; set; }
-
     [Required(ErrorMessage = "An entry for the column SortIndex is required.")]
     public int SortIndex { get; set; }
 
@@ -26,11 +21,7 @@ public class GameStat
     [ForeignKey(nameof(Game))]
     public long GameId { get; set; }
 
-    public Game? Game { get; set; }
-
     [Required(ErrorMessage = "An entry for the column StatId is required.")]
     [ForeignKey(nameof(Stat))]
     public long StatId { get; set; }
-
-    public Stat? Stat { get; set; }
 }

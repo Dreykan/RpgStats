@@ -1,3 +1,4 @@
+using RpgStats.Dto;
 using Xunit.Priority;
 
 namespace RpgStats.Services.Tests;
@@ -94,7 +95,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(8)]
     public async Task CreateGameStatAsync_ReturnsGameStat()
     {
-        var result = await _service.CreateGameStatAsync(1, 1, 2);
+        var gameStatForCreationDto = new GameStatForCreationDto
+        {
+            GameId = 1,
+            StatId = 1,
+            SortIndex = 2
+        };
+
+        var result = await _service.CreateGameStatAsync(gameStatForCreationDto);
 
         Assert.NotNull(result);
         Assert.True(result.Success);
@@ -109,7 +117,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(9)]
     public async Task CreateGameStatAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.CreateGameStatAsync(100, 1, 2);
+        var gameStatForCreationDto = new GameStatForCreationDto
+        {
+            GameId = 100,
+            StatId = 1,
+            SortIndex = 2
+        };
+
+        var result = await _service.CreateGameStatAsync(gameStatForCreationDto);
 
         Assert.NotNull(result);
         Assert.False(result.Success);
@@ -121,7 +136,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(10)]
     public async Task CreateGameStatAsync_Error_WhenStatIdNotFound()
     {
-        var result = await _service.CreateGameStatAsync(1, 100, 2);
+        var gameStatForCreationDto = new GameStatForCreationDto
+        {
+            GameId = 1,
+            StatId = 100,
+            SortIndex = 2
+        };
+
+        var result = await _service.CreateGameStatAsync(gameStatForCreationDto);
 
         Assert.NotNull(result);
         Assert.False(result.Success);
@@ -133,7 +155,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(11)]
     public async Task UpdateGameStatAsync_ReturnsUpdatedGameStat()
     {
-        var result = await _service.UpdateGameStatAsync(1, 1, 1, 2);
+        var gameStatForUpdateDto = new GameStatForUpdateDto
+        {
+            GameId = 1,
+            StatId = 1,
+            SortIndex = 2
+        };
+
+        var result = await _service.UpdateGameStatAsync(1, gameStatForUpdateDto);
 
         Assert.NotNull(result);
         Assert.True(result.Success);
@@ -147,7 +176,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(12)]
     public async Task UpdateGameStatAsync_Error_WhenIdNotFound()
     {
-        var result = await _service.UpdateGameStatAsync(100, 1, 1, 2);
+        var gameStatForUpdateDto = new GameStatForUpdateDto
+        {
+            GameId = 1,
+            StatId = 1,
+            SortIndex = 2
+        };
+
+        var result = await _service.UpdateGameStatAsync(100, gameStatForUpdateDto);
 
         Assert.NotNull(result);
         Assert.False(result.Success);
@@ -159,7 +195,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(13)]
     public async Task UpdateGameStatAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.UpdateGameStatAsync(1, 100, 1, 2);
+        var gameStatForUpdateDto = new GameStatForUpdateDto
+        {
+            GameId = 100,
+            StatId = 1,
+            SortIndex = 2
+        };
+
+        var result = await _service.UpdateGameStatAsync(1, gameStatForUpdateDto);
 
         Assert.NotNull(result);
         Assert.False(result.Success);
@@ -171,7 +214,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(14)]
     public async Task UpdateGameStatAsync_Error_WhenStatIdNotFound()
     {
-        var result = await _service.UpdateGameStatAsync(1, 1, 100, 2);
+        var gameStatForUpdateDto = new GameStatForUpdateDto
+        {
+            GameId = 1,
+            StatId = 100,
+            SortIndex = 2
+        };
+
+        var result = await _service.UpdateGameStatAsync(1, gameStatForUpdateDto);
 
         Assert.NotNull(result);
         Assert.False(result.Success);

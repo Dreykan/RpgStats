@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -55,21 +56,21 @@ public class GameStatController : ControllerBase
         return NotFound(result);
     }
 
-    [HttpPost("CreateGameStat/{gameId:long}/{statId:long}/{sortIndex:int}")]
+    [HttpPost("CreateGameStat")]
     [SwaggerOperation(Summary = "Create a GameStat")]
-    public async Task<IActionResult> CreateGameStat(long gameId, long statId, int sortIndex)
+    public async Task<IActionResult> CreateGameStat([FromBody] GameStatForCreationDto gameStatForCreationDto)
     {
-        var result = await _gameStatService.CreateGameStatAsync(gameId, statId, sortIndex);
+        var result = await _gameStatService.CreateGameStatAsync(gameStatForCreationDto);
         if (result.Success)
             return CreatedAtAction(nameof(GetGameStatById), new { gameStatId = result.Data?.Id }, result);
         return BadRequest(result);
     }
 
-    [HttpPut("UpdateGameStat/{gameStatId:long}/{gameId:long}/{statId:long}/{sortIndex:int}")]
+    [HttpPut("UpdateGameStat/{gameStatId:long}")]
     [SwaggerOperation(Summary = "Update a GameStat")]
-    public async Task<IActionResult> UpdateGameStat(long gameStatId, long gameId, long statId, int sortIndex)
+    public async Task<IActionResult> UpdateGameStat([FromBody] GameStatForUpdateDto gameStatForUpdateDto, long gameStatId)
     {
-        var result = await _gameStatService.UpdateGameStatAsync(gameStatId, gameId, statId, sortIndex);
+        var result = await _gameStatService.UpdateGameStatAsync(gameStatId, gameStatForUpdateDto);
         if (result.Success)
             return CreatedAtAction(nameof(GetGameStatById), new { gameStatId = result.Data?.Id }, result);
         return BadRequest(result);
