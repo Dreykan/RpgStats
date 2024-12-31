@@ -108,6 +108,8 @@ namespace RpgStats.Repo.Migrations
                     GameStatId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SortIndex = table.Column<int>(type: "integer", nullable: false),
+                    CustomStatName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CustomStatShortName = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
                     GameId = table.Column<long>(type: "bigint", nullable: false),
                     StatId = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -202,7 +204,7 @@ namespace RpgStats.Repo.Migrations
                     { 13L, "Accuracy", "ACC" },
                     { 14L, "Critical", "CRIT" },
                     { 15L, "Evasion", "EVA" },
-                    { 16L, "Specialpoints", "SP" }
+                    { 16L, "Skillpoints", "SP" }
                 });
 
             migrationBuilder.InsertData(
@@ -220,31 +222,31 @@ namespace RpgStats.Repo.Migrations
 
             migrationBuilder.InsertData(
                 table: "GamesStats",
-                columns: new[] { "GameStatId", "GameId", "SortIndex", "StatId" },
+                columns: new[] { "GameStatId", "CustomStatName", "CustomStatShortName", "GameId", "SortIndex", "StatId" },
                 values: new object[,]
                 {
-                    { 1L, 1L, 1, 1L },
-                    { 2L, 1L, 2, 2L },
-                    { 3L, 1L, 3, 3L },
-                    { 4L, 1L, 4, 4L },
-                    { 5L, 1L, 5, 5L },
-                    { 6L, 1L, 6, 6L },
-                    { 7L, 1L, 7, 7L },
-                    { 8L, 1L, 8, 8L },
-                    { 9L, 1L, 9, 9L },
-                    { 10L, 1L, 10, 10L },
-                    { 11L, 1L, 11, 11L },
-                    { 12L, 1L, 12, 12L },
-                    { 13L, 2L, 1, 1L },
-                    { 14L, 2L, 2, 16L },
-                    { 15L, 2L, 3, 3L },
-                    { 16L, 2L, 4, 4L },
-                    { 17L, 2L, 5, 5L },
-                    { 18L, 2L, 6, 6L },
-                    { 19L, 2L, 7, 13L },
-                    { 20L, 2L, 8, 12L },
-                    { 21L, 2L, 9, 14L },
-                    { 22L, 2L, 10, 15L }
+                    { 1L, "Trefferpunkte", "TP", 1L, 1, 1L },
+                    { 2L, "Manapunkte", "MP", 1L, 2, 2L },
+                    { 3L, "Physische Attacke", "PATK", 1L, 3, 3L },
+                    { 4L, "Magische Attacke", "MATK", 1L, 4, 4L },
+                    { 5L, "Physische Abwehr", "PABW", 1L, 5, 5L },
+                    { 6L, "Magische Abwehr", "MABW", 1L, 6, 6L },
+                    { 7L, "Stärke", "STR", 1L, 7, 7L },
+                    { 8L, "Magie", "MAG", 1L, 8, 8L },
+                    { 9L, "Vitalität", "VIT", 1L, 9, 9L },
+                    { 10L, "Willenskraft", "WIL", 1L, 10, 10L },
+                    { 11L, "Glück", "GLÜ", 1L, 11, 11L },
+                    { 12L, "Schnelligkeit", "SCHN", 1L, 12, 12L },
+                    { 13L, "Gesundheitspunkte", "GP", 2L, 1, 1L },
+                    { 14L, "Fertigkeitspunkte", "FP", 2L, 2, 16L },
+                    { 15L, "Physischer Angriff", "PANG", 2L, 3, 3L },
+                    { 16L, "Elementarer Angriff", "EANG", 2L, 4, 4L },
+                    { 17L, "Physische Verteidigung", "PVER", 2L, 5, 5L },
+                    { 18L, "Elementare Verteidigung", "EVER", 2L, 6, 6L },
+                    { 19L, "Genauigkeit", "GEN", 2L, 7, 13L },
+                    { 20L, "Tempo", "TEM", 2L, 8, 12L },
+                    { 21L, "Kritisch", "KRIT", 2L, 9, 14L },
+                    { 22L, "Ausweichen", "AUSW", 2L, 10, 15L }
                 });
 
             migrationBuilder.InsertData(

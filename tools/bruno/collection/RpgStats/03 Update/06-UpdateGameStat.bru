@@ -5,13 +5,13 @@ meta {
 }
 
 put {
-  url: {{host}}/{{basePath}}/{{gameStatPath}}/UpdateGameStat/{{gameStatId}}/{{gameId}}/{{statId}}
+  url: {{host}}/{{basePath}}/{{gameStatPath}}/UpdateGameStat/{{gameStatId}}
   body: json
   auth: none
 }
 
 vars:post-response {
-  gameStatId: res.body.id
+  gameStatId: res.body.data.id
 }
 
 assert {

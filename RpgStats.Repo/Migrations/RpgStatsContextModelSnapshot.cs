@@ -137,6 +137,16 @@ namespace RpgStats.Repo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("CustomStatName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("CustomStatShortName")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
                     b.Property<long>("GameId")
                         .HasColumnType("bigint");
 
@@ -158,6 +168,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 1L,
+                            CustomStatName = "Trefferpunkte",
+                            CustomStatShortName = "TP",
                             GameId = 1L,
                             SortIndex = 1,
                             StatId = 1L
@@ -165,6 +177,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 2L,
+                            CustomStatName = "Manapunkte",
+                            CustomStatShortName = "MP",
                             GameId = 1L,
                             SortIndex = 2,
                             StatId = 2L
@@ -172,6 +186,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 3L,
+                            CustomStatName = "Physische Attacke",
+                            CustomStatShortName = "PATK",
                             GameId = 1L,
                             SortIndex = 3,
                             StatId = 3L
@@ -179,6 +195,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 4L,
+                            CustomStatName = "Magische Attacke",
+                            CustomStatShortName = "MATK",
                             GameId = 1L,
                             SortIndex = 4,
                             StatId = 4L
@@ -186,6 +204,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 5L,
+                            CustomStatName = "Physische Abwehr",
+                            CustomStatShortName = "PABW",
                             GameId = 1L,
                             SortIndex = 5,
                             StatId = 5L
@@ -193,6 +213,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 6L,
+                            CustomStatName = "Magische Abwehr",
+                            CustomStatShortName = "MABW",
                             GameId = 1L,
                             SortIndex = 6,
                             StatId = 6L
@@ -200,6 +222,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 7L,
+                            CustomStatName = "Stärke",
+                            CustomStatShortName = "STR",
                             GameId = 1L,
                             SortIndex = 7,
                             StatId = 7L
@@ -207,6 +231,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 8L,
+                            CustomStatName = "Magie",
+                            CustomStatShortName = "MAG",
                             GameId = 1L,
                             SortIndex = 8,
                             StatId = 8L
@@ -214,6 +240,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 9L,
+                            CustomStatName = "Vitalität",
+                            CustomStatShortName = "VIT",
                             GameId = 1L,
                             SortIndex = 9,
                             StatId = 9L
@@ -221,6 +249,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 10L,
+                            CustomStatName = "Willenskraft",
+                            CustomStatShortName = "WIL",
                             GameId = 1L,
                             SortIndex = 10,
                             StatId = 10L
@@ -228,6 +258,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 11L,
+                            CustomStatName = "Glück",
+                            CustomStatShortName = "GLÜ",
                             GameId = 1L,
                             SortIndex = 11,
                             StatId = 11L
@@ -235,6 +267,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 12L,
+                            CustomStatName = "Schnelligkeit",
+                            CustomStatShortName = "SCHN",
                             GameId = 1L,
                             SortIndex = 12,
                             StatId = 12L
@@ -242,6 +276,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 13L,
+                            CustomStatName = "Gesundheitspunkte",
+                            CustomStatShortName = "GP",
                             GameId = 2L,
                             SortIndex = 1,
                             StatId = 1L
@@ -249,6 +285,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 14L,
+                            CustomStatName = "Fertigkeitspunkte",
+                            CustomStatShortName = "FP",
                             GameId = 2L,
                             SortIndex = 2,
                             StatId = 16L
@@ -256,6 +294,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 15L,
+                            CustomStatName = "Physischer Angriff",
+                            CustomStatShortName = "PANG",
                             GameId = 2L,
                             SortIndex = 3,
                             StatId = 3L
@@ -263,6 +303,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 16L,
+                            CustomStatName = "Elementarer Angriff",
+                            CustomStatShortName = "EANG",
                             GameId = 2L,
                             SortIndex = 4,
                             StatId = 4L
@@ -270,6 +312,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 17L,
+                            CustomStatName = "Physische Verteidigung",
+                            CustomStatShortName = "PVER",
                             GameId = 2L,
                             SortIndex = 5,
                             StatId = 5L
@@ -277,6 +321,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 18L,
+                            CustomStatName = "Elementare Verteidigung",
+                            CustomStatShortName = "EVER",
                             GameId = 2L,
                             SortIndex = 6,
                             StatId = 6L
@@ -284,6 +330,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 19L,
+                            CustomStatName = "Genauigkeit",
+                            CustomStatShortName = "GEN",
                             GameId = 2L,
                             SortIndex = 7,
                             StatId = 13L
@@ -291,6 +339,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 20L,
+                            CustomStatName = "Tempo",
+                            CustomStatShortName = "TEM",
                             GameId = 2L,
                             SortIndex = 8,
                             StatId = 12L
@@ -298,6 +348,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 21L,
+                            CustomStatName = "Kritisch",
+                            CustomStatShortName = "KRIT",
                             GameId = 2L,
                             SortIndex = 9,
                             StatId = 14L
@@ -305,6 +357,8 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 22L,
+                            CustomStatName = "Ausweichen",
+                            CustomStatShortName = "AUSW",
                             GameId = 2L,
                             SortIndex = 10,
                             StatId = 15L
@@ -562,7 +616,7 @@ namespace RpgStats.Repo.Migrations
                         new
                         {
                             Id = 16L,
-                            Name = "Specialpoints",
+                            Name = "Skillpoints",
                             ShortName = "SP"
                         });
                 });

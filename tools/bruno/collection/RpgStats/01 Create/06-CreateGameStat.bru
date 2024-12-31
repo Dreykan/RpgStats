@@ -5,13 +5,23 @@ meta {
 }
 
 post {
-  url: {{host}}/{{basePath}}/{{gameStatPath}}/CreateGameStat/{{gameId}}/{{statId}}
+  url: {{host}}/{{basePath}}/{{gameStatPath}}/CreateGameStat
   body: json
   auth: none
 }
 
+body:json {
+  {
+    "sortindex": "1",
+    "gameid": "1",
+    "statid": "16",
+    "customstatname": "TestStatName",
+    "customstatshortname": "TSN"
+  }
+}
+
 vars:post-response {
-  gameStatId: res.body.id
+  gameStatId: res.body.data.id
 }
 
 assert {
