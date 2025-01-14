@@ -78,34 +78,40 @@ else
                 <MudTable Items="@GetStatValuesByLevel()" Dense="true" Hover="true" Breakpoint="Breakpoint.None" FixedHeader="true">
                     <HeaderContent>
                         <MudTh><strong>Level</strong></MudTh>
-                        @foreach (var stat in _stats)
+                        @if (_gameStats != null)
                         {
-                            <MudTh>
-                                <MudTooltip Text="@stat.Name">
-                                    <strong>@stat.ShortName</strong>
-                                </MudTooltip>
-                            </MudTh>
+                            @foreach (var gameStat in _gameStats)
+                            {
+                                <MudTh>
+                                    <MudTooltip Text="@gameStat.CustomStatName">
+                                        <strong>@gameStat.CustomStatShortName</strong>
+                                    </MudTooltip>
+                                </MudTh>
+                            }
                         }
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd>@context.Key</MudTd>
-                        @foreach (var stat in _stats)
+                        @if (_gameStats != null)
                         {
-                            <MudTd>
-                                @{
-                                    var statValue = context.Value.FirstOrDefault(sv => sv.StatId == stat.Id);
-                                    if (statValue != null)
-                                    {
-                                        <MudTooltip Text="@($"Basis: {statValue.Value}{Environment.NewLine}Bonus: +{statValue.ContainedBonusNum} / +{statValue.ContainedBonusPercent}%")">
-                                            <MudText>@statValue.Value</MudText>
-                                        </MudTooltip>
+                            @foreach (var gameStat in _gameStats)
+                            {
+                                <MudTd>
+                                    @{
+                                        var statValue = context.Value.FirstOrDefault(sv => sv.StatId == gameStat.StatId);
+                                        if (statValue != null)
+                                        {
+                                            <MudTooltip Text="@($"Basis: {statValue.Value}{Environment.NewLine}Bonus: +{statValue.ContainedBonusNum} / +{statValue.ContainedBonusPercent}%")">
+                                                <MudText>@statValue.Value</MudText>
+                                            </MudTooltip>
+                                        }
+                                        else
+                                        {
+                                            <MudText>-</MudText>
+                                        }
                                     }
-                                    else
-                                    {
-                                        <MudText>-</MudText>
-                                    }
-                                }
-                            </MudTd>
+                                </MudTd>
+                            }
                         }
                     </RowTemplate>
                 </MudTable>
@@ -118,7 +124,7 @@ else
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
     private List<StatValueDto>? _statValues = new();
-    private readonly List<StatDto> _stats = new();
+    private List<GameStatDto>? _gameStats = new();
 
     [Parameter] public int Id { get; set; }
 
@@ -126,7 +132,7 @@ else
     {
         await GetCharacter();
         await GetStatValues();
-        await GetStats();
+        await GetGameStats();
     }
 
     private async Task GetStatValues()
@@ -138,20 +144,10 @@ else
         }
     }
 
-    private async Task GetStats()
+    private async Task GetGameStats()
     {
         var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
-        var gameStats = response?.Data?.OrderBy(x => x.SortIndex).ToList();
-
-        if (gameStats == null)
-            return;
-
-        foreach (var gameStat in gameStats)
-        {
-            var stat = await HttpClient.GetFromJsonAsync<RpgStatsResponse<StatDto>>($"api/Stat/GetStatById/{gameStat.StatId}");
-            if (stat != null && stat.Data != null)
-                _stats.Add(stat.Data);
-        }
+        _gameStats = response?.Data?.OrderBy(x => x.SortIndex).ToList();
     }
 
     private async Task GetCharacter()
@@ -207,8 +203,19 @@ else
     private void AddNewStat()
     {
         var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
-        var dialogParameter = new DialogParameters { { "Character", _character }, { "Stats", _stats } };
-        var dialog = DialogService.Show<StatValueCreate>("Neuer Statuswert", dialogParameter, dialogOptions);
-        var result = dialog.Result;
+        var dialogParameter = new DialogParameters { { "Character", _character }, { "Stats", GetStats() } };
+        DialogService.Show<StatValueCreate>("Neuer Statuswert", dialogParameter, dialogOptions);
+    }
+
+    private List<StatDto> GetStats()
+    {
+        if (_gameStats == null) return new List<StatDto>();
+
+        return _gameStats.Select(gs => new StatDto
+        {
+            Id = gs.StatId,
+            Name = gs.CustomStatName,
+            ShortName = gs.CustomStatShortName
+        }).ToList();
     }
 }

@@ -79,12 +79,15 @@ else
                         </MudText>
                     </MudTooltip>
                     <MudGrid Class="my-4">
-                        @foreach (var stat in _stats)
+                        @if (_gameStats != null)
                         {
-                            <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top"
-                                    Text="@stat.Name">
-                                <MudChip Class="mx-9" Color="Color.Secondary">@stat.ShortName</MudChip>
-                            </MudTooltip>
+                            @foreach (var gameStat in _gameStats)
+                            {
+                                <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top"
+                                            Text="@gameStat.CustomStatName">
+                                    <MudChip Class="mx-9" Color="Color.Secondary">@gameStat.CustomStatShortName</MudChip>
+                                </MudTooltip>
+                            }
                         }
                     </MudGrid>
                 }
@@ -111,14 +114,14 @@ else
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private GameDetailDto? _game;
-    private readonly List<StatDto> _stats = new();
+    private List<GameStatDto>? _gameStats = new();
 
     [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await GetGame();
-        await GetStatsInCorrectOrder();
+        await GetGameStats();
     }
 
     private async Task GetGame()
@@ -164,7 +167,7 @@ else
         }
     }
 
-    private async Task GetStatsInCorrectOrder()
+    private async Task GetGameStats()
     {
         var response = await HttpClient.GetAsync($"api/GameStat/GetGameStatsByGame/{_game?.Id}");
 
@@ -173,18 +176,7 @@ else
 
         var rpgStatsResponse = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>();
 
-        var gameStats = rpgStatsResponse?.Data?.OrderBy(x => x.SortIndex).ToList();
-
-        if (gameStats == null)
-            return;
-
-        _stats.Clear();
-        foreach (var gameStat in gameStats)
-        {
-            var stat = await HttpClient.GetFromJsonAsync<RpgStatsResponse<StatDto>>($"api/Stat/GetStatById/{gameStat.StatId}");
-            if (stat != null && stat.Data != null)
-                _stats.Add(stat.Data);
-        }
+        _gameStats = rpgStatsResponse?.Data?.OrderBy(x => x.SortIndex).ToList();
     }
 
     private async Task LinkGameStat()
@@ -196,7 +188,7 @@ else
         var result = await dialog.Result;
         if (result.Canceled == false)
         {
-            await GetStatsInCorrectOrder();
+            await GetGameStats();
         }
     }
 
