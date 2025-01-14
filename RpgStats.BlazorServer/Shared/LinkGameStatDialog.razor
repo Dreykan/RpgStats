@@ -20,6 +20,8 @@
         </MudSelect>
         <MudItem xs="6">
             <MudTextField Label="Sortier-Index" @bind-Value="_gameStatDto.SortIndex" Numeric="true"/>
+            <MudTextField Label="Status-Name im Spiel" @bind-Value="_gameStatDto.CustomStatName"/>
+            <MudTextField Label="Status-Kurzname im Spiel" @bind-Value="_gameStatDto.CustomStatShortName" />
         </MudItem>
     </DialogContent>
     <DialogActions>
@@ -78,7 +80,7 @@
         }
         else
         {
-            var response = await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/{_gameStatDto.GameId}/{_gameStatDto.StatId}/{_gameStatDto.SortIndex}", "");
+            var response = await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/", _gameStatDto);
             var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameStatDto>>();
             if (!response.IsSuccessStatusCode || content?.Success == false)
             {
