@@ -85,7 +85,7 @@ else
                             {
                                 <MudTooltip Class="mt-4" Duration="250" Delay="1000" Placement="Placement.Top"
                                             Text="@gameStat.CustomStatName">
-                                    <MudChip Class="mx-9" Color="Color.Secondary">@gameStat.CustomStatShortName</MudChip>
+                                    <MudChip Class="mx-9" Color="Color.Secondary" OnClose="RemoveMudChip" Text="@gameStat.CustomStatShortName"/>
                                 </MudTooltip>
                             }
                         }
@@ -162,6 +162,7 @@ else
                 await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Löschen des Spiels.");
                 return;
             }
+
             NavigationManager.NavigateTo("/allGames");
 
         }
@@ -195,5 +196,57 @@ else
     private async Task ShowErrorMessage(string text)
     {
         await DialogService.ShowMessageBox("Error", text);
+    }
+
+    private async Task RemoveMudChip(MudChip chip)
+    {
+        var gameStat = _gameStats?.FirstOrDefault(x => x.CustomStatShortName == chip.Text);
+
+        if (gameStat == null)
+        {
+            await ShowErrorMessage($"GameStat nicht gefunden. {chip.Text}");
+            return;
+        }
+
+        var response = await HttpClient.GetAsync($"api/StatValue/GetStatValuesByStat/{gameStat.StatId}");
+        var statValues = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>();
+
+        if (statValues?.Data == null)
+        {
+            await RemoveGameStat(gameStat);
+            return;
+        }
+
+        if (_game == null || _game.CharacterWithoutFkObjectsDtos == null)
+            return;
+
+        var anyCharacterHasStatValue = false;
+        foreach (var character in _game.CharacterWithoutFkObjectsDtos)
+        {
+            anyCharacterHasStatValue = statValues.Data.Any(x => x.CharacterId == character.Id);
+            if (anyCharacterHasStatValue)
+                break;
+        }
+
+        if (anyCharacterHasStatValue)
+        {
+            await ShowErrorMessage("Es gibt noch Charaktere, die noch Statuswerte mit diesem Status haben. Bitte lösche zuerst die Einträge bevor die Zuordnung entfernt werden kann.");
+            return;
+        }
+
+        await RemoveGameStat(gameStat);
+    }
+
+    private async Task RemoveGameStat(GameStatDto gameStatDto)
+    {
+        var response = await HttpClient.DeleteAsync($"api/GameStat/DeleteGameStat/{gameStatDto.Id}");
+        var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameStatDto>>();
+        if (!response.IsSuccessStatusCode || content?.Success == false)
+        {
+            await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Löschen des Status-Typs.");
+            return;
+        }
+
+        await GetGameStats();
     }
 }
