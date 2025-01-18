@@ -106,7 +106,7 @@ public class PlatformService : IPlatformService
         var platformDetailDtos = new List<PlatformDetailDto>();
 
         if (games.Count == 0)
-            return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platformDetailDtos
+            return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platforms
                 .Adapt<List<PlatformDetailDto>>());
 
         foreach (var platform in platforms)
@@ -118,7 +118,7 @@ public class PlatformService : IPlatformService
             platformDetailDtos.Add(PlatformMapper.MapToPlatformDetailDto(platform, tmpGames));
         }
 
-        return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platformDetailDtos.Adapt<List<PlatformDetailDto>>());
+        return ServiceResult<List<PlatformDetailDto>>.SuccessResult(platformDetailDtos);
     }
 
     public async Task<ServiceResult<List<PlatformDetailDto>>> GetAllPlatformDetailDtosByNameAsync(string name)

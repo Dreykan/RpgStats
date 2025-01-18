@@ -140,8 +140,15 @@
 
     private async Task GetPlatforms()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>("api/Platform/GetPlatforms");
-        _platformDtos = response?.Data;
+        var response = await HttpClient.GetAsync("api/Platform/GetPlatforms");
+        if (!response.IsSuccessStatusCode)
+        {
+            _platformDtos = new List<PlatformDto>();
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>();
+        _platformDtos = result?.Data;
     }
 
     private async Task<long> GetIdOfCreatedGame(string gameName)

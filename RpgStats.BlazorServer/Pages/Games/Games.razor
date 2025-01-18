@@ -66,8 +66,15 @@
 
     private async Task GetGames()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDetailDto>>>("api/Game/GetGamesDetail");
-        _games = response?.Data?.OrderBy(x => x.Name).ToList();
+        var response = await HttpClient.GetAsync("api/Game/GetGamesDetail");
+        if (!response.IsSuccessStatusCode)
+        {
+            _games = new List<GameDetailDto>();
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDetailDto>>>();
+        _games = result?.Data;
     }
 
     private static string TurnByteArrayToImage(GameDetailDto game)
