@@ -3,6 +3,7 @@ using Xunit.Priority;
 
 namespace RpgStats.Services.Tests;
 
+[Collection("Database collection")]
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class StatValueServiceTests : IClassFixture<DatabaseFixture>
 {
@@ -47,6 +48,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Priority(1)]
     public async Task GetAllStatValuesByStatIdAsync_ReturnsStatValuesByStatId()
     {
         var result = await _service.GetAllStatValuesByStatIdAsync(1);
@@ -68,6 +70,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Priority(1)]
     public async Task GetStatValueByIdAsync_ReturnsStatValueById()
     {
         var result = await _service.GetStatValueByIdAsync(1);
@@ -151,6 +154,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Priority(1)]
     public async Task UpdateStatValueAsync_ReturnsStatValueDto()
     {
         var statValueForUpdateDto = new StatValueForUpdateDto
@@ -192,6 +196,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Priority(1)]
     public async Task UpdateStatValueAsync_Error_WhenCharacterIdNotFound()
     {
         var statValueForUpdateDto = new StatValueForUpdateDto
@@ -211,6 +216,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Priority(1)]
     public async Task UpdateStatValueAsync_Error_WhenStatIdNotFound()
     {
         var statValueForUpdateDto = new StatValueForUpdateDto
@@ -250,5 +256,16 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         Assert.False(result.Success);
         Assert.Null(result.Data);
         Assert.Equal("StatValue with ID 100 not found", result.ErrorMessage);
+    }
+
+    [Fact]
+    [Priority(3)]
+    public async Task DeleteStatValuesByCharacterIdAndLevelAsync_DeletesStatValuesByCharacterIdAndLevel()
+    {
+        var result = await _service.DeleteStatValuesByCharacterIdAndLevelAsync(1, 1);
+
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(2, result.Data?.Count);
     }
 }

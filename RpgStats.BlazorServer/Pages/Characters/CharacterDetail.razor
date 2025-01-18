@@ -61,7 +61,7 @@ else
                 </MudItem>
                 <MudItem xs="6" Class="text-right">
                     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error"
-                               FullWidth="true" StartIcon="@Icons.Material.Filled.Delete" OnClick="DeleteCharacter">
+                               FullWidth="true" StartIcon="@Icons.Material.Filled.PersonRemove" OnClick="DeleteCharacter">
                         Löschen
                     </MudButton>
                 </MudItem>
@@ -69,12 +69,15 @@ else
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
-                <div style="display: flex; align-items: center;">
-                    <MudText Typo="Typo.h5" class="mb-4" Align="Align.Center" style="flex-grow: 1; text-align: center;">Statuswerte</MudText>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddNewStat" style="margin-left: auto;">
+                <MudGrid Spacing="3" Style="Margin-top: 6px; Margin-bottom: 18px;">
+                    <MudText Typo="Typo.h5" Align="Align.Center" style="flex-grow: 1; text-align: center;">Statuswerte</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddNewStatValues" style="margin-left: auto; margin-right: 2em; min-width: 100px">
                         Neu
                     </MudButton>
-                </div>
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.RemoveCircleOutline" OnClick="RemoveStatValues" style="margin-right: 1em;">
+                        Entfernen
+                    </MudButton>
+                </MudGrid>
                 <MudTable Items="@GetStatValuesByLevel()" Dense="true" Hover="true" Breakpoint="Breakpoint.None" FixedHeader="true">
                     <HeaderContent>
                         <MudTh><strong>Level</strong></MudTh>
@@ -200,11 +203,25 @@ else
             .ToDictionary(g => g.Key, g => g.ToList());
     }
 
-    private void AddNewStat()
+    private async Task AddNewStatValues()
     {
         var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
         var dialogParameter = new DialogParameters { { "Character", _character }, { "Stats", GetStats() } };
-        DialogService.Show<StatValueCreate>("Neuer Statuswert", dialogParameter, dialogOptions);
+        var dialog = DialogService.Show<StatValuesCreate>("Neue Statuswerte", dialogParameter, dialogOptions);
+        var result = await dialog.Result;
+        if (result.Canceled == false)
+            await GetStatValues();
+    }
+
+    private async Task RemoveStatValues()
+    {
+        var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
+        var dialogParameter = new DialogParameters { { "Character", _character } };
+        var dialog = await DialogService.ShowAsync<StatValuesRemove>("Statuswerte entfernen", dialogParameter, dialogOptions);
+        var result = await dialog.Result;
+        if (result.Canceled == false)
+            await GetStatValues();
+
     }
 
     private List<StatDto> GetStats()

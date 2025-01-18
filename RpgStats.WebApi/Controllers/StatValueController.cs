@@ -87,4 +87,14 @@ public class StatValueController : ControllerBase
             return Ok(result);
         return NotFound(result);
     }
+
+    [HttpDelete("DeleteStatValuesByCharacterAndLevel/{characterId:long}/{level:int}")]
+    [SwaggerOperation(Summary = "Delete StatValues by Character and Level")]
+    public async Task<IActionResult> DeleteStatValuesByCharacterAndLevel(long characterId, int level)
+    {
+        var result = await _statValueService.DeleteStatValuesByCharacterIdAndLevelAsync(characterId, level);
+        if (result.Success)
+            return Ok(result);
+        return NotFound(result);
+    }
 }
