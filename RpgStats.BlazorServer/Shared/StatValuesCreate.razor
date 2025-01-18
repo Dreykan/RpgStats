@@ -81,11 +81,9 @@
             var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateStatValue/{Character?.Id}/{statValueDto.StatId}", svCreationDto);
             var responseContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<StatValueDto>>();
 
-            if (response.IsSuccessStatusCode) return;
-            await ShowErrorMessage("Fehler beim Speichern der Werte.");
+            if (!response.IsSuccessStatusCode && responseContent?.Success == false)
+                await ShowErrorMessage("Fehler beim Speichern der Werte");
 
-            if (responseContent?.Success != false) continue;
-            await ShowErrorMessage(responseContent.ErrorMessage);
         }
         MudDialog?.Close(DialogResult.Ok(_statValues));
     }
