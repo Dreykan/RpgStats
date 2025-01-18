@@ -139,6 +139,22 @@ public class StatValueService : IStatValueService
         return ServiceResult<StatValueDto>.SuccessResult(statValue.Adapt<StatValueDto>());
     }
 
+    public async Task<ServiceResult<List<StatValueDto>>> DeleteStatValuesByCharacterIdAndLevelAsync(long characterId,
+        int level)
+    {
+        var statValues = _dbContext.StatValues
+            .Where(sv => sv.CharacterId == characterId && sv.Level == level).ToList();
+        if (statValues.Count == 0)
+            return ServiceResult<List<StatValueDto>>.ErrorResult($"StatValues with Character ID {characterId} and Level {level} not found");
+
+        _dbContext.RemoveRange(statValues);
+        var result = await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<List<StatValueDto>>.ErrorResult("StatValues could not be deleted");
+
+        return ServiceResult<List<StatValueDto>>.SuccessResult(statValues.Adapt<List<StatValueDto>>());
+    }
+
     private async Task<bool> StatValueExists(long id)
     {
         return await _dbContext.StatValues.AnyAsync(e => e.Id == id);

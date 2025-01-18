@@ -16,4 +16,5 @@ public interface IStatValueService
         StatValueForUpdateDto statValueForUpdateDto);
 
     Task<ServiceResult<StatValueDto>> DeleteStatValueAsync(long statValueId);
+    Task<ServiceResult<List<StatValueDto>>> DeleteStatValuesByCharacterIdAndLevelAsync(long characterId, int level);
 }

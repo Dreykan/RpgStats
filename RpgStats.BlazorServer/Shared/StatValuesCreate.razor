@@ -86,10 +86,8 @@
 
             if (responseContent?.Success != false) continue;
             await ShowErrorMessage(responseContent.ErrorMessage);
-
-            return;
         }
-        MudDialog?.Close();
+        MudDialog?.Close(DialogResult.Ok(_statValues));
     }
 
     private async Task ShowErrorMessage(string text)

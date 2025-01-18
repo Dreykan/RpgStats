@@ -1,0 +1,42 @@
+@using RpgStats.BlazorServer.Model
+@using RpgStats.Dto
+@inject IHttpClientFactory HttpClientFactory
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField Label="Level" @bind-Value="Level" Numeric="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Error">Entfernen</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public CharacterDetailDto? Character { get; set; }
+
+    private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
+    private int Level { get; set; }
+
+
+    private void Cancel()
+    {
+        MudDialog?.Cancel();
+    }
+
+    private void Submit()
+    {
+        var response = HttpClient.DeleteAsync($"api/StatValue/DeleteStatValuesByCharacterAndLevel/{Character?.Id}/{Level}");
+        var content = response.Result.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>().Result;
+        if (!response.Result.IsSuccessStatusCode || content?.Success == false )
+        {
+            DialogService.ShowMessageBox("Fehler", "Fehler beim Löschen der Werte");
+            return;
+        }
+
+        MudDialog?.Close(DialogResult.Ok(content));
+    }
+}

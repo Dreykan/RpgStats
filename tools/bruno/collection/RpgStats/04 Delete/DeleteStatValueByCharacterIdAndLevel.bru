@@ -1,0 +1,15 @@
+meta {
+  name: DeleteStatValueByCharacterIdAndLevel
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{host}}/{{basePath}}/{{statValuePath}}/DeleteStatValuesByCharacterAndLevel/1/8
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
