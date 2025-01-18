@@ -8,6 +8,6 @@ public sealed class GameStatFaker : Faker<GameStatForCreationDto>
     public GameStatFaker()
     {
         RuleFor(x => x.CustomStatName, f => f.Lorem.Word());
-        RuleFor(x => x.CustomStatShortName, f => f.Lorem.Word()[..2]);
+        RuleFor(x => x.CustomStatShortName, f => f.Lorem.Random.AlphaNumeric(3).ToUpper());
     }
 }
