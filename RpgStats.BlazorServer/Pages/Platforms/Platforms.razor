@@ -79,8 +79,15 @@
 
     private async Task GetPlatforms()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDetailDto>>>("/api/Platform/GetPlatformsDetail");
-        _platforms = response?.Data?.OrderBy(x => x.Name).ToList();
+        var response = await HttpClient.GetAsync("/api/Platform/GetPlatformsDetail");
+        if (!response.IsSuccessStatusCode)
+        {
+            _platforms = new List<PlatformDetailDto>();
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDetailDto>>>();
+        _platforms = result?.Data?.OrderBy(x => x.Name).ToList();
     }
 
     private async Task DeletePlatform(long id)

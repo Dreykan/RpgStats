@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.BizLogic.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.WebApi", "RpgStats.WebApi\RpgStats.WebApi.csproj", "{F9DF62E9-8AC9-42DF-9652-BEE39582A771}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgStats.Faker", "RpgStats.Faker\RpgStats.Faker.csproj", "{67B1450C-2587-4B0D-A482-7EADF1B252CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{F9DF62E9-8AC9-42DF-9652-BEE39582A771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9DF62E9-8AC9-42DF-9652-BEE39582A771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9DF62E9-8AC9-42DF-9652-BEE39582A771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67B1450C-2587-4B0D-A482-7EADF1B252CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67B1450C-2587-4B0D-A482-7EADF1B252CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67B1450C-2587-4B0D-A482-7EADF1B252CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67B1450C-2587-4B0D-A482-7EADF1B252CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{6077CB22-DC99-48CA-B810-A7B725F42388} = {1109059C-DD36-4C84-8A1A-17F9DBF4791E}
 		{E2471E1F-DC66-4C3A-B010-741F4806AA9A} = {C4827331-5667-457A-AF67-008D69DFF0F7}
 		{F9DF62E9-8AC9-42DF-9652-BEE39582A771} = {0DED8742-796E-4451-9987-FCF89DC1127A}
+		{67B1450C-2587-4B0D-A482-7EADF1B252CA} = {C4827331-5667-457A-AF67-008D69DFF0F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89448F67-F1C7-49DA-8512-E0050C900CD4}

@@ -80,8 +80,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDto>>>("api/Game/GetGames");
-        _gameDtos = response?.Data;
+        var response = await HttpClient.GetAsync("api/Game/GetGames");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _gameDtos = new List<GameDto>();
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
+        _gameDtos = result?.Data;
         await PrefillForm();
     }
 
