@@ -26,8 +26,6 @@
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h4" Align="Align.Center">@character.Name</MudText>
-                            <MudText Typo="Typo.body1"
-                                     Align="Align.Center">@character.GameWithoutFkObjectsDto?.Name</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     @if (character.Picture == null)
@@ -53,7 +51,7 @@
 
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
-    private List<CharacterDetailDto>? _characters;
+    private List<CharacterDto>? _characters;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,18 +60,18 @@
 
     private async Task GetCharacters()
     {
-        var response = await HttpClient.GetAsync("api/Character/GetCharactersDetail");
+        var response = await HttpClient.GetAsync("api/Character/GetCharacters");
         if (!response.IsSuccessStatusCode)
         {
-            _characters = new List<CharacterDetailDto>();
+            _characters = new List<CharacterDto>();
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<CharacterDetailDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<CharacterDto>>>();
         _characters = result?.Data;
     }
 
-    private static string TurnByteArrayToImage(CharacterDetailDto character)
+    private static string TurnByteArrayToImage(CharacterDto character)
     {
         var imageSrc = string.Empty;
         if (character.Picture != null)

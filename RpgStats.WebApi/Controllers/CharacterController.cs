@@ -91,6 +91,7 @@ public class CharacterController : ControllerBase
     public async Task<IActionResult> GetCharacterDetailById(long characterId)
     {
         var result = await _characterService.GetCharacterDetailDtoByIdAsync(characterId);
+
         if (result.Success)
             return Ok(result);
         return NotFound(result);
@@ -102,10 +103,6 @@ public class CharacterController : ControllerBase
         long gameId)
     {
         var result = await _characterService.CreateCharacterAsync(gameId, characterForCreationDto);
-        // if (result != null)
-        //     return CreatedAtAction(nameof(GetCharacterById),
-        //         new { characterId = result.Id, gameId = result.GameId }, result);
-        // return BadRequest();
 
         if (result.Success)
             return CreatedAtAction(nameof(GetCharacterById), new { characterId = result.Data?.Id }, result);
@@ -118,9 +115,7 @@ public class CharacterController : ControllerBase
         long characterId, long gameId)
     {
         var result = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
-        // if (result != null)
-        //     return Ok(result);
-        // return BadRequest();
+
         if (result.Success)
             return CreatedAtAction(nameof(GetCharacterById), new { characterId = result.Data?.Id }, result);
         return BadRequest(result);
@@ -131,11 +126,6 @@ public class CharacterController : ControllerBase
     public async Task<IActionResult> DeleteCharacter(long characterId)
     {
         var result = await _characterService.DeleteCharacterAsync(characterId);
-
-        // if (result.IsCompletedSuccessfully)
-        //     return Ok(result);
-        //
-        // return BadRequest();
 
         if (result.Success)
             return Ok(result);

@@ -14,7 +14,7 @@
                 var statValueDto = _statValues.FirstOrDefault(sv => sv.StatId == statDto.Id);
                 if (statValueDto == null)
                 {
-                    statValueDto = new StatValueDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
+                    statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
                     _statValues.Add(statValueDto);
                 }
                 <MudItem>
@@ -46,7 +46,7 @@
     [Parameter] public CharacterDetailDto? Character { get; set; }
 
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
-    private readonly List<StatValueDto> _statValues = new();
+    private readonly List<StatValueForCreationDto> _statValues = new();
     private int Level { get; set; }
 
     protected override void OnInitialized()
@@ -55,7 +55,7 @@
         {
             foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
             {
-                var statValueDto = new StatValueDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
+                var statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
                 _statValues.Add(statValueDto);
             }
         }
@@ -68,23 +68,17 @@
 
     private async Task Submit()
     {
-        foreach (var statValueDto in _statValues)
+        foreach (var statValue in _statValues)
         {
-            var svCreationDto = new StatValueForCreationDto()
-            {
-                Level = Level,
-                Value = statValueDto.Value,
-                ContainedBonusNum = statValueDto.ContainedBonusNum,
-                ContainedBonusPercent = statValueDto.ContainedBonusPercent
-            };
-
-            var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateStatValue/{Character?.Id}/{statValueDto.StatId}", svCreationDto);
-            var responseContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<StatValueDto>>();
-
-            if (!response.IsSuccessStatusCode && responseContent?.Success == false)
-                await ShowErrorMessage("Fehler beim Speichern der Werte");
-
+            statValue.Level = Level;
         }
+
+        var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateStatValues/", _statValues);
+        var responseContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>();
+
+        if (!response.IsSuccessStatusCode && responseContent?.Success == false)
+            await ShowErrorMessage("Fehler beim Speichern der Werte");
+
         MudDialog?.Close(DialogResult.Ok(_statValues));
     }
 

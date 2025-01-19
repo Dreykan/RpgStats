@@ -99,10 +99,12 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Value = 100,
             ContainedBonusNum = 10,
             ContainedBonusPercent = 5,
-            Level = 99
+            Level = 99,
+            CharacterId = 1,
+            StatId = 1
         };
 
-        var result = await _service.CreateStatValueAsync(1, 1, statValueForCreationDto);
+        var result = await _service.CreateStatValueAsync(statValueForCreationDto);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.Data?.CharacterId);
@@ -123,10 +125,12 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Value = 100,
             ContainedBonusNum = 10,
             ContainedBonusPercent = 5,
-            Level = 99
+            Level = 99,
+            CharacterId = 100,
+            StatId = 1
         };
 
-        var result = await _service.CreateStatValueAsync(100, 1, statValueForCreationDto);
+        var result = await _service.CreateStatValueAsync(statValueForCreationDto);
 
         Assert.NotNull(result);
         Assert.False(result.Success);
@@ -142,15 +146,55 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Value = 100,
             ContainedBonusNum = 10,
             ContainedBonusPercent = 5,
-            Level = 99
+            Level = 99,
+            CharacterId = 1,
+            StatId = 100
         };
 
-        var result = await _service.CreateStatValueAsync(1, 100, statValueForCreationDto);
+        var result = await _service.CreateStatValueAsync(statValueForCreationDto);
 
         Assert.NotNull(result);
         Assert.False(result.Success);
         Assert.Null(result.Data);
         Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task CreateStatValuesAsync_ReturnsStatValuesDto()
+    {
+        var statValuesForCreationDto = new List<StatValueForCreationDto>
+        {
+            new()
+            {
+                Value = 100,
+                ContainedBonusNum = 10,
+                ContainedBonusPercent = 5,
+                Level = 99,
+                CharacterId = 1,
+                StatId = 1
+            },
+            new()
+            {
+                Value = 200,
+                ContainedBonusNum = 20,
+                ContainedBonusPercent = 10,
+                Level = 199,
+                CharacterId = 1,
+                StatId = 1
+            }
+        };
+
+        var result = await _service.CreateStatValuesAsync(statValuesForCreationDto);
+
+        Assert.NotNull(result);
+        Assert.True(result.Success);
+        Assert.Equal(2, result.Data?.Count);
+
+        if (result.Data != null)
+            foreach (var statValue in result.Data)
+            {
+                await _service.DeleteStatValueAsync(statValue.Id);
+            }
     }
 
     [Fact]
