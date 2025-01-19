@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +21,12 @@
         <ProjectReference Include="..\RpgStats.Repo\RpgStats.Repo.csproj"/>
         <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj"/>
         <ProjectReference Include="..\RpgStats.Services\RpgStats.Services.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
