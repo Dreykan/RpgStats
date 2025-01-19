@@ -67,22 +67,19 @@ public class StatValueService : IStatValueService
         return ServiceResult<StatValueDto>.SuccessResult(statValue.Adapt<StatValueDto>());
     }
 
-    public async Task<ServiceResult<StatValueDto>> CreateStatValueAsync(long characterId, long statId,
-        StatValueForCreationDto statValueForCreationDto)
+    public async Task<ServiceResult<StatValueDto>> CreateStatValueAsync(StatValueForCreationDto statValueForCreationDto)
     {
-        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == statValueForCreationDto.CharacterId);
         if (character == null)
-            return ServiceResult<StatValueDto>.ErrorResult($"Character with ID {characterId} not found");
+            return ServiceResult<StatValueDto>.ErrorResult($"Character with ID {statValueForCreationDto.CharacterId} not found");
 
-        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statValueForCreationDto.StatId);
         if (stat == null)
-            return ServiceResult<StatValueDto>.ErrorResult($"Stat with ID {statId} not found");
+            return ServiceResult<StatValueDto>.ErrorResult($"Stat with ID {statValueForCreationDto.StatId} not found");
 
         var statValue = statValueForCreationDto.Adapt<StatValue>();
-        statValue.CharacterId = character.Id;
-        statValue.Character = character;
-        statValue.StatId = stat.Id;
-        statValue.Stat = stat;
+        // statValue.Character = character;
+        // statValue.Stat = stat;
 
         _dbContext.Add(statValue);
         var result = await _dbContext.SaveChangesAsync();
@@ -90,6 +87,32 @@ public class StatValueService : IStatValueService
             return ServiceResult<StatValueDto>.ErrorResult("StatValue could not be created");
 
         return ServiceResult<StatValueDto>.SuccessResult(statValue.Adapt<StatValueDto>());
+    }
+
+    public async Task<ServiceResult<List<StatValueDto>>> CreateStatValuesAsync(
+        List<StatValueForCreationDto> statValueForCreationDto)
+    {
+        var statValues = statValueForCreationDto.Adapt<List<StatValue>>();
+        // foreach (var statValue in statValues)
+        // {
+        //     var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == statValue.CharacterId);
+        //     if (character == null)
+        //         return ServiceResult<List<StatValueDto>>.ErrorResult($"Character with ID {statValue.CharacterId} not found");
+        //
+        //     var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statValue.StatId);
+        //     if (stat == null)
+        //         return ServiceResult<List<StatValueDto>>.ErrorResult($"Stat with ID {statValue.StatId} not found");
+        //
+        //     statValue.Character = character;
+        //     statValue.Stat = stat;
+        // }
+
+        _dbContext.AddRange(statValues);
+        var result = await _dbContext.SaveChangesAsync();
+        if (result == 0)
+            return ServiceResult<List<StatValueDto>>.ErrorResult("StatValues could not be created");
+
+        return ServiceResult<List<StatValueDto>>.SuccessResult(statValues.Adapt<List<StatValueDto>>());
     }
 
     public async Task<ServiceResult<StatValueDto>> UpdateStatValueAsync(long statValueId, long characterId, long statId,

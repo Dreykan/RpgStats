@@ -56,14 +56,24 @@ public class StatValueController : ControllerBase
         return NotFound(result);
     }
 
-    [HttpPost("CreateStatValue/{characterId:long}/{statId:long}")]
+    [HttpPost("CreateStatValue")]
     [SwaggerOperation(Summary = "Create a StatValue")]
     public async Task<IActionResult> CreateStatValue([FromBody] StatValueForCreationDto statValueForCreationDto,
         long characterId, long statId)
     {
-        var result = await _statValueService.CreateStatValueAsync(characterId, statId, statValueForCreationDto);
+        var result = await _statValueService.CreateStatValueAsync(statValueForCreationDto);
         if (result.Success)
             return CreatedAtAction(nameof(GetStatValueById), new {statValueId = result.Data?.Id}, result);
+        return BadRequest(result);
+    }
+
+    [HttpPost("CreateStatValues")]
+    [SwaggerOperation(Summary = "Create multiple StatValues")]
+    public async Task<IActionResult> CreateStatValues([FromBody] List<StatValueForCreationDto> statValuesForCreationDto)
+    {
+        var result = await _statValueService.CreateStatValuesAsync(statValuesForCreationDto);
+        if (result.Success)
+            return Ok(result);
         return BadRequest(result);
     }
 
