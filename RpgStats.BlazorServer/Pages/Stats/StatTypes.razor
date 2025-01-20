@@ -53,7 +53,7 @@
         }
 
         var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
-        _stats = result?.Data;
+        _stats = result?.Data ?? new List<StatDto>();
     }
 
     private async Task ShowNewStatTypeDialog()
