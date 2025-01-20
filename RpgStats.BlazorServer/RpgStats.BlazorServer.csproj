@@ -26,6 +26,7 @@
         <PackageReference Include="MudBlazor" Version="6.21.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="SkiaSharp" Version="2.88.8"/>
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.7.0"/>
     </ItemGroup>
