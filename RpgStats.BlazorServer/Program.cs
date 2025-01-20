@@ -2,7 +2,6 @@ using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// read appsettings for "api" section
 builder.Configuration.GetSection("Api").Bind(builder.Configuration);
 
 // Add services to the container.

@@ -1,4 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libfontconfig1 \
+        libfreetype6 \
+        libicu-dev \
+    && rm -rf /var/lib/apt/lists/*
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8081
@@ -22,4 +28,6 @@ RUN dotnet publish "RpgStats.BlazorServer.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /app/runtimes/linux-x64/native
+COPY --from=build /app/build/runtimes/linux-x64/native/libSkiaSharp.so /app/runtimes/linux-x64/native/
 ENTRYPOINT ["dotnet", "RpgStats.BlazorServer.dll"]
