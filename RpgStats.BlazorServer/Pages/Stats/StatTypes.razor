@@ -45,8 +45,15 @@
 
     private async Task GetStats()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatDto>>>("api/Stat/GetStats");
-        _stats = response?.Data?.OrderBy(x => x.Name).ToList();
+        var response = await HttpClient.GetAsync("api/Stat/GetStats");
+        if (!response.IsSuccessStatusCode)
+        {
+            _stats = new List<StatDto>();
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
+        _stats = result?.Data;
     }
 
     private async Task ShowNewStatTypeDialog()

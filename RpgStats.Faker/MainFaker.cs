@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using RpgStats.Dto;
 
@@ -9,7 +8,7 @@ public static class MainFaker
     public static void Run()
     {
         var random = new Random();
-        var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7073") };
+        var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:10000/api") };
 
         RunPlatformFaker(10, httpClient).Wait();
         RunStatFaker(20, httpClient).Wait();
