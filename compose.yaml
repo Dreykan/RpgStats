@@ -22,12 +22,14 @@ services:
 
   rpgstats.webapi:
     image: rpgstats.webapi
+    restart: always
     build:
       context: .
       dockerfile: RpgStats.WebApi/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__RpgStatsPostgresql=Host=db;Port=5432;Database=RpgStats;Username=RpgStats;Password=RpgStats;
     ports:
       - "8080"
     depends_on:
@@ -38,6 +40,7 @@ services:
 
   rpgstats.blazorserver:
     image: rpgstats.blazorserver
+    restart: always
     build:
       context: .
       dockerfile: RpgStats.BlazorServer/Dockerfile
@@ -54,6 +57,7 @@ services:
 
   rpgstats.nginx:
     image: nginx:alpine
+    restart: always
     ports:
       - "10000:80"
       - "10001:443"

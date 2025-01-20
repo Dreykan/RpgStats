@@ -8,10 +8,7 @@ using RpgStats.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -27,7 +24,9 @@ builder.Services.AddTransient<IStatService, StatService>();
 builder.Services.AddTransient<IStatValueService, StatValueService>();
 builder.Services.AddDbContextPool<RpgStatsContext>(options =>
 {
-    var connectionString = GetConnectionString();
+    var connectionString = builder.Environment.IsDevelopment() 
+    ? GetConnectionStringFromJson()
+    : builder.Configuration.GetConnectionString("RpgStatsPostgresql");
 
     if (connectionString != null) options.UseNpgsql(connectionString);
 });
@@ -35,13 +34,6 @@ builder.Services.AddDbContextPool<RpgStatsContext>(options =>
 var app = builder.Build();
 
 await ApplyMigration(app.Services);
-
-// Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -55,7 +47,7 @@ app.MapControllers();
 app.Run();
 return;
 
-static string? GetConnectionString()
+static string? GetConnectionStringFromJson()
 {
     var connectionString = string.Empty;
 

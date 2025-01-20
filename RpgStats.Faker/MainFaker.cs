@@ -8,7 +8,7 @@ public static class MainFaker
     public static void Run()
     {
         var random = new Random();
-        var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:10000/api") };
+        var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7073") };
 
         RunPlatformFaker(10, httpClient).Wait();
         RunStatFaker(20, httpClient).Wait();
