@@ -42,7 +42,7 @@
                     </MudLink>
                     <MudCardContent>
                         <MudText Typo="Typo.h5">Platform:</MudText>
-                        <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
+                        <MudText Typo="Typo.body1">@CreatePlatformString(game, HttpClient)</MudText>
                     </MudCardContent>
                     <MudCardActions>
                         <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary"
@@ -57,7 +57,7 @@
 
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
-    private List<GameDetailDto>? _games;
+    private List<GameDto>? _games;
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,18 +66,18 @@
 
     private async Task GetGames()
     {
-        var response = await HttpClient.GetAsync("api/Game/GetGamesDetail");
+        var response = await HttpClient.GetAsync("api/Game/GetGames");
         if (!response.IsSuccessStatusCode)
         {
-            _games = new List<GameDetailDto>();
+            _games = new List<GameDto>();
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDetailDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
         _games = result?.Data;
     }
 
-    private static string TurnByteArrayToImage(GameDetailDto game)
+    private static string TurnByteArrayToImage(GameDto game)
     {
         var imageSrc = string.Empty;
         if (game.Picture != null)
@@ -88,12 +88,27 @@
         return imageSrc;
     }
 
-    private static string CreatePlatformString(GameDetailDto game)
+    private static string CreatePlatformString(GameDto game, HttpClient httpClient)
     {
         var platformString = string.Empty;
-        if (game.PlatformWithoutFkObjectsDtos == null || !game.PlatformWithoutFkObjectsDtos.Any()) return platformString;
-        platformString = game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList().Aggregate(platformString, (current, gamePlatformWithoutFkObjectsDto) => current + gamePlatformWithoutFkObjectsDto.Name + ", ");
-        platformString = platformString.Remove(platformString.Length - 2, 1);
+
+        if (game.PlatformGames == null || !game.PlatformGames.Any()) return platformString;
+
+        var response = httpClient.GetAsync($"api/Platform/GetPlatforms").Result;
+        if (!response.IsSuccessStatusCode) return platformString;
+        var platforms = response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>().Result;
+
+        foreach (var platformGame in game.PlatformGames)
+        {
+            var platform = platforms?.Data?.FirstOrDefault(x => x.Id == platformGame.PlatformId);
+            if (platform == null) continue;
+            platformString += platform.Name + ", ";
+        }
+
+
+        // if (game.PlatformWithoutFkObjectsDtos == null || !game.PlatformWithoutFkObjectsDtos.Any()) return platformString;
+        // platformString = game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList().Aggregate(platformString, (current, gamePlatformWithoutFkObjectsDto) => current + gamePlatformWithoutFkObjectsDto.Name + ", ");
+        // platformString = platformString.Remove(platformString.Length - 2, 1);
 
         return platformString;
     }
