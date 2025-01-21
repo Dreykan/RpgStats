@@ -71,7 +71,7 @@ else
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
                 <MudGrid Spacing="3" Style="Margin-top: 6px; Margin-bottom: 18px;">
                     <MudText Typo="Typo.h5" Align="Align.Center" style="flex-grow: 1; text-align: center;">Statuswerte</MudText>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddNewStatValues" style="margin-left: auto; margin-right: 2em; min-width: 100px">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddNewStatValues" Disabled="(_gameStats == null || _gameStats.Count == 0)" style="margin-left: auto; margin-right: 2em; min-width: 100px">
                         Neu
                     </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.RemoveCircleOutline" OnClick="RemoveStatValues" style="margin-right: 1em;">
@@ -143,14 +143,15 @@ else
         if (_character != null)
         {
             var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
-            _statValues = response?.Data;
+            _statValues = response?.Data ?? new List<StatValueDto>();
         }
     }
 
     private async Task GetGameStats()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
-        _gameStats = response?.Data?.OrderBy(x => x.SortIndex).ToList();
+        var response = await HttpClient.GetAsync(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
+        var responseContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>();
+        _gameStats = responseContent?.Data?.OrderBy(x => x.SortIndex).ToList() ?? new List<GameStatDto>();
     }
 
     private async Task GetCharacter()
@@ -207,7 +208,7 @@ else
     {
         var dialogOptions = new DialogOptions { CloseOnEscapeKey = true };
         var dialogParameter = new DialogParameters { { "Character", _character }, { "Stats", GetStats() } };
-        var dialog = DialogService.Show<StatValuesCreate>("Neue Statuswerte", dialogParameter, dialogOptions);
+        var dialog = await DialogService.ShowAsync<StatValuesCreate>("Neue Statuswerte", dialogParameter, dialogOptions);
         var result = await dialog.Result;
         if (result.Canceled == false)
             await GetStatValues();
