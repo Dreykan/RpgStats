@@ -116,11 +116,6 @@
             platformString += platform.Name + ", ";
         }
 
-
-        // if (game.PlatformWithoutFkObjectsDtos == null || !game.PlatformWithoutFkObjectsDtos.Any()) return platformString;
-        // platformString = game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList().Aggregate(platformString, (current, gamePlatformWithoutFkObjectsDto) => current + gamePlatformWithoutFkObjectsDto.Name + ", ");
-        // platformString = platformString.Remove(platformString.Length - 2, 1);
-
         return platformString;
     }
 
