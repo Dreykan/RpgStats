@@ -57,27 +57,42 @@
 
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
-    private List<GameDetailDto>? _games;
+    private List<GameDto>? _games;
+    private List<PlatformDto>? _platforms;
 
     protected override async Task OnInitializedAsync()
     {
         await GetGames();
+        await GetPlatforms();
     }
 
     private async Task GetGames()
     {
-        var response = await HttpClient.GetAsync("api/Game/GetGamesDetail");
+        var response = await HttpClient.GetAsync("api/Game/GetGames");
         if (!response.IsSuccessStatusCode)
         {
-            _games = new List<GameDetailDto>();
+            _games = new List<GameDto>();
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDetailDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
         _games = result?.Data;
     }
 
-    private static string TurnByteArrayToImage(GameDetailDto game)
+    private async Task GetPlatforms()
+    {
+        var response = await HttpClient.GetAsync("api/Platform/GetPlatforms");
+        if (!response.IsSuccessStatusCode)
+        {
+            _platforms = new List<PlatformDto>();
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>();
+        _platforms = result?.Data;
+    }
+
+    private static string TurnByteArrayToImage(GameDto game)
     {
         var imageSrc = string.Empty;
         if (game.Picture != null)
@@ -88,12 +103,18 @@
         return imageSrc;
     }
 
-    private static string CreatePlatformString(GameDetailDto game)
+    private string CreatePlatformString(GameDto game)
     {
         var platformString = string.Empty;
-        if (game.PlatformWithoutFkObjectsDtos == null || !game.PlatformWithoutFkObjectsDtos.Any()) return platformString;
-        platformString = game.PlatformWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList().Aggregate(platformString, (current, gamePlatformWithoutFkObjectsDto) => current + gamePlatformWithoutFkObjectsDto.Name + ", ");
-        platformString = platformString.Remove(platformString.Length - 2, 1);
+
+        if (game.PlatformGames == null || !game.PlatformGames.Any()) return platformString;
+
+        foreach (var platformGame in game.PlatformGames)
+        {
+            var platform = _platforms?.FirstOrDefault(x => x.Id == platformGame.PlatformId);
+            if (platform == null) continue;
+            platformString += platform.Name + ", ";
+        }
 
         return platformString;
     }

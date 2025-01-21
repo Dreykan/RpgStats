@@ -23,7 +23,6 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResult<List<CharacterDto>>> GetAllCharactersAsync()
     {
         var characters = await _dbContext.Characters
-            .Include(c => c.StatValues)
             .ToListAsync();
 
         if (characters.Count == 0)
@@ -35,7 +34,6 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByGameIdAsync(long gameId)
     {
         var characters = await _dbContext.Characters
-            .Include(c => c.StatValues)
             .Where(g => g.GameId == gameId)
             .ToListAsync();
 
@@ -48,7 +46,6 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByNameAsync(string name)
     {
         var characters = await _dbContext.Characters
-            .Include(c => c.StatValues)
             .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
@@ -61,7 +58,6 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResult<CharacterDto>> GetCharacterByIdAsync(long characterId)
     {
         var character = await _dbContext.Characters
-            .Include(c => c.StatValues)
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
         if (character == null)
@@ -139,10 +135,6 @@ public class CharacterService : ICharacterService
             return ServiceResult<List<CharacterDetailDto>>.ErrorResult("No characters found");
 
         return ServiceResult<List<CharacterDetailDto>>.SuccessResult(characters.Adapt<List<CharacterDetailDto>>());
-
-        // return (from character in characters
-        //     let svTempList = character.StatValues ?? new List<StatValue>()
-        //     select CharacterMapper.MapToCharacterDetailDto(character, svTempList.ToList())).ToList();
     }
 
     public async Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosByGameIdAsync(long gameId)
@@ -157,10 +149,6 @@ public class CharacterService : ICharacterService
             return ServiceResult<List<CharacterDetailDto>>.ErrorResult("No characters found");
 
         return ServiceResult<List<CharacterDetailDto>>.SuccessResult(characters.Adapt<List<CharacterDetailDto>>());
-
-        // return (from character in characters
-        //     let svTempList = character.StatValues ?? new List<StatValue>()
-        //     select CharacterMapper.MapToCharacterDetailDto(character, svTempList.ToList())).ToList();
     }
 
     public async Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosByNameAsync(string name)
@@ -175,10 +163,6 @@ public class CharacterService : ICharacterService
             return ServiceResult<List<CharacterDetailDto>>.ErrorResult("No characters found");
 
         return ServiceResult<List<CharacterDetailDto>>.SuccessResult(characters.Adapt<List<CharacterDetailDto>>());
-
-        // return (from character in characters
-        //     let svTempList = character.StatValues ?? new List<StatValue>()
-        //     select CharacterMapper.MapToCharacterDetailDto(character, svTempList.ToList())).ToList();
     }
 
     public async Task<ServiceResult<CharacterDetailDto>> GetCharacterDetailDtoByIdAsync(long characterId)
@@ -194,11 +178,5 @@ public class CharacterService : ICharacterService
         // return ServiceResult<CharacterDetailDto>.SuccessResult(character.Adapt<CharacterDetailDto>());
         return ServiceResult<CharacterDetailDto>.SuccessResult(CharacterMapper.MapToCharacterDetailDto(character,
                  (character.StatValues ?? new List<StatValue>()).ToList()));
-
-        // characterDetailDto =
-        //     CharacterMapper.MapToCharacterDetailDto(character,
-        //         (character.StatValues ?? new List<StatValue>()).ToList());
-        //
-        // return characterDetailDto;
     }
 }

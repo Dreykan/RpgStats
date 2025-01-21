@@ -24,7 +24,6 @@ public class GameService : IGameService
     {
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
-            .Include(g => g.Characters)
             .ToListAsync();
 
         if (games.Count == 0)
@@ -37,7 +36,6 @@ public class GameService : IGameService
     {
         var games = await _dbContext.Games
             .Include(g => g.PlatformGames)
-            .Include(g => g.Characters)
             .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
@@ -51,7 +49,6 @@ public class GameService : IGameService
     {
         var game = await _dbContext.Games
             .Include(g => g.PlatformGames)
-            .Include(g => g.Characters)
             .FirstOrDefaultAsync(x => x.Id == gameId);
 
         if (game == null)
