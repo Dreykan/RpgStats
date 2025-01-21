@@ -43,8 +43,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatDto>>>("api/Stat/GetStats");
-        _stats = response?.Data;
+        await GetStats();
     }
 
     private void Cancel()
@@ -57,6 +56,21 @@
         if (Game != null) _gameStatDto.GameId = Game.Id;
         if (_stats != null) _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
         await CreateGameStat();
+    }
+
+    private async Task GetStats()
+    {
+        var response = await HttpClient.GetAsync($"api/Stat/GetStats");
+        var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
+        if (!response.IsSuccessStatusCode || content?.Success == false)
+        {
+            await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Laden der Status-Typen.");
+            MudDialog?.Cancel();
+        }
+        else
+        {
+            _stats = content?.Data ?? new List<StatDto>();
+        }
     }
 
     private async Task CreateGameStat()
