@@ -171,12 +171,12 @@ else
     private async Task GetGameStats()
     {
         var response = await HttpClient.GetAsync($"api/GameStat/GetGameStatsByGame/{_game?.Id}");
-
         if (response.IsSuccessStatusCode == false)
+        {
+            _gameStats = new List<GameStatDto>();
             return;
-
+        }
         var rpgStatsResponse = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>();
-
         _gameStats = rpgStatsResponse?.Data?.OrderBy(x => x.SortIndex).ToList();
     }
 
