@@ -10,10 +10,20 @@ put {
   auth: none
 }
 
+body:json {
+  {
+    "sortIndex": 99,
+    "customStatName": "UpdatedStatName",
+    "customStatShortName": "USSN",
+    "gameId": {{gameId}},
+    "statId": {{statId}}
+  }
+}
+
 vars:post-response {
   gameStatId: res.body.data.id
 }
 
 assert {
-  res.status: eq 200
+  res.status: eq 201
 }

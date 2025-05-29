@@ -11,9 +11,9 @@ put {
 }
 
 vars:post-response {
-  platformGameId: res.body.id
+  platformGameId: res.body.data.id
 }
 
 assert {
-  res.status: eq 200
+  res.status: eq 201
 }

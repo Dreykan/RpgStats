@@ -17,10 +17,10 @@ body:json {
 }
 
 vars:post-response {
-  platformId: res.body.id
-  platformName: res.body.name
+  platformId: res.body.data.id
+  platformName: res.body.data.name
 }
 
 assert {
-  res.status: eq 200
+  res.status: eq 201
 }

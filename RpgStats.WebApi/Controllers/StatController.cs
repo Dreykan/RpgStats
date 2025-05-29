@@ -142,7 +142,7 @@ public class StatController : ControllerBase
     {
         var result = await _statService.DeleteStatAsync(statId);
         if (result.Success)
-            return Ok();
-        return BadRequest();
+            return Ok(result);
+        return BadRequest(result);
     }
 }

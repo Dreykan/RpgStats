@@ -18,10 +18,10 @@ body:json {
 }
 
 vars:post-response {
-  gameId: res.body.id
-  gameName: res.body.name
+  gameId: res.body.data.id
+  gameName: res.body.data.name
 }
 
 assert {
-  res.status: eq 200
+  res.status: eq 201
 }
