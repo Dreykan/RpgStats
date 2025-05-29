@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{host}}/{{basePath}}/{{statValuePath}}/CreateStatValue/{{characterId}}/{{statId}}
+  url: {{host}}/{{basePath}}/{{statValuePath}}/CreateStatValue
   body: json
   auth: none
 }
@@ -15,12 +15,14 @@ body:json {
     "level": 1,
     "value": 100,
     "containedBonusNum": 5,
-    "containedBonusPercent": 2
+    "containedBonusPercent": 2,
+    "statId": {{statId}},
+    "characterId": {{characterId}}
   }
 }
 
 vars:post-response {
-  statValueId: res.body.id
+  statValueId: res.body.data.id
 }
 
 assert {

@@ -1,5 +1,5 @@
 {
   "ConnectionStrings": {
-    "RpgStatsPostgresql": "Server=127.0.0.1;Port=5433;Database=RpgStats;Username=RpgStats;Password=RpgStats;"
+    "RpgStatsPostgresql": "Server=127.0.0.1;Port=5432;Database=RpgStats;Username=RpgStats;Password=RpgStats;"
   }
 }

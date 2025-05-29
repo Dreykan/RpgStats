@@ -18,11 +18,11 @@ body:json {
 }
 
 vars:post-response {
-  statId: res.body.id
-  statName: res.body.name
-  statShortName: res.body.shortName
+  statId: res.body.data.id
+  statName: res.body.data.name
+  statShortName: res.body.data.shortName
 }
 
 assert {
-  res.status: eq 200
+  res.status: eq 201
 }
