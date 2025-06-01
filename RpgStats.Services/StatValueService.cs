@@ -78,8 +78,6 @@ public class StatValueService : IStatValueService
             return ServiceResult<StatValueDto>.ErrorResult($"Stat with ID {statValueForCreationDto.StatId} not found");
 
         var statValue = statValueForCreationDto.Adapt<StatValue>();
-        // statValue.Character = character;
-        // statValue.Stat = stat;
 
         _dbContext.Add(statValue);
         var result = await _dbContext.SaveChangesAsync();
@@ -93,19 +91,6 @@ public class StatValueService : IStatValueService
         List<StatValueForCreationDto> statValueForCreationDto)
     {
         var statValues = statValueForCreationDto.Adapt<List<StatValue>>();
-        // foreach (var statValue in statValues)
-        // {
-        //     var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == statValue.CharacterId);
-        //     if (character == null)
-        //         return ServiceResult<List<StatValueDto>>.ErrorResult($"Character with ID {statValue.CharacterId} not found");
-        //
-        //     var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statValue.StatId);
-        //     if (stat == null)
-        //         return ServiceResult<List<StatValueDto>>.ErrorResult($"Stat with ID {statValue.StatId} not found");
-        //
-        //     statValue.Character = character;
-        //     statValue.Stat = stat;
-        // }
 
         _dbContext.AddRange(statValues);
         var result = await _dbContext.SaveChangesAsync();

@@ -160,7 +160,7 @@ public class StatService : IStatService
 
     public async Task<ServiceResult<StatDto>> UpdateStatAsync(long statId, StatForUpdateDto statForUpdateDto)
     {
-        var stat = _dbContext.Stats.FirstOrDefault(s => s.Id == statId);
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
 
         if (stat == null)
             return ServiceResult<StatDto>.ErrorResult($"Stat with Id {statId} not found");
@@ -179,7 +179,7 @@ public class StatService : IStatService
 
     public async Task<ServiceResult<StatDto>> DeleteStatAsync(long statId)
     {
-        var stat = _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId).Result;
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
 
         if (stat == null)
             return ServiceResult<StatDto>.ErrorResult($"Stat with Id {statId} not found");

@@ -33,6 +33,10 @@ public class CharacterService : ICharacterService
 
     public async Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByGameIdAsync(long gameId)
     {
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        if (game == null)
+            return ServiceResult<List<CharacterDto>>.ErrorResult($"Game with ID {gameId} not found");
+
         var characters = await _dbContext.Characters
             .Where(g => g.GameId == gameId)
             .ToListAsync();
@@ -139,6 +143,10 @@ public class CharacterService : ICharacterService
 
     public async Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosByGameIdAsync(long gameId)
     {
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        if (game == null)
+            return ServiceResult<List<CharacterDetailDto>>.ErrorResult($"Game with ID {gameId} not found");
+
         var characters = await _dbContext.Characters
             .Include(c => c.Game)
             .Include(c => c.StatValues)
@@ -175,7 +183,6 @@ public class CharacterService : ICharacterService
         if (character == null)
             return ServiceResult<CharacterDetailDto>.ErrorResult($"Character with ID {characterId} not found");
 
-        // return ServiceResult<CharacterDetailDto>.SuccessResult(character.Adapt<CharacterDetailDto>());
         return ServiceResult<CharacterDetailDto>.SuccessResult(CharacterMapper.MapToCharacterDetailDto(character,
                  (character.StatValues ?? new List<StatValue>()).ToList()));
     }

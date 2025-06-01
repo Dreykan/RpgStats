@@ -29,6 +29,10 @@ public class GameStatService : IGameStatService
 
     public async Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsByGameIdAsync(long gameId)
     {
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        if (game == null)
+            return ServiceResult<List<GameStatDto>>.ErrorResult($"Game with ID {gameId} not found");
+
         var gameStats = await _dbContext.GameStats
             .Where(gs => gs.GameId == gameId)
             .ToListAsync();
@@ -41,6 +45,10 @@ public class GameStatService : IGameStatService
 
     public async Task<ServiceResult<List<GameStatDto>>> GetAllGameStatsByStatIdAsync(long statId)
     {
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+        if (stat == null)
+            return ServiceResult<List<GameStatDto>>.ErrorResult($"Stat with ID {statId} not found");
+
         var gameStats = await _dbContext.GameStats
             .Where(gs => gs.StatId == statId)
             .ToListAsync();
@@ -72,12 +80,6 @@ public class GameStatService : IGameStatService
         if (stat == null)
             return ServiceResult<GameStatDto>.ErrorResult($"Stat with ID {gameStatForCreationDto.StatId} not found");
 
-        // var gameStat = new GameStatDto().Adapt<GameStat>();
-        // gameStat.SortIndex = sortIndex;
-        // gameStat.GameId = gameId;
-        // gameStat.Game = game;
-        // gameStat.StatId = statId;
-        // gameStat.Stat = stat;
         var gameStat = gameStatForCreationDto.Adapt<GameStat>();
 
         _dbContext.GameStats.Add(gameStat);
@@ -132,6 +134,10 @@ public class GameStatService : IGameStatService
 
     public async Task<ServiceResult<List<GameStatDto>>> DeleteGameStatsByGameIdAsync(long gameId)
     {
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        if (game == null)
+            return ServiceResult<List<GameStatDto>>.ErrorResult($"Game with ID {gameId} not found");
+
         var gameStats = await _dbContext.GameStats.Where(gs => gs.GameId == gameId).ToListAsync();
         if (gameStats.Count == 0)
             return ServiceResult<List<GameStatDto>>.ErrorResult("No GameStats found");
@@ -147,6 +153,10 @@ public class GameStatService : IGameStatService
 
     public async Task<ServiceResult<List<GameStatDto>>> DeleteGameStatsByStatIdAsync(long statId)
     {
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+        if (stat == null)
+            return ServiceResult<List<GameStatDto>>.ErrorResult($"Stat with ID {statId} not found");
+
         var gameStats = await _dbContext.GameStats.Where(gs => gs.StatId == statId).ToListAsync();
         if (gameStats.Count == 0)
             return ServiceResult<List<GameStatDto>>.ErrorResult("No GameStats found");

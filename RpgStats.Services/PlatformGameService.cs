@@ -29,6 +29,9 @@ public class PlatformGameService : IPlatformGameService
 
     public async Task<ServiceResult<List<PlatformGameDto>>> GetAllPlatformGamesByPlatformIdAsync(long platformId)
     {
+        if (await PlatformExists(platformId))
+            return ServiceResult<List<PlatformGameDto>>.ErrorResult($"Platform with ID {platformId} not found");
+
         var platformGames = await _dbContext.PlatformGames
             .Where(pg => pg.PlatformId == platformId)
             .ToListAsync();
@@ -41,6 +44,9 @@ public class PlatformGameService : IPlatformGameService
 
     public async Task<ServiceResult<List<PlatformGameDto>>> GetAllPlatformGamesByGameIdAsync(long gameId)
     {
+        if (await GameExists(gameId))
+            return ServiceResult<List<PlatformGameDto>>.ErrorResult($"Game with ID {gameId} not found");
+
         var platformGames = await _dbContext.PlatformGames
             .Where(pg => pg.GameId == gameId)
             .ToListAsync();
