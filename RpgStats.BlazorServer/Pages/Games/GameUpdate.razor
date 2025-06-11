@@ -96,7 +96,7 @@ else
 
     private async Task GetGame()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<GameDetailDto>>($"api/Game/GetGameDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<GameDetailDto>>($"api/Game/GetGameDetailById/{Id}");
         _game = response?.Data;
     }
 
@@ -108,7 +108,7 @@ else
         }
 
         var updateResponse = await HttpClient.PutAsJsonAsync($"api/Game/UpdateGame/{Id}", _gameForUpdateDto);
-        var updateContent = await updateResponse.Content.ReadFromJsonAsync<RpgStatsResponse<GameDto>>();
+        var updateContent = await updateResponse.Content.ReadFromJsonAsync<WebApiResponse<GameDto>>();
         if (updateContent?.Success == false)
         {
             await ShowErrorMessage(updateContent.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
@@ -116,7 +116,7 @@ else
         }
 
         var deleteResponse = await HttpClient.DeleteAsync($"api/PlatformGame/DeletePlatformGamesByGame/{Id}");
-        var deleteContent = await deleteResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformGameDto>>>();
+        var deleteContent = await deleteResponse.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformGameDto>>>();
         if (deleteContent?.Success == false)
         {
             await ShowErrorMessage(deleteContent.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
@@ -138,7 +138,7 @@ else
         foreach (var platformId in selectPlatformIds)
         {
             var response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{platformId}/{Id}", "");
-            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformGameDto>>();
+            var content = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformGameDto>>();
             if (content?.Success != false) continue;
             await ShowErrorMessage(content.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
             return;
@@ -174,7 +174,7 @@ else
 
     private async Task GetPlatforms()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>("api/Platform/GetPlatforms");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<PlatformDto>>>("api/Platform/GetPlatforms");
         _platformDtos = response?.Data;
     }
 
@@ -197,7 +197,7 @@ else
 
     private async Task<long> GetIdOfPlatform(string platformName)
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDetailDto>>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<PlatformDetailDto>>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
         var platformList = response?.Data;
         var platform = platformList?.FirstOrDefault();
         var id = platform?.Id ?? 0;

@@ -40,7 +40,7 @@
         }
 
         var response = await HttpClient.PostAsJsonAsync("api/Platform/CreatePlatform", _platformForCreationDto);
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformDto>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformDto>>();
         if (!response.IsSuccessStatusCode || result?.Success == false)
         {
             await ShowErrorMessage(result?.ErrorMessage ?? "Error");

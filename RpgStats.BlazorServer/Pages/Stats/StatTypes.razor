@@ -52,7 +52,7 @@
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatDto>>>();
         _stats = result?.Data ?? new List<StatDto>();
     }
 

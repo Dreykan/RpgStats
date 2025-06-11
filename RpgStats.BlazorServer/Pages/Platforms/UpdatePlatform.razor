@@ -51,7 +51,7 @@ else
 
     private async Task GetPlatform()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<PlatformDetailDto>>($"api/Platform/GetPlatformDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<PlatformDetailDto>>($"api/Platform/GetPlatformDetailById/{Id}");
         _platform = response?.Data;
     }
 
@@ -63,7 +63,7 @@ else
         }
 
         var response = await HttpClient.PutAsJsonAsync($"api/Platform/UpdatePlatform/{Id}", _platformForUpdateDto);
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformDto>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformDto>>();
         if (!response.IsSuccessStatusCode || result?.Success == false)
         {
             await ShowErrorMessage(result?.ErrorMessage ?? "Error");

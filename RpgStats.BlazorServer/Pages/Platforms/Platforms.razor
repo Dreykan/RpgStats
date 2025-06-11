@@ -86,7 +86,7 @@
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDetailDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformDetailDto>>>();
         _platforms = result?.Data?.OrderBy(x => x.Name).ToList();
     }
 
@@ -111,7 +111,7 @@
         if (result.Canceled == false)
         {
             var response = await HttpClient.DeleteAsync($"/api/Platform/DeletePlatform/{id}");
-            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformDto>>();
+            var content = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformDto>>();
             if (!response.IsSuccessStatusCode || content?.Success == false)
             {
                 await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Löschen der Plattform.");

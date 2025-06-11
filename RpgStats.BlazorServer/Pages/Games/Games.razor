@@ -75,7 +75,7 @@
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameDto>>>();
         _games = result?.Data;
     }
 
@@ -88,7 +88,7 @@
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformDto>>>();
         _platforms = result?.Data;
     }
 
