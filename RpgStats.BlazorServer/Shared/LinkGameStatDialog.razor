@@ -61,7 +61,7 @@
     private async Task GetStats()
     {
         var response = await HttpClient.GetAsync($"api/Stat/GetStats");
-        var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
+        var content = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatDto>>>();
         if (!response.IsSuccessStatusCode || content?.Success == false)
         {
             await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Laden der Status-Typen.");
@@ -95,7 +95,7 @@
         else
         {
             var response = await HttpClient.PostAsJsonAsync($"api/GameStat/CreateGameStat/", _gameStatDto);
-            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameStatDto>>();
+            var content = await response.Content.ReadFromJsonAsync<WebApiResponse<GameStatDto>>();
             if (!response.IsSuccessStatusCode || content?.Success == false)
             {
                 await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Verknüpfen des Status-Typs mit dem Spiel.");
@@ -113,7 +113,7 @@
         var response = await HttpClient.GetAsync($"api/GameStat/GetGameStatsByGame/{_gameStatDto.GameId}");
         if (response.IsSuccessStatusCode == false) return false;
 
-        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>();
+        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameStatDto>>>();
         if (rpgStatsResponse?.Success == false) return false;
 
         var gameStatExist = rpgStatsResponse?.Data != null && rpgStatsResponse.Data.Any(x => x.StatId == _gameStatDto.StatId);

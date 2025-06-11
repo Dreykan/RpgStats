@@ -16,34 +16,54 @@ public class CharacterController : ControllerBase
         _characterService = characterService;
     }
 
-    [HttpGet("GetCharacters")]
+    [HttpGet("GetAllCharacters")]
+    [SwaggerResponse(200, "Returns a list of all characters", typeof(ServiceResult<List<CharacterDto>>))]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Characters")]
     public async Task<IActionResult> GetCharacters()
     {
-        var result = await _characterService.GetAllCharactersAsync();
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        var characters = await _characterService.GetAllCharactersAsync();
+
+        if (characters.Count == 0)
+            return Ok(ApiResponse<List<CharacterDto>>.ErrorResult("No characters found."));
+
+        return Ok(ApiResponse<List<CharacterDto>>.SuccessResult(characters));
     }
 
-    [HttpGet("GetCharactersByGame/{gameId:long}")]
+    [HttpGet("GetAllCharactersByGame/{gameId:long}")]
+    [SwaggerResponse(200, "Returns a list of characters by game ID", typeof(ServiceResult<List<CharacterDto>>))]
+    [SwaggerResponse(400, "Invalid game ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Characters by Game")]
     public async Task<IActionResult> GetCharactersByGame(long gameId)
     {
-        var result = await _characterService.GetAllCharactersByGameIdAsync(gameId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<List<CharacterDto>>.ErrorResult("Invalid game ID."));
+
+        var characters = await _characterService.GetAllCharactersByGameIdAsync(gameId);
+
+        if (characters.Count == 0)
+            return Ok(ApiResponse<List<CharacterDto>>.ErrorResult($"No characters found for the specified gameId: {gameId}"));
+
+        return Ok(ApiResponse<List<CharacterDto>>.SuccessResult(characters));
     }
 
-    [HttpGet("GetCharactersByName/{name}")]
+    [HttpGet("GetAllCharactersByName/{name}")]
+    [SwaggerResponse(200, "Returns a list of characters by name", typeof(ServiceResult<List<CharacterDto>>))]
+    [SwaggerResponse(400, "Invalid name parameter")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Characters by Name")]
     public async Task<IActionResult> GetCharactersByName(string name)
     {
-        var result = await _characterService.GetAllCharactersByNameAsync(name);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        var characters = await _characterService.GetAllCharactersByNameAsync(name);
+
+        if (characters.Count == 0)
+            return Ok(ApiResponse<List<CharacterDto>>.ErrorResult($"No characters found with the specified name: {name}"));
+
+        return Ok(ApiResponse<List<CharacterDto>>.SuccessResult(characters));
     }
 
     [HttpGet("GetCharactersDetail")]
@@ -77,13 +97,22 @@ public class CharacterController : ControllerBase
     }
 
     [HttpGet("GetCharacterById/{characterId:long}")]
+    [SwaggerResponse(200, "Returns a character by ID", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(400, "Invalid character ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get a Character by Id")]
     public async Task<IActionResult> GetCharacterById(long characterId)
     {
-        var result = await _characterService.GetCharacterByIdAsync(characterId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (characterId <= 0)
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult("Invalid character ID."));
+
+        var character = await _characterService.GetCharacterByIdAsync(characterId);
+
+        if (character == null)
+            return Ok(ApiResponse<CharacterDto>.ErrorResult($"Character with ID {characterId} not found."));
+
+        return Ok(ApiResponse<CharacterDto>.SuccessResult(character));
     }
 
     [HttpGet("GetCharacterDetailById/{characterId:long}")]

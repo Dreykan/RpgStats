@@ -30,7 +30,7 @@
     private void Submit()
     {
         var response = HttpClient.DeleteAsync($"api/StatValue/DeleteStatValuesByCharacterAndLevel/{Character?.Id}/{Level}");
-        var content = response.Result.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>().Result;
+        var content = response.Result.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>().Result;
         if (!response.Result.IsSuccessStatusCode || content?.Success == false )
         {
             DialogService.ShowMessageBox("Fehler", "Fehler beim Löschen der Werte");

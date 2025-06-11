@@ -4,10 +4,10 @@ namespace RpgStats.Services.Abstractions;
 
 public interface ICharacterService
 {
-    Task<ServiceResult<List<CharacterDto>>> GetAllCharactersAsync();
-    Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByGameIdAsync(long gameId);
-    Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByNameAsync(string name);
-    Task<ServiceResult<CharacterDto>> GetCharacterByIdAsync(long characterId);
+    Task<List<CharacterDto>> GetAllCharactersAsync();
+    Task<List<CharacterDto>> GetAllCharactersByGameIdAsync(long gameId);
+    Task<List<CharacterDto>> GetAllCharactersByNameAsync(string name);
+    Task<CharacterDto?> GetCharacterByIdAsync(long characterId);
     Task<ServiceResult<CharacterDto>> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto);
 
     Task<ServiceResult<CharacterDto>> UpdateCharacterAsync(long characterId, long gameId,

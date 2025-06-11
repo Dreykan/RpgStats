@@ -20,54 +20,38 @@ public class CharacterService : ICharacterService
         _dbContext = dbContext;
     }
 
-    public async Task<ServiceResult<List<CharacterDto>>> GetAllCharactersAsync()
+    public async Task<List<CharacterDto>> GetAllCharactersAsync()
     {
         var characters = await _dbContext.Characters
             .ToListAsync();
 
-        if (characters.Count == 0)
-            return ServiceResult<List<CharacterDto>>.ErrorResult("No characters found");
-
-        return ServiceResult<List<CharacterDto>>.SuccessResult(characters.Adapt<List<CharacterDto>>());
+        return characters.Adapt<List<CharacterDto>>();
     }
 
-    public async Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByGameIdAsync(long gameId)
+    public async Task<List<CharacterDto>> GetAllCharactersByGameIdAsync(long gameId)
     {
-        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
-        if (game == null)
-            return ServiceResult<List<CharacterDto>>.ErrorResult($"Game with ID {gameId} not found");
-
         var characters = await _dbContext.Characters
             .Where(g => g.GameId == gameId)
             .ToListAsync();
 
-        if (characters.Count == 0)
-            return ServiceResult<List<CharacterDto>>.ErrorResult("No characters found");
-
-        return ServiceResult<List<CharacterDto>>.SuccessResult(characters.Adapt<List<CharacterDto>>());
+        return characters.Adapt<List<CharacterDto>>();
     }
 
-    public async Task<ServiceResult<List<CharacterDto>>> GetAllCharactersByNameAsync(string name)
+    public async Task<List<CharacterDto>> GetAllCharactersByNameAsync(string name)
     {
         var characters = await _dbContext.Characters
             .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
-        if (characters.Count == 0)
-            return ServiceResult<List<CharacterDto>>.ErrorResult("No characters found");
-
-        return ServiceResult<List<CharacterDto>>.SuccessResult(characters.Adapt<List<CharacterDto>>());
+        return characters.Adapt<List<CharacterDto>>();
     }
 
-    public async Task<ServiceResult<CharacterDto>> GetCharacterByIdAsync(long characterId)
+    public async Task<CharacterDto?> GetCharacterByIdAsync(long characterId)
     {
         var character = await _dbContext.Characters
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
-        if (character == null)
-            return ServiceResult<CharacterDto>.ErrorResult($"Character with ID {characterId} not found");
-
-        return ServiceResult<CharacterDto>.SuccessResult(character.Adapt<CharacterDto>());
+        return character.Adapt<CharacterDto>();
     }
 
     public async Task<ServiceResult<CharacterDto>> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto)

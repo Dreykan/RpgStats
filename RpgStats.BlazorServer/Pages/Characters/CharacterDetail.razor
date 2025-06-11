@@ -142,7 +142,7 @@ else
     {
         if (_character != null)
         {
-            var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
+            var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
             _statValues = response?.Data ?? new List<StatValueDto>();
         }
     }
@@ -150,13 +150,13 @@ else
     private async Task GetGameStats()
     {
         var response = await HttpClient.GetAsync(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
-        var responseContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameStatDto>>>();
         _gameStats = responseContent?.Data?.OrderBy(x => x.SortIndex).ToList() ?? new List<GameStatDto>();
     }
 
     private async Task GetCharacter()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
         _character = response?.Data;
     }
 
@@ -184,7 +184,7 @@ else
         if (result.Canceled == false)
         {
             var response = await HttpClient.DeleteAsync($"api/Character/DeleteCharacter/{Id}");
-            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<CharacterDto>>();
+            var content = await response.Content.ReadFromJsonAsync<WebApiResponse<CharacterDto>>();
             if (response.IsSuccessStatusCode && content?.Success == true)
                 NavigationManager.NavigateTo("/allCharacters");
             else

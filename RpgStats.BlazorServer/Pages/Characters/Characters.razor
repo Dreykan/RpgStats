@@ -67,7 +67,7 @@
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<CharacterDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<CharacterDto>>>();
         _characters = result?.Data;
     }
 

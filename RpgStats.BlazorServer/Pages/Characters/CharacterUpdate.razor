@@ -95,14 +95,14 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetCharacter();
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDto>>>("api/Game/GetGames");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<GameDto>>>("api/Game/GetGames");
         _gameDtos = response?.Data;
         await PrefillForm();
     }
 
     private async Task GetCharacter()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<CharacterDetailDto>>($"api/Character/GetCharacterDetailById/{Id}");
         _character = response?.Data;
     }
 
@@ -128,7 +128,7 @@ else
         }
 
         var response = await HttpClient.PutAsJsonAsync($"api/Character/UpdateCharacter/{selectedGame.Id}/{_character.Id}", _characterForUpdateDto);
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<CharacterDto>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<CharacterDto>>();
         if (!response.IsSuccessStatusCode || result?.Success == false)
         {
             await ShowErrorMessage(result?.ErrorMessage ?? "Fehler beim Aktualisieren des Charakters.");

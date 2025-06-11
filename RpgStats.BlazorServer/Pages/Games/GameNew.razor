@@ -86,7 +86,7 @@
     {
         var response = await HttpClient.PostAsJsonAsync("api/Game/CreateGame", _gameForCreationDto);
 
-        var gameContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameDto>>();
+        var gameContent = await response.Content.ReadFromJsonAsync<WebApiResponse<GameDto>>();
         if (gameContent == null)
         {
             await ShowErrorMessage(gameContent?.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
@@ -105,7 +105,7 @@
         foreach (var selectedPlatformId in selectedPlatformIds)
         {
             response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{selectedPlatformId}/{gameId}", "");
-            var pgContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformGameDto>>();
+            var pgContent = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformGameDto>>();
             if (pgContent != null) continue;
             await ShowErrorMessage(pgContent?.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
             return;
@@ -147,13 +147,13 @@
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformDto>>>();
         _platformDtos = result?.Data;
     }
 
     private async Task<long> GetIdOfCreatedGame(string gameName)
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<GameDto>>>($"api/Game/GetGamesByName/{gameName}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<GameDto>>>($"api/Game/GetGamesByName/{gameName}");
         var gameList = response?.Data;
         var game = gameList?.FirstOrDefault();
         var id = game?.Id ?? 0;
@@ -162,7 +162,7 @@
 
     private async Task<long> GetIdOfPlatform(string platformName)
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<List<PlatformDetailDto>>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<PlatformDetailDto>>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
         var platformList = response?.Data;
         var platform = platformList?.FirstOrDefault();
         var id = platform?.Id ?? 0;
