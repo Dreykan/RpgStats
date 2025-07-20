@@ -10,9 +10,9 @@ public static class MainFaker
         var random = new Random();
         var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7073") };
 
-        RunPlatformFaker(10, httpClient).Wait();
-        RunStatFaker(20, httpClient).Wait();
-        RunGameFaker(30, httpClient).Wait();
+        RunPlatformFaker(5, httpClient).Wait();
+        RunStatFaker(10, httpClient).Wait();
+        RunGameFaker(15, httpClient).Wait();
         RunPlatformGameFaker(random, httpClient).Wait();
         RunGameStatFaker(random, httpClient).Wait();
         RunCharacterFaker(random, httpClient).Wait();
@@ -103,7 +103,7 @@ public static class MainFaker
         var games = await GetGames(httpClient);
         foreach (var game in games)
         {
-            var characterCount = random.Next(3, 10);
+            var characterCount = random.Next(3, 6);
             for (int i = 0; i < characterCount; i++)
             {
                 var characterFaker = new CharacterFaker();
@@ -130,7 +130,7 @@ public static class MainFaker
                 return;
             }
 
-            var statValueLevelCount = random.Next(50, 100);
+            var statValueLevelCount = random.Next(10, 20);
             foreach (var stat in stats)
             {
                 var value = random.Next(20, 40);
@@ -194,7 +194,7 @@ public static class MainFaker
 
     private static async Task<List<CharacterDto>> GetCharacters(HttpClient httpClient)
     {
-        var characterResponse = await httpClient.GetAsync("api/Character/GetCharacters");
+        var characterResponse = await httpClient.GetAsync("api/Character/GetAllCharacters");
         var characterResult = await characterResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<CharacterDto>>>();
         if (characterResult == null || characterResult.Success == false || characterResult.Data == null)
         {

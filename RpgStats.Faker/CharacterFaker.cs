@@ -10,6 +10,6 @@ public sealed class CharacterFaker : Faker<CharacterForCreationDto>
         var client = new HttpClient();
 
         RuleFor(x => x.Name, f => f.Person.FullName);
-        RuleFor(x => x.Picture, f => client.GetByteArrayAsync(f.Image.LoremFlickrUrl().ToString()).Result);
+        // RuleFor(x => x.Picture, f => client.GetByteArrayAsync(f.Image.LoremFlickrUrl().ToString()).Result);
     }
 }

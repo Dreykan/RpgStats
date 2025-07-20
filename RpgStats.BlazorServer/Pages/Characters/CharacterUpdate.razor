@@ -185,9 +185,9 @@ else
 
         _characterForUpdateDto.Name = _character.Name;
 
-        if (_character.GameWithoutFkObjectsDto != null)
+        if (_character.Game != null)
         {
-            SelectedGame = SelectedGame.Append(_character.GameWithoutFkObjectsDto.Name);
+            SelectedGame = SelectedGame.Append(_character.Game.Name);
         }
 
         if (_character.Picture != null)

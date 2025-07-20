@@ -54,11 +54,29 @@ public class CharacterService : ICharacterService
         return character.Adapt<CharacterDto>();
     }
 
-    public async Task<ServiceResult<CharacterDto>> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto)
+    public async Task<CharacterDetailDto> GetCharacterDetailByIdAsync(long characterId)
+    {
+        var character = await _dbContext.Characters
+            .Include(c => c.Game)
+            .ThenInclude(g => g.GameStats)
+            .Include(c => c.StatValues)
+            .FirstOrDefaultAsync(x => x.Id == characterId);
+
+        if (character == null)
+            throw new ArgumentException($"Character with ID {characterId} not found");
+
+        // TODO: Rework with Mapster and custom mapping configuration, I don't know how to do it yet.
+        var characterDetail = character.Adapt<CharacterDetailDto>();
+        characterDetail.GameStats = character.Game?.GameStats?.Adapt<List<GameStatDto>>() ?? new List<GameStatDto>();
+
+        return characterDetail;
+    }
+
+    public async Task<CharacterDto> CreateCharacterAsync(long gameId, CharacterForCreationDto characterForCreationDto)
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
-            return ServiceResult<CharacterDto>.ErrorResult($"Game with ID {gameId} not found");
+            throw new ArgumentException($"Game with ID {gameId} not found");
 
         var character = characterForCreationDto.Adapt<Character>();
         character.GameId = game.Id;
@@ -67,21 +85,21 @@ public class CharacterService : ICharacterService
         _dbContext.Characters.Add(character);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<CharacterDto>.ErrorResult("Character could not be created");
+            throw new InvalidOperationException("Character could not be created");
 
-        return ServiceResult<CharacterDto>.SuccessResult(character.Adapt<CharacterDto>());
+        return character.Adapt<CharacterDto>();
     }
 
-    public async Task<ServiceResult<CharacterDto>> UpdateCharacterAsync(long characterId, long gameId,
+    public async Task<CharacterDto> UpdateCharacterAsync(long characterId, long gameId,
         CharacterForUpdateDto characterForUpdateDto)
     {
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
         if (character == null)
-            return ServiceResult<CharacterDto>.ErrorResult($"Character with ID {characterId} not found");
+            throw new ArgumentException($"Character with ID {characterId} not found");
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
-            return ServiceResult<CharacterDto>.ErrorResult($"Game with ID {gameId} not found");
+            throw new ArgumentException($"Game with ID {gameId} not found");
 
         character.Name = characterForUpdateDto.Name;
         character.Picture = characterForUpdateDto.Picture;
@@ -92,82 +110,23 @@ public class CharacterService : ICharacterService
         var result = await _dbContext.SaveChangesAsync();
 
         if (result == 0)
-            return ServiceResult<CharacterDto>.ErrorResult("Character could not be updated");
+            throw new InvalidOperationException("Character could not be updated");
 
-        return ServiceResult<CharacterDto>.SuccessResult(character.Adapt<CharacterDto>());
+        return character.Adapt<CharacterDto>();
     }
 
-    public async Task<ServiceResult<CharacterDto>> DeleteCharacterAsync(long characterId)
+    public async Task<CharacterDto> DeleteCharacterAsync(long characterId)
     {
         var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
 
         if (character == null)
-            return ServiceResult<CharacterDto>.ErrorResult($"Character with ID {characterId} not found");
+            throw new ArgumentException($"Character with ID {characterId} not found");
 
         _dbContext.Remove(character);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<CharacterDto>.ErrorResult("Character could not be deleted");
+            throw new InvalidOperationException("Character could not be deleted");
 
-        return ServiceResult<CharacterDto>.SuccessResult(character.Adapt<CharacterDto>());
-    }
-
-    public async Task<ServiceResult<List<CharacterDetailDto>>>GetAllCharacterDetailDtosAsync()
-    {
-        var characters = await _dbContext.Characters
-            .Include(c => c.Game)
-            .Include(c => c.StatValues)
-            .ToListAsync();
-
-        if (characters.Count == 0)
-            return ServiceResult<List<CharacterDetailDto>>.ErrorResult("No characters found");
-
-        return ServiceResult<List<CharacterDetailDto>>.SuccessResult(characters.Adapt<List<CharacterDetailDto>>());
-    }
-
-    public async Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosByGameIdAsync(long gameId)
-    {
-        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
-        if (game == null)
-            return ServiceResult<List<CharacterDetailDto>>.ErrorResult($"Game with ID {gameId} not found");
-
-        var characters = await _dbContext.Characters
-            .Include(c => c.Game)
-            .Include(c => c.StatValues)
-            .Where(c => c.GameId == gameId)
-            .ToListAsync();
-
-        if (characters.Count == 0)
-            return ServiceResult<List<CharacterDetailDto>>.ErrorResult("No characters found");
-
-        return ServiceResult<List<CharacterDetailDto>>.SuccessResult(characters.Adapt<List<CharacterDetailDto>>());
-    }
-
-    public async Task<ServiceResult<List<CharacterDetailDto>>> GetAllCharacterDetailDtosByNameAsync(string name)
-    {
-        var characters = await _dbContext.Characters
-            .Include(c => c.Game)
-            .Include(c => c.StatValues)
-            .Where(g => g.Name.ToLower().Contains(name.ToLower()))
-            .ToListAsync();
-
-        if (characters.Count == 0)
-            return ServiceResult<List<CharacterDetailDto>>.ErrorResult("No characters found");
-
-        return ServiceResult<List<CharacterDetailDto>>.SuccessResult(characters.Adapt<List<CharacterDetailDto>>());
-    }
-
-    public async Task<ServiceResult<CharacterDetailDto>> GetCharacterDetailDtoByIdAsync(long characterId)
-    {
-        var character = await _dbContext.Characters
-            .Include(c => c.Game)
-            .Include(c => c.StatValues)
-            .FirstOrDefaultAsync(c => c.Id == characterId);
-
-        if (character == null)
-            return ServiceResult<CharacterDetailDto>.ErrorResult($"Character with ID {characterId} not found");
-
-        return ServiceResult<CharacterDetailDto>.SuccessResult(CharacterMapper.MapToCharacterDetailDto(character,
-                 (character.StatValues ?? new List<StatValue>()).ToList()));
+        return character.Adapt<CharacterDto>();
     }
 }

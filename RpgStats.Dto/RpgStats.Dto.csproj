@@ -11,7 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Mapper\"/>
+      <Reference Include="Mapster">
+        <HintPath>..\..\..\.nuget\packages\mapster\7.4.0\lib\net7.0\Mapster.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

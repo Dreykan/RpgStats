@@ -31,10 +31,10 @@ else
         <MudItem lg="8" md="6" sm="12">
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
                 <MudText>
-                    @if (_character.GameWithoutFkObjectsDto != null)
+                    @if (_character.Game != null)
                     {
-                        <MudLink Typo="Typo.h5" Href="@($"/gameDetail/{_character.GameWithoutFkObjectsDto.Id}")">
-                            @if (_character.GameWithoutFkObjectsDto.Picture == null)
+                        <MudLink Typo="Typo.h5" Href="@($"/gameDetail/{_character.Game.Id}")">
+                            @if (_character.Game.Picture == null)
                             {
                                 <MudAvatar Size="Size.Large">
                                     <MudImage Src="images/placeholder-3.png"></MudImage>
@@ -44,10 +44,10 @@ else
                             {
                                 <MudAvatar Size="Size.Large">
                                     <MudImage
-                                        Src="@TurnByteArrayToImage(_character.GameWithoutFkObjectsDto.Picture)"></MudImage>
+                                        Src="@TurnByteArrayToImage(_character.Game.Picture)"></MudImage>
                                 </MudAvatar>
                             }
-                            @_character.GameWithoutFkObjectsDto.Name
+                            @_character.Game.Name
                         </MudLink>
                     }
                 </MudText>
@@ -71,7 +71,7 @@ else
             <MudPaper Class="pa-4 border border-dark" Outlined="true" Elevation="10">
                 <MudGrid Spacing="3" Style="Margin-top: 6px; Margin-bottom: 18px;">
                     <MudText Typo="Typo.h5" Align="Align.Center" style="flex-grow: 1; text-align: center;">Statuswerte</MudText>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddNewStatValues" Disabled="(_gameStats == null || _gameStats.Count == 0)" style="margin-left: auto; margin-right: 2em; min-width: 100px">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddNewStatValues" Disabled="(_character.GameStats == null || _character.GameStats.Count == 0)" style="margin-left: auto; margin-right: 2em; min-width: 100px">
                         Neu
                     </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.RemoveCircleOutline" OnClick="RemoveStatValues" style="margin-right: 1em;">
@@ -81,9 +81,9 @@ else
                 <MudTable Items="@GetStatValuesByLevel()" Dense="true" Hover="true" Breakpoint="Breakpoint.None" FixedHeader="true">
                     <HeaderContent>
                         <MudTh><strong>Level</strong></MudTh>
-                        @if (_gameStats != null)
+                        @if (_character.GameStats != null)
                         {
-                            @foreach (var gameStat in _gameStats)
+                            @foreach (var gameStat in _character.GameStats)
                             {
                                 <MudTh>
                                     <MudTooltip Text="@gameStat.CustomStatName">
@@ -95,9 +95,9 @@ else
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd>@context.Key</MudTd>
-                        @if (_gameStats != null)
+                        @if (_character.GameStats != null)
                         {
-                            @foreach (var gameStat in _gameStats)
+                            @foreach (var gameStat in _character.GameStats)
                             {
                                 <MudTd>
                                     @{
@@ -126,33 +126,33 @@ else
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
-    private List<StatValueDto>? _statValues = new();
-    private List<GameStatDto>? _gameStats = new();
+    // private List<StatValueDto>? _statValues = new();
+    // private List<GameStatDto>? _gameStats = new();
 
     [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await GetCharacter();
-        await GetStatValues();
-        await GetGameStats();
+        // await GetStatValues();
+        // await GetGameStats();
     }
 
-    private async Task GetStatValues()
-    {
-        if (_character != null)
-        {
-            var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
-            _statValues = response?.Data ?? new List<StatValueDto>();
-        }
-    }
-
-    private async Task GetGameStats()
-    {
-        var response = await HttpClient.GetAsync(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
-        var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameStatDto>>>();
-        _gameStats = responseContent?.Data?.OrderBy(x => x.SortIndex).ToList() ?? new List<GameStatDto>();
-    }
+    // private async Task GetStatValues()
+    // {
+    //     if (_character != null)
+    //     {
+    //         var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
+    //         _statValues = response?.Data ?? new List<StatValueDto>();
+    //     }
+    // }
+    //
+    // private async Task GetGameStats()
+    // {
+    //     var response = await HttpClient.GetAsync(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
+    //     var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameStatDto>>>();
+    //     _gameStats = responseContent?.Data?.OrderBy(x => x.SortIndex).ToList() ?? new List<GameStatDto>();
+    // }
 
     private async Task GetCharacter()
     {
@@ -196,9 +196,14 @@ else
 
     private Dictionary<int, List<StatValueDto>> GetStatValuesByLevel()
     {
-        if (_statValues == null) return new Dictionary<int, List<StatValueDto>>();
+        // if (_statValues == null) return new Dictionary<int, List<StatValueDto>>();
+        if (_character?.StatValues == null) return new Dictionary<int, List<StatValueDto>>();
 
-        return _statValues
+        // return _statValues
+        //     .GroupBy(sv => sv.Level)
+        //     .OrderBy(g => g.Key)
+        //     .ToDictionary(g => g.Key, g => g.ToList());
+        return _character.StatValues
             .GroupBy(sv => sv.Level)
             .OrderBy(g => g.Key)
             .ToDictionary(g => g.Key, g => g.ToList());
@@ -210,8 +215,10 @@ else
         var dialogParameter = new DialogParameters { { "Character", _character }, { "Stats", GetStats() } };
         var dialog = await DialogService.ShowAsync<StatValuesCreate>("Neue Statuswerte", dialogParameter, dialogOptions);
         var result = await dialog.Result;
+        // if (result.Canceled == false)
+        //     await GetStatValues();
         if (result.Canceled == false)
-            await GetStatValues();
+            await GetCharacter();
     }
 
     private async Task RemoveStatValues()
@@ -220,16 +227,25 @@ else
         var dialogParameter = new DialogParameters { { "Character", _character } };
         var dialog = await DialogService.ShowAsync<StatValuesRemove>("Statuswerte entfernen", dialogParameter, dialogOptions);
         var result = await dialog.Result;
+        // if (result.Canceled == false)
+        //     await GetStatValues();
         if (result.Canceled == false)
-            await GetStatValues();
+            await GetCharacter();
 
     }
 
     private List<StatDto> GetStats()
     {
-        if (_gameStats == null) return new List<StatDto>();
+        // if (_gameStats == null) return new List<StatDto>();
+        if (_character?.GameStats == null) return new List<StatDto>();
 
-        return _gameStats.Select(gs => new StatDto
+        // return _gameStats.Select(gs => new StatDto
+        // {
+        //     Id = gs.StatId,
+        //     Name = gs.CustomStatName,
+        //     ShortName = gs.CustomStatShortName
+        // }).ToList();
+        return _character.GameStats.Select(gs => new StatDto
         {
             Id = gs.StatId,
             Name = gs.CustomStatName,

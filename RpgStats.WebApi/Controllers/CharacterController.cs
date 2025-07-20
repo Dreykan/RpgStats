@@ -66,36 +66,6 @@ public class CharacterController : ControllerBase
         return Ok(ApiResponse<List<CharacterDto>>.SuccessResult(characters));
     }
 
-    [HttpGet("GetCharactersDetail")]
-    [SwaggerOperation(Summary = "Get all Characters with Details")]
-    public async Task<IActionResult> GetCharactersDetail()
-    {
-        var result = await _characterService.GetAllCharacterDetailDtosAsync();
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
-    }
-
-    [HttpGet("GetCharactersDetailByGame/{gameId:long}")]
-    [SwaggerOperation(Summary = "Get all Characters with Details by Game")]
-    public async Task<IActionResult> GetCharactersDetailByGame(long gameId)
-    {
-        var result = await _characterService.GetAllCharacterDetailDtosByGameIdAsync(gameId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
-    }
-
-    [HttpGet("GetCharactersDetailByName/{name}")]
-    [SwaggerOperation(Summary = "Get all Characters with Details by Name")]
-    public async Task<IActionResult> GetCharactersDetailByName(string name)
-    {
-        var result = await _characterService.GetAllCharacterDetailDtosByNameAsync(name);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
-    }
-
     [HttpGet("GetCharacterById/{characterId:long}")]
     [SwaggerResponse(200, "Returns a character by ID", typeof(ServiceResult<CharacterDto>))]
     [SwaggerResponse(400, "Invalid character ID")]
@@ -116,48 +86,97 @@ public class CharacterController : ControllerBase
     }
 
     [HttpGet("GetCharacterDetailById/{characterId:long}")]
-    [SwaggerOperation(Summary = "Get a Character with Details by Id")]
+    [SwaggerResponse(200, "Returns character details by ID", typeof(ServiceResult<CharacterDetailDto>))]
+    [SwaggerResponse(400, "Invalid character ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get Character Details by Id")]
     public async Task<IActionResult> GetCharacterDetailById(long characterId)
     {
-        var result = await _characterService.GetCharacterDetailDtoByIdAsync(characterId);
+        if (characterId <= 0)
+            return BadRequest(ApiResponse<CharacterDetailDto>.ErrorResult("Invalid character ID."));
 
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        try
+        {
+            var characterDetail = await _characterService.GetCharacterDetailByIdAsync(characterId);
+            return Ok(ApiResponse<CharacterDetailDto>.SuccessResult(characterDetail));
+        }
+        catch (ArgumentException e)
+        {
+            return NotFound(ApiResponse<CharacterDetailDto>.ErrorResult(e.Message));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<CharacterDetailDto>.ErrorResult($"An error occurred while retrieving the character details: {e.Message}"));
+        }
     }
 
     [HttpPost("CreateCharacter/{gameId:long}")]
+    [SwaggerResponse(201, "Character created successfully", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(400, "Invalid game ID or character data")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Create a Character")]
     public async Task<IActionResult> CreateCharacter([FromBody] CharacterForCreationDto characterForCreationDto,
         long gameId)
     {
-        var result = await _characterService.CreateCharacterAsync(gameId, characterForCreationDto);
-
-        if (result.Success)
-            return CreatedAtAction(nameof(GetCharacterById), new { characterId = result.Data?.Id }, result);
-        return BadRequest(result);
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"Invalid game ID: {gameId}."));
+        try
+        {
+            var character = await _characterService.CreateCharacterAsync(gameId, characterForCreationDto);
+            return CreatedAtAction(nameof(GetCharacterById), new { characterId = character.Id }, ApiResponse<CharacterDto>.SuccessResult(character));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"An error occurred while creating the character: {e.Message}"));
+        }
     }
 
     [HttpPut("UpdateCharacter/{gameId:long}/{characterId:long}")]
+    [SwaggerResponse(201, "Character updated successfully", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(400, "Invalid game ID or character ID")]
+    [SwaggerResponse(404, "Character not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Update a Character")]
     public async Task<IActionResult> UpdateCharacter([FromBody] CharacterForUpdateDto characterForUpdateDto,
         long characterId, long gameId)
     {
-        var result = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
+        if (characterId <= 0)
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"Invalid character ID: {characterId}."));
 
-        if (result.Success)
-            return CreatedAtAction(nameof(GetCharacterById), new { characterId = result.Data?.Id }, result);
-        return BadRequest(result);
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"Invalid game ID: {gameId}."));
+
+        try
+        {
+            var character = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
+            return CreatedAtAction(nameof(GetCharacterById), new { characterId = character.Id }, ApiResponse<CharacterDto>.SuccessResult(character));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"An error occurred while updating the character: {e.Message}"));
+        }
     }
 
     [HttpDelete("DeleteCharacter/{characterId:long}")]
+    [SwaggerResponse(200, "Character deleted successfully", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(400, "Invalid character ID")]
+    [SwaggerResponse(404, "Character not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete a Character")]
     public async Task<IActionResult> DeleteCharacter(long characterId)
     {
-        var result = await _characterService.DeleteCharacterAsync(characterId);
+        if (characterId <= 0)
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"Invalid character ID: {characterId}."));
 
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        try
+        {
+            var character = await _characterService.DeleteCharacterAsync(characterId);
+            return Ok(ApiResponse<CharacterDto>.SuccessResult(character));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"An error occurred while deleting the character: {e.Message}"));
+        }
     }
 }

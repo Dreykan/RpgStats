@@ -42,7 +42,9 @@
                     </MudLink>
                     <MudCardContent>
                         <MudText Typo="Typo.h5">Platform:</MudText>
-                        <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
+                        @* <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText> *@
+                        @* TODO: Implement Platform handling *@
+                        <MudText Typo="Typo.body1">Diese Stelle muss noch gefixt werden.</MudText>
                     </MudCardContent>
                     <MudCardActions>
                         <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary"
@@ -103,20 +105,20 @@
         return imageSrc;
     }
 
-    private string CreatePlatformString(GameDto game)
-    {
-        var platformString = string.Empty;
-
-        if (game.PlatformGames == null || !game.PlatformGames.Any()) return platformString;
-
-        foreach (var platformGame in game.PlatformGames)
-        {
-            var platform = _platforms?.FirstOrDefault(x => x.Id == platformGame.PlatformId);
-            if (platform == null) continue;
-            platformString += platform.Name + ", ";
-        }
-
-        return platformString;
-    }
+    // private string CreatePlatformString(GameDto game)
+    // {
+    //     var platformString = string.Empty;
+    //
+    //     if (game.PlatformGames == null || !game.PlatformGames.Any()) return platformString;
+    //
+    //     foreach (var platformGame in game.PlatformGames)
+    //     {
+    //         var platform = _platforms?.FirstOrDefault(x => x.Id == platformGame.PlatformId);
+    //         if (platform == null) continue;
+    //         platformString += platform.Name + ", ";
+    //     }
+    //
+    //     return platformString;
+    // }
 
 }
