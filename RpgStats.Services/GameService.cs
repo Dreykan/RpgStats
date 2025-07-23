@@ -20,61 +20,48 @@ public class GameService : IGameService
         _dbContext = dbContext;
     }
 
-    public async Task<ServiceResult<List<GameDto>>> GetAllGamesAsync()
+    public async Task<List<GameDto>> GetAllGamesAsync()
     {
         var games = await _dbContext.Games
-            .Include(g => g.PlatformGames)
             .ToListAsync();
 
-        if (games.Count == 0)
-            return ServiceResult<List<GameDto>>.ErrorResult("No games found");
-
-        return ServiceResult<List<GameDto>>.SuccessResult(games.Adapt<List<GameDto>>());
+        return games.Adapt<List<GameDto>>();
     }
 
-    public async Task<ServiceResult<List<GameDto>>> GetAllGamesByNameAsync(string name)
+    public async Task<List<GameDto>> GetAllGamesByNameAsync(string name)
     {
         var games = await _dbContext.Games
-            .Include(g => g.PlatformGames)
             .Where(g => g.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
-        if (games.Count == 0)
-            return ServiceResult<List<GameDto>>.ErrorResult("No games found");
-
-        return ServiceResult<List<GameDto>>.SuccessResult(games.Adapt<List<GameDto>>());
+        return games.Adapt<List<GameDto>>();
     }
 
-    public async Task<ServiceResult<GameDto>> GetGameByIdAsync(long gameId)
+    public async Task<GameDto?> GetGameByIdAsync(long gameId)
     {
         var game = await _dbContext.Games
-            .Include(g => g.PlatformGames)
             .FirstOrDefaultAsync(x => x.Id == gameId);
 
-        if (game == null)
-            return ServiceResult<GameDto>.ErrorResult($"Game with ID {gameId} not found");
-
-        return ServiceResult<GameDto>.SuccessResult(game.Adapt<GameDto>());
+        return game.Adapt<GameDto>();
     }
 
-    public async Task<ServiceResult<GameDto>> CreateGameAsync(GameForCreationDto gameForCreationDto)
+    public async Task<GameDto?> CreateGameAsync(GameForCreationDto gameForCreationDto)
     {
         var game = gameForCreationDto.Adapt<Game>();
 
         _dbContext.Games.Add(game);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<GameDto>.ErrorResult("Game could not be created");
+            return null;
 
-        return ServiceResult<GameDto>.SuccessResult(game.Adapt<GameDto>());
+        return game.Adapt<GameDto>();
     }
 
-    public async Task<ServiceResult<GameDto>> UpdateGameAsync(long gameId, GameForUpdateDto gameForUpdateDto)
+    public async Task<GameDto?> UpdateGameAsync(long gameId, GameForUpdateDto gameForUpdateDto)
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
-
         if (game == null)
-            return ServiceResult<GameDto>.ErrorResult($"Game with ID {gameId} not found");
+            return null;
 
         game.Name = gameForUpdateDto.Name;
         game.Picture = gameForUpdateDto.Picture;
@@ -83,131 +70,22 @@ public class GameService : IGameService
         var result = await _dbContext.SaveChangesAsync();
 
         if (result == 0)
-            return ServiceResult<GameDto>.ErrorResult("Game could not be updated");
+            return null;
 
-        return ServiceResult<GameDto>.SuccessResult(game.Adapt<GameDto>());
+        return game.Adapt<GameDto>();
     }
 
-    public async Task<ServiceResult<GameDto>> DeleteGameAsync(long gameId)
+    public async Task<GameDto?> DeleteGameAsync(long gameId)
     {
         var game = _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId).Result;
-
         if (game == null)
-            return ServiceResult<GameDto>.ErrorResult($"Game with ID {gameId} not found");
+            return null;
 
         _dbContext.Remove(game);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<GameDto>.ErrorResult("Game could not be deleted");
+            return null;
 
-        return ServiceResult<GameDto>.SuccessResult(game.Adapt<GameDto>());
-    }
-
-    public async Task<ServiceResult<List<GameDetailDto>>> GetAllGameDetailDtosAsync()
-    {
-        var games = await _dbContext.Games
-            .Include(g => g.PlatformGames!)
-            .ThenInclude(g => g.Platform)
-            .Include(g => g.Characters)
-            .Include(g => g.GameStats!)
-            .ThenInclude(g => g.Stat)
-            .ToListAsync();
-
-        if (games.Count == 0)
-            return ServiceResult<List<GameDetailDto>>.ErrorResult("No games found");
-
-        var platforms = await _dbContext.Platforms
-            .ToListAsync();
-
-        var stats = await _dbContext.Stats
-            .ToListAsync();
-
-        var gameDetailDtos = new List<GameDetailDto>();
-
-        foreach (var game in games)
-        {
-            var platformsFiltered = new List<Platform?>();
-            if (game.PlatformGames != null)
-                platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
-                    platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
-
-            var statsFiltered = new List<Stat?>();
-            if (game.GameStats != null)
-                statsFiltered.AddRange(game.GameStats.Select(gs => stats.FirstOrDefault(s => s.Id == gs.StatId)));
-
-            gameDetailDtos.Add(GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
-        }
-
-        return ServiceResult<List<GameDetailDto>>.SuccessResult(gameDetailDtos);
-    }
-
-    public async Task<ServiceResult<List<GameDetailDto>>> GetAllGameDetailDtosByNameAsync(string name)
-    {
-        var games = await _dbContext.Games
-            .Include(g => g.PlatformGames!)
-            .ThenInclude(g => g.Platform)
-            .Include(g => g.Characters)
-            .Include(g => g.GameStats!)
-            .ThenInclude(g => g.Stat)
-            .Where(g => g.Name.ToLower().Contains(name.ToLower()))
-            .ToListAsync();
-
-        if (games.Count == 0)
-            return ServiceResult<List<GameDetailDto>>.ErrorResult("No games found");
-
-        var platforms = await _dbContext.Platforms
-            .ToListAsync();
-
-        var stats = await _dbContext.Stats
-            .ToListAsync();
-
-        var gameDetailDtos = new List<GameDetailDto>();
-
-        foreach (var game in games)
-        {
-            var platformsFiltered = new List<Platform?>();
-            if (game.PlatformGames != null)
-                platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
-                    platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
-
-            var statsFiltered = new List<Stat?>();
-            if (game.GameStats != null)
-                statsFiltered.AddRange(game.GameStats.Select(gs => stats.FirstOrDefault(s => s.Id == gs.StatId)));
-
-            gameDetailDtos.Add(GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered));
-        }
-
-        return ServiceResult<List<GameDetailDto>>.SuccessResult(gameDetailDtos);
-    }
-
-    public async Task<ServiceResult<GameDetailDto>> GetGameDetailDtoByIdAsync(long gameId)
-    {
-        var game = await _dbContext.Games
-            .Include(g => g.PlatformGames)
-            .Include(g => g.Characters)
-            .Include(g => g.GameStats)
-            .FirstOrDefaultAsync(g => g.Id == gameId);
-
-        if (game == null)
-            return ServiceResult<GameDetailDto>.ErrorResult($"Game with ID {gameId} not found");
-
-        var platforms = await _dbContext.Platforms
-            .ToListAsync();
-
-        var stats = await _dbContext.Stats
-            .ToListAsync();
-
-        var platformsFiltered = new List<Platform?>();
-        if (game!.PlatformGames != null)
-            platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
-                platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
-
-        var statsFiltered = new List<Stat?>();
-        if (game.GameStats != null)
-            statsFiltered.AddRange(game.GameStats.Select(gs => stats.FirstOrDefault(s => s.Id == gs.StatId)));
-
-        var gameDetailDto = GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered);
-
-        return ServiceResult<GameDetailDto>.SuccessResult(gameDetailDto);
+        return game.Adapt<GameDto>();
     }
 }

@@ -21,10 +21,9 @@ public class CharacterController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Characters")]
-    public async Task<IActionResult> GetCharacters()
+    public async Task<IActionResult> GetAllCharacters()
     {
         var characters = await _characterService.GetAllCharactersAsync();
-
         if (characters.Count == 0)
             return Ok(ApiResponse<List<CharacterDto>>.ErrorResult("No characters found."));
 
@@ -37,13 +36,12 @@ public class CharacterController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Characters by Game")]
-    public async Task<IActionResult> GetCharactersByGame(long gameId)
+    public async Task<IActionResult> GetAllCharactersByGame(long gameId)
     {
         if (gameId <= 0)
             return BadRequest(ApiResponse<List<CharacterDto>>.ErrorResult("Invalid game ID."));
 
         var characters = await _characterService.GetAllCharactersByGameIdAsync(gameId);
-
         if (characters.Count == 0)
             return Ok(ApiResponse<List<CharacterDto>>.ErrorResult($"No characters found for the specified gameId: {gameId}"));
 
@@ -56,10 +54,12 @@ public class CharacterController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Characters by Name")]
-    public async Task<IActionResult> GetCharactersByName(string name)
+    public async Task<IActionResult> GetAllCharactersByName(string name)
     {
-        var characters = await _characterService.GetAllCharactersByNameAsync(name);
+        if (string.IsNullOrWhiteSpace(name))
+            return BadRequest(ApiResponse<List<CharacterDto>>.ErrorResult("Invalid name parameter. Name cannot be null or empty."));
 
+        var characters = await _characterService.GetAllCharactersByNameAsync(name);
         if (characters.Count == 0)
             return Ok(ApiResponse<List<CharacterDto>>.ErrorResult($"No characters found with the specified name: {name}"));
 
@@ -78,7 +78,6 @@ public class CharacterController : ControllerBase
             return BadRequest(ApiResponse<CharacterDto>.ErrorResult("Invalid character ID."));
 
         var character = await _characterService.GetCharacterByIdAsync(characterId);
-
         if (character == null)
             return Ok(ApiResponse<CharacterDto>.ErrorResult($"Character with ID {characterId} not found."));
 

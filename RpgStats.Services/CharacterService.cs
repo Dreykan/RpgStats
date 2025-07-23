@@ -118,7 +118,6 @@ public class CharacterService : ICharacterService
     public async Task<CharacterDto> DeleteCharacterAsync(long characterId)
     {
         var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
-
         if (character == null)
             throw new ArgumentException($"Character with ID {characterId} not found");
 
