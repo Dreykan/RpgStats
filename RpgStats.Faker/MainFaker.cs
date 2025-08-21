@@ -158,7 +158,7 @@ public static class MainFaker
 
     private static async Task<List<GameDto>> GetGames(HttpClient httpClient)
     {
-        var gameResponse = await httpClient.GetAsync("api/Game/GetGames");
+        var gameResponse = await httpClient.GetAsync("api/Game/GetAllGames");
         var gameResult = await gameResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
         if (gameResult == null || gameResult.Success == false || gameResult.Data == null)
         {
@@ -170,7 +170,7 @@ public static class MainFaker
 
     private static async Task<List<PlatformDto>> GetPlatforms(HttpClient httpClient)
     {
-        var platformResponse = await httpClient.GetAsync("api/Platform/GetPlatforms");
+        var platformResponse = await httpClient.GetAsync("api/Platform/GetAllPlatforms");
         var platformResult = await platformResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>();
         if (platformResult == null || platformResult.Success == false || platformResult.Data == null)
         {

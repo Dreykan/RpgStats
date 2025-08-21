@@ -89,6 +89,8 @@ public class GameStatService : IGameStatService
             throw new ArgumentException($"Stat with ID {gameStatForUpdateDto.StatId} not found");
 
         gameStat.SortIndex = gameStatForUpdateDto.SortIndex;
+        gameStat.CustomStatName = gameStatForUpdateDto.CustomStatName;
+        gameStat.CustomStatShortName = gameStatForUpdateDto.CustomStatShortName;
         gameStat.StatId = gameStatForUpdateDto.StatId;
         gameStat.Stat = stat;
         gameStat.GameId = gameStatForUpdateDto.GameId;

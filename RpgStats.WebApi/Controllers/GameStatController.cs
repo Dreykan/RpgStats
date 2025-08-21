@@ -36,7 +36,7 @@ public class GameStatController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all GameStats by Game")]
-    public async Task<IActionResult> GetGameStatsByGame(long gameId)
+    public async Task<IActionResult> GetAllGameStatsByGame(long gameId)
     {
         if (gameId <= 0)
             return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid game ID."));
@@ -55,7 +55,7 @@ public class GameStatController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all GameStats by Stat")]
-    public async Task<IActionResult> GetGameStatsByStat(long statId)
+    public async Task<IActionResult> GetAllGameStatsByStat(long statId)
     {
         if (statId <= 0)
             return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid stat ID."));
@@ -102,7 +102,7 @@ public class GameStatController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(
-                ApiResponse<GameStatDto>.ErrorResult($"An error occurred while creating the GameStat: {e.Message}"));
+                ApiResponse<GameStatDto>.ErrorResult($"An error occured while creating the GameStat: {e.Message}"));
         }
     }
 
@@ -130,7 +130,7 @@ public class GameStatController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(
-                ApiResponse<GameStatDto>.ErrorResult($"An error occurred while updating the GameStat: {e.Message}"));
+                ApiResponse<GameStatDto>.ErrorResult($"An error occured while updating the GameStat: {e.Message}"));
         }
     }
 
@@ -167,7 +167,7 @@ public class GameStatController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete all GameStats by Game")]
-    public async Task<IActionResult> DeleteGameStatsByGame(long gameId)
+    public async Task<IActionResult> DeleteAllGameStatsByGame(long gameId)
     {
         if (gameId <= 0)
             return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid game ID."));
@@ -195,7 +195,7 @@ public class GameStatController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete all GameStats by Stat")]
-    public async Task<IActionResult> DeleteGameStatByStat(long statId)
+    public async Task<IActionResult> DeleteAllGameStatByStat(long statId)
     {
         if (statId <= 0)
             return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid stat ID."));
