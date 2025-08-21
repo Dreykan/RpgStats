@@ -43,7 +43,8 @@ public class CharacterController : ControllerBase
 
         var characters = await _characterService.GetAllCharactersByGameIdAsync(gameId);
         if (characters.Count == 0)
-            return Ok(ApiResponse<List<CharacterDto>>.ErrorResult($"No characters found for the specified gameId: {gameId}"));
+            return Ok(ApiResponse<List<CharacterDto>>.ErrorResult(
+                $"No characters found for the specified gameId: {gameId}"));
 
         return Ok(ApiResponse<List<CharacterDto>>.SuccessResult(characters));
     }
@@ -57,11 +58,13 @@ public class CharacterController : ControllerBase
     public async Task<IActionResult> GetAllCharactersByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return BadRequest(ApiResponse<List<CharacterDto>>.ErrorResult("Invalid name parameter. Name cannot be null or empty."));
+            return BadRequest(
+                ApiResponse<List<CharacterDto>>.ErrorResult("Invalid name parameter. Name cannot be null or empty."));
 
         var characters = await _characterService.GetAllCharactersByNameAsync(name);
         if (characters.Count == 0)
-            return Ok(ApiResponse<List<CharacterDto>>.ErrorResult($"No characters found with the specified name: {name}"));
+            return Ok(ApiResponse<List<CharacterDto>>.ErrorResult(
+                $"No characters found with the specified name: {name}"));
 
         return Ok(ApiResponse<List<CharacterDto>>.SuccessResult(characters));
     }
@@ -106,7 +109,9 @@ public class CharacterController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(ApiResponse<CharacterDetailDto>.ErrorResult($"An error occurred while retrieving the character details: {e.Message}"));
+            return BadRequest(
+                ApiResponse<CharacterDetailDto>.ErrorResult(
+                    $"An error occurred while retrieving the character details: {e.Message}"));
         }
     }
 
@@ -123,11 +128,13 @@ public class CharacterController : ControllerBase
         try
         {
             var character = await _characterService.CreateCharacterAsync(gameId, characterForCreationDto);
-            return CreatedAtAction(nameof(GetCharacterById), new { characterId = character.Id }, ApiResponse<CharacterDto>.SuccessResult(character));
+            return CreatedAtAction(nameof(GetCharacterById), new { characterId = character.Id },
+                ApiResponse<CharacterDto>.SuccessResult(character));
         }
         catch (Exception e)
         {
-            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"An error occurred while creating the character: {e.Message}"));
+            return BadRequest(
+                ApiResponse<CharacterDto>.ErrorResult($"An error occurred while creating the character: {e.Message}"));
         }
     }
 
@@ -149,11 +156,13 @@ public class CharacterController : ControllerBase
         try
         {
             var character = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
-            return CreatedAtAction(nameof(GetCharacterById), new { characterId = character.Id }, ApiResponse<CharacterDto>.SuccessResult(character));
+            return CreatedAtAction(nameof(GetCharacterById), new { characterId = character.Id },
+                ApiResponse<CharacterDto>.SuccessResult(character));
         }
         catch (Exception e)
         {
-            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"An error occurred while updating the character: {e.Message}"));
+            return BadRequest(
+                ApiResponse<CharacterDto>.ErrorResult($"An error occurred while updating the character: {e.Message}"));
         }
     }
 
@@ -175,7 +184,8 @@ public class CharacterController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(ApiResponse<CharacterDto>.ErrorResult($"An error occurred while deleting the character: {e.Message}"));
+            return BadRequest(
+                ApiResponse<CharacterDto>.ErrorResult($"An error occurred while deleting the character: {e.Message}"));
         }
     }
 }

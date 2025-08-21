@@ -3,7 +3,6 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Dto;
-using RpgStats.Dto.Mapper;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
 
