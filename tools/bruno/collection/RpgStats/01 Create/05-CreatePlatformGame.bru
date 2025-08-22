@@ -5,9 +5,16 @@ meta {
 }
 
 post {
-  url: {{host}}/{{basePath}}/{{platformGamePath}}/CreatePlatformGame/{{platformId}}/{{gameId}}
+  url: {{host}}/{{basePath}}/{{platformGamePath}}/CreatePlatformGame/
   body: json
   auth: none
+}
+
+body:json {
+  {
+    "platformId": 1,
+    "gameId": 1
+  }
 }
 
 vars:post-response {

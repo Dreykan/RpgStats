@@ -184,7 +184,7 @@ public class GameStatController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(
-                ApiResponse<GameStatDto>.ErrorResult(
+                ApiResponse<List<GameStatDto>>.ErrorResult(
                     $"An error occurred while deleting GameStats for gameId {gameId}: {e.Message}"));
         }
     }
