@@ -16,133 +16,166 @@ public class StatController : ControllerBase
         _statService = statService;
     }
 
-    [HttpGet("GetStats")]
+    [HttpGet("GetAllStats")]
+    [SwaggerResponse(200, "Returns a list of all Stats", typeof(ApiResponse<List<StatDto>>))]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Stats")]
-    public async Task<IActionResult> GetStats()
+    public async Task<IActionResult> GetAllStats()
     {
-        var result = await _statService.GetAllStatsAsync();
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
+        var stats = await _statService.GetAllStatsAsync();
+        if (stats.Count == 0)
+            return Ok(ApiResponse<List<StatDto>>.ErrorResult("No Stats found."));
+
+        return Ok(ApiResponse<List<StatDto>>.SuccessResult(stats));
     }
 
-    [HttpGet("GetStatsByName/{name}")]
+    [HttpGet("GetAllStatsByName/{name}")]
+    [SwaggerResponse(200, "Returns a list of Stats by name", typeof(ApiResponse<List<StatDto>>))]
+    [SwaggerResponse(400, "Invalid name")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Stats by Name")]
-    public async Task<IActionResult> GetStatsByName(string name)
+    public async Task<IActionResult> GetAllStatsByName(string name)
     {
-        var result = await _statService.GetAllStatsByNameAsync(name);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
+        if (string.IsNullOrWhiteSpace(name))
+            return BadRequest(ApiResponse<List<StatDto>>.ErrorResult("Invalid name."));
+
+        var stats = await _statService.GetAllStatsByNameAsync(name);
+        if (stats.Count == 0)
+            return Ok(ApiResponse<List<StatDto>>.ErrorResult($"No Stats found for the specified name: {name}"));
+
+        return Ok(ApiResponse<List<StatDto>>.SuccessResult(stats));
     }
 
-    [HttpGet("GetStatsByShortname/{shortName}")]
-    [SwaggerOperation(Summary = "Get all Stats by Shortname")]
-    public async Task<IActionResult> GetStatsByShortname(string shortName)
+    [HttpGet("GetAllStatsByShortName/{shortName}")]
+    [SwaggerResponse(200, "Returns a list of Stats by short name", typeof(ApiResponse<List<StatDto>>))]
+    [SwaggerResponse(400, "Invalid short name")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get all Stats by Short Name")]
+    public async Task<IActionResult> GetAllStatsByShortName(string shortName)
     {
-        var result = await _statService.GetAllStatsByShortNameAsync(shortName);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
+        if (string.IsNullOrWhiteSpace(shortName))
+            return BadRequest(ApiResponse<List<StatDto>>.ErrorResult("Invalid short name."));
+
+        var stats = await _statService.GetAllStatsByShortNameAsync(shortName);
+        if (stats.Count == 0)
+            return Ok(ApiResponse<List<StatDto>>.ErrorResult($"No Stats found for the specified short name: {shortName}"));
+
+        return Ok(ApiResponse<List<StatDto>>.SuccessResult(stats));
     }
 
-    [HttpGet("GetStatsByGameId/{gameId:long}")]
-    [SwaggerOperation(Summary = "Get all Stats by GameId")]
-    public async Task<IActionResult> GetStatsByGameId(long gameId)
+    [HttpGet("GetAllStatsByGameId/{gameId:long}")]
+    [SwaggerResponse(200, "Returns a list of Stats by game ID", typeof(ApiResponse<List<StatDto>>))]
+    [SwaggerResponse(400, "Invalid game ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get all Stats by Game ID")]
+    public async Task<IActionResult> GetAllStatsByGameId(long gameId)
     {
-        var result = await _statService.GetAllStatsByGameIdAsync(gameId);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
-    }
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<List<StatDto>>.ErrorResult("Invalid game ID."));
 
-    [HttpGet("GetStatsDetail")]
-    [SwaggerOperation(Summary = "Get all Stats with Details")]
-    public async Task<IActionResult> GetStatsDetail()
-    {
-        var result = await _statService.GetAllStatDetailDtosAsync();
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
-    }
+        try
+        {
+            var stats = await _statService.GetAllStatsByGameIdAsync(gameId);
+            if (stats.Count == 0)
+                return Ok(ApiResponse<List<StatDto>>.ErrorResult($"No Stats found for the specified game ID: {gameId}"));
 
-    [HttpGet("GetStatsDetailByName/{name}")]
-    [SwaggerOperation(Summary = "Get all Stats with Details by Name")]
-    public async Task<IActionResult> GetStatsDetailByName(string name)
-    {
-        var result = await _statService.GetAllStatDetailDtosByNameAsync(name);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
-    }
-
-    [HttpGet("GetStatsDetailByShortName/{shortName}")]
-    [SwaggerOperation(Summary = "Get all Stats with Details by ShortName")]
-    public async Task<IActionResult> GetStatsDetailByShortName(string shortName)
-    {
-        var result = await _statService.GetAllStatDetailDtosByShortNameAsync(shortName);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
-    }
-
-    [HttpGet("GetStatsDetailByGameId/{gameId:long}")]
-    [SwaggerOperation(Summary = "Get all Stats with Details by GameId")]
-    public async Task<IActionResult> GetStatsDetailByGameId(long gameId)
-    {
-        var result = await _statService.GetAllStatDetailDtosByGameIdAsync(gameId);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
+            return Ok(ApiResponse<List<StatDto>>.SuccessResult(stats));
+        }
+        catch (ArgumentException e)
+        {
+            return NotFound(ApiResponse<List<StatDto>>.ErrorResult(e.Message));
+        }
     }
 
     [HttpGet("GetStatById/{statId:long}")]
-    [SwaggerOperation(Summary = "Get a Stat")]
+    [SwaggerResponse(200, "Returns a Stat by ID", typeof(ApiResponse<StatDto>))]
+    [SwaggerResponse(400, "Invalid stat ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get a Stat by ID")]
     public async Task<IActionResult> GetStatById(long statId)
     {
-        var result = await _statService.GetStatByIdAsync(statId);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
-    }
+        if (statId <= 0)
+            return BadRequest(ApiResponse<StatDto>.ErrorResult("Invalid stat ID."));
 
-    [HttpGet("GetStatDetailById/{statId:long}")]
-    [SwaggerOperation(Summary = "Get a Stat with Details by Id")]
-    public async Task<IActionResult> GetStatDetailById(long statId)
-    {
-        var result = await _statService.GetStatDetailDtoByIdAsync(statId);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
+        var stat = await _statService.GetStatByIdAsync(statId);
+        if (stat == null)
+            return Ok(ApiResponse<StatDto>.ErrorResult($"Stat with ID {statId} not found."));
+
+        return Ok(ApiResponse<StatDto>.SuccessResult(stat));
     }
 
     [HttpPost("CreateStat")]
+    [SwaggerResponse(201, "Stat created successfully", typeof(ApiResponse<StatDto>))]
+    [SwaggerResponse(400, "Invalid Stat data")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Create a Stat")]
     public async Task<IActionResult> CreateStat([FromBody] StatForCreationDto? statForCreationDto)
     {
-        var result = await _statService.CreateStatAsync(statForCreationDto);
-        if (result.Success)
-            return CreatedAtAction(nameof(GetStatById), new { statId = result.Data?.Id }, result);
-        return BadRequest();
+        try
+        {
+            var stat = await _statService.CreateStatAsync(statForCreationDto);
+            return CreatedAtAction(nameof(GetStatById), new { statId = stat.Id },
+                ApiResponse<StatDto>.SuccessResult(stat));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<StatDto>.ErrorResult($"An error occurred while creating the Stat: {e.Message}"));
+        }
     }
 
     [HttpPut("UpdateStat/{statId:long}")]
+    [SwaggerResponse(200, "Stat updated successfully", typeof(ApiResponse<StatDto>))]
+    [SwaggerResponse(400, "Invalid stat ID or data")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Update a Stat")]
     public async Task<IActionResult> UpdateStat(long statId, [FromBody] StatForUpdateDto statForUpdateDto)
     {
-        var result = await _statService.UpdateStatAsync(statId, statForUpdateDto);
-        if (result.Success)
-            return CreatedAtAction(nameof(GetStatById), new { statId = result.Data?.Id }, result);
-        return BadRequest();
+        if (statId <= 0)
+            return BadRequest(ApiResponse<StatDto>.ErrorResult("Invalid stat ID."));
+
+        try
+        {
+            var stat = await _statService.UpdateStatAsync(statId, statForUpdateDto);
+            return Ok(ApiResponse<StatDto>.SuccessResult(stat));
+        }
+        catch (ArgumentException e)
+        {
+            return NotFound(ApiResponse<StatDto>.ErrorResult(e.Message));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<StatDto>.ErrorResult($"An error occurred while updating the Stat: {e.Message}"));
+        }
     }
 
     [HttpDelete("DeleteStat/{statId:long}")]
+    [SwaggerResponse(200, "Stat deleted successfully", typeof(ApiResponse<StatDto>))]
+    [SwaggerResponse(400, "Invalid stat ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete a Stat")]
     public async Task<IActionResult> DeleteStat(long statId)
     {
-        var result = await _statService.DeleteStatAsync(statId);
-        if (result.Success)
-            return Ok(result);
-        return BadRequest(result);
+        if (statId <= 0)
+            return BadRequest(ApiResponse<StatDto>.ErrorResult("Invalid stat ID."));
+
+        try
+        {
+            var stat = await _statService.DeleteStatAsync(statId);
+            if (stat == null)
+                return NotFound(ApiResponse<StatDto>.ErrorResult($"Stat with ID {statId} not found or could not be deleted."));
+
+            return Ok(ApiResponse<StatDto>.SuccessResult(stat));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<StatDto>.ErrorResult($"An error occurred while deleting the Stat: {e.Message}"));
+        }
     }
 }
