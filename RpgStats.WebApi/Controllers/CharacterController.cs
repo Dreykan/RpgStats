@@ -17,7 +17,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpGet("GetAllCharacters")]
-    [SwaggerResponse(200, "Returns a list of all characters", typeof(ServiceResult<List<CharacterDto>>))]
+    [SwaggerResponse(200, "Returns a list of all characters", typeof(ApiResponse<List<CharacterDto>>))]
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all Characters")]
@@ -31,7 +31,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpGet("GetAllCharactersByGame/{gameId:long}")]
-    [SwaggerResponse(200, "Returns a list of characters by game ID", typeof(ServiceResult<List<CharacterDto>>))]
+    [SwaggerResponse(200, "Returns a list of characters by game ID", typeof(ApiResponse<List<CharacterDto>>))]
     [SwaggerResponse(400, "Invalid game ID")]
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
@@ -50,7 +50,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpGet("GetAllCharactersByName/{name}")]
-    [SwaggerResponse(200, "Returns a list of characters by name", typeof(ServiceResult<List<CharacterDto>>))]
+    [SwaggerResponse(200, "Returns a list of characters by name", typeof(ApiResponse<List<CharacterDto>>))]
     [SwaggerResponse(400, "Invalid name parameter")]
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
@@ -70,7 +70,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpGet("GetCharacterById/{characterId:long}")]
-    [SwaggerResponse(200, "Returns a character by ID", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(200, "Returns a character by ID", typeof(ApiResponse<CharacterDto>))]
     [SwaggerResponse(400, "Invalid character ID")]
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
@@ -88,7 +88,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpGet("GetCharacterDetailById/{characterId:long}")]
-    [SwaggerResponse(200, "Returns character details by ID", typeof(ServiceResult<CharacterDetailDto>))]
+    [SwaggerResponse(200, "Returns character details by ID", typeof(ApiResponse<CharacterDetailDto>))]
     [SwaggerResponse(400, "Invalid character ID")]
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
@@ -116,7 +116,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpPost("CreateCharacter/{gameId:long}")]
-    [SwaggerResponse(201, "Character created successfully", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(201, "Character created successfully", typeof(ApiResponse<CharacterDto>))]
     [SwaggerResponse(400, "Invalid game ID or character data")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Create a Character")]
@@ -139,7 +139,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpPut("UpdateCharacter/{gameId:long}/{characterId:long}")]
-    [SwaggerResponse(201, "Character updated successfully", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(201, "Character updated successfully", typeof(ApiResponse<CharacterDto>))]
     [SwaggerResponse(400, "Invalid game ID or character ID")]
     [SwaggerResponse(404, "Character not found")]
     [SwaggerResponse(500, "Internal server error")]
@@ -167,7 +167,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpDelete("DeleteCharacter/{characterId:long}")]
-    [SwaggerResponse(200, "Character deleted successfully", typeof(ServiceResult<CharacterDto>))]
+    [SwaggerResponse(200, "Character deleted successfully", typeof(ApiResponse<CharacterDto>))]
     [SwaggerResponse(400, "Invalid character ID")]
     [SwaggerResponse(404, "Character not found")]
     [SwaggerResponse(500, "Internal server error")]
