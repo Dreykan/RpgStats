@@ -184,7 +184,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             }
         };
 
-        var result = await _service.CreateStatValuesAsync(statValuesForCreationDto);
+        var result = await _service.CreateMultipleStatValuesAsync(statValuesForCreationDto);
 
         Assert.NotNull(result);
         Assert.True(result.Success);

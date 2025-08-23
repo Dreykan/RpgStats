@@ -15,4 +15,10 @@ public record StatValueForUpdateDto
 
     [Required(ErrorMessage = "A bonus contained herein in percent for this entry is required.")]
     public int ContainedBonusPercent { get; set; }
+
+    [Required(ErrorMessage = "A StatId entry is required.")]
+    public long StatId { get; set; }
+
+    [Required(ErrorMessage = "A CharacterId entry is required.")]
+    public long CharacterId { get; set; }
 }
