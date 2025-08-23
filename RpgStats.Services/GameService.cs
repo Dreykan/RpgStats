@@ -45,6 +45,34 @@ public class GameService : IGameService
         return game.Adapt<GameDto>();
     }
 
+    public async Task<GameDetailDto?> GetGameDetailByIdAsync(long gameId)
+    {
+        var game = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .Include(g => g.Characters)
+            .Include(g => g.GameStats)
+            .FirstOrDefaultAsync(g => g.Id == gameId);
+
+        var platforms = await _dbContext.Platforms
+            .ToListAsync();
+
+        var stats = await _dbContext.Stats
+            .ToListAsync();
+
+        var platformsFiltered = new List<Platform?>();
+        if (game!.PlatformGames != null)
+            platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
+                platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
+
+        var statsFiltered = new List<Stat?>();
+        if (game.GameStats != null)
+            statsFiltered.AddRange(game.GameStats.Select(gs => stats.FirstOrDefault(s => s.Id == gs.StatId)));
+
+        var gameDetailDto = GameMapper.MapToGameDetailDto(game, platformsFiltered, statsFiltered);
+
+        return gameDetailDto;
+    }
+
     public async Task<GameDto?> CreateGameAsync(GameForCreationDto gameForCreationDto)
     {
         var game = gameForCreationDto.Adapt<Game>();

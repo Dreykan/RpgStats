@@ -80,7 +80,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await HttpClient.GetAsync("api/Game/GetGames");
+        var response = await HttpClient.GetAsync("api/Game/GetAllGames");
 
         if (!response.IsSuccessStatusCode)
         {

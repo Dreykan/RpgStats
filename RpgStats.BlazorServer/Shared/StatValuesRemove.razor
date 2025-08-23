@@ -29,7 +29,7 @@
 
     private void Submit()
     {
-        var response = HttpClient.DeleteAsync($"api/StatValue/DeleteStatValuesByCharacterAndLevel/{Character?.Id}/{Level}");
+        var response = HttpClient.DeleteAsync($"api/StatValue/DeleteAllStatValuesByCharacterAndLevel/{Character?.Id}/{Level}");
         var content = response.Result.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>().Result;
         if (!response.Result.IsSuccessStatusCode || content?.Success == false )
         {

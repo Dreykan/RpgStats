@@ -118,10 +118,10 @@ public static class MainFaker
     private static async Task RunStatValueFaker(Random random, HttpClient httpClient)
     {
         var statValues = new List<StatValueForCreationDto>();
-        var characters = await GetCharacters(httpClient);
+        var characters = await GetAllCharacters(httpClient);
         foreach (var character in characters)
         {
-            var statsResponse = await httpClient.GetAsync($"api/Stat/GetStatsByGameId/{character.GameId}");
+            var statsResponse = await httpClient.GetAsync($"api/Stat/GetAllStatsByGame/{character.GameId}");
             var statsResult = await statsResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
             var stats = statsResult?.Data;
             if (stats is null)
@@ -182,7 +182,7 @@ public static class MainFaker
 
     private static async Task<List<StatDto>> GetStats(HttpClient httpClient)
     {
-        var statResponse = await httpClient.GetAsync("api/Stat/GetStats");
+        var statResponse = await httpClient.GetAsync("api/Stat/GetAllStats");
         var statResult = await statResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
         if (statResult == null || statResult.Success == false || statResult.Data == null)
         {
@@ -192,7 +192,7 @@ public static class MainFaker
         return statResult.Data;
     }
 
-    private static async Task<List<CharacterDto>> GetCharacters(HttpClient httpClient)
+    private static async Task<List<CharacterDto>> GetAllCharacters(HttpClient httpClient)
     {
         var characterResponse = await httpClient.GetAsync("api/Character/GetAllCharacters");
         var characterResult = await characterResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<CharacterDto>>>();

@@ -22,14 +22,14 @@ public class PlatformMapperTests
         var platform = new Platform { Id = 1, Name = "Test Platform" };
         var games = new List<Game?> { new() { Id = 1, Name = "Test Game" }, null };
 
-        var result = PlatformMapper.MapToPlatformDetailDto(platform, games);
+        var result = PlatformMapper.MapToPlatformWithGamesDto(platform, games);
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
-        if (result.GameWithoutFkObjectsDtos == null) return;
-        Assert.Single(result.GameWithoutFkObjectsDtos);
-        Assert.Equal(games[0]?.Id, result.GameWithoutFkObjectsDtos.FirstOrDefault()?.Id);
-        Assert.Equal(games[0]?.Name, result.GameWithoutFkObjectsDtos.FirstOrDefault()?.Name);
+        if (result.GameDtos == null) return;
+        Assert.Single(result.GameDtos);
+        Assert.Equal(games[0]?.Id, result.GameDtos.FirstOrDefault()?.Id);
+        Assert.Equal(games[0]?.Name, result.GameDtos.FirstOrDefault()?.Name);
     }
 
     [Fact]
@@ -38,11 +38,11 @@ public class PlatformMapperTests
         var platform = new Platform { Id = 1, Name = "Test Platform" };
         var games = new List<Game?>();
 
-        var result = PlatformMapper.MapToPlatformDetailDto(platform, games);
+        var result = PlatformMapper.MapToPlatformWithGamesDto(platform, games);
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
-        if (result.GameWithoutFkObjectsDtos != null) Assert.Empty(result.GameWithoutFkObjectsDtos);
+        if (result.GameDtos != null) Assert.Empty(result.GameDtos);
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class PlatformMapperTests
         var platform = new Platform { Id = 1, Name = "Test Platform" };
         var games = new List<Game?>();
 
-        var result = PlatformMapper.MapToPlatformDetailDto(platform, games);
+        var result = PlatformMapper.MapToPlatformWithGamesDto(platform, games);
 
         Assert.Equal(platform.Id, result.Id);
         Assert.Equal(platform.Name, result.Name);
-        if (result.GameWithoutFkObjectsDtos != null) Assert.Empty(result.GameWithoutFkObjectsDtos);
+        if (result.GameDtos != null) Assert.Empty(result.GameDtos);
     }
 }

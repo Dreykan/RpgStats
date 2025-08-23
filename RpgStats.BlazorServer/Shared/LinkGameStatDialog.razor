@@ -60,7 +60,7 @@
 
     private async Task GetStats()
     {
-        var response = await HttpClient.GetAsync($"api/Stat/GetStats");
+        var response = await HttpClient.GetAsync($"api/Stat/GetAllStats");
         var content = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatDto>>>();
         if (!response.IsSuccessStatusCode || content?.Success == false)
         {
@@ -110,7 +110,7 @@
     private async Task<bool> CheckGameStatExist()
     {
         // TODO: Hier einen eigenen Endpunkt erstellen für die Überprüfung ob es diesen GameStat schon gibt
-        var response = await HttpClient.GetAsync($"api/GameStat/GetGameStatsByGame/{_gameStatDto.GameId}");
+        var response = await HttpClient.GetAsync($"api/GameStat/GetAllGameStatsByGame/{_gameStatDto.GameId}");
         if (response.IsSuccessStatusCode == false) return false;
 
         var rpgStatsResponse = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameStatDto>>>();

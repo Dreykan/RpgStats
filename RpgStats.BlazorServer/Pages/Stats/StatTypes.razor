@@ -45,7 +45,7 @@
 
     private async Task GetStats()
     {
-        var response = await HttpClient.GetAsync("api/Stat/GetStats");
+        var response = await HttpClient.GetAsync("api/Stat/GetAllStats");
         if (!response.IsSuccessStatusCode)
         {
             _stats = new List<StatDto>();

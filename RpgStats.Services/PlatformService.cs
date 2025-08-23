@@ -28,12 +28,66 @@ public class PlatformService : IPlatformService
         return platforms.Adapt<List<PlatformDto>>();
     }
 
+    public async Task<List<PlatformWithGamesDto>> GetAllPlatformsWithGamesAsync()
+    {
+        var platforms = await _dbContext.Platforms
+            .Include(p => p.PlatformGames)
+            .ToListAsync();
+
+        var games = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .ToListAsync();
+
+        var platformsWithGames = new List<PlatformWithGamesDto>();
+
+        foreach (var platform in platforms)
+        {
+            var tmpGames = new List<Game?>();
+            if (platform.PlatformGames != null)
+                tmpGames.AddRange(platform.PlatformGames.Select(pg => games.FirstOrDefault(g => g.Id == pg.GameId)));
+
+            platformsWithGames.Add(PlatformMapper.MapToPlatformWithGamesDto(platform, tmpGames));
+        }
+
+        return platformsWithGames;
+    }
+
+    public async Task<List<PlatformDto>> GetAllPlatformsByNameAsync(string name)
+    {
+        var platforms = await _dbContext.Platforms
+            .Where(p => p.Name.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
+
+        return platforms.Adapt<List<PlatformDto>>();
+    }
+
     public async Task<PlatformDto?> GetPlatformByIdAsync(long platformId)
     {
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
 
         return platform.Adapt<PlatformDto>();
+    }
+
+    public async Task<PlatformWithGamesDto?> GetPlatformWithGamesByIdAsync(long platformId)
+    {
+        var platform = await _dbContext.Platforms
+            .Include(p => p.PlatformGames)
+            .FirstOrDefaultAsync(p => p.Id == platformId);
+
+        var games = await _dbContext.Games
+            .Include(g => g.PlatformGames)
+            .ToListAsync();
+
+        var platformWithGames = new PlatformWithGamesDto();
+
+        if (games.Count == 0 || platform?.PlatformGames == null)
+            return platformWithGames;
+
+        var tmpGames = platform.PlatformGames.Select(pg => games.FirstOrDefault(g => g.Id == pg.GameId)).ToList();
+        platformWithGames = PlatformMapper.MapToPlatformWithGamesDto(platform, tmpGames);
+
+        return platformWithGames;
     }
 
     public async Task<PlatformDto> CreatePlatformAsync(PlatformForCreationDto platformForCreationDto)

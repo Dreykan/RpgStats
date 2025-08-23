@@ -140,7 +140,7 @@
 
     private async Task GetPlatforms()
     {
-        var response = await HttpClient.GetAsync("api/Platform/GetPlatforms");
+        var response = await HttpClient.GetAsync("api/Platform/GetAllPlatforms");
         if (!response.IsSuccessStatusCode)
         {
             _platformDtos = new List<PlatformDto>();
@@ -153,7 +153,7 @@
 
     private async Task<long> GetIdOfCreatedGame(string gameName)
     {
-        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<GameDto>>>($"api/Game/GetGamesByName/{gameName}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<GameDto>>>($"api/Game/GetAllGamesByName/{gameName}");
         var gameList = response?.Data;
         var game = gameList?.FirstOrDefault();
         var id = game?.Id ?? 0;
@@ -162,7 +162,7 @@
 
     private async Task<long> GetIdOfPlatform(string platformName)
     {
-        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<PlatformDetailDto>>>($"api/Platform/GetPlatformsDetailByName/{platformName}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<PlatformDto>>>($"api/Platform/GetAllPlatformsByName/{platformName}");
         var platformList = response?.Data;
         var platform = platformList?.FirstOrDefault();
         var id = platform?.Id ?? 0;

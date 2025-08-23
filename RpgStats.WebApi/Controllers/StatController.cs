@@ -66,7 +66,7 @@ public class StatController : ControllerBase
         return Ok(ApiResponse<List<StatDto>>.SuccessResult(stats));
     }
 
-    [HttpGet("GetAllStatsByGameId/{gameId:long}")]
+    [HttpGet("GetAllStatsByGame/{gameId:long}")]
     [SwaggerResponse(200, "Returns a list of Stats by game ID", typeof(ApiResponse<List<StatDto>>))]
     [SwaggerResponse(400, "Invalid game ID")]
     [SwaggerResponse(404, "Resource not found")]

@@ -70,7 +70,7 @@
 
     private async Task GetGames()
     {
-        var response = await HttpClient.GetAsync("api/Game/GetGames");
+        var response = await HttpClient.GetAsync("api/Game/GetAllGames");
         if (!response.IsSuccessStatusCode)
         {
             _games = new List<GameDto>();
@@ -83,7 +83,7 @@
 
     private async Task GetPlatforms()
     {
-        var response = await HttpClient.GetAsync("api/Platform/GetPlatforms");
+        var response = await HttpClient.GetAsync("api/Platform/GetAllPlatforms");
         if (!response.IsSuccessStatusCode)
         {
             _platforms = new List<PlatformDto>();

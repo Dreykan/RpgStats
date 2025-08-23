@@ -66,7 +66,23 @@ public class GameController : ControllerBase
             return Ok(ApiResponse<GameDto>.ErrorResult($"Game with ID {gameId} not found."));
 
         return Ok(ApiResponse<GameDto>.SuccessResult(game));
+    }
 
+    [HttpGet("GetGameDetailById/{gameId:long}")]
+    [SwaggerResponse(200, "Returns a game by ID", typeof(ApiResponse<GameDto>))]
+    [SwaggerResponse(400, "Invalid game ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    public async Task<IActionResult> GetGameDetailById(long gameId)
+    {
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<GameDto>.ErrorResult("Invalid game ID."));
+
+        var game = await _gameService.GetGameDetailByIdAsync(gameId);
+        if (game == null)
+            return Ok(ApiResponse<GameDto>.ErrorResult($"Game with ID {gameId} not found."));
+
+        return Ok(ApiResponse<GameDetailDto>.SuccessResult(game));
     }
 
     [HttpPost("CreateGame")]

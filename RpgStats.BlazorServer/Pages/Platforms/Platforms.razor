@@ -37,9 +37,9 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudText Typo="Typo.h5">Games:</MudText>
-                        @if (platform.GameWithoutFkObjectsDtos != null)
+                        @if (platform.GameDtos != null)
                         {
-                            foreach (var game in platform.GameWithoutFkObjectsDtos.OrderBy(x => x.Name).ToList())
+                            foreach (var game in platform.GameDtos.OrderBy(x => x.Name).ToList())
                             {
                                 <MudText>
                                     <MudLink Typo="Typo.body1" Href="@($"/gameDetail/{game.Id}")" Color="Color.Info">
@@ -70,7 +70,7 @@
 
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
-    private List<PlatformDetailDto>? _platforms;
+    private List<PlatformWithGamesDto>? _platforms;
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,14 +79,14 @@
 
     private async Task GetPlatforms()
     {
-        var response = await HttpClient.GetAsync("/api/Platform/GetPlatformsDetail");
+        var response = await HttpClient.GetAsync("/api/Platform/GetAllPlatformsWithGames");
         if (!response.IsSuccessStatusCode)
         {
-            _platforms = new List<PlatformDetailDto>();
+            _platforms = new List<PlatformWithGamesDto>();
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformDetailDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformWithGamesDto>>>();
         _platforms = result?.Data?.OrderBy(x => x.Name).ToList();
     }
 

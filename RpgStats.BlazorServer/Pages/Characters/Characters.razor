@@ -55,12 +55,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetCharacters();
+        await GetAllCharacters();
     }
 
-    private async Task GetCharacters()
+    private async Task GetAllCharacters()
     {
-        var response = await HttpClient.GetAsync("api/Character/GetCharacters");
+        var response = await HttpClient.GetAsync("api/Character/GetAllCharacters");
         if (!response.IsSuccessStatusCode)
         {
             _characters = new List<CharacterDto>();

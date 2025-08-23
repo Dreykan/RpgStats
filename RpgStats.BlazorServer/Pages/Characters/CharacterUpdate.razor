@@ -95,7 +95,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetCharacter();
-        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<GameDto>>>("api/Game/GetGames");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<GameDto>>>("api/Game/GetAllGames");
         _gameDtos = response?.Data;
         await PrefillForm();
     }

@@ -1,0 +1,15 @@
+meta {
+  name: GetGameDetailById
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{gamePath}}/GetGameDetailById/3
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

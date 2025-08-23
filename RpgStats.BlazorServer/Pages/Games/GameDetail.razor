@@ -170,7 +170,7 @@ else
 
     private async Task GetGameStats()
     {
-        var response = await HttpClient.GetAsync($"api/GameStat/GetGameStatsByGame/{_game?.Id}");
+        var response = await HttpClient.GetAsync($"api/GameStat/GetAllGameStatsByGame/{_game?.Id}");
         if (response.IsSuccessStatusCode == false)
         {
             _gameStats = new List<GameStatDto>();
@@ -208,7 +208,7 @@ else
             return;
         }
 
-        var response = await HttpClient.GetAsync($"api/StatValue/GetStatValuesByStat/{gameStat.StatId}");
+        var response = await HttpClient.GetAsync($"api/StatValue/GetAllStatValuesByStat/{gameStat.StatId}");
         var statValues = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>();
 
         if (statValues?.Data == null)

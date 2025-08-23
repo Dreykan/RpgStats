@@ -30,8 +30,39 @@ public class PlatformController : ControllerBase
         return Ok(ApiResponse<List<PlatformDto>>.SuccessResult(platforms));
     }
 
+    [HttpGet("GetAllPlatformsWithGames")]
+    [SwaggerResponse(200, "Returns all platforms with games", typeof(ApiResponse<List<PlatformWithGamesDto>>))]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get all Platforms with games")]
+    public async Task<IActionResult> GetPlatformsWithGamesAsync()
+    {
+        var platforms = await _platformService.GetAllPlatformsWithGamesAsync();
+        if (platforms.Count == 0)
+            return Ok(ApiResponse<List<PlatformWithGamesDto>>.ErrorResult("No Platforms found."));
+
+        return Ok(ApiResponse<List<PlatformWithGamesDto>>.SuccessResult(platforms));
+    }
+
+    [HttpGet("GetAllPlatformsByName/{name}")]
+    [SwaggerResponse(200, "Returns all platforms by name", typeof(ApiResponse<List<PlatformDto>>))]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get all Platforms by name")]
+    public async Task<IActionResult> GetAllPlatformsByNameAsync(string name)
+    {
+        var platforms = await _platformService.GetAllPlatformsByNameAsync(name);
+        if (platforms.Count == 0)
+            return Ok(ApiResponse<List<PlatformDto>>.ErrorResult("No Platforms found."));
+
+        return Ok(ApiResponse<List<PlatformDto>>.SuccessResult(platforms));
+    }
+
     [HttpGet("GetPlatformById/{platformId:long}")]
     [SwaggerResponse(200, "Returns platform by ID",  typeof(ApiResponse<PlatformDto>))]
+    [SwaggerResponse(400, "Invalid ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get a Platform by Id")]
     public async Task<IActionResult> GetPlatformById(long platformId)
     {
@@ -43,6 +74,23 @@ public class PlatformController : ControllerBase
             return BadRequest(ApiResponse<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found."));
 
         return Ok(ApiResponse<PlatformDto>.SuccessResult(platform));
+    }
+
+    [HttpGet("GetPlatformWithGamesById/{platformId:long}")]
+    [SwaggerResponse(200, "Returns platform with games by ID", typeof(ApiResponse<PlatformWithGamesDto>))]
+    [SwaggerResponse(400, "Invalid ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    public async Task<IActionResult> GetPlatformWithGamesByIdAsync(long platformId)
+    {
+        if (platformId <= 0)
+            return BadRequest(ApiResponse<PlatformWithGamesDto>.ErrorResult("Invalid platform ID."));
+
+        var platformWithGames = await _platformService.GetPlatformWithGamesByIdAsync(platformId);
+        if (platformWithGames == null)
+            return BadRequest(ApiResponse<PlatformWithGamesDto>.ErrorResult($"Platform with ID {platformId} not found."));
+
+        return Ok(ApiResponse<PlatformWithGamesDto>.SuccessResult(platformWithGames));
     }
 
     [HttpPost("CreatePlatform")]

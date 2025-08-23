@@ -11,8 +11,8 @@ public class CharacterDetailDtoTests
         };
         Assert.Equal(0, dto.Id);
         Assert.Null(dto.Picture);
-        Assert.Null(dto.GameWithoutFkObjectsDto);
-        Assert.Null(dto.StatValuesWithStatObjectDtos);
+        Assert.Null(dto.Game);
+        Assert.Null(dto.StatValues);
     }
 
     [Fact]
