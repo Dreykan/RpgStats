@@ -73,7 +73,7 @@
             statValue.Level = Level;
         }
 
-        var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateStatValues/", _statValues);
+        var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateMultipleStatValues/", _statValues);
         var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>();
 
         if (!response.IsSuccessStatusCode && responseContent?.Success == false)

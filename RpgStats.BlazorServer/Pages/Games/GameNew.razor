@@ -93,22 +93,30 @@
             return;
         }
 
-        var gameId = await GetIdOfCreatedGame(_gameForCreationDto.Name);
-
-        List<long> selectedPlatformIds = new();
-        foreach (var selectedPlatform in SelectedPlatforms)
+        if (gameContent.Data != null)
         {
-            var id = await GetIdOfPlatform(selectedPlatform);
-            selectedPlatformIds.Add(id);
-        }
+            var gameId = gameContent.Data.Id;
 
-        foreach (var selectedPlatformId in selectedPlatformIds)
-        {
-            response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{selectedPlatformId}/{gameId}", "");
-            var pgContent = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformGameDto>>();
-            if (pgContent != null) continue;
-            await ShowErrorMessage(pgContent?.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
-            return;
+            List<long> selectedPlatformIds = new();
+            foreach (var selectedPlatform in SelectedPlatforms)
+            {
+                var id = await GetIdOfPlatform(selectedPlatform);
+                selectedPlatformIds.Add(id);
+            }
+
+            foreach (var selectedPlatformId in selectedPlatformIds)
+            {
+                var platformGameForCreationDto = new PlatformGameForCreationDto
+                {
+                    PlatformId = selectedPlatformId,
+                    GameId = gameId
+                };
+                response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame", platformGameForCreationDto);
+                var pgContent = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformGameDto>>();
+                if (pgContent != null) continue;
+                await ShowErrorMessage(pgContent?.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
+                return;
+            }
         }
 
         _gameForCreationDto.Name = "";
