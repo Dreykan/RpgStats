@@ -18,21 +18,21 @@ public class CharacterDetailDtoTests
     [Fact]
     public void CharacterDetailDto_Should_Allow_Setting_Values()
     {
-        var gameDto = new GameWithoutFkObjectsDto();
-        var statValues = new List<StatValueWithStatObjectDto>();
+        var gameDto = new List<GameStatDto>();
+        var statValues = new List<StatValueDto>();
         var dto = new CharacterDetailDto
         {
             Id = 1,
             Name = "Test Character",
             Picture = new byte[] { 1, 2, 3 },
-            GameWithoutFkObjectsDto = gameDto,
-            StatValuesWithStatObjectDtos = statValues
+            GameStats = gameDto,
+            StatValues = statValues
         };
         Assert.Equal(1, dto.Id);
         Assert.Equal("Test Character", dto.Name);
         Assert.Equal(new byte[] { 1, 2, 3 }, dto.Picture);
-        Assert.Equal(gameDto, dto.GameWithoutFkObjectsDto);
-        Assert.Equal(statValues, dto.StatValuesWithStatObjectDtos);
+        Assert.Equal(gameDto, dto.GameStats);
+        Assert.Equal(statValues, dto.StatValues);
     }
 
     [Fact]
@@ -43,12 +43,12 @@ public class CharacterDetailDtoTests
             Id = 1,
             Name = "TestCharacter",
             Picture = null,
-            GameWithoutFkObjectsDto = null,
-            StatValuesWithStatObjectDtos = null
+            GameStats = null,
+            StatValues = null
         };
         Assert.Equal(1, dto.Id);
         Assert.Null(dto.Picture);
-        Assert.Null(dto.GameWithoutFkObjectsDto);
-        Assert.Null(dto.StatValuesWithStatObjectDtos);
+        Assert.Null(dto.GameStats);
+        Assert.Null(dto.StatValues);
     }
 }

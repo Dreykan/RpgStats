@@ -12,13 +12,13 @@ public class PlatformWithGamesDtoTests
     }
 
     [Fact]
-    public void PlatformDetailDto_Should_Set_And_Get_Properties()
+    public void PlatformWithGamesDto_Should_Set_And_Get_Properties()
     {
         var dto = new PlatformWithGamesDto
         {
             Id = 1,
             Name = "Platform Name",
-            GameDtos = new List<GameWithoutFkObjectsDto>()
+            GameDtos = new List<GameDto>()
         };
 
         Assert.Equal(1, dto.Id);
@@ -27,13 +27,13 @@ public class PlatformWithGamesDtoTests
     }
 
     [Fact]
-    public void PlatformDetailDto_Should_Handle_Empty_Name()
+    public void PlatformWithGamesDto_Should_Handle_Empty_Name()
     {
         var dto = new PlatformWithGamesDto
         {
             Id = 1,
             Name = string.Empty,
-            GameDtos = new List<GameWithoutFkObjectsDto>()
+            GameDtos = new List<GameDto>()
         };
 
         Assert.Equal(1, dto.Id);
@@ -42,13 +42,13 @@ public class PlatformWithGamesDtoTests
     }
 
     [Fact]
-    public void PlatformDetailDto_Should_Handle_Empty_GameWithoutFkObjectsDtos()
+    public void PlatformWithGamesDto_Should_Handle_Empty_GameWithoutFkObjectsDtos()
     {
         var dto = new PlatformWithGamesDto
         {
             Id = 1,
             Name = "Platform Name",
-            GameDtos = new List<GameWithoutFkObjectsDto>()
+            GameDtos = new List<GameDto>()
         };
 
         Assert.Equal(1, dto.Id);
