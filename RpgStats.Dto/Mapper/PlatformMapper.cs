@@ -1,5 +1,4 @@
-﻿using Mapster;
-using RpgStats.Domain.Entities;
+﻿using RpgStats.Domain.Entities;
 
 namespace RpgStats.Dto.Mapper;
 
@@ -26,9 +25,24 @@ public static class PlatformMapper
         };
 
         // Map Game-Property
-        var gameDtos = games.Adapt<List<GameDto>>();
-        platformDetailDto.GameDtos = gameDtos;
+        if (games.Count == 0)
+            return platformDetailDto;
 
+        var gameDtos = new List<GameDto>();
+        foreach (var game in games)
+        {
+            if (game == null)
+                continue;
+            var gameDto = new GameDto
+            {
+                Id = game.Id,
+                Name = game.Name,
+                Picture = game.Picture
+            };
+            gameDtos.Add(gameDto);
+        }
+
+        platformDetailDto.GameDtos = gameDtos;
         return platformDetailDto;
     }
 }
