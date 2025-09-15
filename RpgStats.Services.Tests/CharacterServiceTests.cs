@@ -17,8 +17,7 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharactersAsync();
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(5, result.Data?.Count);
+        Assert.Equal(5, result.Count);
     }
 
     [Fact]
@@ -27,18 +26,16 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharactersByGameIdAsync(2);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(2, result.Data?.Count);
+        Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public async Task GetAllCharactersByGameIdAsync_Error_WhenGameNotFound()
+    public async Task GetAllCharactersByGameIdAsync_ReturnsEmptyList_WhenGameNotFound()
     {
         var result = await _service.GetAllCharactersByGameIdAsync(100);
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Equal("No characters found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -47,8 +44,7 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharactersByNameAsync("Char1");
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal("Char1", result.Data?[0].Name);
+        Assert.Equal("Char1", result[0].Name);
     }
 
     [Fact]
@@ -57,18 +53,16 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharactersByNameAsync("char1");
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal("Char1", result.Data?[0].Name);
+        Assert.Equal("Char1", result[0].Name);
     }
 
     [Fact]
-    public async Task GetAllCharactersByNameAsync_Error_WhenNameNotFound()
+    public async Task GetAllCharactersByNameAsync_ReturnsEmptyList_WhenNameNotFound()
     {
         var result = await _service.GetAllCharactersByNameAsync("Char4");
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Equal("No characters found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -77,19 +71,20 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetCharacterByIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.NotNull(result.Data);
-        Assert.Equal(1, result.Data.Id);
+        Assert.NotNull(result);
+        Assert.Equal(1, result.Id);
     }
 
     [Fact]
-    public async Task GetCharacterByIdAsync_Error_WhenIdNotFound()
+    public async Task GetCharacterByIdAsync_EmptyDto_WhenIdNotFound()
     {
         var result = await _service.GetCharacterByIdAsync(100);
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Equal("Character with ID 100 not found", result.ErrorMessage);
+        Assert.Equal("", result.Name);
+        Assert.Equal(0, result.Id);
+        Assert.Null(result.Picture);
+        Assert.Null(result.StatValues);
     }
 
     [Fact]
@@ -98,7 +93,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.CreateCharacterAsync(1, new CharacterForCreationDto { Name = "NewChar" });
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal("NewChar", result.Data?.Name);
 
         if (result.Data != null)
@@ -124,7 +118,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.UpdateCharacterAsync(2, 1, new CharacterForUpdateDto { Name = "UpdatedChar" });
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal("UpdatedChar", result.Data?.Name);
     }
 
@@ -156,7 +149,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.DeleteCharacterAsync(3);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal(3, result.Data?.Id);
     }
 
@@ -177,7 +169,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharacterDetailDtosAsync();
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal(5, result.Data?.Count);
     }
 
@@ -187,7 +178,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharacterDetailDtosByGameIdAsync(2);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal(1, result.Data?.Count);
     }
 
@@ -208,7 +198,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharacterDetailDtosByNameAsync("Char1");
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal(1, result.Data?.Count);
     }
 
@@ -218,7 +207,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllCharacterDetailDtosByNameAsync("char1");
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal(1, result.Data?.Count);
     }
 
@@ -239,7 +227,6 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetCharacterDetailDtoByIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
         Assert.Equal("Test1", result.Data?.Name);
     }
 
