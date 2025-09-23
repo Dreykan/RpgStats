@@ -57,7 +57,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task GetGameByIdAsync_ReturnEmptyDto_WhenIdNotFound()
+    public async Task GetGameByIdAsync_ReturnsEmptyDto_WhenIdNotFound()
     {
         var result = await _service.GetGameByIdAsync(100);
 

@@ -108,7 +108,7 @@ public class PlatformService : IPlatformService
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
         if (platform == null)
-            throw new InvalidOperationException("$Platform with ID {platformId} not found");
+            throw new ArgumentException($"$Platform with ID {platformId} not found");
 
         platform.Name = platformForUpdateDto.Name;
 
@@ -125,7 +125,7 @@ public class PlatformService : IPlatformService
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
         if (platform == null)
-            throw new InvalidOperationException("$Platform with ID {platformId} not found");
+            throw new ArgumentException($"$Platform with ID {platformId} not found");
 
         _dbContext.Platforms.Remove(platform);
         var result = await _dbContext.SaveChangesAsync();
