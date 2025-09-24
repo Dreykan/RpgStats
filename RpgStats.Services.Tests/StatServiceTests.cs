@@ -70,12 +70,10 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task GetAllStatsByGameIdAsync_ReturnsEmptyList_WhenGameIdNotFound()
+    public async Task GetAllStatsByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.GetAllStatsByGameIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.Empty(result);
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _service.GetAllStatsByGameIdAsync(100));
     }
 
     [Fact]

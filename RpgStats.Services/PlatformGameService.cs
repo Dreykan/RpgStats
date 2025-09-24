@@ -52,6 +52,12 @@ public class PlatformGameService : IPlatformGameService
 
     public async Task<PlatformGameDto> CreatePlatformGameAsync(PlatformGameForCreationDto platformGameForCreation)
     {
+        var existingPlatformGame = await _dbContext.PlatformGames
+            .AnyAsync(e => e.PlatformId == platformGameForCreation.PlatformId &&
+                           e.GameId == platformGameForCreation.GameId);
+        if (existingPlatformGame)
+            throw new InvalidOperationException($"A PlatformGame with PlatformId {platformGameForCreation.PlatformId} and GameId {platformGameForCreation.GameId} already exists");
+
         var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformGameForCreation.PlatformId);
         if (platform == null)
             throw new ArgumentException($"Platform with id {platformGameForCreation.PlatformId} not found");

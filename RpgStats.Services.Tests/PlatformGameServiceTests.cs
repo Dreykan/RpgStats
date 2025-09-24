@@ -111,9 +111,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
             GameId = 1
         };
 
-        var result = await _service.CreatePlatformGameAsync(platformGameForCreation);
-
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             await _service.CreatePlatformGameAsync(platformGameForCreation));
     }
 
@@ -126,8 +124,6 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
             PlatformId = 1,
             GameId = 100
         };
-
-        var result = await _service.CreatePlatformGameAsync(platformGameForCreation);
 
         await Assert.ThrowsAsync<ArgumentException>(async () =>
             await _service.CreatePlatformGameAsync(platformGameForCreation));
@@ -143,12 +139,8 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
             GameId = 1
         };
 
-        var result = await _service.CreatePlatformGameAsync(platformGameForCreation);
-
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             await _service.CreatePlatformGameAsync(platformGameForCreation));
-
-        await _service.DeletePlatformGameAsync(result.Id);
     }
 
     [Fact]

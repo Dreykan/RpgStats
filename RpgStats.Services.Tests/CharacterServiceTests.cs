@@ -80,11 +80,7 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     {
         var result = await _service.GetCharacterByIdAsync(100);
 
-        Assert.NotNull(result);
-        Assert.Equal("", result.Name);
-        Assert.Equal(0, result.Id);
-        Assert.Null(result.Picture);
-        Assert.Null(result.StatValues);
+        Assert.Null(result);
     }
 
     [Fact]

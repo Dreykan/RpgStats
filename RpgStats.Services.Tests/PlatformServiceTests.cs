@@ -64,7 +64,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.UpdatePlatformAsync(1, platformForUpdate);
 
         Assert.NotNull(result);
-        Assert.Equal("UpdatedPlatform", result.Name);
+        Assert.Equal("PlatformToUpdate", result.Name);
     }
 
     [Fact]

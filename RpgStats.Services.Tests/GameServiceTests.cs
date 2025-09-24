@@ -61,10 +61,7 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
     {
         var result = await _service.GetGameByIdAsync(100);
 
-        Assert.NotNull(result);
-        Assert.Equal(0, result.Id);
-        Assert.Null(result.Name);
-
+        Assert.Null(result);
     }
 
     [Fact]
