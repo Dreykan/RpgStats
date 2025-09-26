@@ -115,12 +115,15 @@ else
             return;
         }
 
-        var deleteResponse = await HttpClient.DeleteAsync($"api/PlatformGame/DeletePlatformGamesByGame/{Id}");
-        var deleteContent = await deleteResponse.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformGameDto>>>();
-        if (deleteContent?.Success == false)
+        if (_game != null && _game.PlatformWithoutFkObjectsDtos != null && _game.PlatformWithoutFkObjectsDtos.Any())
         {
-            await ShowErrorMessage(deleteContent.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
-            return;
+            var deleteResponse = await HttpClient.DeleteAsync($"api/PlatformGame/DeletePlatformGamesByGame/{Id}");
+            var deleteContent = await deleteResponse.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformGameDto>>>();
+            if (deleteContent?.Success == false)
+            {
+                await ShowErrorMessage(deleteContent.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
+                return;
+            }
         }
 
         List<long> selectPlatformIds = new();
@@ -137,10 +140,16 @@ else
 
         foreach (var platformId in selectPlatformIds)
         {
-            var response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{platformId}/{Id}", "");
-            var content = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformGameDto>>();
-            if (content?.Success != false) continue;
-            await ShowErrorMessage(content.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
+            var platformGameForCreationDto = new PlatformGameForCreationDto
+            {
+                PlatformId = platformId,
+                GameId = Id
+            };
+
+            var response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/", platformGameForCreationDto);
+            var pgContent = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformGameDto>>();
+            if (pgContent?.Success != false) continue;
+            await ShowErrorMessage(pgContent.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
             return;
         }
 

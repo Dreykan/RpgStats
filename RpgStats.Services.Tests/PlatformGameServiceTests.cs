@@ -111,7 +111,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
             GameId = 1
         };
 
-        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
             await _service.CreatePlatformGameAsync(platformGameForCreation));
     }
 
@@ -217,10 +217,14 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
 
     [Fact]
     [Priority(16)]
-    public async Task DeletePlatformGameAsync_Error_WhenPlatformGameIdNotFound()
+    public async Task DeletePlatformGameAsync_ReturnsEmptyDto_WhenPlatformGameIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
-            await _service.DeletePlatformGameAsync(100));
+        var result = await _service.DeletePlatformGameAsync(100);
+
+        Assert.NotNull(result);
+        Assert.Equal(0, result.Id);
+        Assert.Equal(0, result.PlatformId);
+        Assert.Equal(0, result.GameId);
     }
 
     [Fact]
@@ -235,10 +239,11 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
 
     [Fact]
     [Priority(18)]
-    public async Task DeletePlatformGameByGameIdAsync_Error_WhenGameIdNotFound()
+    public async Task DeletePlatformGameByGameIdAsync_ReturnsEmptyList_WhenGameIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
-            await _service.DeletePlatformGameByGameIdAsync(100));
+        var result = await _service.DeletePlatformGameByGameIdAsync(100);
+
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -253,9 +258,10 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
 
     [Fact]
     [Priority(18)]
-    public async Task DeletePlatformGameByPlatformIdAsync_Error_WhenPlatformIdNotFound()
+    public async Task DeletePlatformGameByPlatformIdAsync_ReturnsEmptyList_WhenPlatformIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
-            await _service.DeletePlatformGameByPlatformIdAsync(100));
+        var result = await _service.DeletePlatformGameByPlatformIdAsync(100);
+
+        Assert.Empty(result);
     }
 }

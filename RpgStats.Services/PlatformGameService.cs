@@ -112,7 +112,7 @@ public class PlatformGameService : IPlatformGameService
     {
         var platformGame = await _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformGameId);
         if (platformGame == null)
-            throw new ArgumentException($"Platform with id {platformGameId} not found");
+            return new PlatformGameDto();
 
         _dbContext.Remove(platformGame);
         var result = await _dbContext.SaveChangesAsync();
@@ -126,12 +126,12 @@ public class PlatformGameService : IPlatformGameService
     {
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToList();
         if (platformGames.Count == 0)
-            throw new ArgumentException($"Game with id {gameId} not found");
+            return new List<PlatformGameDto>();
 
         _dbContext.RemoveRange(platformGames);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            throw new InvalidOperationException($"Game with id {gameId} not found");
+            throw new InvalidOperationException($"PlatformGames could not be deleted");
 
         return platformGames.Adapt<List<PlatformGameDto>>();
     }
@@ -140,12 +140,12 @@ public class PlatformGameService : IPlatformGameService
     {
         var platformGames = _dbContext.PlatformGames.Where(pg => pg.PlatformId == platformId).ToList();
         if (platformGames.Count == 0)
-            throw new ArgumentException($"Platform with id {platformId} not found");
+            return new List<PlatformGameDto>();
 
         _dbContext.RemoveRange(platformGames);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            throw new InvalidOperationException($"PlatformGame could not be deleted");
+            throw new InvalidOperationException($"PlatformGames could not be deleted");
 
         return platformGames.Adapt<List<PlatformGameDto>>();
     }

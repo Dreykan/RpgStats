@@ -113,7 +113,7 @@
                 };
                 response = await HttpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame", platformGameForCreationDto);
                 var pgContent = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformGameDto>>();
-                if (pgContent != null) continue;
+                if (pgContent?.Success == true) continue;
                 await ShowErrorMessage(pgContent?.ErrorMessage ?? "Es ist ein Fehler aufgetreten.");
                 return;
             }
