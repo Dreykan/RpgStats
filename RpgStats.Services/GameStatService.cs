@@ -47,7 +47,7 @@ public class GameStatService : IGameStatService
         var gameStat = await _dbContext.GameStats
             .FirstOrDefaultAsync(gs => gs.Id == gameStatId);
 
-        return gameStat.Adapt<GameStatDto>();
+        return gameStat?.Adapt<GameStatDto>();
     }
 
     public async Task<GameStatDto> CreateGameStatAsync(GameStatForCreationDto gameStatForCreationDto)

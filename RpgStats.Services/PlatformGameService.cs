@@ -47,7 +47,7 @@ public class PlatformGameService : IPlatformGameService
         var platformGame = await _dbContext.PlatformGames
             .FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
-        return platformGame.Adapt<PlatformGameDto>();
+        return platformGame?.Adapt<PlatformGameDto>();
     }
 
     public async Task<PlatformGameDto> CreatePlatformGameAsync(PlatformGameForCreationDto platformGameForCreation)
@@ -76,7 +76,7 @@ public class PlatformGameService : IPlatformGameService
         _dbContext.PlatformGames.Add(platformGame);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            throw new InvalidOperationException($"Platform could not be created");
+            throw new InvalidOperationException($"PlatformGame could not be created");
 
         return platformGame.Adapt<PlatformGameDto>();
     }
@@ -103,7 +103,7 @@ public class PlatformGameService : IPlatformGameService
         _dbContext.Entry(platformGame).State = EntityState.Modified;
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-          throw new InvalidOperationException($"Platform could not be updated");
+          throw new InvalidOperationException($"PlatformGame could not be updated");
 
         return platformGame.Adapt<PlatformGameDto>();
     }

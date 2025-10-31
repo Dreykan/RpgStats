@@ -66,7 +66,7 @@ public class PlatformService : IPlatformService
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
 
-        return platform.Adapt<PlatformDto>();
+        return platform?.Adapt<PlatformDto>();
     }
 
     public async Task<PlatformWithGamesDto?> GetPlatformWithGamesByIdAsync(long platformId)
@@ -108,7 +108,7 @@ public class PlatformService : IPlatformService
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
         if (platform == null)
-            throw new ArgumentException($"$Platform with ID {platformId} not found");
+            throw new ArgumentException($"Platform with ID {platformId} not found");
 
         platform.Name = platformForUpdateDto.Name;
 
@@ -125,7 +125,7 @@ public class PlatformService : IPlatformService
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
         if (platform == null)
-            throw new ArgumentException($"$Platform with ID {platformId} not found");
+            throw new ArgumentException($"Platform with ID {platformId} not found");
 
         _dbContext.Platforms.Remove(platform);
         var result = await _dbContext.SaveChangesAsync();

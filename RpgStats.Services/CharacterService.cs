@@ -50,7 +50,7 @@ public class CharacterService : ICharacterService
         var character = await _dbContext.Characters
             .FirstOrDefaultAsync(c => c.Id == characterId);
 
-        return character.Adapt<CharacterDto>();
+        return character?.Adapt<CharacterDto>();
     }
 
     public async Task<CharacterDetailDto> GetCharacterDetailByIdAsync(long characterId)

@@ -95,7 +95,7 @@ public class StatValueController : ControllerBase
 
         var statValue = await _statValueService.GetStatValueByIdAsync(statValueId);
         if (statValue == null)
-            return Ok(ApiResponse<StatValueDto>.ErrorResult($"StatValue with ID {statValueId} not found."));
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult($"StatValue with ID {statValueId} not found."));
 
         return Ok(ApiResponse<StatValueDto>.SuccessResult(statValue));
     }

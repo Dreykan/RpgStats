@@ -61,7 +61,7 @@ public class StatService : IStatService
         var stat = await _dbContext.Stats
             .FirstOrDefaultAsync(s => s.Id == statId);
 
-        return stat.Adapt<StatDto>();
+        return stat?.Adapt<StatDto>();
     }
 
     public async Task<StatDto> CreateStatAsync(StatForCreationDto? statForCreationDto)

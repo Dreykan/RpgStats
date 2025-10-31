@@ -42,7 +42,7 @@ public class GameService : IGameService
         var game = await _dbContext.Games
             .FirstOrDefaultAsync(x => x.Id == gameId);
 
-        return game.Adapt<GameDto>();
+        return game?.Adapt<GameDto>();
     }
 
     public async Task<GameDetailDto?> GetGameDetailByIdAsync(long gameId)

@@ -71,7 +71,7 @@ public class PlatformController : ControllerBase
 
         var platform = await _platformService.GetPlatformByIdAsync(platformId);
         if (platform == null)
-            return BadRequest(ApiResponse<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found."));
+            return NotFound(ApiResponse<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found."));
 
         return Ok(ApiResponse<PlatformDto>.SuccessResult(platform));
     }
@@ -88,7 +88,7 @@ public class PlatformController : ControllerBase
 
         var platformWithGames = await _platformService.GetPlatformWithGamesByIdAsync(platformId);
         if (platformWithGames == null)
-            return BadRequest(ApiResponse<PlatformWithGamesDto>.ErrorResult($"Platform with ID {platformId} not found."));
+            return NotFound(ApiResponse<PlatformWithGamesDto>.ErrorResult($"Platform with ID {platformId} not found."));
 
         return Ok(ApiResponse<PlatformWithGamesDto>.SuccessResult(platformWithGames));
     }
@@ -147,7 +147,7 @@ public class PlatformController : ControllerBase
         {
             var platform = await _platformService.DeletePlatformAsync(platformId);
             if (platform == null)
-                return BadRequest(ApiResponse<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found."));
+                return NotFound(ApiResponse<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found."));
             return Ok(ApiResponse<PlatformDto>.SuccessResult(platform));
         }
         catch (Exception e)
