@@ -69,7 +69,12 @@ public static class MainFaker
             for (int i = 0; i < platformGameCount; i++)
             {
                 var platformId = random.Next(1, platforms.Count);
-                await httpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{platformId}/{game?.Id}", "");
+                var platformGameForCreation = new PlatformGameForCreationDto()
+                {
+                    GameId = game.Id,
+                    PlatformId = platformId,
+                };
+                await httpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame", platformGameForCreation);
             }
         }
 
@@ -151,7 +156,7 @@ public static class MainFaker
                 }
             }
         }
-        await httpClient.PostAsJsonAsync($"api/StatValue/CreateStatValues", statValues);
+        await httpClient.PostAsJsonAsync($"api/StatValue/CreateMultipleStatValues", statValues);
 
         Console.WriteLine("StatValueFaker done.");
     }

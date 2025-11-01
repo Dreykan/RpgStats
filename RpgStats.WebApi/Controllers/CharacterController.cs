@@ -82,7 +82,7 @@ public class CharacterController : ControllerBase
 
         var character = await _characterService.GetCharacterByIdAsync(characterId);
         if (character == null)
-            return Ok(ApiResponse<CharacterDto>.ErrorResult($"Character with ID {characterId} not found."));
+            return NotFound(ApiResponse<CharacterDto>.ErrorResult($"Character with ID {characterId} not found."));
 
         return Ok(ApiResponse<CharacterDto>.SuccessResult(character));
     }
