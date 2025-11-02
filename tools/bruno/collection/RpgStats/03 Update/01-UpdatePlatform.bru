@@ -16,11 +16,6 @@ body:json {
   }
 }
 
-vars:post-response {
-  platformId: res.body.data.id
-  platformName: res.body.data.name
-}
-
 assert {
   res.status: eq 200
 }

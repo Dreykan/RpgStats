@@ -21,10 +21,6 @@ body:json {
   }
 }
 
-vars:post-response {
-  statValueId: res.body.data.id
-}
-
 assert {
   res.status: eq 200
 }

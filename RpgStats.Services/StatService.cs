@@ -2,6 +2,7 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
@@ -47,7 +48,7 @@ public class StatService : IStatService
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
-            throw new ArgumentException($"Game with ID {gameId} not found");
+            throw new GameNotFoundException(gameId);
 
         var stats = await _dbContext.Stats
             .Where(s => s.GameStats != null && s.GameStats.Any(gs => gs.GameId == gameId))
@@ -81,7 +82,7 @@ public class StatService : IStatService
     {
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
         if (stat == null)
-            throw new ArgumentException($"Stat with ID {statId} not found");
+            throw new StatNotFoundException(statId);
 
         stat.Name = statForUpdateDto.Name;
         stat.ShortName = statForUpdateDto.ShortName;
@@ -99,7 +100,7 @@ public class StatService : IStatService
     {
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
         if (stat == null)
-            throw new ArgumentException($"Stat with ID {statId} not found");
+            throw new StatNotFoundException(statId);
 
         _dbContext.Remove(stat);
 

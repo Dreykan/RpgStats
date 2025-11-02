@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -81,7 +82,7 @@ public class GameStatController : ControllerBase
 
         var gameStat = await _gameStatService.GetGameStatByIdAsync(gameStatId);
         if (gameStat == null)
-            return Ok(ApiResponse<GameStatDto>.ErrorResult($"GameStat with ID {gameStatId} not found."));
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult($"GameStat with ID {gameStatId} not found."));
 
         return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
     }
@@ -123,7 +124,15 @@ public class GameStatController : ControllerBase
             var gameStat = await _gameStatService.UpdateGameStatAsync(gameStatId, gameStatForUpdateDto);
             return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
         }
-        catch (ArgumentException e)
+        catch (GameStatNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
+        }
+        catch (StatNotFoundException e)
         {
             return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
         }
@@ -148,11 +157,11 @@ public class GameStatController : ControllerBase
         try
         {
             var gameStat = await _gameStatService.DeleteGameStatAsync(gameStatId);
-            if (gameStat == null)
-                return NotFound(
-                    ApiResponse<GameStatDto>.ErrorResult(
-                        $"GameStat with ID {gameStatId} not found or could not be deleted."));
             return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
+        }
+        catch (GameStatNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {
@@ -175,11 +184,17 @@ public class GameStatController : ControllerBase
         try
         {
             var gameStats = await _gameStatService.DeleteGameStatsByGameIdAsync(gameId);
-            if (gameStats.Count == 0)
-                return NotFound(
-                    ApiResponse<List<GameStatDto>>.ErrorResult(
-                        $"No GameStats found for the specified gameId: {gameId}"));
             return Ok(ApiResponse<List<GameStatDto>>.SuccessResult(gameStats));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(
+                ApiResponse<List<GameStatDto>>.ErrorResult(e.Message));
+        }
+        catch (NotFoundException)
+        {
+            return NotFound(
+                ApiResponse<GameStatDto>.ErrorResult($"No GameStats found for the specified gameId: {gameId}"));
         }
         catch (Exception e)
         {
@@ -207,6 +222,16 @@ public class GameStatController : ControllerBase
                     ApiResponse<List<GameStatDto>>.ErrorResult(
                         $"No GameStats found for the specified statId: {statId}"));
             return Ok(ApiResponse<List<GameStatDto>>.SuccessResult(gameStats));
+        }
+        catch (StatNotFoundException e)
+        {
+            return NotFound(
+                ApiResponse<List<GameStatDto>>.ErrorResult(e.Message));
+        }
+        catch (NotFoundException)
+        {
+            return BadRequest(
+                ApiResponse<GameStatDto>.ErrorResult($"No GameStats found for the specified statId: {statId}"));
         }
         catch (Exception e)
         {

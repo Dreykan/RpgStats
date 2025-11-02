@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -129,6 +130,10 @@ public class PlatformController : ControllerBase
             var platform = await _platformService.UpdatePlatformAsync(platformId, platformForUpdateDto);
             return Ok(ApiResponse<PlatformDto>.SuccessResult(platform));
         }
+        catch (PlatformNotFoundException e)
+        {
+            return NotFound(ApiResponse<PlatformDto>.ErrorResult(e.Message));
+        }
         catch (Exception e)
         {
             return BadRequest(
@@ -146,9 +151,11 @@ public class PlatformController : ControllerBase
         try
         {
             var platform = await _platformService.DeletePlatformAsync(platformId);
-            if (platform == null)
-                return NotFound(ApiResponse<PlatformDto>.ErrorResult($"Platform with ID {platformId} not found."));
             return Ok(ApiResponse<PlatformDto>.SuccessResult(platform));
+        }
+        catch (PlatformNotFoundException e)
+        {
+            return NotFound(ApiResponse<PlatformDto>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {

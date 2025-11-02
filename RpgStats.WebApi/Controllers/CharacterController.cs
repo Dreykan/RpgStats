@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -103,7 +104,7 @@ public class CharacterController : ControllerBase
             var characterDetail = await _characterService.GetCharacterDetailByIdAsync(characterId);
             return Ok(ApiResponse<CharacterDetailDto>.SuccessResult(characterDetail));
         }
-        catch (ArgumentException e)
+        catch (CharacterNotFoundException e)
         {
             return NotFound(ApiResponse<CharacterDetailDto>.ErrorResult(e.Message));
         }
@@ -139,7 +140,7 @@ public class CharacterController : ControllerBase
     }
 
     [HttpPut("UpdateCharacter/{gameId:long}/{characterId:long}")]
-    [SwaggerResponse(201, "Character updated successfully", typeof(ApiResponse<CharacterDto>))]
+    [SwaggerResponse(200, "Character updated successfully", typeof(ApiResponse<CharacterDto>))]
     [SwaggerResponse(400, "Invalid game ID or character ID")]
     [SwaggerResponse(404, "Character not found")]
     [SwaggerResponse(500, "Internal server error")]
@@ -156,8 +157,15 @@ public class CharacterController : ControllerBase
         try
         {
             var character = await _characterService.UpdateCharacterAsync(characterId, gameId, characterForUpdateDto);
-            return CreatedAtAction(nameof(GetCharacterById), new { characterId = character.Id },
-                ApiResponse<CharacterDto>.SuccessResult(character));
+            return Ok(ApiResponse<CharacterDto>.SuccessResult(character));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<CharacterDto>.ErrorResult($"{e.Message}"));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<CharacterDto>.ErrorResult($"{e.Message}"));
         }
         catch (Exception e)
         {
@@ -181,6 +189,10 @@ public class CharacterController : ControllerBase
         {
             var character = await _characterService.DeleteCharacterAsync(characterId);
             return Ok(ApiResponse<CharacterDto>.SuccessResult(character));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<CharacterDto>.ErrorResult($"{e.Message}"));
         }
         catch (Exception e)
         {

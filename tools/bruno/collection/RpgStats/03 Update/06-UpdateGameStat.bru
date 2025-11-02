@@ -20,10 +20,6 @@ body:json {
   }
 }
 
-vars:post-response {
-  gameStatId: res.body.data.id
-}
-
 assert {
   res.status: eq 200
 }

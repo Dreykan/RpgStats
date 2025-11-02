@@ -17,12 +17,6 @@ body:json {
   }
 }
 
-vars:post-response {
-  statId: res.body.data.id
-  statName: res.body.data.name
-  statShortName: res.body.data.shortName
-}
-
 assert {
   res.status: eq 200
 }

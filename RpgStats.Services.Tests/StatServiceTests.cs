@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using Xunit.Priority;
 
@@ -72,7 +73,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task GetAllStatsByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
             await _service.GetAllStatsByGameIdAsync(100));
     }
 
@@ -132,7 +133,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
             ShortName = "US"
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
             await _service.UpdateStatAsync(100, statForUpdate));
     }
 
@@ -150,7 +151,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(2)]
     public async Task DeleteStatAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
             await _service.DeleteStatAsync(100));
     }
 }

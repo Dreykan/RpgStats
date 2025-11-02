@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
@@ -28,7 +29,7 @@ public class StatValueService : IStatValueService
     {
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
         if (character == null)
-            throw new ArgumentException($"Character with ID {characterId} not found");
+            throw new CharacterNotFoundException(characterId);
 
         var statValues = await _dbContext.StatValues
             .Where(sv => sv.CharacterId == characterId)
@@ -41,7 +42,7 @@ public class StatValueService : IStatValueService
     {
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
         if (stat == null)
-            throw new ArgumentException($"Stat with ID {statId} not found");
+            throw new StatNotFoundException(statId);
 
         var statValues = await _dbContext.StatValues
             .Where(sv => sv.StatId == statId)
@@ -62,11 +63,11 @@ public class StatValueService : IStatValueService
     {
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == statValueForCreationDto.CharacterId);
         if (character == null)
-            throw new ArgumentException($"Character with ID {statValueForCreationDto.CharacterId} not found");
+            throw new CharacterNotFoundException(statValueForCreationDto.CharacterId);
 
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statValueForCreationDto.StatId);
         if (stat == null)
-            throw new ArgumentException($"Stat with ID {statValueForCreationDto.StatId} not found");
+            throw new StatNotFoundException(statValueForCreationDto.StatId);
 
         var statValue = statValueForCreationDto.Adapt<StatValue>();
 
@@ -95,15 +96,15 @@ public class StatValueService : IStatValueService
     {
         var statValue = await _dbContext.StatValues.FirstOrDefaultAsync(sv => sv.Id == statValueId);
         if (statValue == null)
-            throw new ArgumentException($"StatValue with ID {statValueId} not found");
+            throw new StatValueNotFoundException(statValueId);
 
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
         if (character == null)
-            throw new ArgumentException($"Character with ID {characterId} not found");
+            throw new CharacterNotFoundException(characterId);
 
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
         if (stat == null)
-            throw new ArgumentException($"Stat with ID {statId} not found");
+            throw new StatNotFoundException(statId);
 
         statValue.Level = statValueForUpdateDto.Level;
         statValue.Value = statValueForUpdateDto.Value;
@@ -126,7 +127,7 @@ public class StatValueService : IStatValueService
     {
         var statValue = await _dbContext.StatValues.FirstOrDefaultAsync(sv => sv.Id == statValueId);
         if (statValue == null)
-            throw new ArgumentException($"StatValue with ID {statValueId} not found");
+            throw new StatValueNotFoundException(statValueId);
 
         _dbContext.Remove(statValue);
         var result = await _dbContext.SaveChangesAsync();
@@ -140,7 +141,7 @@ public class StatValueService : IStatValueService
     {
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
         if (character == null)
-            throw new ArgumentException($"Character with ID {characterId} not found");
+            throw new CharacterNotFoundException(characterId);
 
         var statValues = await _dbContext.StatValues
             .Where(sv => sv.CharacterId == characterId && sv.Level == level)

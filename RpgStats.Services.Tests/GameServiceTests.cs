@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 
 namespace RpgStats.Services.Tests;
@@ -85,11 +86,10 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task UpdateGameAsync_ReturnNull_WhenGameNotFound()
+    public async Task UpdateGameAsync_Error_WhenGameNotFound()
     {
-        var result = await _service.UpdateGameAsync(100, new GameForUpdateDto { Name = "UpdatedGame" });
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.UpdateGameAsync(100, new GameForUpdateDto { Name = "UpdatedGame" }));
     }
 
     [Fact]
@@ -102,10 +102,9 @@ public class GameServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task DeleteGameAsync_ReturnNull_WhenGameIdIsNotFound()
+    public async Task DeleteGameAsync_Error_WhenGameIdIsNotFound()
     {
-        var result = await _service.DeleteGameAsync(100);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.DeleteGameAsync(100));
     }
 }

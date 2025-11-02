@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 
 namespace RpgStats.Services.Tests;
@@ -75,7 +76,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
             Name = "PlatformToUpdate"
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<PlatformNotFoundException>(async () =>
             await _service.UpdatePlatformAsync(100, platformForUpdate));
     }
 
@@ -91,7 +92,7 @@ public class PlatformServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task DeletePlatformAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<PlatformNotFoundException>(async () =>
             await _service.DeletePlatformAsync(100));
     }
 }

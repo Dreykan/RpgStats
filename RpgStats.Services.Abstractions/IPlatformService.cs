@@ -11,5 +11,5 @@ public interface IPlatformService
     Task<PlatformWithGamesDto?> GetPlatformWithGamesByIdAsync(long platformId);
     Task<PlatformDto> CreatePlatformAsync(PlatformForCreationDto platformForCreationDto);
     Task<PlatformDto> UpdatePlatformAsync(long platformId, PlatformForUpdateDto platformForUpdateDto);
-    Task<PlatformDto?> DeletePlatformAsync(long platformId);
+    Task<PlatformDto> DeletePlatformAsync(long platformId);
 }

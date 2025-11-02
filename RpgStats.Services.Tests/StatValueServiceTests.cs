@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using Xunit.Priority;
 
@@ -37,7 +38,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task GetAllStatValuesByCharacterIdAsync_Error_WhenCharacterIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
         {
             await _service.GetAllStatValuesByCharacterIdAsync(100);
         });
@@ -56,7 +57,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task GetAllStatValuesByStatIdAsync_Error_WhenStatIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
         {
             await _service.GetAllStatValuesByStatIdAsync(100);
         });
@@ -119,7 +120,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             StatId = 1
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
         {
             await _service.CreateStatValueAsync(statValueForCreationDto);
         });
@@ -138,7 +139,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             StatId = 100
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
         {
             await _service.CreateStatValueAsync(statValueForCreationDto);
         });
@@ -214,7 +215,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 199
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatValueNotFoundException>(async () =>
         {
             await _service.UpdateStatValueAsync(100, 1, 1, statValueForUpdateDto);
         });
@@ -232,7 +233,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 199
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
         {
             await _service.UpdateStatValueAsync(1, 100, 1, statValueForUpdateDto);
         });
@@ -250,7 +251,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             Level = 199
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
         {
             await _service.UpdateStatValueAsync(1, 1, 100, statValueForUpdateDto);
         });
@@ -270,7 +271,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     [Priority(2)]
     public async Task DeleteStatValueAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatValueNotFoundException>(async () =>
         {
             await _service.DeleteStatValueAsync(100);
         });
@@ -290,7 +291,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     [Priority(3)]
     public async Task DeleteStatValuesByCharacterIdAndLevelAsync_Error_WhenCharacterIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
         {
             await _service.DeleteStatValuesByCharacterIdAndLevelAsync(100, 1);
         });

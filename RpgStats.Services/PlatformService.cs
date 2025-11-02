@@ -2,6 +2,7 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Dto.Mapper;
 using RpgStats.Repo;
@@ -108,7 +109,7 @@ public class PlatformService : IPlatformService
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
         if (platform == null)
-            throw new ArgumentException($"Platform with ID {platformId} not found");
+            throw new PlatformNotFoundException(platformId);
 
         platform.Name = platformForUpdateDto.Name;
 
@@ -120,12 +121,12 @@ public class PlatformService : IPlatformService
         return platform.Adapt<PlatformDto>();
     }
 
-    public async Task<PlatformDto?> DeletePlatformAsync(long platformId)
+    public async Task<PlatformDto> DeletePlatformAsync(long platformId)
     {
         var platform = await _dbContext.Platforms
             .FirstOrDefaultAsync(p => p.Id == platformId);
         if (platform == null)
-            throw new ArgumentException($"Platform with ID {platformId} not found");
+            throw new PlatformNotFoundException(platformId);
 
         _dbContext.Platforms.Remove(platform);
         var result = await _dbContext.SaveChangesAsync();

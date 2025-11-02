@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -50,7 +51,7 @@ public class StatValueController : ControllerBase
 
             return Ok(ApiResponse<List<StatValueDto>>.SuccessResult(statValues));
         }
-        catch (ArgumentException e)
+        catch (CharacterNotFoundException e)
         {
             return NotFound(ApiResponse<List<StatValueDto>>.ErrorResult(e.Message));
         }
@@ -76,7 +77,7 @@ public class StatValueController : ControllerBase
 
             return Ok(ApiResponse<List<StatValueDto>>.SuccessResult(statValues));
         }
-        catch (ArgumentException e)
+        catch (StatNotFoundException e)
         {
             return NotFound(ApiResponse<List<StatValueDto>>.ErrorResult(e.Message));
         }
@@ -112,6 +113,14 @@ public class StatValueController : ControllerBase
             var statValue = await _statValueService.CreateStatValueAsync(statValueForCreationDto);
             return CreatedAtAction(nameof(GetStatValueById), new { statValueId = statValue.Id },
                 ApiResponse<StatValueDto>.SuccessResult(statValue));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
+        }
+        catch (StatNotFoundException e)
+        {
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {
@@ -163,7 +172,15 @@ public class StatValueController : ControllerBase
                 statValueForUpdateDto.StatId, statValueForUpdateDto);
             return Ok(ApiResponse<StatValueDto>.SuccessResult(statValue));
         }
-        catch (ArgumentException e)
+        catch (StatValueNotFoundException e)
+        {
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
+        }
+        catch (StatNotFoundException e)
         {
             return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
         }
@@ -194,6 +211,10 @@ public class StatValueController : ControllerBase
                         $"StatValue with ID {statValueId} not found or could not be deleted."));
             return Ok(ApiResponse<StatValueDto>.SuccessResult(statValue));
         }
+        catch (StatValueNotFoundException e)
+        {
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
+        }
         catch (Exception e)
         {
             return BadRequest(
@@ -220,6 +241,10 @@ public class StatValueController : ControllerBase
                     ApiResponse<List<StatValueDto>>.ErrorResult(
                         $"No StatValues found for characterId {characterId} and level {level}"));
             return Ok(ApiResponse<List<StatValueDto>>.SuccessResult(statValues));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<List<StatValueDto>>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {

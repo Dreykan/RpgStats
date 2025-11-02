@@ -2,6 +2,7 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Dto.Mapper;
 using RpgStats.Repo;
@@ -45,7 +46,7 @@ public class GameService : IGameService
         return game?.Adapt<GameDto>();
     }
 
-    public async Task<GameDetailDto?> GetGameDetailByIdAsync(long gameId)
+    public async Task<GameDetailDto> GetGameDetailByIdAsync(long gameId)
     {
         var game = await _dbContext.Games
             .Include(g => g.PlatformGames)
@@ -59,8 +60,11 @@ public class GameService : IGameService
         var stats = await _dbContext.Stats
             .ToListAsync();
 
+        if (game == null)
+            throw new GameNotFoundException(gameId);
+
         var platformsFiltered = new List<Platform?>();
-        if (game!.PlatformGames != null)
+        if (game.PlatformGames != null)
             platformsFiltered.AddRange(game.PlatformGames.Select(pg =>
                 platforms.FirstOrDefault(p => p.Id == pg.PlatformId)));
 
@@ -73,23 +77,23 @@ public class GameService : IGameService
         return gameDetailDto;
     }
 
-    public async Task<GameDto?> CreateGameAsync(GameForCreationDto gameForCreationDto)
+    public async Task<GameDto> CreateGameAsync(GameForCreationDto gameForCreationDto)
     {
         var game = gameForCreationDto.Adapt<Game>();
 
         _dbContext.Games.Add(game);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return null;
+            throw new InvalidOperationException("Game could not be created.");
 
         return game.Adapt<GameDto>();
     }
 
-    public async Task<GameDto?> UpdateGameAsync(long gameId, GameForUpdateDto gameForUpdateDto)
+    public async Task<GameDto> UpdateGameAsync(long gameId, GameForUpdateDto gameForUpdateDto)
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
-            return null;
+            throw new GameNotFoundException(gameId);
 
         game.Name = gameForUpdateDto.Name;
         game.Picture = gameForUpdateDto.Picture;
@@ -98,21 +102,21 @@ public class GameService : IGameService
         var result = await _dbContext.SaveChangesAsync();
 
         if (result == 0)
-            return null;
+            throw new InvalidOperationException("Game could not be updated.");
 
         return game.Adapt<GameDto>();
     }
 
-    public async Task<GameDto?> DeleteGameAsync(long gameId)
+    public async Task<GameDto> DeleteGameAsync(long gameId)
     {
         var game = _dbContext.Games.FirstOrDefaultAsync(x => x.Id == gameId).Result;
         if (game == null)
-            return null;
+            throw new GameNotFoundException(gameId);
 
         _dbContext.Remove(game);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return null;
+            throw new InvalidOperationException("Game could not be deleted");
 
         return game.Adapt<GameDto>();
     }

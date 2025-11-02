@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
@@ -78,15 +79,15 @@ public class GameStatService : IGameStatService
     {
         var gameStat = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
         if (gameStat == null)
-            throw new ArgumentException($"GameStat with ID {gameStatId} not found");
+            throw new GameStatNotFoundException(gameStatId);
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameStatForUpdateDto.GameId);
         if (game == null)
-            throw new ArgumentException($"Game with ID {gameStatForUpdateDto.GameId} not found");
+            throw new GameNotFoundException(gameStatForUpdateDto.GameId);
 
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == gameStatForUpdateDto.StatId);
         if (stat == null)
-            throw new ArgumentException($"Stat with ID {gameStatForUpdateDto.StatId} not found");
+            throw new StatNotFoundException(gameStatForUpdateDto.StatId);
 
         gameStat.SortIndex = gameStatForUpdateDto.SortIndex;
         gameStat.CustomStatName = gameStatForUpdateDto.CustomStatName;
@@ -104,11 +105,11 @@ public class GameStatService : IGameStatService
         return gameStat.Adapt<GameStatDto>();
     }
 
-    public async Task<GameStatDto?> DeleteGameStatAsync(long gameStatId)
+    public async Task<GameStatDto> DeleteGameStatAsync(long gameStatId)
     {
         var gameStat = await _dbContext.GameStats.FirstOrDefaultAsync(gs => gs.Id == gameStatId);
         if (gameStat == null)
-            throw new ArgumentException($"GameStat with ID {gameStatId} not found");
+            throw new GameStatNotFoundException(gameStatId);
 
         _dbContext.Remove(gameStat);
 
@@ -123,12 +124,11 @@ public class GameStatService : IGameStatService
     {
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
-            throw new ArgumentException($"Game with ID {gameId} not found");
+            throw new GameNotFoundException(gameId);
 
         var gameStats = await _dbContext.GameStats.Where(gs => gs.GameId == gameId).ToListAsync();
         if (gameStats.Count == 0)
-            throw new ArgumentException($"GameStats for Game with ID {gameId} not found");
-
+            throw new NotFoundException($"GameStats for Game with ID {gameId} not found");
 
         _dbContext.RemoveRange(gameStats);
         var result = await _dbContext.SaveChangesAsync();
@@ -142,11 +142,11 @@ public class GameStatService : IGameStatService
     {
         var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
         if (stat == null)
-            throw new ArgumentException($"Stat with ID {statId} not found");
+            throw new StatNotFoundException(statId);
 
         var gameStats = await _dbContext.GameStats.Where(gs => gs.StatId == statId).ToListAsync();
         if (gameStats.Count == 0)
-            throw new ArgumentException($"GameStats for Stat with ID {statId} not found");
+            throw new NotFoundException($"GameStats for Stat with ID {statId} not found");
 
         _dbContext.RemoveRange(gameStats);
         var result = await _dbContext.SaveChangesAsync();

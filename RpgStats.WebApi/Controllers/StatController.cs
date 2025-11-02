@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -85,7 +86,7 @@ public class StatController : ControllerBase
 
             return Ok(ApiResponse<List<StatDto>>.SuccessResult(stats));
         }
-        catch (ArgumentException e)
+        catch (GameNotFoundException e)
         {
             return NotFound(ApiResponse<List<StatDto>>.ErrorResult(e.Message));
         }
@@ -104,7 +105,7 @@ public class StatController : ControllerBase
 
         var stat = await _statService.GetStatByIdAsync(statId);
         if (stat == null)
-            return Ok(ApiResponse<StatDto>.ErrorResult($"Stat with ID {statId} not found."));
+            return NotFound(ApiResponse<StatDto>.ErrorResult($"Stat with ID {statId} not found."));
 
         return Ok(ApiResponse<StatDto>.SuccessResult(stat));
     }
@@ -144,7 +145,7 @@ public class StatController : ControllerBase
             var stat = await _statService.UpdateStatAsync(statId, statForUpdateDto);
             return Ok(ApiResponse<StatDto>.SuccessResult(stat));
         }
-        catch (ArgumentException e)
+        catch (StatNotFoundException e)
         {
             return NotFound(ApiResponse<StatDto>.ErrorResult(e.Message));
         }

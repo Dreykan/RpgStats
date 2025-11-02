@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -63,7 +64,7 @@ public class GameController : ControllerBase
 
         var game = await _gameService.GetGameByIdAsync(gameId);
         if (game == null)
-            return Ok(ApiResponse<GameDto>.ErrorResult($"Game with ID {gameId} not found."));
+            return NotFound(ApiResponse<GameDto>.ErrorResult($"Game with ID {gameId} not found."));
 
         return Ok(ApiResponse<GameDto>.SuccessResult(game));
     }
@@ -76,13 +77,23 @@ public class GameController : ControllerBase
     public async Task<IActionResult> GetGameDetailById(long gameId)
     {
         if (gameId <= 0)
-            return BadRequest(ApiResponse<GameDto>.ErrorResult("Invalid game ID."));
+            return BadRequest(ApiResponse<GameDetailDto>.ErrorResult("Invalid game ID."));
 
-        var game = await _gameService.GetGameDetailByIdAsync(gameId);
-        if (game == null)
-            return Ok(ApiResponse<GameDto>.ErrorResult($"Game with ID {gameId} not found."));
-
-        return Ok(ApiResponse<GameDetailDto>.SuccessResult(game));
+        try
+        {
+            var game = await _gameService.GetGameDetailByIdAsync(gameId);
+            return Ok(ApiResponse<GameDetailDto>.SuccessResult(game));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameDetailDto>.ErrorResult(e.Message));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<GameDetailDto>.ErrorResult(
+                    $"An error occurred while retrieving the game details: {e.Message}"));
+        }
     }
 
     [HttpPost("CreateGame")]
@@ -92,11 +103,16 @@ public class GameController : ControllerBase
     [SwaggerOperation(Summary = "Create a Game")]
     public async Task<IActionResult> CreateGame([FromBody] GameForCreationDto gameForCreationDto)
     {
-        var game = await _gameService.CreateGameAsync(gameForCreationDto);
-        if (game == null)
-            return BadRequest(ApiResponse<GameDto>.ErrorResult("Game could not be created."));
-
-        return Ok(ApiResponse<GameDto>.SuccessResult(game));
+        try
+        {
+            var game = await _gameService.CreateGameAsync(gameForCreationDto);
+            return CreatedAtAction(nameof(GetGameById), new {gameId = game.Id}, ApiResponse<GameDto>.SuccessResult(game));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<GameDto>.ErrorResult($"An error occurred while creating the game: {e.Message}"));
+        }
     }
 
     [HttpPut("UpdateGame/{gameId:long}")]
@@ -107,11 +123,23 @@ public class GameController : ControllerBase
     [SwaggerOperation(Summary = "Update a Game")]
     public async Task<IActionResult> UpdateGame([FromBody] GameForUpdateDto gameForUpdateDto, long gameId)
     {
-        var game = await _gameService.UpdateGameAsync(gameId, gameForUpdateDto);
-        if (game == null)
-            return BadRequest(ApiResponse<GameDto>.ErrorResult($"Game with ID {gameId} not found or could not be updated."));
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<GameDto>.ErrorResult($"Invalid game ID: {gameId}."));
 
-        return Ok(ApiResponse<GameDto>.SuccessResult(game));
+        try
+        {
+            var game = await _gameService.UpdateGameAsync(gameId, gameForUpdateDto);
+            return Ok(ApiResponse<GameDto>.SuccessResult(game));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameDto>.ErrorResult(e.Message));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<GameDto>.ErrorResult($"An error occurred while updating the game: {e.Message}"));
+        }
     }
 
     [HttpDelete("DeleteGame/{gameId:long}")]
@@ -122,10 +150,22 @@ public class GameController : ControllerBase
     [SwaggerOperation(Summary = "Delete a Game")]
     public async Task<IActionResult> DeleteGame(long gameId)
     {
-        var game = await _gameService.DeleteGameAsync(gameId);
-        if (game == null)
-            return BadRequest(ApiResponse<GameDto>.ErrorResult($"Game with ID {gameId} not found or could not be deleted."));
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<GameDto>.ErrorResult($"Invalid game ID: {gameId}."));
 
-        return Ok(ApiResponse<GameDto>.SuccessResult(game));
+        try
+        {
+            var game = await _gameService.DeleteGameAsync(gameId);
+            return Ok(ApiResponse<GameDto>.SuccessResult(game));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameDto>.ErrorResult(e.Message));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<GameDto>.ErrorResult($"An error occurred while deleting the game: {e.Message}"));
+        }
     }
 }

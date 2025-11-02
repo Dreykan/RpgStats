@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -79,7 +80,7 @@ public class PlatformGameController : ControllerBase
 
         var platformGame = await _platformGameService.GetPlatformGameByIdAsync(platformGameId);
         if (platformGame == null)
-            return Ok(ApiResponse<PlatformGameDto>.ErrorResult($"PlatformGame with ID {platformGameId} not found"));
+            return NotFound(ApiResponse<PlatformGameDto>.ErrorResult($"PlatformGame with ID {platformGameId} not found"));
 
         return Ok(ApiResponse<PlatformGameDto>.SuccessResult(platformGame));
     }
@@ -94,8 +95,20 @@ public class PlatformGameController : ControllerBase
         try
         {
             var platformGame = await _platformGameService.CreatePlatformGameAsync(platformGameForCreation);
-            return CreatedAtAction(nameof(GetPlatformGameById), new { platformGameId = platformGame.Id},
+            return CreatedAtAction(nameof(GetPlatformGameById), new { platformGameId = platformGame.Id },
                 ApiResponse<PlatformGameDto>.SuccessResult(platformGame));
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(ApiResponse<PlatformGameDto>.ErrorResult(e.Message));
+        }
+        catch (PlatformNotFoundException e)
+        {
+            return NotFound(ApiResponse<PlatformGameDto>.ErrorResult(e.Message));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<PlatformGameDto>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {
@@ -119,7 +132,15 @@ public class PlatformGameController : ControllerBase
             var platformGame = await _platformGameService.UpdatePlatformGameAsync(platformGameId, platformGameForUpdate);
             return Ok(ApiResponse<PlatformGameDto>.SuccessResult(platformGame));
         }
-        catch (ArgumentException e)
+        catch (PlatformGameNotFoundException e)
+        {
+            return NotFound(ApiResponse<PlatformGameDto>.ErrorResult(e.Message));
+        }
+        catch (PlatformNotFoundException e)
+        {
+            return NotFound(ApiResponse<PlatformGameDto>.ErrorResult(e.Message));
+        }
+        catch (GameNotFoundException e)
         {
             return NotFound(ApiResponse<PlatformGameDto>.ErrorResult(e.Message));
         }
@@ -143,10 +164,11 @@ public class PlatformGameController : ControllerBase
         try
         {
             var platformGame = await _platformGameService.DeletePlatformGameAsync(platformGameId);
-            if (platformGame == null)
-                return NotFound(ApiResponse<PlatformGameDto>.ErrorResult(
-                    $"PlatformGame with ID {platformGameId} not found or could not be deleted"));
             return Ok(ApiResponse<PlatformGameDto>.SuccessResult(platformGame));
+        }
+        catch (PlatformGameNotFoundException e)
+        {
+            return NotFound(ApiResponse<PlatformGameDto>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {
@@ -168,12 +190,16 @@ public class PlatformGameController : ControllerBase
 
         try
         {
-            var platformGames = await _platformGameService.DeletePlatformGameByGameIdAsync(gameId);
+            var platformGames = await _platformGameService.DeletePlatformGamesByGameIdAsync(gameId);
             if (platformGames.Count == 0)
                 return NotFound(
                     ApiResponse<List<PlatformGameDto>>.ErrorResult(
                         $"No PlatformGames found for the specified GameId: {gameId}"));
             return Ok(ApiResponse<List<PlatformGameDto>>.SuccessResult(platformGames));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<List<PlatformGameDto>>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {
@@ -189,23 +215,27 @@ public class PlatformGameController : ControllerBase
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete all PlatformGames by Platform")]
-    public async Task<IActionResult> DeletePlatformGameByPlatform(long platformId)
+    public async Task<IActionResult> DeletePlatformGamesByPlatform(long platformId)
     {
         if (platformId <= 0)
             return BadRequest(ApiResponse<PlatformGameDto>.ErrorResult("Invalid PlatformGame ID"));
 
         try
         {
-            var platformGames = await _platformGameService.DeletePlatformGameByPlatformIdAsync(platformId);
+            var platformGames = await _platformGameService.DeletePlatformGamesByPlatformIdAsync(platformId);
             if (platformGames.Count == 0)
                 return NotFound(
                     ApiResponse<List<PlatformGameDto>>.ErrorResult(
                         $"No PlatformGames found for the specified PlatformId: {platformId}"));
             return Ok(ApiResponse<List<PlatformGameDto>>.SuccessResult(platformGames));
         }
+        catch (PlatformNotFoundException e)
+        {
+            return NotFound(ApiResponse<List<PlatformGameDto>>.ErrorResult(e.Message));
+        }
         catch (Exception e)
         {
-            return BadRequest(ApiResponse<PlatformGameDto>.ErrorResult(
+            return BadRequest(ApiResponse<List<PlatformGameDto>>.ErrorResult(
                 $"An error occured while deleting the PlatformGame: {e.Message}"));
         }
     }

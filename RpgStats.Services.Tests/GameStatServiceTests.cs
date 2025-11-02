@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using Xunit.Priority;
 
@@ -164,7 +165,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<GameStatNotFoundException>(async () =>
             await _service.UpdateGameStatAsync(100, gameStatForUpdateDto));
     }
 
@@ -179,7 +180,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
             await _service.UpdateGameStatAsync(1, gameStatForUpdateDto));
     }
 
@@ -194,7 +195,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
             await _service.UpdateGameStatAsync(1, gameStatForUpdateDto));
     }
 
@@ -212,7 +213,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(16)]
     public async Task DeleteGameStatAsync_Error_WhenIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<GameStatNotFoundException>(async () =>
             await _service.DeleteGameStatAsync(100));
     }
 
@@ -230,7 +231,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(18)]
     public async Task DeleteGameStatByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
             await _service.DeleteGameStatsByGameIdAsync(100));
     }
 
@@ -248,7 +249,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
     [Priority(20)]
     public async Task DeleteGameStatByStatIdAsync_Error_WhenStatIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
             await _service.DeleteGameStatsByStatIdAsync(100));
     }
 }

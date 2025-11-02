@@ -2,6 +2,7 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
@@ -62,7 +63,7 @@ public class CharacterService : ICharacterService
             .FirstOrDefaultAsync(x => x.Id == characterId);
 
         if (character == null)
-            throw new ArgumentException($"Character with ID {characterId} not found");
+            throw new CharacterNotFoundException(characterId);
 
         // TODO: Rework with Mapster and custom mapping configuration, I don't know how to do it yet.
         var characterDetail = character.Adapt<CharacterDetailDto>();
@@ -84,7 +85,7 @@ public class CharacterService : ICharacterService
         _dbContext.Characters.Add(character);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            throw new InvalidOperationException("Character could not be created");
+            throw new InvalidOperationException("Character could not be created.");
 
         return character.Adapt<CharacterDto>();
     }
@@ -94,11 +95,11 @@ public class CharacterService : ICharacterService
     {
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
         if (character == null)
-            throw new ArgumentException($"Character with ID {characterId} not found");
+            throw new CharacterNotFoundException(characterId);
 
         var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
-            throw new ArgumentException($"Game with ID {gameId} not found");
+            throw new GameNotFoundException(gameId);
 
         character.Name = characterForUpdateDto.Name;
         character.Picture = characterForUpdateDto.Picture;
@@ -109,7 +110,7 @@ public class CharacterService : ICharacterService
         var result = await _dbContext.SaveChangesAsync();
 
         if (result == 0)
-            throw new InvalidOperationException("Character could not be updated");
+            throw new InvalidOperationException("Character could not be updated.");
 
         return character.Adapt<CharacterDto>();
     }
@@ -118,7 +119,7 @@ public class CharacterService : ICharacterService
     {
         var character = _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId).Result;
         if (character == null)
-            throw new ArgumentException($"Character with ID {characterId} not found");
+            throw new CharacterNotFoundException(characterId);
 
         _dbContext.Remove(character);
         var result = await _dbContext.SaveChangesAsync();

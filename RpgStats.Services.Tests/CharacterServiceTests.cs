@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 
 namespace RpgStats.Services.Tests;
@@ -113,14 +114,14 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task UpdateCharacterAsync_Error_WhenCharacterNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
             await _service.UpdateCharacterAsync(100, 1, new CharacterForUpdateDto { Name = "UpdatedChar" }));
     }
 
     [Fact]
     public async Task UpdateCharacterAsync_Error_WhenGameNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
             await _service.UpdateCharacterAsync(1, 100, new CharacterForUpdateDto { Name = "UpdatedChar" }));
     }
 
@@ -136,7 +137,7 @@ public class CharacterServiceTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task DeleteCharacterAsync_Error_WhenCharacterIdNotFound()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
             await _service.DeleteCharacterAsync(100));
     }
 }

@@ -10,7 +10,7 @@ public interface IGameStatService
     Task<GameStatDto?> GetGameStatByIdAsync(long gameStatId);
     Task<GameStatDto> CreateGameStatAsync(GameStatForCreationDto gameStatForCreationDto);
     Task<GameStatDto> UpdateGameStatAsync(long gameStatId, GameStatForUpdateDto gameStatForUpdateDto);
-    Task<GameStatDto?> DeleteGameStatAsync(long gameStatId);
+    Task<GameStatDto> DeleteGameStatAsync(long gameStatId);
     Task<List<GameStatDto>> DeleteGameStatsByGameIdAsync(long gameId);
     Task<List<GameStatDto>> DeleteGameStatsByStatIdAsync(long statId);
 }
