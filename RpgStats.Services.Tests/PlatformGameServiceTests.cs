@@ -1,3 +1,5 @@
+using RpgStats.Domain.Exceptions;
+using RpgStats.Dto;
 using Xunit.Priority;
 
 namespace RpgStats.Services.Tests;
@@ -19,8 +21,7 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllPlatformGamesAsync();
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(12, result.Data?.Count);
+        Assert.Equal(12, result.Count);
     }
 
     [Fact]
@@ -30,19 +31,17 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllPlatformGamesByPlatformIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(4, result.Data?.Count);
+        Assert.Equal(4, result.Count);
     }
 
     [Fact]
     [Priority(3)]
-    public async Task GetAllPlatformGamesByPlatformIdAsync_Error_WhenPlatformIdNotFound()
+    public async Task GetAllPlatformGamesByPlatformIdAsync_ReturnsEmptyList_WhenPlatformIdNotFound()
     {
         var result = await _service.GetAllPlatformGamesByPlatformIdAsync(100);
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Equal("No PlatformGames found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -52,19 +51,17 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllPlatformGamesByGameIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(3, result.Data?.Count);
+        Assert.Equal(3, result.Count);
     }
 
     [Fact]
     [Priority(5)]
-    public async Task GetAllPlatformGamesByGameIdAsync_Error_WhenGameIdNotFound()
+    public async Task GetAllPlatformGamesByGameIdAsync_ReturnsEmptyList_WhenGameIdNotFound()
     {
         var result = await _service.GetAllPlatformGamesByGameIdAsync(100);
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Equal("No PlatformGames found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -74,118 +71,120 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetPlatformGameByIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.Id);
+        Assert.Equal(1, result.Id);
     }
 
     [Fact]
     [Priority(7)]
-    public async Task GetPlatformGameByIdAsync_Error_WhenPlatformGameIdNotFound()
+    public async Task GetPlatformGameByIdAsync_ReturnsEmptyDto_WhenPlatformGameIdNotFound()
     {
         var result = await _service.GetPlatformGameByIdAsync(100);
 
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("PlatformGame with ID 100 not found", result.ErrorMessage);
+        Assert.Null(result);
     }
 
     [Fact]
     [Priority(8)]
     public async Task CreatePlatformGameAsync_ReturnsPlatformGameDto()
     {
-        var result = await _service.CreatePlatformGameAsync(6, 6);
+        var platformGameForCreation = new PlatformGameForCreationDto
+        {
+            PlatformId = 6,
+            GameId = 6
+        };
+
+        var result = await _service.CreatePlatformGameAsync(platformGameForCreation);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(6, result.Data?.PlatformId);
-        Assert.Equal(6, result.Data?.GameId);
+        Assert.Equal(6, result.PlatformId);
+        Assert.Equal(6, result.GameId);
 
-        if (result.Data != null) await _service.DeletePlatformGameAsync(result.Data.Id);
+        await _service.DeletePlatformGameAsync(result.Id);
     }
 
     [Fact]
     [Priority(9)]
     public async Task CreatePlatformGameAsync_Error_WhenPlatformIdNotFound()
     {
-        var result = await _service.CreatePlatformGameAsync(100, 1);
+        var platformGameForCreation = new PlatformGameForCreationDto
+        {
+            PlatformId = 100,
+            GameId = 1
+        };
 
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Platform with ID 100 not found", result.ErrorMessage);
-
-        if (result.Data != null) await _service.DeletePlatformGameAsync(result.Data.Id);
+        await Assert.ThrowsAsync<PlatformNotFoundException>(async () =>
+            await _service.CreatePlatformGameAsync(platformGameForCreation));
     }
 
     [Fact]
     [Priority(10)]
     public async Task CreatePlatformGameAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.CreatePlatformGameAsync(1, 100);
+        var platformGameForCreation = new PlatformGameForCreationDto
+        {
+            PlatformId = 1,
+            GameId = 100
+        };
 
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
-
-        if (result.Data != null) await _service.DeletePlatformGameAsync(result.Data.Id);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.CreatePlatformGameAsync(platformGameForCreation));
     }
 
     [Fact]
     [Priority(10)]
     public async Task CreatePlatformGameAsync_Error_WhenPlatformGameExists()
     {
-        var result = await _service.CreatePlatformGameAsync(1, 1);
+        var platformGameForCreation = new PlatformGameForCreationDto
+        {
+            PlatformId = 1,
+            GameId = 1
+        };
 
-        if (result.Data != null) result = await _service.CreatePlatformGameAsync(1, 1);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("PlatformGame with PlatformId: 1 and GameId: 1 already exists", result.ErrorMessage);
-
-        if (result.Data != null) await _service.DeletePlatformGameAsync(result.Data.Id);
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _service.CreatePlatformGameAsync(platformGameForCreation));
     }
 
     [Fact]
     [Priority(11)]
     public async Task UpdatePlatformGameAsync_UpdatesPlatformGame()
     {
-        var result = await _service.CreatePlatformGameAsync(6, 1);
+        var platformGameForCreation = new PlatformGameForCreationDto()
+        {
+            PlatformId = 6,
+            GameId = 1
+        };
 
-        if (result.Data != null) result = await _service.UpdatePlatformGameAsync(result.Data.Id, 2, 2);
+        var result = await _service.CreatePlatformGameAsync(platformGameForCreation);
+
+        var platformGameForUpdate = new PlatformGameForUpdateDto()
+        {
+            PlatformId = 2,
+            GameId = 2
+        };
+
+        result = await _service.UpdatePlatformGameAsync(result.Id, platformGameForUpdate);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(2, result.Data?.PlatformId);
-        Assert.Equal(2, result.Data?.GameId);
+        Assert.Equal(2, result.PlatformId);
+        Assert.Equal(2, result.GameId);
 
-        if (result.Data != null) await _service.DeletePlatformGameAsync(result.Data.Id);
+        await _service.DeletePlatformGameAsync(result.Id);
     }
 
     [Fact]
     [Priority(12)]
     public async Task UpdatePlatformGameAsync_Error_WhenPlatformGameIdNotFound()
     {
-        var result = await _service.UpdatePlatformGameAsync(100, 1, 1);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("PlatformGame with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<PlatformGameNotFoundException>(async () =>
+            await _service.UpdatePlatformGameAsync(100, new PlatformGameForUpdateDto { PlatformId = 1, GameId = 1 }));
     }
 
     [Fact]
     [Priority(13)]
     public async Task UpdatePlatformGameAsync_Error_WhenPlatformIdNotFound()
     {
-        var result = await _service.UpdatePlatformGameAsync(1, 100, 1);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Platform with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<PlatformNotFoundException>(async () =>
+            await _service.UpdatePlatformGameAsync(1, new PlatformGameForUpdateDto { PlatformId = 100, GameId = 1 }));
 
     }
 
@@ -193,84 +192,70 @@ public class PlatformGameServiceTests : IClassFixture<DatabaseFixture>
     [Priority(14)]
     public async Task UpdatePlatformGameAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.UpdatePlatformGameAsync(1, 1, 100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.UpdatePlatformGameAsync(1, new PlatformGameForUpdateDto { PlatformId = 1, GameId = 100 }));
     }
 
     [Fact]
     [Priority(15)]
     public async Task DeletePlatformGameAsync_DeletesPlatformGame()
     {
-        var result = await _service.CreatePlatformGameAsync(5, 6);
+        var platformForCreation = new PlatformGameForCreationDto()
+        {
+            PlatformId = 5,
+            GameId = 6
+        };
 
-        var id = result.Data?.Id;
+        var result = await _service.CreatePlatformGameAsync(platformForCreation);
 
-        if (result.Data != null) result = await _service.DeletePlatformGameAsync(result.Data.Id);
+        var id = result.Id;
+
+        result = await _service.DeletePlatformGameAsync(result.Id);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(id, result.Data?.Id);
+        Assert.Equal(id, result.Id);
     }
 
     [Fact]
     [Priority(16)]
     public async Task DeletePlatformGameAsync_Error_WhenPlatformGameIdNotFound()
     {
-        var result = await _service.DeletePlatformGameAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("PlatformGame with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<PlatformGameNotFoundException>(async () => await _service.DeletePlatformGameAsync(100));
     }
 
     [Fact]
     [Priority(17)]
     public async Task DeletePlatformGameByGameIdAsync_DeletesPlatformGamesByGameId()
     {
-        var result = await _service.DeletePlatformGameByGameIdAsync(1);
+        var result = await _service.DeletePlatformGamesByGameIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(3, result.Data?.Count);
+        Assert.Equal(3, result.Count);
     }
 
     [Fact]
     [Priority(18)]
     public async Task DeletePlatformGameByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.DeletePlatformGameByGameIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.DeletePlatformGamesByGameIdAsync(100));
     }
 
     [Fact]
     [Priority(19)]
     public async Task DeletePlatformGameByPlatformIdAsync_DeletesPlatformGamesByPlatformId()
     {
-        var result = await _service.DeletePlatformGameByPlatformIdAsync(1);
+        var result = await _service.DeletePlatformGamesByPlatformIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(3, result.Data?.Count);
+        Assert.Equal(3, result.Count);
     }
 
     [Fact]
     [Priority(18)]
     public async Task DeletePlatformGameByPlatformIdAsync_Error_WhenPlatformIdNotFound()
     {
-        var result = await _service.DeletePlatformGameByPlatformIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Platform with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<PlatformNotFoundException>(async () =>
+            await _service.DeletePlatformGamesByPlatformIdAsync(100));
     }
 }

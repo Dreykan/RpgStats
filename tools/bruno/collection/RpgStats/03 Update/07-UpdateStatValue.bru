@@ -5,24 +5,22 @@ meta {
 }
 
 put {
-  url: {{host}}/{{basePath}}/{{statValuePath}}/UpdateStatValue/{{statValueId}}/{{characterId}}/{{statId}}
+  url: {{host}}/{{basePath}}/{{statValuePath}}/UpdateStatValue/2385
   body: json
   auth: none
 }
 
 body:json {
   {
-    "level": 2,
-    "value": 234,
-    "containedBonusNum": 6,
-    "containedBonusPercent": 3
+    "level": 20,
+    "value": 1001,
+    "containedBonusNum": 10,
+    "containedBonusPercent": 2,
+    "statId": 8,
+    "characterId": 55
   }
 }
 
-vars:post-response {
-  statValueId: res.body.data.id
-}
-
 assert {
-  res.status: eq 201
+  res.status: eq 200
 }

@@ -35,7 +35,7 @@ else
 
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
-    private PlatformDetailDto? _platform;
+    private PlatformWithGamesDto? _platform;
     private readonly PlatformForUpdateDto _platformForUpdateDto = new();
     private MudForm? _form;
     private bool _success;
@@ -51,7 +51,7 @@ else
 
     private async Task GetPlatform()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<PlatformDetailDto>>($"api/Platform/GetPlatformDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<PlatformWithGamesDto>>($"api/Platform/GetPlatformWithGamesById/{Id}");
         _platform = response?.Data;
     }
 
@@ -63,7 +63,7 @@ else
         }
 
         var response = await HttpClient.PutAsJsonAsync($"api/Platform/UpdatePlatform/{Id}", _platformForUpdateDto);
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<PlatformDto>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<PlatformDto>>();
         if (!response.IsSuccessStatusCode || result?.Success == false)
         {
             await ShowErrorMessage(result?.ErrorMessage ?? "Error");

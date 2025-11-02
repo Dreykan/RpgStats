@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
@@ -16,168 +17,145 @@ public class PlatformGameService : IPlatformGameService
         _dbContext = dbContext;
     }
 
-    public async Task<ServiceResult<List<PlatformGameDto>>> GetAllPlatformGamesAsync()
+    public async Task<List<PlatformGameDto>> GetAllPlatformGamesAsync()
     {
         var platformGames = await _dbContext.PlatformGames
             .ToListAsync();
 
-        if (platformGames.Count == 0)
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult("No PlatformGames found");
-
-        return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 
-    public async Task<ServiceResult<List<PlatformGameDto>>> GetAllPlatformGamesByPlatformIdAsync(long platformId)
+    public async Task<List<PlatformGameDto>> GetAllPlatformGamesByPlatformIdAsync(long platformId)
     {
         var platformGames = await _dbContext.PlatformGames
             .Where(pg => pg.PlatformId == platformId)
             .ToListAsync();
 
-        if (platformGames.Count == 0)
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult("No PlatformGames found");
-
-        return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 
-    public async Task<ServiceResult<List<PlatformGameDto>>> GetAllPlatformGamesByGameIdAsync(long gameId)
+    public async Task<List<PlatformGameDto>> GetAllPlatformGamesByGameIdAsync(long gameId)
     {
         var platformGames = await _dbContext.PlatformGames
             .Where(pg => pg.GameId == gameId)
             .ToListAsync();
 
-        if (platformGames.Count == 0)
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult("No PlatformGames found");
-
-        return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 
-    public async Task<ServiceResult<PlatformGameDto>> GetPlatformGameByIdAsync(long platformGameId)
+    public async Task<PlatformGameDto?> GetPlatformGameByIdAsync(long platformGameId)
     {
         var platformGame = await _dbContext.PlatformGames
             .FirstOrDefaultAsync(pg => pg.Id == platformGameId);
 
-        if (platformGame == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult($"PlatformGame with ID {platformGameId} not found");
-
-        return ServiceResult<PlatformGameDto>.SuccessResult(platformGame.Adapt<PlatformGameDto>());
+        return platformGame?.Adapt<PlatformGameDto>();
     }
 
-    public async Task<ServiceResult<PlatformGameDto>> CreatePlatformGameAsync(long platformId, long gameId)
+    public async Task<PlatformGameDto> CreatePlatformGameAsync(PlatformGameForCreationDto platformGameForCreation)
     {
-        if (await PlatformGameExists(platformId, gameId))
-            return ServiceResult<PlatformGameDto>.ErrorResult($"PlatformGame with PlatformId: {platformId} and GameId: {gameId} already exists");
+        var existingPlatformGame = await _dbContext.PlatformGames
+            .AnyAsync(e => e.PlatformId == platformGameForCreation.PlatformId &&
+                           e.GameId == platformGameForCreation.GameId);
+        if (existingPlatformGame)
+            throw new ArgumentException($"A PlatformGame with PlatformId {platformGameForCreation.PlatformId} and GameId {platformGameForCreation.GameId} already exists");
 
-        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformGameForCreation.PlatformId);
         if (platform == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult($"Platform with ID {platformId} not found");
+            throw new PlatformNotFoundException(platformGameForCreation.PlatformId);
 
-        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == platformGameForCreation.GameId);
         if (game == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult($"Game with ID {gameId} not found");
+            throw new GameNotFoundException(platformGameForCreation.GameId);
 
         var platformGame = new PlatformGameDto().Adapt<PlatformGame>();
-        platformGame.PlatformId = platformId;
+        platformGame.PlatformId = platformGameForCreation.PlatformId;
         platformGame.Platform = platform;
-        platformGame.GameId = gameId;
+        platformGame.GameId = platformGameForCreation.GameId;
         platformGame.Game = game;
 
 
         _dbContext.PlatformGames.Add(platformGame);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<PlatformGameDto>.ErrorResult("PlatformGame could not be created");
+            throw new InvalidOperationException($"PlatformGame could not be created");
 
-        return ServiceResult<PlatformGameDto>.SuccessResult(platformGame.Adapt<PlatformGameDto>());
+        return platformGame.Adapt<PlatformGameDto>();
     }
 
-    public async Task<ServiceResult<PlatformGameDto>> UpdatePlatformGameAsync(long platformGameId, long platformId, long gameId)
+    public async Task<PlatformGameDto> UpdatePlatformGameAsync(long platformGameId, PlatformGameForUpdateDto platformGameForUpdate)
     {
         var platformGame = await _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformGameId);
         if (platformGame == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult($"PlatformGame with ID {platformGameId} not found");
+            throw new PlatformGameNotFoundException(platformGameId);
 
-        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformGameForUpdate.PlatformId);
         if (platform == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult($"Platform with ID {platformId} not found");
+           throw new PlatformNotFoundException(platformGameForUpdate.PlatformId);
 
-        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == platformGameForUpdate.GameId);
         if (game == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult($"Game with ID {gameId} not found");
+            throw new GameNotFoundException(platformGameForUpdate.GameId);
 
         platformGame.PlatformId = platform.Id;
         platformGame.Platform = platform;
         platformGame.GameId = game.Id;
         platformGame.Game = game;
 
-
         _dbContext.Entry(platformGame).State = EntityState.Modified;
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<PlatformGameDto>.ErrorResult("PlatformGame could not be updated");
+          throw new InvalidOperationException($"PlatformGame could not be updated");
 
-        return ServiceResult<PlatformGameDto>.SuccessResult(platformGame.Adapt<PlatformGameDto>());
+        return platformGame.Adapt<PlatformGameDto>();
     }
 
-    public async Task<ServiceResult<PlatformGameDto>> DeletePlatformGameAsync(long platformGameId)
+    public async Task<PlatformGameDto> DeletePlatformGameAsync(long platformGameId)
     {
         var platformGame = await _dbContext.PlatformGames.FirstOrDefaultAsync(pg => pg.Id == platformGameId);
         if (platformGame == null)
-            return ServiceResult<PlatformGameDto>.ErrorResult($"PlatformGame with ID {platformGameId} not found");
+            throw new PlatformGameNotFoundException(platformGameId);
 
         _dbContext.Remove(platformGame);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<PlatformGameDto>.ErrorResult("PlatformGame could not be deleted");
+            throw new InvalidOperationException($"PlatformGame could not be deleted");
 
-        return ServiceResult<PlatformGameDto>.SuccessResult(platformGame.Adapt<PlatformGameDto>());
+        return platformGame.Adapt<PlatformGameDto>();
     }
 
-    public async Task<ServiceResult<List<PlatformGameDto>>> DeletePlatformGameByGameIdAsync(long gameId)
+    public async Task<List<PlatformGameDto>> DeletePlatformGamesByGameIdAsync(long gameId)
     {
-        if (!await GameExists(gameId))
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult($"Game with ID {gameId} not found");
+        var game = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        if (game == null)
+            throw new GameNotFoundException(gameId);
 
-        var platformGames = _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToList();
+        var platformGames = await _dbContext.PlatformGames.Where(pg => pg.GameId == gameId).ToListAsync();
         if (platformGames.Count == 0)
-            return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
+            return new List<PlatformGameDto>();
 
         _dbContext.RemoveRange(platformGames);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult("PlatformGames could not be deleted");
+            throw new InvalidOperationException($"PlatformGames could not be deleted");
 
-        return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 
-    public async Task<ServiceResult<List<PlatformGameDto>>> DeletePlatformGameByPlatformIdAsync(long platformId)
+    public async Task<List<PlatformGameDto>> DeletePlatformGamesByPlatformIdAsync(long platformId)
     {
-        if (!await PlatformExists(platformId))
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult($"Platform with ID {platformId} not found");
+        var platform = await _dbContext.Platforms.FirstOrDefaultAsync(p => p.Id == platformId);
+        if (platform == null)
+            throw new PlatformNotFoundException(platformId);
 
-        var platformGames = _dbContext.PlatformGames.Where(pg => pg.PlatformId == platformId).ToList();
+        var platformGames = await _dbContext.PlatformGames.Where(pg => pg.PlatformId == platformId).ToListAsync();
         if (platformGames.Count == 0)
-            return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
+            return new List<PlatformGameDto>();
 
         _dbContext.RemoveRange(platformGames);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
-            return ServiceResult<List<PlatformGameDto>>.ErrorResult("PlatformGames could not be deleted");
+            throw new InvalidOperationException($"PlatformGames could not be deleted");
 
-        return ServiceResult<List<PlatformGameDto>>.SuccessResult(platformGames.Adapt<List<PlatformGameDto>>());
-    }
-
-    private async Task<bool> PlatformGameExists(long platformId, long gameId)
-    {
-        return await _dbContext.PlatformGames.AnyAsync(e => e.PlatformId == platformId && e.GameId == gameId);
-    }
-
-    private async Task<bool> PlatformExists(long id)
-    {
-        return await _dbContext.Platforms.AnyAsync(e => e.Id == id);
-    }
-
-    private async Task<bool> GameExists(long id)
-    {
-        return await _dbContext.Games.AnyAsync(e => e.Id == id);
+        return platformGames.Adapt<List<PlatformGameDto>>();
     }
 }

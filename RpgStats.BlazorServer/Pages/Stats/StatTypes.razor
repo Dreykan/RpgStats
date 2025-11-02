@@ -45,14 +45,14 @@
 
     private async Task GetStats()
     {
-        var response = await HttpClient.GetAsync("api/Stat/GetStats");
+        var response = await HttpClient.GetAsync("api/Stat/GetAllStats");
         if (!response.IsSuccessStatusCode)
         {
             _stats = new List<StatDto>();
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatDto>>>();
         _stats = result?.Data ?? new List<StatDto>();
     }
 

@@ -10,9 +10,9 @@ public static class MainFaker
         var random = new Random();
         var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7073") };
 
-        RunPlatformFaker(10, httpClient).Wait();
-        RunStatFaker(20, httpClient).Wait();
-        RunGameFaker(30, httpClient).Wait();
+        RunPlatformFaker(5, httpClient).Wait();
+        RunStatFaker(10, httpClient).Wait();
+        RunGameFaker(15, httpClient).Wait();
         RunPlatformGameFaker(random, httpClient).Wait();
         RunGameStatFaker(random, httpClient).Wait();
         RunCharacterFaker(random, httpClient).Wait();
@@ -69,7 +69,12 @@ public static class MainFaker
             for (int i = 0; i < platformGameCount; i++)
             {
                 var platformId = random.Next(1, platforms.Count);
-                await httpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame/{platformId}/{game?.Id}", "");
+                var platformGameForCreation = new PlatformGameForCreationDto()
+                {
+                    GameId = game.Id,
+                    PlatformId = platformId,
+                };
+                await httpClient.PostAsJsonAsync($"api/PlatformGame/CreatePlatformGame", platformGameForCreation);
             }
         }
 
@@ -103,7 +108,7 @@ public static class MainFaker
         var games = await GetGames(httpClient);
         foreach (var game in games)
         {
-            var characterCount = random.Next(3, 10);
+            var characterCount = random.Next(3, 6);
             for (int i = 0; i < characterCount; i++)
             {
                 var characterFaker = new CharacterFaker();
@@ -118,10 +123,10 @@ public static class MainFaker
     private static async Task RunStatValueFaker(Random random, HttpClient httpClient)
     {
         var statValues = new List<StatValueForCreationDto>();
-        var characters = await GetCharacters(httpClient);
+        var characters = await GetAllCharacters(httpClient);
         foreach (var character in characters)
         {
-            var statsResponse = await httpClient.GetAsync($"api/Stat/GetStatsByGameId/{character.GameId}");
+            var statsResponse = await httpClient.GetAsync($"api/Stat/GetAllStatsByGame/{character.GameId}");
             var statsResult = await statsResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
             var stats = statsResult?.Data;
             if (stats is null)
@@ -130,7 +135,7 @@ public static class MainFaker
                 return;
             }
 
-            var statValueLevelCount = random.Next(50, 100);
+            var statValueLevelCount = random.Next(10, 20);
             foreach (var stat in stats)
             {
                 var value = random.Next(20, 40);
@@ -151,14 +156,14 @@ public static class MainFaker
                 }
             }
         }
-        await httpClient.PostAsJsonAsync($"api/StatValue/CreateStatValues", statValues);
+        await httpClient.PostAsJsonAsync($"api/StatValue/CreateMultipleStatValues", statValues);
 
         Console.WriteLine("StatValueFaker done.");
     }
 
     private static async Task<List<GameDto>> GetGames(HttpClient httpClient)
     {
-        var gameResponse = await httpClient.GetAsync("api/Game/GetGames");
+        var gameResponse = await httpClient.GetAsync("api/Game/GetAllGames");
         var gameResult = await gameResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
         if (gameResult == null || gameResult.Success == false || gameResult.Data == null)
         {
@@ -170,7 +175,7 @@ public static class MainFaker
 
     private static async Task<List<PlatformDto>> GetPlatforms(HttpClient httpClient)
     {
-        var platformResponse = await httpClient.GetAsync("api/Platform/GetPlatforms");
+        var platformResponse = await httpClient.GetAsync("api/Platform/GetAllPlatforms");
         var platformResult = await platformResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>();
         if (platformResult == null || platformResult.Success == false || platformResult.Data == null)
         {
@@ -182,7 +187,7 @@ public static class MainFaker
 
     private static async Task<List<StatDto>> GetStats(HttpClient httpClient)
     {
-        var statResponse = await httpClient.GetAsync("api/Stat/GetStats");
+        var statResponse = await httpClient.GetAsync("api/Stat/GetAllStats");
         var statResult = await statResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatDto>>>();
         if (statResult == null || statResult.Success == false || statResult.Data == null)
         {
@@ -192,9 +197,9 @@ public static class MainFaker
         return statResult.Data;
     }
 
-    private static async Task<List<CharacterDto>> GetCharacters(HttpClient httpClient)
+    private static async Task<List<CharacterDto>> GetAllCharacters(HttpClient httpClient)
     {
-        var characterResponse = await httpClient.GetAsync("api/Character/GetCharacters");
+        var characterResponse = await httpClient.GetAsync("api/Character/GetAllCharacters");
         var characterResult = await characterResponse.Content.ReadFromJsonAsync<RpgStatsResponse<List<CharacterDto>>>();
         if (characterResult == null || characterResult.Success == false || characterResult.Data == null)
         {

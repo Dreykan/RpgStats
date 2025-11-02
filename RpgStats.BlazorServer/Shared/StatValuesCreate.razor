@@ -73,8 +73,8 @@
             statValue.Level = Level;
         }
 
-        var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateStatValues/", _statValues);
-        var responseContent = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>();
+        var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateMultipleStatValues/", _statValues);
+        var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>();
 
         if (!response.IsSuccessStatusCode && responseContent?.Success == false)
             await ShowErrorMessage("Fehler beim Speichern der Werte");

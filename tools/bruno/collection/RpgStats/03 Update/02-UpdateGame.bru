@@ -17,11 +17,6 @@ body:json {
   }
 }
 
-vars:post-response {
-  gameId: res.body.data.id
-  gameName: res.body.data.name
-}
-
 assert {
-  res.status: eq 201
+  res.status: eq 200
 }

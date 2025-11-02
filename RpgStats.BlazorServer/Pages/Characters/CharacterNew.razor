@@ -80,7 +80,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await HttpClient.GetAsync("api/Game/GetGames");
+        var response = await HttpClient.GetAsync("api/Game/GetAllGames");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -88,7 +88,7 @@
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameDto>>>();
         _gameDtos = result?.Data;
         await PrefillForm();
     }
@@ -110,7 +110,7 @@
         }
 
         var response = await HttpClient.PostAsJsonAsync($"api/Character/CreateCharacter/{selectedGame.Id}", _characterForCreationDto);
-        var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<CharacterDto>>();
+        var content = await response.Content.ReadFromJsonAsync<WebApiResponse<CharacterDto>>();
         if (!response.IsSuccessStatusCode && content?.Success == false)
         {
             await ShowErrorMessage(content.ErrorMessage ?? "Fehler beim Erstellen des Charakters.");

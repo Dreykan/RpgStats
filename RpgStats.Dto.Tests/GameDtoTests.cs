@@ -9,9 +9,6 @@ public class GameDtoTests
         Assert.Equal(0, gameDto.Id);
         Assert.Equal(string.Empty, gameDto.Name);
         Assert.Null(gameDto.Picture);
-        Assert.Null(gameDto.PlatformGames);
-        Assert.Null(gameDto.GameStat);
-        Assert.Null(gameDto.Characters);
     }
 
     [Fact]
@@ -26,17 +23,11 @@ public class GameDtoTests
             Id = 1,
             Name = "Test Game",
             Picture = new byte[] { 1, 2, 3 },
-            PlatformGames = platformGames,
-            GameStat = gameStats,
-            Characters = characters
         };
 
         Assert.Equal(1, gameDto.Id);
         Assert.Equal("Test Game", gameDto.Name);
         Assert.Equal(new byte[] { 1, 2, 3 }, gameDto.Picture);
-        Assert.Equal(platformGames, gameDto.PlatformGames);
-        Assert.Equal(gameStats, gameDto.GameStat);
-        Assert.Equal(characters, gameDto.Characters);
     }
 
     [Fact]
@@ -46,16 +37,10 @@ public class GameDtoTests
         {
             Id = 1,
             Picture = null,
-            PlatformGames = null,
-            GameStat = null,
-            Characters = null
         };
 
         Assert.Equal(1, gameDto.Id);
         Assert.Equal(string.Empty, gameDto.Name);
         Assert.Null(gameDto.Picture);
-        Assert.Null(gameDto.PlatformGames);
-        Assert.Null(gameDto.GameStat);
-        Assert.Null(gameDto.Characters);
     }
 }

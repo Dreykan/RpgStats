@@ -126,7 +126,7 @@ else
 
     private async Task GetGame()
     {
-        var response = await HttpClient.GetFromJsonAsync<RpgStatsResponse<GameDetailDto>>($"api/Game/GetGameDetailById/{Id}");
+        var response = await HttpClient.GetFromJsonAsync<WebApiResponse<GameDetailDto>>($"api/Game/GetGameDetailById/{Id}");
         _game = response?.Data;
     }
 
@@ -156,7 +156,7 @@ else
         if (result.Canceled == false)
         {
             var response = await HttpClient.DeleteAsync($"api/Game/DeleteGame/{Id}");
-            var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameDto>>();
+            var content = await response.Content.ReadFromJsonAsync<WebApiResponse<GameDto>>();
             if (!response.IsSuccessStatusCode || content?.Success == false)
             {
                 await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Löschen des Spiels.");
@@ -170,13 +170,13 @@ else
 
     private async Task GetGameStats()
     {
-        var response = await HttpClient.GetAsync($"api/GameStat/GetGameStatsByGame/{_game?.Id}");
+        var response = await HttpClient.GetAsync($"api/GameStat/GetAllGameStatsByGame/{_game?.Id}");
         if (response.IsSuccessStatusCode == false)
         {
             _gameStats = new List<GameStatDto>();
             return;
         }
-        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameStatDto>>>();
+        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameStatDto>>>();
         _gameStats = rpgStatsResponse?.Data?.OrderBy(x => x.SortIndex).ToList();
     }
 
@@ -208,8 +208,8 @@ else
             return;
         }
 
-        var response = await HttpClient.GetAsync($"api/StatValue/GetStatValuesByStat/{gameStat.StatId}");
-        var statValues = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<StatValueDto>>>();
+        var response = await HttpClient.GetAsync($"api/StatValue/GetAllStatValuesByStat/{gameStat.StatId}");
+        var statValues = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>();
 
         if (statValues?.Data == null)
         {
@@ -240,7 +240,7 @@ else
     private async Task RemoveGameStat(GameStatDto gameStatDto)
     {
         var response = await HttpClient.DeleteAsync($"api/GameStat/DeleteGameStat/{gameStatDto.Id}");
-        var content = await response.Content.ReadFromJsonAsync<RpgStatsResponse<GameStatDto>>();
+        var content = await response.Content.ReadFromJsonAsync<WebApiResponse<GameStatDto>>();
         if (!response.IsSuccessStatusCode || content?.Success == false)
         {
             await ShowErrorMessage(content?.ErrorMessage ?? "Fehler beim Löschen des Status-Typs.");

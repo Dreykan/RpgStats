@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: {{host}}/{{basePath}}/{{statPath}}/UpdateStat/{{statId}}
+  url: {{host}}/{{basePath}}/{{statPath}}/UpdateStat/12
   body: json
   auth: none
 }
@@ -17,12 +17,6 @@ body:json {
   }
 }
 
-vars:post-response {
-  statId: res.body.data.id
-  statName: res.body.data.name
-  statShortName: res.body.data.shortName
-}
-
 assert {
-  res.status: eq 201
+  res.status: eq 200
 }

@@ -1,0 +1,15 @@
+meta {
+  name: GetAllGameStats
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{gameStatPath}}/GetAllGameStats
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

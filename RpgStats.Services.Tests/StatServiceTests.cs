@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using Xunit.Priority;
 
@@ -20,8 +21,7 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatsAsync();
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(6, result.Data?.Count);
+        Assert.Equal(6, result.Count);
     }
 
     [Fact]
@@ -30,19 +30,16 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatsByNameAsync("good");
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(2, result.Data?.Count);
+        Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public async Task GetAllStatsByNameAsync_Error_WhenNameNotFound()
+    public async Task GetAllStatsByNameAsync_ReturnsEmptyList_WhenNameNotFound()
     {
         var result = await _service.GetAllStatsByNameAsync("NonExistentStat");
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("No stats found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -51,19 +48,16 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatsByShortNameAsync("gsv");
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(2, result.Data?.Count);
+        Assert.Equal(2, result.Count);
     }
 
     [Fact]
-    public async Task GetAllStatsByShortNameAsync_Error_WhenShortNameNotFound()
+    public async Task GetAllStatsByShortNameAsync_ReturnEmptyList_WhenShortNameNotFound()
     {
         var result = await _service.GetAllStatsByShortNameAsync("NonExistentStat");
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("No stats found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -73,115 +67,14 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatsByGameIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(4, result.Data?.Count);
+        Assert.Equal(4, result.Count);
     }
 
     [Fact]
     public async Task GetAllStatsByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.GetAllStatsByGameIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Game with Id 100 not found", result.ErrorMessage);
-    }
-
-    [Fact]
-    [Priority(1)]
-    public async Task GetAllStatDetailDtosAsync_ReturnsAllStatDetailDtos()
-    {
-        var result = await _service.GetAllStatDetailDtosAsync();
-
-        Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(6, result.Data?.Count);
-    }
-
-    [Fact]
-    public async Task GetAllStatDetailDtosByNameAsync_ReturnsStatDetailDtosByName()
-    {
-        var result = await _service.GetAllStatDetailDtosByNameAsync("good");
-
-        Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(2, result.Data?.Count);
-    }
-
-    [Fact]
-    public async Task GetAllStatDetailDtosByNameAsync_Error_WhenNameNotFound()
-    {
-        var result = await _service.GetAllStatDetailDtosByNameAsync("NonExistentStat");
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("No stats found", result.ErrorMessage);
-    }
-
-    [Fact]
-    public async Task GetAllStatDetailDtosByShortNameAsync_ReturnsStatDetailDtosByShortName()
-    {
-        var result = await _service.GetAllStatDetailDtosByShortNameAsync("gsv");
-
-        Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(2, result.Data?.Count);
-    }
-
-    [Fact]
-    public async Task GetAllStatDetailDtosByShortNameAsync_Error_WhenShortNameNotFound()
-    {
-        var result = await _service.GetAllStatDetailDtosByShortNameAsync("NonExistentStat");
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("No stats found", result.ErrorMessage);
-    }
-
-    [Fact]
-    [Priority(1)]
-    public async Task GetAllStatDetailDtosByGameIdAsync_ReturnsStatDetailDtosByGameId()
-    {
-        var result = await _service.GetAllStatDetailDtosByGameIdAsync(1);
-
-        Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(4, result.Data?.Count);
-    }
-
-    [Fact]
-    public async Task GetAllStatDetailDtosByGameIdAsync_Error_WhenGameIdNotFound()
-    {
-        var result = await _service.GetAllStatDetailDtosByGameIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Game with Id 100 not found", result.ErrorMessage);
-    }
-
-    [Fact]
-    public async Task GetStatDetailDtoByIdAsync_ReturnsStatDetailDtoById()
-    {
-        var result = await _service.GetStatDetailDtoByIdAsync(1);
-
-        Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.Id);
-    }
-
-    [Fact]
-    public async Task GetStatDetailDtoByIdAsync_Error_WhenIdNotFound()
-    {
-        var result = await _service.GetStatDetailDtoByIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Stat with Id 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.GetAllStatsByGameIdAsync(100));
     }
 
     [Fact]
@@ -190,19 +83,15 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetStatByIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.Id);
+        Assert.Equal(1, result.Id);
     }
 
     [Fact]
-    public async Task GetStatByIdAsync_Error_WhenIdNotFound()
+    public async Task GetStatByIdAsync_ReturnsEmptyDto_WhenIdNotFound()
     {
         var result = await _service.GetStatByIdAsync(100);
 
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Stat with Id 100 not found", result.ErrorMessage);
+        Assert.Null(result);
     }
 
     [Fact]
@@ -215,11 +104,10 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         });
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal("NewStat", result.Data?.Name);
-        Assert.Equal("NS", result.Data?.ShortName);
+        Assert.Equal("NewStat", result.Name);
+        Assert.Equal("NS", result.ShortName);
 
-        if (result.Data != null) await _service.DeleteStatAsync(result.Data.Id);
+        await _service.DeleteStatAsync(result.Id);
     }
 
     [Fact]
@@ -232,24 +120,21 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         });
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal("UpdatedStat", result.Data?.Name);
-        Assert.Equal("US", result.Data?.ShortName);
+        Assert.Equal("UpdatedStat", result.Name);
+        Assert.Equal("US", result.ShortName);
     }
 
     [Fact]
     public async Task UpdateStatAsync_Error_WhenIdNotFound()
     {
-        var result = await _service.UpdateStatAsync(100, new StatForUpdateDto
+        var statForUpdate = new StatForUpdateDto
         {
             Name = "UpdatedStat",
             ShortName = "US"
-        });
+        };
 
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Stat with Id 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
+            await _service.UpdateStatAsync(100, statForUpdate));
     }
 
     [Fact]
@@ -259,19 +144,14 @@ public class StatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.DeleteStatAsync(3);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(3, result.Data?.Id);
+        Assert.Equal(3, result.Id);
     }
 
     [Fact]
     [Priority(2)]
     public async Task DeleteStatAsync_Error_WhenIdNotFound()
     {
-        var result = await _service.DeleteStatAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Stat with Id 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
+            await _service.DeleteStatAsync(100));
     }
 }

@@ -15,21 +15,34 @@ public static class PlatformMapper
         return platformWithoutFkObjectsDto;
     }
 
-    public static PlatformDetailDto MapToPlatformDetailDto(Platform platform, List<Game?> games)
+    public static PlatformWithGamesDto MapToPlatformWithGamesDto(Platform platform, List<Game?> games)
     {
         // New Object and map simple properties
-        var platformDetailDto = new PlatformDetailDto
+        var platformDetailDto = new PlatformWithGamesDto
         {
             Id = platform.Id,
             Name = platform.Name
         };
 
         // Map Game-Property
-        var gameWithoutFkObjectDtos =
-            games.OfType<Game>().Select(GameMapper.MapToGameWithoutFkObjectsDto).ToList();
+        if (games.Count == 0)
+            return platformDetailDto;
 
-        platformDetailDto.GameWithoutFkObjectsDtos = gameWithoutFkObjectDtos;
+        var gameDtos = new List<GameDto>();
+        foreach (var game in games)
+        {
+            if (game == null)
+                continue;
+            var gameDto = new GameDto
+            {
+                Id = game.Id,
+                Name = game.Name,
+                Picture = game.Picture
+            };
+            gameDtos.Add(gameDto);
+        }
 
+        platformDetailDto.GameDtos = gameDtos;
         return platformDetailDto;
     }
 }

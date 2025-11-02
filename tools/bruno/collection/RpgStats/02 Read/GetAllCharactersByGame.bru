@@ -1,0 +1,15 @@
+meta {
+  name: GetAllCharactersByGame
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{characterPath}}/GetAllCharactersByGame/1
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

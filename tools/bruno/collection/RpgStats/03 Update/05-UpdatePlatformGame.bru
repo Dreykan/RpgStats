@@ -5,15 +5,18 @@ meta {
 }
 
 put {
-  url: {{host}}/{{basePath}}/{{platformGamePath}}/UpdatePlatformGame/{{platformGameId}}/{{platformId}}/{{gameId}}
+  url: {{host}}/{{basePath}}/{{platformGamePath}}/UpdatePlatformGame/28
   body: json
   auth: none
 }
 
-vars:post-response {
-  platformGameId: res.body.data.id
+body:json {
+  {
+    "platformId": 1,
+    "gameId": 2
+  }
 }
 
 assert {
-  res.status: eq 201
+  res.status: eq 200
 }

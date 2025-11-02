@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -16,93 +17,226 @@ public class GameStatController : ControllerBase
         _gameStatService = gameStatService;
     }
 
-    [HttpGet("GetGameStats")]
+    [HttpGet("GetAllGameStats")]
+    [SwaggerResponse(200, "Returns a list of all GameStats", typeof(ApiResponse<List<GameStatDto>>))]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all GameStats")]
-    public async Task<IActionResult> GetGameStats()
+    public async Task<IActionResult> GetAllGameStats()
     {
-        var result = await _gameStatService.GetAllGameStatsAsync();
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        var gameStats = await _gameStatService.GetAllGameStatsAsync();
+        if (gameStats.Count == 0)
+            return Ok(ApiResponse<List<GameStatDto>>.ErrorResult("No GameStats found."));
+
+        return Ok(ApiResponse<List<GameStatDto>>.SuccessResult(gameStats));
     }
 
-    [HttpGet("GetGameStatsByGame/{gameId:long}")]
+    [HttpGet("GetAllGameStatsByGame/{gameId:long}")]
+    [SwaggerResponse(200, "Returns a list of GameStats by game ID", typeof(ApiResponse<List<GameStatDto>>))]
+    [SwaggerResponse(400, "Invalid game ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all GameStats by Game")]
-    public async Task<IActionResult> GetGameStatsByGame(long gameId)
+    public async Task<IActionResult> GetAllGameStatsByGame(long gameId)
     {
-        var result = await _gameStatService.GetAllGameStatsByGameIdAsync(gameId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid game ID."));
+
+        var gameStats = await _gameStatService.GetAllGameStatsByGameIdAsync(gameId);
+        if (gameStats.Count == 0)
+            return Ok(ApiResponse<List<GameStatDto>>.ErrorResult(
+                $"No GameStats found for the specified gameId: {gameId}"));
+
+        return Ok(ApiResponse<List<GameStatDto>>.SuccessResult(gameStats));
     }
 
-    [HttpGet("GetGameStatsByStat/{statId:long}")]
+    [HttpGet("GetAllGameStatsByStat/{statId:long}")]
+    [SwaggerResponse(200, "Returns a list of GameStats by stat ID", typeof(ApiResponse<List<GameStatDto>>))]
+    [SwaggerResponse(400, "Invalid stat ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get all GameStats by Stat")]
-    public async Task<IActionResult> GetGameStatsByStat(long statId)
+    public async Task<IActionResult> GetAllGameStatsByStat(long statId)
     {
-        var result = await _gameStatService.GetAllGameStatsByStatIdAsync(statId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (statId <= 0)
+            return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid stat ID."));
+
+        var gameStats = await _gameStatService.GetAllGameStatsByStatIdAsync(statId);
+        if (gameStats.Count == 0)
+            return Ok(ApiResponse<List<GameStatDto>>.ErrorResult(
+                $"No GameStats found for the specified statId: {statId}"));
+
+        return Ok(ApiResponse<List<GameStatDto>>.SuccessResult(gameStats));
     }
 
     [HttpGet("GetGameStatById/{gameStatId:long}")]
+    [SwaggerResponse(200, "Returns a GameStat by ID", typeof(ApiResponse<GameStatDto>))]
+    [SwaggerResponse(400, "Invalid gameStat ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Get a GameStat by Id")]
     public async Task<IActionResult> GetGameStatById(long gameStatId)
     {
-        var result = await _gameStatService.GetGameStatByIdAsync(gameStatId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (gameStatId <= 0)
+            return BadRequest(ApiResponse<GameStatDto>.ErrorResult("Invalid gameStat ID."));
+
+        var gameStat = await _gameStatService.GetGameStatByIdAsync(gameStatId);
+        if (gameStat == null)
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult($"GameStat with ID {gameStatId} not found."));
+
+        return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
     }
 
     [HttpPost("CreateGameStat")]
+    [SwaggerResponse(201, "GameStat created successfully", typeof(ApiResponse<GameStatDto>))]
+    [SwaggerResponse(400, "Invalid GameStat data")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Create a GameStat")]
     public async Task<IActionResult> CreateGameStat([FromBody] GameStatForCreationDto gameStatForCreationDto)
     {
-        var result = await _gameStatService.CreateGameStatAsync(gameStatForCreationDto);
-        if (result.Success)
-            return CreatedAtAction(nameof(GetGameStatById), new { gameStatId = result.Data?.Id }, result);
-        return BadRequest(result);
+        try
+        {
+            var gameStat = await _gameStatService.CreateGameStatAsync(gameStatForCreationDto);
+            return CreatedAtAction(nameof(GetGameStatById), new { gameStatId = gameStat.Id },
+                ApiResponse<GameStatDto>.SuccessResult(gameStat));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<GameStatDto>.ErrorResult($"An error occured while creating the GameStat: {e.Message}"));
+        }
     }
 
     [HttpPut("UpdateGameStat/{gameStatId:long}")]
+    [SwaggerResponse(200, "GameStat updated successfully", typeof(ApiResponse<GameStatDto>))]
+    [SwaggerResponse(400, "Invalid gameStat ID or data")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Update a GameStat")]
-    public async Task<IActionResult> UpdateGameStat([FromBody] GameStatForUpdateDto gameStatForUpdateDto, long gameStatId)
+    public async Task<IActionResult> UpdateGameStat([FromBody] GameStatForUpdateDto gameStatForUpdateDto,
+        long gameStatId)
     {
-        var result = await _gameStatService.UpdateGameStatAsync(gameStatId, gameStatForUpdateDto);
-        if (result.Success)
-            return CreatedAtAction(nameof(GetGameStatById), new { gameStatId = result.Data?.Id }, result);
-        return BadRequest(result);
+        if (gameStatId <= 0)
+            return BadRequest(ApiResponse<GameStatDto>.ErrorResult("Invalid gameStat ID."));
+
+        try
+        {
+            var gameStat = await _gameStatService.UpdateGameStatAsync(gameStatId, gameStatForUpdateDto);
+            return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
+        }
+        catch (GameStatNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
+        }
+        catch (StatNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<GameStatDto>.ErrorResult($"An error occured while updating the GameStat: {e.Message}"));
+        }
     }
 
     [HttpDelete("DeleteGameStat/{gameStatId:long}")]
+    [SwaggerResponse(200, "GameStat deleted successfully", typeof(ApiResponse<GameStatDto>))]
+    [SwaggerResponse(400, "Invalid gameStat ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete a GameStat")]
     public async Task<IActionResult> DeleteGameStat(long gameStatId)
     {
-        var result = await _gameStatService.DeleteGameStatAsync(gameStatId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (gameStatId <= 0)
+            return BadRequest(ApiResponse<GameStatDto>.ErrorResult("Invalid gameStat ID."));
+
+        try
+        {
+            var gameStat = await _gameStatService.DeleteGameStatAsync(gameStatId);
+            return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
+        }
+        catch (GameStatNotFoundException e)
+        {
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult(e.Message));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<GameStatDto>.ErrorResult($"An error occurred while deleting the GameStat: {e.Message}"));
+        }
     }
 
-    [HttpDelete("DeleteGameStatsByGame/{gameId:long}")]
+    [HttpDelete("DeleteAllGameStatsByGame/{gameId:long}")]
+    [SwaggerResponse(200, "GameStats deleted successfully", typeof(ApiResponse<List<GameStatDto>>))]
+    [SwaggerResponse(400, "Invalid game ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete all GameStats by Game")]
-    public async Task<IActionResult> DeleteGameStatsByGame(long gameId)
+    public async Task<IActionResult> DeleteAllGameStatsByGame(long gameId)
     {
-        var result = await _gameStatService.DeleteGameStatsByGameIdAsync(gameId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (gameId <= 0)
+            return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid game ID."));
+
+        try
+        {
+            var gameStats = await _gameStatService.DeleteGameStatsByGameIdAsync(gameId);
+            return Ok(ApiResponse<List<GameStatDto>>.SuccessResult(gameStats));
+        }
+        catch (GameNotFoundException e)
+        {
+            return NotFound(
+                ApiResponse<List<GameStatDto>>.ErrorResult(e.Message));
+        }
+        catch (NotFoundException)
+        {
+            return NotFound(
+                ApiResponse<GameStatDto>.ErrorResult($"No GameStats found for the specified gameId: {gameId}"));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                ApiResponse<List<GameStatDto>>.ErrorResult(
+                    $"An error occurred while deleting GameStats for gameId {gameId}: {e.Message}"));
+        }
     }
 
-    [HttpDelete("DeleteGameStatsByStat/{statId:long}")]
+    [HttpDelete("DeleteAllGameStatsByStat/{statId:long}")]
+    [SwaggerResponse(200, "GameStats deleted successfully", typeof(ApiResponse<List<GameStatDto>>))]
+    [SwaggerResponse(400, "Invalid stat ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
     [SwaggerOperation(Summary = "Delete all GameStats by Stat")]
-    public async Task<IActionResult> DeleteGameStatByStat(long statId)
+    public async Task<IActionResult> DeleteAllGameStatByStat(long statId)
     {
-        var result = await _gameStatService.DeleteGameStatsByStatIdAsync(statId);
-        if (result.Success)
-            return Ok(result);
-        return NotFound(result);
+        if (statId <= 0)
+            return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult("Invalid stat ID."));
+        try
+        {
+            var gameStats = await _gameStatService.DeleteGameStatsByStatIdAsync(statId);
+            if (gameStats.Count == 0)
+                return NotFound(
+                    ApiResponse<List<GameStatDto>>.ErrorResult(
+                        $"No GameStats found for the specified statId: {statId}"));
+            return Ok(ApiResponse<List<GameStatDto>>.SuccessResult(gameStats));
+        }
+        catch (StatNotFoundException e)
+        {
+            return NotFound(
+                ApiResponse<List<GameStatDto>>.ErrorResult(e.Message));
+        }
+        catch (NotFoundException)
+        {
+            return BadRequest(
+                ApiResponse<GameStatDto>.ErrorResult($"No GameStats found for the specified statId: {statId}"));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(ApiResponse<List<GameStatDto>>.ErrorResult(
+                $"An error occurred while deleting GameStats for statId {statId}: {e.Message}"));
+        }
     }
 }

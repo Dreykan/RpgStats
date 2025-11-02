@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: {{host}}/{{basePath}}/{{gameStatPath}}/UpdateGameStat/{{gameStatId}}
+  url: {{host}}/{{basePath}}/{{gameStatPath}}/UpdateGameStat/46
   body: json
   auth: none
 }
@@ -15,15 +15,11 @@ body:json {
     "sortIndex": 99,
     "customStatName": "UpdatedStatName",
     "customStatShortName": "USSN",
-    "gameId": {{gameId}},
-    "statId": {{statId}}
+    "gameId": 3,
+    "statId": 2
   }
 }
 
-vars:post-response {
-  gameStatId: res.body.data.id
-}
-
 assert {
-  res.status: eq 201
+  res.status: eq 200
 }

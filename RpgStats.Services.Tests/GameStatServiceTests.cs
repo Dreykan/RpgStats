@@ -1,3 +1,4 @@
+using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using Xunit.Priority;
 
@@ -20,8 +21,7 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllGameStatsAsync();
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(12, result.Data?.Count);
+        Assert.Equal(12, result.Count);
     }
 
     [Fact]
@@ -31,19 +31,17 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllGameStatsByGameIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(4, result.Data?.Count);
+        Assert.Equal(4, result.Count);
     }
 
     [Fact]
     [Priority(3)]
-    public async Task GetAllGameStatsByGameIdAsync_Error_WhenGameIdNotFound()
+    public async Task GetAllGameStatsByGameIdAsync_ReturnsEmptyList_WhenGameIdNotFound()
     {
         var result = await _service.GetAllGameStatsByGameIdAsync(100);
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Equal("No GameStats found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -53,19 +51,17 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllGameStatsByStatIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(3, result.Data?.Count);
+        Assert.Equal(3, result.Count);
     }
 
     [Fact]
     [Priority(5)]
-    public async Task GetAllGameStatsByStatIdAsync_Error_WhenStatIdNotFound()
+    public async Task GetAllGameStatsByStatIdAsync_ReturnsEmptyList_WhenStatIdNotFound()
     {
         var result = await _service.GetAllGameStatsByStatIdAsync(100);
 
         Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Equal("No GameStats found", result.ErrorMessage);
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -75,20 +71,16 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetGameStatByIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.Id);
+        Assert.Equal(1, result.Id);
     }
 
     [Fact]
     [Priority(7)]
-    public async Task GetGameStatByIdAsync_Error_WhenIdNotFound()
+    public async Task GetGameStatByIdAsync_ReturnsEmptyDto_WhenIdNotFound()
     {
         var result = await _service.GetGameStatByIdAsync(100);
 
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("GameStat with ID 100 not found", result.ErrorMessage);
+        Assert.Null(result);
     }
 
     [Fact]
@@ -105,12 +97,11 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.CreateGameStatAsync(gameStatForCreationDto);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.GameId);
-        Assert.Equal(1, result.Data?.StatId);
-        Assert.Equal(2, result.Data?.SortIndex);
+        Assert.Equal(1, result.GameId);
+        Assert.Equal(1, result.StatId);
+        Assert.Equal(2, result.SortIndex);
 
-        if (result.Data != null) await _service.DeleteGameStatAsync(result.Data.Id);
+        await _service.DeleteGameStatAsync(result.Id);
     }
 
     [Fact]
@@ -124,12 +115,8 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        var result = await _service.CreateGameStatAsync(gameStatForCreationDto);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _service.CreateGameStatAsync(gameStatForCreationDto));
     }
 
     [Fact]
@@ -143,12 +130,8 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        var result = await _service.CreateGameStatAsync(gameStatForCreationDto);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _service.CreateGameStatAsync(gameStatForCreationDto));
     }
 
     [Fact]
@@ -165,11 +148,10 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.UpdateGameStatAsync(1, gameStatForUpdateDto);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.Id);
-        Assert.Equal(1, result.Data?.GameId);
-        Assert.Equal(1, result.Data?.StatId);
-        Assert.Equal(2, result.Data?.SortIndex);
+        Assert.Equal(1, result.Id);
+        Assert.Equal(1, result.GameId);
+        Assert.Equal(1, result.StatId);
+        Assert.Equal(2, result.SortIndex);
     }
 
     [Fact]
@@ -183,12 +165,8 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        var result = await _service.UpdateGameStatAsync(100, gameStatForUpdateDto);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("GameStat with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<GameStatNotFoundException>(async () =>
+            await _service.UpdateGameStatAsync(100, gameStatForUpdateDto));
     }
 
     [Fact]
@@ -202,12 +180,8 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        var result = await _service.UpdateGameStatAsync(1, gameStatForUpdateDto);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Game with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.UpdateGameStatAsync(1, gameStatForUpdateDto));
     }
 
     [Fact]
@@ -221,12 +195,8 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
             SortIndex = 2
         };
 
-        var result = await _service.UpdateGameStatAsync(1, gameStatForUpdateDto);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("Stat with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
+            await _service.UpdateGameStatAsync(1, gameStatForUpdateDto));
     }
 
     [Fact]
@@ -236,20 +206,15 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.DeleteGameStatAsync(1);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(1, result.Data?.Id);
+        Assert.Equal(1, result.Id);
     }
 
     [Fact]
     [Priority(16)]
     public async Task DeleteGameStatAsync_Error_WhenIdNotFound()
     {
-        var result = await _service.DeleteGameStatAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("GameStat with ID 100 not found", result.ErrorMessage);
+        await Assert.ThrowsAsync<GameStatNotFoundException>(async () =>
+            await _service.DeleteGameStatAsync(100));
     }
 
     [Fact]
@@ -259,20 +224,15 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.DeleteGameStatsByGameIdAsync(2);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(4, result.Data?.Count);
+        Assert.Equal(4, result.Count);
     }
 
     [Fact]
     [Priority(18)]
     public async Task DeleteGameStatByGameIdAsync_Error_WhenGameIdNotFound()
     {
-        var result = await _service.DeleteGameStatsByGameIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("No GameStats found", result.ErrorMessage);
+        await Assert.ThrowsAsync<GameNotFoundException>(async () =>
+            await _service.DeleteGameStatsByGameIdAsync(100));
     }
 
     [Fact]
@@ -282,19 +242,14 @@ public class GameStatServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.DeleteGameStatsByStatIdAsync(4);
 
         Assert.NotNull(result);
-        Assert.True(result.Success);
-        Assert.Equal(2, result.Data?.Count);
+        Assert.Equal(2, result.Count);
     }
 
     [Fact]
     [Priority(20)]
     public async Task DeleteGameStatByStatIdAsync_Error_WhenStatIdNotFound()
     {
-        var result = await _service.DeleteGameStatsByStatIdAsync(100);
-
-        Assert.NotNull(result);
-        Assert.False(result.Success);
-        Assert.Null(result.Data);
-        Assert.Equal("No GameStats found", result.ErrorMessage);
+        await Assert.ThrowsAsync<StatNotFoundException>(async () =>
+            await _service.DeleteGameStatsByStatIdAsync(100));
     }
 }

@@ -1,0 +1,15 @@
+meta {
+  name: GetAllPlatformGames
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{platformGamePath}}/GetAllPlatformGames
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

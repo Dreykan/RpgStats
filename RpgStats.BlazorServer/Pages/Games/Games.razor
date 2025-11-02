@@ -42,7 +42,9 @@
                     </MudLink>
                     <MudCardContent>
                         <MudText Typo="Typo.h5">Platform:</MudText>
-                        <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText>
+                        @* <MudText Typo="Typo.body1">@CreatePlatformString(game)</MudText> *@
+                        @* TODO: Implement Platform handling *@
+                        <MudText Typo="Typo.body1">Diese Stelle muss noch gefixt werden.</MudText>
                     </MudCardContent>
                     <MudCardActions>
                         <MudButton Href="@($"/gameDetail/{game.Id}")" Variant="Variant.Filled" Color="Color.Primary"
@@ -68,27 +70,27 @@
 
     private async Task GetGames()
     {
-        var response = await HttpClient.GetAsync("api/Game/GetGames");
+        var response = await HttpClient.GetAsync("api/Game/GetAllGames");
         if (!response.IsSuccessStatusCode)
         {
             _games = new List<GameDto>();
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<GameDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameDto>>>();
         _games = result?.Data;
     }
 
     private async Task GetPlatforms()
     {
-        var response = await HttpClient.GetAsync("api/Platform/GetPlatforms");
+        var response = await HttpClient.GetAsync("api/Platform/GetAllPlatforms");
         if (!response.IsSuccessStatusCode)
         {
             _platforms = new List<PlatformDto>();
             return;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RpgStatsResponse<List<PlatformDto>>>();
+        var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformDto>>>();
         _platforms = result?.Data;
     }
 
@@ -103,20 +105,20 @@
         return imageSrc;
     }
 
-    private string CreatePlatformString(GameDto game)
-    {
-        var platformString = string.Empty;
-
-        if (game.PlatformGames == null || !game.PlatformGames.Any()) return platformString;
-
-        foreach (var platformGame in game.PlatformGames)
-        {
-            var platform = _platforms?.FirstOrDefault(x => x.Id == platformGame.PlatformId);
-            if (platform == null) continue;
-            platformString += platform.Name + ", ";
-        }
-
-        return platformString;
-    }
+    // private string CreatePlatformString(GameDto game)
+    // {
+    //     var platformString = string.Empty;
+    //
+    //     if (game.PlatformGames == null || !game.PlatformGames.Any()) return platformString;
+    //
+    //     foreach (var platformGame in game.PlatformGames)
+    //     {
+    //         var platform = _platforms?.FirstOrDefault(x => x.Id == platformGame.PlatformId);
+    //         if (platform == null) continue;
+    //         platformString += platform.Name + ", ";
+    //     }
+    //
+    //     return platformString;
+    // }
 
 }
