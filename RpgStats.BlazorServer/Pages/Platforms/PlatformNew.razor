@@ -13,8 +13,8 @@
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudTextField Clearable="true" T="string" Label="Name" Required="true"
                               RequiredError="Ein Name ist schon erforderlich..."
-                              @bind-Value="_platformForCreationDto.Name" TextChanged="@(OnNameChanged)"
-                              Immediate="true"/>
+                              @bind-Value="_platformForCreationDto.Name" TextChanged="@OnNameChanged"
+                              Immediate="true" OnKeyUp="@KeyUpEventHandler"/>
                 <div class="align-content-center mt-4">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Disabled="!_success"
                                Class="m-auto" OnClick="@(async () => await Create())">Erstellen
@@ -59,4 +59,13 @@
     {
         await DialogService.ShowMessageBox("Error", text);
     }
+
+    private async Task KeyUpEventHandler(KeyboardEventArgs keyboardEventArgs)
+    {
+        if (keyboardEventArgs.Key == "Enter" && _success)
+        {
+            await Create();
+        }
+    }
+
 }
