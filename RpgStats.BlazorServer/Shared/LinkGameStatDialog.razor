@@ -19,14 +19,32 @@
             }
         </MudSelect>
         <MudItem xs="6">
-            <MudTextField Label="Sortier-Index" @bind-Value="_gameStatDto.SortIndex" Numeric="true"/>
-            <MudTextField Label="Status-Name im Spiel" @bind-Value="_gameStatDto.CustomStatName"/>
-            <MudTextField Label="Status-Kurzname im Spiel" @bind-Value="_gameStatDto.CustomStatShortName" />
+            <MudTextField
+                Label="Sortier-Index"
+                @bind-Value="_gameStatDto.SortIndex"
+                Numeric="true"
+                />
+            <MudTextField
+                Label="Status-Name im Spiel"
+                @bind-Value="_gameStatDto.CustomStatName"
+                Required="true"
+                RequiredError="Ist erforderlich..."
+                OnKeyUp="@KeyUpEventHandler"
+                Immediate="true"
+                />
+            <MudTextField
+                Label="Status-Kurzname im Spiel"
+                @bind-Value="_gameStatDto.CustomStatShortName"
+                Required="true"
+                RequiredError="Ist erforderlich..."
+                OnKeyUp="@KeyUpEventHandler"
+                Immediate="true"
+                />
         </MudItem>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Abbrechen</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Primary">OK</MudButton>
+        <MudButton OnClick="@Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="@Submit" Disabled="!CanSubmit" Color="Color.Primary">OK</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -37,9 +55,13 @@
 
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private List<StatDto>? _stats = new();
-    private string _stat = "Nothing selected.";
+    private string _stat = "";
     private IEnumerable<string> SelectedStat { get; set; } = new HashSet<string>();
     private readonly GameStatDto _gameStatDto = new();
+
+    private bool CanSubmit => !string.IsNullOrWhiteSpace(_stat)
+                             && !string.IsNullOrWhiteSpace(_gameStatDto.CustomStatName)
+                             && !string.IsNullOrWhiteSpace(_gameStatDto.CustomStatShortName);
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,8 +75,12 @@
 
     private async Task Submit()
     {
-        if (Game != null) _gameStatDto.GameId = Game.Id;
-        if (_stats != null) _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
+        if (Game != null)
+            _gameStatDto.GameId = Game.Id;
+
+        if (_stats != null)
+            _gameStatDto.StatId = _stats.Single(x => x.ShortName == _stat).Id;
+
         await CreateGameStat();
     }
 
@@ -123,5 +149,11 @@
     private async Task ShowErrorMessage(string text)
     {
         await DialogService.ShowMessageBox("Error", text);
+    }
+
+    private async Task KeyUpEventHandler(KeyboardEventArgs keyboardEventArgs)
+    {
+        if (keyboardEventArgs.Key == "Enter" && CanSubmit)
+            await Submit();
     }
 }
