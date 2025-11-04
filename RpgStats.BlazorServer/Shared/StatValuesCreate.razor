@@ -3,7 +3,7 @@
 @inject IHttpClientFactory HttpClientFactory
 @inject IDialogService DialogService
 
-<MudDialog>
+<MudDialog DefaultFocus="@DialogDefaultFocus">
     <DialogContent>
         <MudTextField Label="Level" @bind-Value="Level" Numeric="true" />
         <MudDivider />
@@ -45,6 +45,7 @@
     [Parameter] public List<StatDto>? Stats { get; set; }
     [Parameter] public CharacterDetailDto? Character { get; set; }
 
+    private DefaultFocus DialogDefaultFocus => DefaultFocus.FirstChild;
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private readonly List<StatValueForCreationDto> _statValues = new();
     private int Level { get; set; }
