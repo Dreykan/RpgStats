@@ -66,6 +66,7 @@ else
                                         </MudAvatar>
                                     }
                                     <MudText Typo="Typo.body1" Class="mb-1">@character.Name</MudText>
+                                    <MudText Typo="Typo.body2" Class="mb-1">Aktuelles Level: @GetCachedLevel(character.Id)</MudText>
                                 </MudLink>
                             }
                         }
@@ -115,6 +116,7 @@ else
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private GameDetailDto? _game;
     private List<GameStatDto>? _gameStats = new();
+    private readonly Dictionary<long, int> _characterLevels = new();
 
     [Parameter] public int Id { get; set; }
 
@@ -122,6 +124,7 @@ else
     {
         await GetGame();
         await GetGameStats();
+        await LoadCharacterLevels();
     }
 
     private async Task GetGame()
@@ -248,5 +251,35 @@ else
         }
 
         await GetGameStats();
+    }
+
+    private async Task LoadCharacterLevels()
+    {
+        if (_game == null || _game.CharacterWithoutFkObjectsDtos == null)
+            return;
+
+        var parameterString = "?";
+        foreach (var character in _game.CharacterWithoutFkObjectsDtos)
+        {
+            parameterString += $"characterIds={character.Id}&";
+        }
+
+        var response = await HttpClient.GetAsync($"api/StatValue/GetHighestLevelByCharacters{parameterString.TrimEnd('&')}");
+        if (!response.IsSuccessStatusCode)
+            return;
+
+        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<WebApiResponse<Dictionary<long, int>>>();
+        if (rpgStatsResponse?.Data == null)
+            return;
+
+        foreach (var kvp in rpgStatsResponse.Data)
+        {
+            _characterLevels[kvp.Key] = kvp.Value;
+        }
+    }
+
+    private int GetCachedLevel(long characterId)
+    {
+        return _characterLevels.GetValueOrDefault(characterId, 0);
     }
 }

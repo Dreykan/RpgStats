@@ -22,7 +22,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatValuesAsync();
 
         Assert.NotNull(result);
-        Assert.Equal(12, result.Count);
+        Assert.Equal(16, result.Count);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatValuesByStatIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.Equal(3, result.Count);
+        Assert.Equal(4, result.Count);
     }
 
     [Fact]
@@ -61,6 +61,46 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         {
             await _service.GetAllStatValuesByStatIdAsync(100);
         });
+    }
+    
+    [Fact]
+    public async Task GetHighestLevelByCharactersAsync_ReturnsHighestLevelByCharacterId()
+    {
+        var result = await _service.GetHighestLevelByCharactersAsync(new List<long>{1, 2, 3});
+
+        Assert.NotNull(result);
+        Assert.Equal(3, result.Count);
+        Assert.Equal(199, result[1]);
+        Assert.Equal(6, result[2]);
+        Assert.Equal(9, result[3]);
+    }
+    
+    [Fact]
+    public async Task GetHighestLevelByCharactersAsync_Error_WhenListIsEmpty()
+    {
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await _service.GetHighestLevelByCharactersAsync(new List<long>());
+        });
+    }
+
+    [Fact]
+    public async Task GetHighestLevelByCharactersAsync_Error_WhenCharacterNotFound()
+    {
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
+        {
+            await _service.GetHighestLevelByCharactersAsync(new List<long>{1, 100});
+        });
+    }
+
+    [Fact]
+    public async Task GetHighestLevelByCharactersAsync_ReturnsZero_WhenCharacterHasNoStatValues()
+    {
+        var result = await _service.GetHighestLevelByCharactersAsync(new List<long>{4});
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal(0, result[4]);
     }
 
     [Fact]

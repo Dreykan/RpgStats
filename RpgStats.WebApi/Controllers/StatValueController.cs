@@ -83,6 +83,35 @@ public class StatValueController : ControllerBase
         }
     }
 
+    [HttpGet("GetHighestLevelByCharacters/")]
+    [SwaggerResponse(200, "Returns the highest level for a character", typeof(ApiResponse<Dictionary<long, int>>))]
+    [SwaggerResponse(400, "Invalid character ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(
+        Summary = "Get highest level by Character",
+        Description = "Erwartet eine Liste von Character\\-IDs als Query. Beispiel: `?characterIds=1&characterIds=2&characterIds=5`."
+        )]
+    public async Task<IActionResult> GetHighestLevelByCharacters([FromQuery, SwaggerParameter("\"Liste der Character\\-IDs. Mehrfach als Query\\-Parameter angeben, z.B. `?characterIds=1&characterIds=2`.")] List<long> characterIds)
+    {
+        if (characterIds.Count == 0)
+            return BadRequest(ApiResponse<Dictionary<long, int>>.ErrorResult("Character IDs list cannot be null or empty."));
+
+        try
+        {
+            var highestLevels = await _statValueService.GetHighestLevelByCharactersAsync(characterIds);
+            return Ok(ApiResponse<Dictionary<long, int>>.SuccessResult(highestLevels));
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(ApiResponse<Dictionary<long, int>>.ErrorResult(e.Message));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<Dictionary<long, int>>.ErrorResult(e.Message));
+        }
+    }
+
     [HttpGet("GetStatValueById/{statValueId:long}")]
     [SwaggerResponse(200, "Returns a StatValue by ID", typeof(ApiResponse<StatValueDto>))]
     [SwaggerResponse(400, "Invalid stat value ID")]

@@ -51,6 +51,29 @@ public class StatValueService : IStatValueService
         return statValues.Adapt<List<StatValueDto>>();
     }
 
+    public async Task<Dictionary<long, int>> GetHighestLevelByCharactersAsync(List<long> characterIds)
+    {
+        if (characterIds == null || characterIds.Count == 0)
+            throw new ArgumentException("Character IDs list cannot be null or empty");
+
+        var result = new Dictionary<long, int>();
+
+        foreach (var characterId in characterIds)
+        {
+            var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+            if (character == null)
+                throw new CharacterNotFoundException(characterId);
+
+            var highestLevel = await _dbContext.StatValues
+                .Where(sv => sv.CharacterId == characterId)
+                .MaxAsync(sv => (int?)sv.Level) ?? 0;
+
+            result[characterId] = highestLevel;
+        }
+
+        return result;
+    }
+
     public async Task<StatValueDto?> GetStatValueByIdAsync(long statValueId)
     {
         var statValue = await _dbContext.StatValues
