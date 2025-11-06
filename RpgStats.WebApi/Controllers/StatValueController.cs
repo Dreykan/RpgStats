@@ -83,25 +83,32 @@ public class StatValueController : ControllerBase
         }
     }
 
-    [HttpGet("GetHighestLevelByCharacter/{characterId:long}")]
-    [SwaggerResponse(200, "Returns the highest level for a character", typeof(ApiResponse<int>))]
+    [HttpGet("GetHighestLevelByCharacters/")]
+    [SwaggerResponse(200, "Returns the highest level for a character", typeof(ApiResponse<Dictionary<long, int>>))]
     [SwaggerResponse(400, "Invalid character ID")]
     [SwaggerResponse(404, "Resource not found")]
     [SwaggerResponse(500, "Internal server error")]
-    [SwaggerOperation(Summary = "Get highest level by Character")]
-    public async Task<IActionResult> GetHighestLevelByCharacter(long characterId)
+    [SwaggerOperation(
+        Summary = "Get highest level by Character",
+        Description = "Erwartet eine Liste von Character\\-IDs als Query. Beispiel: `?characterIds=1&characterIds=2&characterIds=5`."
+        )]
+    public async Task<IActionResult> GetHighestLevelByCharacters([FromQuery, SwaggerParameter("\"Liste der Character\\-IDs. Mehrfach als Query\\-Parameter angeben, z.B. `?characterIds=1&characterIds=2`.")] List<long> characterIds)
     {
-        if (characterId <= 0)
-            return BadRequest(ApiResponse<int>.ErrorResult("Invalid character ID."));
+        if (characterIds.Count == 0)
+            return BadRequest(ApiResponse<Dictionary<long, int>>.ErrorResult("Character IDs list cannot be null or empty."));
 
         try
         {
-            var level = await _statValueService.GetHighestLevelByCharacterIdAsync(characterId);
-            return Ok(ApiResponse<int>.SuccessResult(level));
+            var highestLevels = await _statValueService.GetHighestLevelByCharactersAsync(characterIds);
+            return Ok(ApiResponse<Dictionary<long, int>>.SuccessResult(highestLevels));
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(ApiResponse<Dictionary<long, int>>.ErrorResult(e.Message));
         }
         catch (CharacterNotFoundException e)
         {
-            return NotFound(ApiResponse<int>.ErrorResult(e.Message));
+            return NotFound(ApiResponse<Dictionary<long, int>>.ErrorResult(e.Message));
         }
     }
 

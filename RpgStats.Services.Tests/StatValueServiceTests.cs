@@ -64,28 +64,43 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
     
     [Fact]
-    public async Task GetHighestLevelByCharacterIdAsync_ReturnsHighestLevelByCharacterId()
+    public async Task GetHighestLevelByCharactersAsync_ReturnsHighestLevelByCharacterId()
     {
-        var result = await _service.GetHighestLevelByCharacterIdAsync(2);
+        var result = await _service.GetHighestLevelByCharactersAsync(new List<long>{1, 2, 3});
 
-        Assert.Equal(6, result);
+        Assert.NotNull(result);
+        Assert.Equal(3, result.Count);
+        Assert.Equal(199, result[1]);
+        Assert.Equal(6, result[2]);
+        Assert.Equal(9, result[3]);
     }
     
     [Fact]
-    public async Task GetHighestLevelByCharacterIdAsync_Error_WhenNoStatValuesFound()
+    public async Task GetHighestLevelByCharactersAsync_Error_WhenListIsEmpty()
     {
-        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await _service.GetHighestLevelByCharacterIdAsync(100);
+            await _service.GetHighestLevelByCharactersAsync(new List<long>());
         });
     }
 
     [Fact]
-    public async Task GetHighestLevelByCharacterIdAsync_ReturnsZero_WhenCharacterHasNoStatValues()
+    public async Task GetHighestLevelByCharactersAsync_Error_WhenCharacterNotFound()
     {
-        var result = await _service.GetHighestLevelByCharacterIdAsync(4);
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
+        {
+            await _service.GetHighestLevelByCharactersAsync(new List<long>{1, 100});
+        });
+    }
 
-        Assert.Equal(0, result);
+    [Fact]
+    public async Task GetHighestLevelByCharactersAsync_ReturnsZero_WhenCharacterHasNoStatValues()
+    {
+        var result = await _service.GetHighestLevelByCharactersAsync(new List<long>{4});
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal(0, result[4]);
     }
 
     [Fact]

@@ -258,30 +258,28 @@ else
         if (_game == null || _game.CharacterWithoutFkObjectsDtos == null)
             return;
 
+        var parameterString = "?";
         foreach (var character in _game.CharacterWithoutFkObjectsDtos)
         {
-            var level = await GetLevelOfCharacter(character.Id);
-            _characterLevels[character.Id] = level;
+            parameterString += $"characterIds={character.Id}&";
+        }
+
+        var response = await HttpClient.GetAsync($"api/StatValue/GetHighestLevelByCharacters{parameterString.TrimEnd('&')}");
+        if (!response.IsSuccessStatusCode)
+            return;
+
+        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<WebApiResponse<Dictionary<long, int>>>();
+        if (rpgStatsResponse?.Data == null)
+            return;
+
+        foreach (var kvp in rpgStatsResponse.Data)
+        {
+            _characterLevels[kvp.Key] = kvp.Value;
         }
     }
 
     private int GetCachedLevel(long characterId)
     {
         return _characterLevels.GetValueOrDefault(characterId, 0);
-    }
-
-    private async Task<int> GetLevelOfCharacter(long characterId)
-    {
-        var response = await HttpClient.GetAsync($"api/StatValue/GetHighestLevelByCharacter/{characterId}");
-        if (!response.IsSuccessStatusCode)
-        {
-            return 0;
-        }
-        var rpgStatsResponse = await response.Content.ReadFromJsonAsync<WebApiResponse<int>>();
-        if (rpgStatsResponse is not { Success: true })
-        {
-            return 0;
-        }
-        return rpgStatsResponse?.Data ?? 0;
     }
 }
