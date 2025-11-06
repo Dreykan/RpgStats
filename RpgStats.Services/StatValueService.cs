@@ -51,6 +51,21 @@ public class StatValueService : IStatValueService
         return statValues.Adapt<List<StatValueDto>>();
     }
 
+    public async Task<int> GetHighestLevelByCharacterIdAsync(long characterId)
+    {
+        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+        if (character == null)
+            throw new CharacterNotFoundException(characterId);
+
+        var level = await _dbContext.StatValues
+            .Where(sv => sv.CharacterId == characterId)
+            .Select(sv => sv.Level)
+            .DefaultIfEmpty(0)
+            .MaxAsync();
+
+        return level;
+    }
+
     public async Task<StatValueDto?> GetStatValueByIdAsync(long statValueId)
     {
         var statValue = await _dbContext.StatValues

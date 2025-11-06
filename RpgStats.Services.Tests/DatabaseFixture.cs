@@ -112,6 +112,7 @@ public class DatabaseFixture : IDisposable
 
     private void AddStatValues()
     {
+        // Character 1, Level 1
         Context.StatValues.Add(new StatValue
         {
             Id = 1, CharacterId = 1, Level = 1, StatId = 1, Value = 11, ContainedBonusNum = 2, ContainedBonusPercent = 0
@@ -128,6 +129,8 @@ public class DatabaseFixture : IDisposable
         {
             Id = 4, CharacterId = 1, Level = 1, StatId = 4, Value = 44, ContainedBonusNum = 6, ContainedBonusPercent = 1
         });
+
+        // Character 2, Level 5
         Context.StatValues.Add(new StatValue
         {
             Id = 5, CharacterId = 2, Level = 5, StatId = 1, Value = 55, ContainedBonusNum = 0, ContainedBonusPercent = 2
@@ -144,6 +147,26 @@ public class DatabaseFixture : IDisposable
         {
             Id = 8, CharacterId = 2, Level = 5, StatId = 5, Value = 88, ContainedBonusNum = 7, ContainedBonusPercent = 4
         });
+
+        // Character 2, Level 6
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 13, CharacterId = 2, Level = 6, StatId = 1, Value = 56, ContainedBonusNum = 1, ContainedBonusPercent = 3
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 14, CharacterId = 2, Level = 6, StatId = 2, Value = 67, ContainedBonusNum = 4, ContainedBonusPercent = 6
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 15, CharacterId = 2, Level = 6, StatId = 3, Value = 78, ContainedBonusNum = 6, ContainedBonusPercent = 1
+        });
+        Context.StatValues.Add(new StatValue
+        {
+            Id = 16, CharacterId = 2, Level = 6, StatId = 5, Value = 89, ContainedBonusNum = 8, ContainedBonusPercent = 5
+        });
+
+        // Character 3, Level 9
         Context.StatValues.Add(new StatValue
         {
             Id = 9, CharacterId = 3, Level = 9, StatId = 1, Value = 99, ContainedBonusNum = 11,

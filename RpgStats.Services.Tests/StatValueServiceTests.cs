@@ -22,7 +22,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatValuesAsync();
 
         Assert.NotNull(result);
-        Assert.Equal(12, result.Count);
+        Assert.Equal(16, result.Count);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         var result = await _service.GetAllStatValuesByStatIdAsync(1);
 
         Assert.NotNull(result);
-        Assert.Equal(3, result.Count);
+        Assert.Equal(4, result.Count);
     }
 
     [Fact]
@@ -61,6 +61,31 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         {
             await _service.GetAllStatValuesByStatIdAsync(100);
         });
+    }
+    
+    [Fact]
+    public async Task GetHighestLevelByCharacterIdAsync_ReturnsHighestLevelByCharacterId()
+    {
+        var result = await _service.GetHighestLevelByCharacterIdAsync(2);
+
+        Assert.Equal(6, result);
+    }
+    
+    [Fact]
+    public async Task GetHighestLevelByCharacterIdAsync_Error_WhenNoStatValuesFound()
+    {
+        await Assert.ThrowsAsync<CharacterNotFoundException>(async () =>
+        {
+            await _service.GetHighestLevelByCharacterIdAsync(100);
+        });
+    }
+
+    [Fact]
+    public async Task GetHighestLevelByCharacterIdAsync_ReturnsZero_WhenCharacterHasNoStatValues()
+    {
+        var result = await _service.GetHighestLevelByCharacterIdAsync(4);
+
+        Assert.Equal(0, result);
     }
 
     [Fact]

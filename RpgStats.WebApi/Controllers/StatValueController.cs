@@ -83,6 +83,28 @@ public class StatValueController : ControllerBase
         }
     }
 
+    [HttpGet("GetHighestLevelByCharacter/{characterId:long}")]
+    [SwaggerResponse(200, "Returns the highest level for a character", typeof(ApiResponse<int>))]
+    [SwaggerResponse(400, "Invalid character ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get highest level by Character")]
+    public async Task<IActionResult> GetHighestLevelByCharacter(long characterId)
+    {
+        if (characterId <= 0)
+            return BadRequest(ApiResponse<int>.ErrorResult("Invalid character ID."));
+
+        try
+        {
+            var level = await _statValueService.GetHighestLevelByCharacterIdAsync(characterId);
+            return Ok(ApiResponse<int>.SuccessResult(level));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<int>.ErrorResult(e.Message));
+        }
+    }
+
     [HttpGet("GetStatValueById/{statValueId:long}")]
     [SwaggerResponse(200, "Returns a StatValue by ID", typeof(ApiResponse<StatValueDto>))]
     [SwaggerResponse(400, "Invalid stat value ID")]
