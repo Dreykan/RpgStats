@@ -1,0 +1,21 @@
+meta {
+  name: GetHighestLevelByCharacter
+  type: http
+  seq: 31
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{statValuePath}}/GetHighestLevelByCharacters?characterIds=1&characterIds=2&characterIds=3
+  body: none
+  auth: none
+}
+
+params:query {
+  characterIds: 1
+  characterIds: 2
+  characterIds: 3
+}
+
+assert {
+  res.status: eq 200
+}
