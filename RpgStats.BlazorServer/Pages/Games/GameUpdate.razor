@@ -19,51 +19,53 @@ else
         <MudItem xs="12" sm="12">
             <MudPaper Class="pa-4">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true"
-                                  RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name"
-                                  TextChanged="OnNameChanged" Immediate="true"/>
-                    <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value"
-                               @bind-SelectedValues="SelectedPlatforms" Clearable="true">
-                        @if (_platformDtos != null)
-                        {
-                            foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
+                    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                        <MudTextField Clearable="true" T="string" Label="Name" Required="true"
+                                      RequiredError="A name for this game is required" @bind-Value="@_gameForUpdateDto.Name"
+                                      TextChanged="OnNameChanged" Immediate="true"/>
+                        <MudSelect T="string" Required="true" Label="Platforms" MultiSelection="true" @bind-Value="_value"
+                                   @bind-SelectedValues="SelectedPlatforms" Clearable="true">
+                            @if (_platformDtos != null)
                             {
-                                <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                                foreach (var platformDto in _platformDtos.OrderBy(x => x.Name).ToList())
+                                {
+                                    <MudSelectItem T="string" Value="@platformDto.Name">@platformDto.Name</MudSelectItem>
+                                }
                             }
-                        }
-                    </MudSelect>
-                    <MudGrid>
-                        <MudItem lg="6" md="6" xs="12" sm="12">
-                            <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles"
-                                           MaximumFileCount="1">
-                                <ButtonTemplate>
-                                    <MudButton HtmlTag="label"
-                                               Variant="Variant.Filled"
-                                               Color="Color.Primary"
-                                               StartIcon="@Icons.Material.Filled.Image"
-                                               for="@context">
-                                        Upload Image (only .jpg and png)
+                        </MudSelect>
+                        <MudGrid>
+                            <MudItem lg="6" md="6" xs="12" sm="12">
+                                <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFiles"
+                                               MaximumFileCount="1">
+                                    <ButtonTemplate>
+                                        <MudButton HtmlTag="label"
+                                                   Variant="Variant.Filled"
+                                                   Color="Color.Primary"
+                                                   StartIcon="@Icons.Material.Filled.Image"
+                                                   for="@context">
+                                            Upload Image (only .jpg and png)
+                                        </MudButton>
+                                    </ButtonTemplate>
+                                </MudFileUpload>
+                                <MudToolBar DisableGutters="true" Class="gap-4">
+                                    <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
+                                    <MudButton OnClick="ClearImages" Disabled="@(!_files.Any())" Color="Color.Error"
+                                               Variant="Variant.Filled">Clear
                                     </MudButton>
-                                </ButtonTemplate>
-                            </MudFileUpload>
-                            <MudToolBar DisableGutters="true" Class="gap-4">
-                                <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
-                                <MudButton OnClick="ClearImages" Disabled="@(!_files.Any())" Color="Color.Error"
-                                           Variant="Variant.Filled">Clear
-                                </MudButton>
-                            </MudToolBar>
-                        </MudItem>
-                        <MudItem lg="1" md="3" xs="12" sm="12">
-                            <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill"
-                                      Alt="Picture of the Game" Elevation="0" Fluid="true"
-                                      Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
-                        </MudItem>
-                    </MudGrid>
-                    <div class="align-content-center mt-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
-                                   Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Update
-                        </MudButton>
-                    </div>
+                                </MudToolBar>
+                            </MudItem>
+                            <MudItem lg="1" md="3" xs="12" sm="12">
+                                <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill"
+                                          Alt="Picture of the Game" Elevation="0" Fluid="true"
+                                          Class="rounded-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                            </MudItem>
+                        </MudGrid>
+                        <div class="align-content-center mt-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                                       Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Update
+                            </MudButton>
+                        </div>
+                    </MudFocusTrap>
                 </MudForm>
             </MudPaper>
         </MudItem>
@@ -85,6 +87,7 @@ else
     private string[] _errors = { };
     private byte[] _imageBytes = Array.Empty<byte>();
 
+    @* ReSharper restore NotAccessedField.Local *@
     [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -261,5 +264,3 @@ else
         await DialogService.ShowMessageBox("Error", text);
     }
 }
-
-@* ReSharper restore NotAccessedField.Local *@
