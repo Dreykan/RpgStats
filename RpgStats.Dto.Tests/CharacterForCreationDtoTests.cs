@@ -65,4 +65,17 @@ public class CharacterForCreationDtoTests
 
         Assert.True(isValid);
     }
+
+    [Fact]
+    public void Note_CannotBeLongerThan2000Characters()
+    {
+        var character = new CharacterForCreationDto
+            { Name = "Valid Name", Note = new string('a', 2001) };
+        var validationResults = new List<ValidationResult>();
+        var context = new ValidationContext(character);
+        var isValid = Validator.TryValidateObject(character, context, validationResults, true);
+
+        Assert.False(isValid);
+        Assert.Contains(validationResults, v => v.ErrorMessage == "The note can't be longer than 2000 characters.");
+    }
 }

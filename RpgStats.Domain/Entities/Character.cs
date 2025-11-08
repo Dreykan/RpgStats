@@ -17,6 +17,9 @@ public class Character
 
     public byte[]? Picture { get; set; }
 
+    [StringLength(2000, ErrorMessage = "The Note can't be longer than 2000 characters.")]
+    public string? Note { get; set; }
+
     [Required(ErrorMessage = "An entry in the column GameId is required.")]
     [ForeignKey(nameof(Game))]
     public long GameId { get; set; }

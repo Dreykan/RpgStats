@@ -11,7 +11,8 @@ public static class CharacterMapper
         {
             Id = character.Id,
             Name = character.Name,
-            Picture = character.Picture
+            Picture = character.Picture,
+            Note = character.Note
         };
 
         // Map Game-Property
@@ -40,7 +41,8 @@ public static class CharacterMapper
         {
             Id = character.Id,
             Name = character.Name,
-            Picture = character.Picture
+            Picture = character.Picture,
+            Note = character.Note
         };
 
         return characterWithoutFkObjectsDto;

@@ -44,6 +44,18 @@ public class CharacterTests
     }
 
     [Fact]
+    public void Character_Note_ShouldBeSetAndRetrievedCorrectly()
+    {
+        var character = new Character
+        {
+            Name = "TestCharacter"
+        };
+        character.Note = "This is a test note.";
+
+        Assert.Equal("This is a test note.", character.Note);
+    }
+
+    [Fact]
     public void Character_GameId_ShouldBeSetAndRetrievedCorrectly()
     {
         var character = new Character

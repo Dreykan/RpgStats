@@ -9,6 +9,7 @@ public class CharacterDtoTests
         Assert.Equal(0, character.Id);
         Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
+        Assert.Null(character.Note);
         Assert.Equal(0, character.GameId);
         Assert.Null(character.StatValues);
     }
@@ -22,6 +23,7 @@ public class CharacterDtoTests
             Id = 1,
             Name = "Hero",
             Picture = new byte[] { 1, 2, 3 },
+            Note = "A brave hero",
             GameId = 100,
             StatValues = statValues
         };
@@ -29,6 +31,7 @@ public class CharacterDtoTests
         Assert.Equal(1, character.Id);
         Assert.Equal("Hero", character.Name);
         Assert.Equal(new byte[] { 1, 2, 3 }, character.Picture);
+        Assert.Equal("A brave hero", character.Note);
         Assert.Equal(100, character.GameId);
         Assert.Equal(statValues, character.StatValues);
     }
@@ -39,11 +42,13 @@ public class CharacterDtoTests
         var character = new CharacterDto
         {
             Picture = null,
+            Note = null,
             StatValues = null
         };
 
         Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
+        Assert.Null(character.Note);
         Assert.Null(character.StatValues);
     }
 }

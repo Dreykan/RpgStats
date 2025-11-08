@@ -37,4 +37,11 @@ public class CharacterWithoutFkObjectsDtoTests
         var dto = new CharacterWithoutFkObjectsDto { Picture = null };
         Assert.Null(dto.Picture);
     }
+
+    [Fact]
+    public void Note_ShouldBeSetAndRetrievedCorrectly()
+    {
+        var dto = new CharacterWithoutFkObjectsDto { Note = "A brave hero." };
+        Assert.Equal("A brave hero.", dto.Note);
+    }
 }

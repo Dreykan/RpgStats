@@ -103,6 +103,7 @@ public class CharacterService : ICharacterService
 
         character.Name = characterForUpdateDto.Name;
         character.Picture = characterForUpdateDto.Picture;
+        character.Note = characterForUpdateDto.Note;
         character.GameId = game.Id;
         character.Game = game;
 

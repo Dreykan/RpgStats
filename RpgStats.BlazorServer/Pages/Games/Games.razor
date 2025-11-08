@@ -78,7 +78,7 @@
         }
 
         var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameDto>>>();
-        _games = result?.Data;
+        _games = result?.Data?.OrderBy(game => game.Name).ToList();
     }
 
     private async Task GetPlatforms()
