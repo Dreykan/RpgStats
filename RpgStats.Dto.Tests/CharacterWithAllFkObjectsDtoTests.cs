@@ -10,6 +10,7 @@ public class CharacterWithAllFkObjectsDtoTests
             Id = 1,
             Name = "Hero",
             Picture = "  "u8.ToArray(),
+            Note = "A brave hero.",
             GameWithoutFkObjectsDto = new GameWithoutFkObjectsDto(),
             StatValuesWithStatObjectDtos = new List<StatValueWithStatObjectDto> { new() }
         };
@@ -17,6 +18,7 @@ public class CharacterWithAllFkObjectsDtoTests
         Assert.Equal(1, character.Id);
         Assert.Equal("Hero", character.Name);
         Assert.NotNull(character.Picture);
+        Assert.Equal("A brave hero.", character.Note);
         Assert.NotNull(character.GameWithoutFkObjectsDto);
         Assert.NotNull(character.StatValuesWithStatObjectDtos);
     }
@@ -28,6 +30,7 @@ public class CharacterWithAllFkObjectsDtoTests
         {
             Id = 1,
             Picture = null,
+            Note = null,
             GameWithoutFkObjectsDto = null,
             StatValuesWithStatObjectDtos = null
         };
@@ -35,6 +38,7 @@ public class CharacterWithAllFkObjectsDtoTests
         Assert.Equal(1, character.Id);
         Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
+        Assert.Null(character.Note);
         Assert.Null(character.GameWithoutFkObjectsDto);
         Assert.Null(character.StatValuesWithStatObjectDtos);
     }
@@ -47,6 +51,7 @@ public class CharacterWithAllFkObjectsDtoTests
         Assert.Equal(0, character.Id);
         Assert.Equal(string.Empty, character.Name);
         Assert.Null(character.Picture);
+        Assert.Null(character.Note);
         Assert.Null(character.GameWithoutFkObjectsDto);
         Assert.Null(character.StatValuesWithStatObjectDtos);
     }

@@ -41,11 +41,11 @@ public class DatabaseFixture : IDisposable
 
     private void AddCharacters()
     {
-        Context.Characters.Add(new Character { Id = 1, Name = "Test1", GameId = 1 });
-        Context.Characters.Add(new Character { Id = 2, Name = "Test2", GameId = 2 });
-        Context.Characters.Add(new Character { Id = 3, Name = "Test3", GameId = 2 });
-        Context.Characters.Add(new Character { Id = 4, Name = "Char1", GameId = 3 });
-        Context.Characters.Add(new Character { Id = 5, Name = "Char2", GameId = 4 });
+        Context.Characters.Add(new Character { Id = 1, Name = "Test1", GameId = 1, Note = "Note for Test1" });
+        Context.Characters.Add(new Character { Id = 2, Name = "Test2", GameId = 2, Note = "Note for Test2" });
+        Context.Characters.Add(new Character { Id = 3, Name = "Test3", GameId = 2, Note = "Note for Test3" });
+        Context.Characters.Add(new Character { Id = 4, Name = "Char1", GameId = 3, Note = "Note for Char1" });
+        Context.Characters.Add(new Character { Id = 5, Name = "Char2", GameId = 4, Note = "Note for Char2" });
     }
 
     private void AddGames()

@@ -28,16 +28,18 @@
                             <MudText Typo="Typo.h4" Align="Align.Center">@character.Name</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
-                    @if (character.Picture == null)
-                    {
-                        <MudCardMedia Image="images/placeholder-3.png" Title="placeholder-3"/>
-                    }
-                    else
-                    {
-                        <MudImage Src="@TurnByteArrayToImage(character)" ObjectFit="ObjectFit.Fill"
-                                  Alt="Picture of the Character" Elevation="2" Fluid="true"
-                                  Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;"/>
-                    }
+                    <MudLink Href="@($"/characterDetail/{character.Id}")">
+                        @if (character.Picture == null)
+                        {
+                            <MudCardMedia Image="images/placeholder-3.png" Title="placeholder-3"/>
+                        }
+                        else
+                        {
+                            <MudImage Src="@TurnByteArrayToImage(character)" ObjectFit="ObjectFit.Fill"
+                                      Alt="Picture of the Character" Elevation="2" Fluid="true"
+                                      Class="rounded-3 mx-auto d-block m-3" Style="max-width: 24rem;"/>
+                        }
+                    </MudLink>
                     <MudCardActions>
                         <MudButton Href="@($"/characterDetail/{character.Id}")" Variant="Variant.Filled"
                                    Color="Color.Primary" FullWidth="true" Style="margin: auto;">Details
@@ -68,7 +70,7 @@
         }
 
         var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<CharacterDto>>>();
-        _characters = result?.Data;
+        _characters = result?.Data?.OrderBy(character => character.Name).ToList();
     }
 
     private static string TurnByteArrayToImage(CharacterDto character)

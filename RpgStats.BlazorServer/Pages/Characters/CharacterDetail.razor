@@ -3,6 +3,7 @@
 @using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
 
@@ -52,16 +53,25 @@ else
                     }
                 </MudText>
             </MudPaper>
+            <MudPaper Class="pa-4 border border-dark mt-4" Outlined="true" Elevation="10">
+                <MudTextField T="string" Counter="2000" Immediate="true" Label="Notiz" Variant="Variant.Text"
+                              @bind-Value="@_character.Note" Lines="5" Validation="@(new Func<string, IEnumerable<string>>(MaxCharactersInNotes))"/>
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.NoteAdd" OnClick="@SaveCharacterNotes">
+                    Notiz speichern
+                </MudButton>
+            </MudPaper>
             <MudGrid Spacing="3" Style="Margin-top: 25px;">
                 <MudItem xs="6">
                     <MudButton Href="@($"/updateCharacter/{_character.Id}")" ButtonType="ButtonType.Button"
                                Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
-                               StartIcon="@Icons.Material.Filled.Update">Ändern
+                               StartIcon="@Icons.Material.Filled.Update">
+                        Ändern
                     </MudButton>
                 </MudItem>
                 <MudItem xs="6" Class="text-right">
                     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Error"
-                               FullWidth="true" StartIcon="@Icons.Material.Filled.PersonRemove" OnClick="DeleteCharacter">
+                               FullWidth="true" StartIcon="@Icons.Material.Filled.PersonRemove" OnClick="@DeleteCharacter">
                         Löschen
                     </MudButton>
                 </MudItem>
@@ -126,33 +136,13 @@ else
 @code {
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private CharacterDetailDto? _character;
-    // private List<StatValueDto>? _statValues = new();
-    // private List<GameStatDto>? _gameStats = new();
 
     [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await GetCharacter();
-        // await GetStatValues();
-        // await GetGameStats();
     }
-
-    // private async Task GetStatValues()
-    // {
-    //     if (_character != null)
-    //     {
-    //         var response = await HttpClient.GetFromJsonAsync<WebApiResponse<List<StatValueDto>>>($"api/StatValue/GetStatValuesByCharacter/{_character.Id}");
-    //         _statValues = response?.Data ?? new List<StatValueDto>();
-    //     }
-    // }
-    //
-    // private async Task GetGameStats()
-    // {
-    //     var response = await HttpClient.GetAsync(($"api/GameStat/GetGameStatsByGame/{_character?.GameWithoutFkObjectsDto?.Id}"));
-    //     var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameStatDto>>>();
-    //     _gameStats = responseContent?.Data?.OrderBy(x => x.SortIndex).ToList() ?? new List<GameStatDto>();
-    // }
 
     private async Task GetCharacter()
     {
@@ -196,13 +186,8 @@ else
 
     private Dictionary<int, List<StatValueDto>> GetStatValuesByLevel()
     {
-        // if (_statValues == null) return new Dictionary<int, List<StatValueDto>>();
         if (_character?.StatValues == null) return new Dictionary<int, List<StatValueDto>>();
 
-        // return _statValues
-        //     .GroupBy(sv => sv.Level)
-        //     .OrderBy(g => g.Key)
-        //     .ToDictionary(g => g.Key, g => g.ToList());
         return _character.StatValues
             .GroupBy(sv => sv.Level)
             .OrderBy(g => g.Key)
@@ -215,8 +200,6 @@ else
         var dialogParameter = new DialogParameters { { "Character", _character }, { "Stats", GetStats() } };
         var dialog = await DialogService.ShowAsync<StatValuesCreate>("Neue Statuswerte", dialogParameter, dialogOptions);
         var result = await dialog.Result;
-        // if (result.Canceled == false)
-        //     await GetStatValues();
         if (result.Canceled == false)
             await GetCharacter();
     }
@@ -227,8 +210,6 @@ else
         var dialogParameter = new DialogParameters { { "Character", _character } };
         var dialog = await DialogService.ShowAsync<StatValuesRemove>("Statuswerte entfernen", dialogParameter, dialogOptions);
         var result = await dialog.Result;
-        // if (result.Canceled == false)
-        //     await GetStatValues();
         if (result.Canceled == false)
             await GetCharacter();
 
@@ -236,20 +217,41 @@ else
 
     private List<StatDto> GetStats()
     {
-        // if (_gameStats == null) return new List<StatDto>();
         if (_character?.GameStats == null) return new List<StatDto>();
 
-        // return _gameStats.Select(gs => new StatDto
-        // {
-        //     Id = gs.StatId,
-        //     Name = gs.CustomStatName,
-        //     ShortName = gs.CustomStatShortName
-        // }).ToList();
         return _character.GameStats.Select(gs => new StatDto
         {
             Id = gs.StatId,
             Name = gs.CustomStatName,
             ShortName = gs.CustomStatShortName
         }).ToList();
+    }
+
+    private async Task SaveCharacterNotes()
+    {
+        if (_character == null) return;
+
+        var response = await HttpClient.PutAsJsonAsync($"api/Character/UpdateCharacter/{_character.Game?.Id}/{_character.Id}", new CharacterForUpdateDto()
+        {
+            Name = _character.Name,
+            Picture = _character.Picture,
+            Note = _character.Note
+        });
+
+        var content = await response.Content.ReadFromJsonAsync<WebApiResponse<CharacterDto>>();
+        if (!response.IsSuccessStatusCode || content?.Success != true)
+        {
+            Snackbar.Add("Fehler beim Speichern der Notiz.", Severity.Error);
+        }
+        else
+        {
+            Snackbar.Add("Notiz wurde gespeichert.", Severity.Success);
+        }
+    }
+
+    private IEnumerable<string> MaxCharactersInNotes(string ch)
+    {
+        if (!string.IsNullOrEmpty(ch) && 2000 < ch?.Length)
+            yield return "Max 2000 characters";
     }
 }

@@ -38,6 +38,10 @@ namespace RpgStats.Repo.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
+                    b.Property<string>("Note")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
                     b.Property<byte[]>("Picture")
                         .HasColumnType("bytea");
 
