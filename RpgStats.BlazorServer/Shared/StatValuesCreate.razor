@@ -5,7 +5,7 @@
 
 <MudDialog DefaultFocus="@DialogDefaultFocus">
     <DialogContent>
-        <MudTextField Label="Level" @bind-Value="Level" Numeric="true" />
+        <MudTextField Label="Level" @bind-Value="Level" Numeric="true" onFocus="this.select()"/>
         <MudDivider />
         @if (Stats != null)
         {
@@ -20,13 +20,13 @@
                 <MudItem>
                     <MudGrid>
                         <MudItem xs="6">
-                            <MudTextField Label="@statDto.ShortName" @bind-Value="statValueDto.Value" Numeric="true"/>
+                            <MudTextField Label="@statDto.ShortName" @bind-Value="statValueDto.Value" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                         <MudItem xs="3">
-                            <MudTextField Label="+BonusNum" @bind-Value="statValueDto.ContainedBonusNum" Numeric="true"/>
+                            <MudTextField Label="+BonusNum" @bind-Value="statValueDto.ContainedBonusNum" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                         <MudItem xs="3">
-                            <MudTextField Label="+BonusPercent" @bind-Value="statValueDto.ContainedBonusPercent" Numeric="true"/>
+                            <MudTextField Label="+BonusPercent" @bind-Value="statValueDto.ContainedBonusPercent" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                     </MudGrid>
                 </MudItem>
@@ -52,13 +52,11 @@
 
     protected override void OnInitialized()
     {
-        if (Stats != null)
+        if (Stats == null) return;
+        foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
         {
-            foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
-            {
-                var statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
-                _statValues.Add(statValueDto);
-            }
+            var statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
+            _statValues.Add(statValueDto);
         }
     }
 

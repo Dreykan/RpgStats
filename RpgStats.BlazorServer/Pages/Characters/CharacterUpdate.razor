@@ -19,49 +19,52 @@ else
         <MudItem xs="12">
             <MudPaper Class="pa-0">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField Clearable="true" T="string" Label="Name" Required="true"
-                                  RequiredError="Der Charakter sollte schon einen Namen haben..."
-                                  @bind-Value="@_characterForUpdateDto.Name" TextChanged="OnNameChanged"
-                                  Immediate="true"/>
-                    <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value"
-                               @bind-SelectedValues="SelectedGame" Clearable="true">
-                        @if (_gameDtos != null)
-                        {
-                            foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                    <MudFocusTrap>
+                        <MudTextField Clearable="true" T="string" Label="Name" Required="true"
+                                      RequiredError="Der Charakter sollte schon einen Namen haben..."
+                                      @bind-Value="@_characterForUpdateDto.Name" TextChanged="OnNameChanged"
+                                      Immediate="true"/>
+                        <MudSelect T="string" Required="true" Label="Games" MultiSelection="false" @bind-Value="_value"
+                                   @bind-SelectedValues="SelectedGame" Clearable="true">
+                            @if (_gameDtos != null)
                             {
-                                <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                                foreach (var gameDto in _gameDtos.OrderBy(x => x.Name).ToList())
+                                {
+                                    <MudSelectItem T="string" Value="@gameDto.Name">@gameDto.Name</MudSelectItem>
+                                }
                             }
-                        }
-                    </MudSelect>
-                    <MudGrid>
-                        <MudItem lg="6" md="6" sm="12" xs="12">
-                            <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFile"
-                                           MaximumFileCount="1">
-                                <ButtonTemplate>
-                                    <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
-                                               StartIcon="@Icons.Material.Filled.Image" for="@context">
-                                        Upload Image (jpg, png)
+                        </MudSelect>
+                        <MudGrid>
+                            <MudItem lg="6" md="6" sm="12" xs="12">
+                                <MudFileUpload T="IBrowserFile" Accept=".jpg,.png" FilesChanged="UploadFile"
+                                               MaximumFileCount="1">
+                                    <ButtonTemplate>
+                                        <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
+                                                   StartIcon="@Icons.Material.Filled.Image" for="@context">
+                                            Upload Image (jpg, png)
+                                        </MudButton>
+                                    </ButtonTemplate>
+                                </MudFileUpload>
+                                <MudToolBar DisableGutters="true" Class="gap-4">
+                                    <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
+                                    <MudButton OnClick="ClearImage" Disabled="@(!_files.Any())" Color="Color.Error"
+                                               Variant="Variant.Filled">Clear
                                     </MudButton>
-                                </ButtonTemplate>
-                            </MudFileUpload>
-                            <MudToolBar DisableGutters="true" Class="gap-4">
-                                <MudText>@_files.Count.ToString() Bilder zwischengespeichert</MudText>
-                                <MudButton OnClick="ClearImage" Disabled="@(!_files.Any())" Color="Color.Error"
-                                           Variant="Variant.Filled">Clear
-                                </MudButton>
-                            </MudToolBar>
-                        </MudItem>
-                        <MudItem lg="1" md="3" sm="12" xs="12">
-                            <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill"
-                                      Alt="Bild des Charakters" Elevation="0" Fluid="true"
-                                      Class="roundes-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
-                        </MudItem>
-                    </MudGrid>
-                    <div class="align-content-center mt-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
-                                   Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">Ändern
-                        </MudButton>
-                    </div>
+                                </MudToolBar>
+                            </MudItem>
+                            <MudItem lg="1" md="3" sm="12" xs="12">
+                                <MudImage Src="@TurnByteArrayToImage(_imageBytes)" ObjectFit="ObjectFit.Fill"
+                                          Alt="Bild des Charakters" Elevation="0" Fluid="true"
+                                          Class="roundes-3 mx-auto d-block m-3" Style="max-width: 12rem;"/>
+                            </MudItem>
+                        </MudGrid>
+                        <div class="align-content-center mt-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                                       Disabled="@(!_success)" Class="m-auto" OnClick="@(async () => await Update())">
+                                Ändern
+                            </MudButton>
+                        </div>
+                    </MudFocusTrap>
                 </MudForm>
             </MudPaper>
         </MudItem>

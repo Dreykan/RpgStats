@@ -5,11 +5,12 @@
 
 <MudDialog DefaultFocus="@DialogDefaultFocus">
     <DialogContent>
-        <MudTextField Label="Level" @bind-Value="Level" Numeric="true"/>
+        <MudTextField Label="Level" @bind-Value="Level" Numeric="true" onFocus="this.select()" Immediate="true"
+                      OnKeyDown="@HandleKeyDown" TextChanged="@CheckIfFieldsAreFilled"/>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Abbrechen</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Error">Entfernen</MudButton>
+        <MudButton OnClick="@Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="@Submit" Color="Color.Error" Disabled="@_isSubmitDisabled">Entfernen</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -21,6 +22,7 @@
     private DefaultFocus DialogDefaultFocus => DefaultFocus.FirstChild;
     private HttpClient HttpClient => HttpClientFactory.CreateClient("RpgStatsApi");
     private int Level { get; set; }
+    private bool _isSubmitDisabled = true;
 
 
     private void Cancel()
@@ -32,7 +34,7 @@
     {
         var response = HttpClient.DeleteAsync($"api/StatValue/DeleteAllStatValuesByCharacterAndLevel/{Character?.Id}/{Level}");
         var content = response.Result.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>().Result;
-        if (!response.Result.IsSuccessStatusCode || content?.Success == false )
+        if (!response.Result.IsSuccessStatusCode || content?.Success == false)
         {
             DialogService.ShowMessageBox("Fehler", "Fehler beim Löschen der Werte");
             return;
@@ -40,4 +42,18 @@
 
         MudDialog?.Close(DialogResult.Ok(content));
     }
+
+    private void CheckIfFieldsAreFilled()
+    {
+        _isSubmitDisabled = Level <= 0;
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !_isSubmitDisabled)
+        {
+            Submit();
+        }
+    }
+
 }
