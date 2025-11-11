@@ -12,21 +12,16 @@
             foreach (var statDto in Stats)
             {
                 var statValueDto = _statValues.FirstOrDefault(sv => sv.StatId == statDto.Id);
-                if (statValueDto == null)
-                {
-                    statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
-                    _statValues.Add(statValueDto);
-                }
                 <MudItem>
                     <MudGrid>
                         <MudItem xs="6">
-                            <MudTextField Label="@statDto.ShortName" @bind-Value="statValueDto.Value" Numeric="true" onFocus="this.select()"/>
+                            <MudTextField Label="@statDto.ShortName" @bind-Value="statValueDto!.Value" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                         <MudItem xs="3">
-                            <MudTextField Label="+BonusNum" @bind-Value="statValueDto.ContainedBonusNum" Numeric="true" onFocus="this.select()"/>
+                            <MudTextField Label="+BonusNum" @bind-Value="statValueDto!.ContainedBonusNum" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                         <MudItem xs="3">
-                            <MudTextField Label="+BonusPercent" @bind-Value="statValueDto.ContainedBonusPercent" Numeric="true" onFocus="this.select()"/>
+                            <MudTextField Label="+BonusPercent" @bind-Value="statValueDto!.ContainedBonusPercent" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                     </MudGrid>
                 </MudItem>
@@ -34,8 +29,8 @@
         }
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Abbrechen</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Primary">Speichern</MudButton>
+        <MudButton OnClick="@Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="@Submit" Color="Color.Primary">Speichern</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -52,12 +47,7 @@
 
     protected override void OnInitialized()
     {
-        if (Stats == null) return;
-        foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
-        {
-            var statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
-            _statValues.Add(statValueDto);
-        }
+        PrepareStatValuesList();
     }
 
     private void Cancel()
@@ -76,7 +66,7 @@
         var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>();
 
         if (!response.IsSuccessStatusCode && responseContent?.Success == false)
-            await ShowErrorMessage("Fehler beim Speichern der Werte");
+            await ShowErrorMessage($"Fehler: {responseContent.ErrorMessage}");
 
         MudDialog?.Close(DialogResult.Ok(_statValues));
     }
@@ -84,5 +74,16 @@
     private async Task ShowErrorMessage(string text)
     {
         await DialogService.ShowMessageBox("Error", text);
+    }
+
+    private void PrepareStatValuesList()
+    {
+        if (Stats == null) return;
+        _statValues.Clear();
+        foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
+        {
+            var statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
+            _statValues.Add(statValueDto);
+        }
     }
 }

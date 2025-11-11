@@ -186,6 +186,25 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    public async Task CreateStatValueAsync_Error_WhenDuplicateExists()
+    {
+        var statValueForCreationDto = new StatValueForCreationDto
+        {
+            Value = 100,
+            ContainedBonusNum = 10,
+            ContainedBonusPercent = 5,
+            Level = 5,
+            CharacterId = 2,
+            StatId = 1
+        };
+
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            await _service.CreateStatValueAsync(statValueForCreationDto);
+        });
+    }
+
+    [Fact]
     public async Task CreateStatValuesAsync_ReturnsStatValuesDto()
     {
         var statValuesForCreationDto = new List<StatValueForCreationDto>
@@ -195,7 +214,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
                 Value = 100,
                 ContainedBonusNum = 10,
                 ContainedBonusPercent = 5,
-                Level = 99,
+                Level = 98,
                 CharacterId = 1,
                 StatId = 1
             },
@@ -204,7 +223,7 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
                 Value = 200,
                 ContainedBonusNum = 20,
                 ContainedBonusPercent = 10,
-                Level = 199,
+                Level = 198,
                 CharacterId = 1,
                 StatId = 1
             }
@@ -219,6 +238,36 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
         {
             await _service.DeleteStatValueAsync(statValue.Id);
         }
+    }
+
+    [Fact]
+    public async Task CreateStatValuesAsync_Error_WhenDuplicateExists()
+    {
+        var statValuesForCreationDto = new List<StatValueForCreationDto>
+        {
+            new()
+            {
+                Value = 100,
+                ContainedBonusNum = 10,
+                ContainedBonusPercent = 5,
+                Level = 1,
+                CharacterId = 1,
+                StatId = 1
+            },
+            new()
+            {
+                Value = 200,
+                ContainedBonusNum = 20,
+                ContainedBonusPercent = 10,
+                Level = 5,
+                CharacterId = 2,
+                StatId = 1
+            }
+        };
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            await _service.CreateMultipleStatValuesAsync(statValuesForCreationDto);
+        });
     }
 
     [Fact]

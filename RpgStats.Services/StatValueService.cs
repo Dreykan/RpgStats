@@ -94,6 +94,13 @@ public class StatValueService : IStatValueService
 
         var statValue = statValueForCreationDto.Adapt<StatValue>();
 
+        var existingStatValue = await _dbContext.StatValues
+            .FirstOrDefaultAsync(sv => sv.CharacterId == statValueForCreationDto.CharacterId &&
+                                       sv.StatId == statValueForCreationDto.StatId &&
+                                       sv.Level == statValueForCreationDto.Level);
+        if (existingStatValue != null)
+            throw new InvalidOperationException("A StatValue with the same CharacterId, StatId, and Level already exists.");
+
         _dbContext.Add(statValue);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
@@ -102,9 +109,19 @@ public class StatValueService : IStatValueService
         return statValue.Adapt<StatValueDto>();
     }
 
-    public async Task<List<StatValueDto>> CreateMultipleStatValuesAsync(List<StatValueForCreationDto> statValueForCreationDto)
+    public async Task<List<StatValueDto>> CreateMultipleStatValuesAsync(List<StatValueForCreationDto> statValuesForCreationDto)
     {
-        var statValues = statValueForCreationDto.Adapt<List<StatValue>>();
+        var statValues = statValuesForCreationDto.Adapt<List<StatValue>>();
+
+        foreach (var statValue in statValues)
+        {
+            var existingStatValue = await _dbContext.StatValues
+                .FirstOrDefaultAsync(sv => sv.CharacterId == statValue.CharacterId &&
+                                           sv.StatId == statValue.StatId &&
+                                           sv.Level == statValue.Level);
+            if (existingStatValue != null)
+                throw new InvalidOperationException("A StatValue with the same CharacterId, StatId, and Level already exists.");
+        }
 
         _dbContext.AddRange(statValues);
         var result = await _dbContext.SaveChangesAsync();
