@@ -1,3 +1,9 @@
+@using System.Collections.Generic
+@using System.Linq
+@using System.Net
+@using System.Net.Http.Json
+@using System.Text
+@using MudBlazor
 @using RpgStats.BlazorServer.Model
 @using RpgStats.Dto
 @inject IHttpClientFactory HttpClientFactory
@@ -12,21 +18,16 @@
             foreach (var statDto in Stats)
             {
                 var statValueDto = _statValues.FirstOrDefault(sv => sv.StatId == statDto.Id);
-                if (statValueDto == null)
-                {
-                    statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
-                    _statValues.Add(statValueDto);
-                }
                 <MudItem>
                     <MudGrid>
                         <MudItem xs="6">
-                            <MudTextField Label="@statDto.ShortName" @bind-Value="statValueDto.Value" Numeric="true" onFocus="this.select()"/>
+                            <MudTextField Label="@statDto.ShortName" @bind-Value="statValueDto!.Value" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                         <MudItem xs="3">
-                            <MudTextField Label="+BonusNum" @bind-Value="statValueDto.ContainedBonusNum" Numeric="true" onFocus="this.select()"/>
+                            <MudTextField Label="+BonusNum" @bind-Value="statValueDto!.ContainedBonusNum" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                         <MudItem xs="3">
-                            <MudTextField Label="+BonusPercent" @bind-Value="statValueDto.ContainedBonusPercent" Numeric="true" onFocus="this.select()"/>
+                            <MudTextField Label="+BonusPercent" @bind-Value="statValueDto!.ContainedBonusPercent" Numeric="true" onFocus="this.select()"/>
                         </MudItem>
                     </MudGrid>
                 </MudItem>
@@ -34,8 +35,8 @@
         }
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Abbrechen</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Primary">Speichern</MudButton>
+        <MudButton OnClick="@Cancel">Abbrechen</MudButton>
+        <MudButton OnClick="@Submit" Color="Color.Primary">Speichern</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -52,12 +53,7 @@
 
     protected override void OnInitialized()
     {
-        if (Stats == null) return;
-        foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
-        {
-            var statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
-            _statValues.Add(statValueDto);
-        }
+        PrepareStatValuesList();
     }
 
     private void Cancel()
@@ -72,17 +68,85 @@
             statValue.Level = Level;
         }
 
-        var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateMultipleStatValues/", _statValues);
-        var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>();
+        var request = new CreateStatValuesRequestDto
+        {
+            StatValues = _statValues.Select(sv => new StatValueForCreationDto
+            {
+                CharacterId = sv.CharacterId,
+                StatId = sv.StatId,
+                Level = sv.Level,
+                Value = sv.Value,
+                ContainedBonusNum = sv.ContainedBonusNum,
+                ContainedBonusPercent = sv.ContainedBonusPercent
+            }).ToList()
+        };
 
-        if (!response.IsSuccessStatusCode && responseContent?.Success == false)
-            await ShowErrorMessage("Fehler beim Speichern der Werte");
+        var result = await SendCreateStatValuesRequestAsync(request);
+        if (result == null)
+            return;
 
-        MudDialog?.Close(DialogResult.Ok(_statValues));
+        MudDialog?.Close(DialogResult.Ok(result.CreatedStatValues));
+    }
+
+    private async Task<StatValueCreationResultDto?> SendCreateStatValuesRequestAsync(CreateStatValuesRequestDto request)
+    {
+        var response = await HttpClient.PostAsJsonAsync("api/StatValue/CreateMultipleStatValues/", request);
+        var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<StatValueCreationResultDto>>();
+
+        if (response.StatusCode == HttpStatusCode.PreconditionFailed && responseContent?.Data?.Warnings?.Any() == true)
+        {
+            var confirm = await AskToConfirmWarningsAsync(responseContent.Data.Warnings);
+            if (confirm)
+            {
+                var forceRequest = request with { ForceSave = true };
+                return await SendCreateStatValuesRequestAsync(forceRequest);
+            }
+
+            return null;
+        }
+
+        if (!response.IsSuccessStatusCode || responseContent?.Success != true || responseContent.Data == null)
+        {
+            var message = responseContent?.ErrorMessage ?? "Ein unbekannter Fehler ist aufgetreten.";
+            await ShowErrorMessage($"Fehler: {message}");
+            return null;
+        }
+
+        return responseContent.Data;
+    }
+
+    private async Task<bool> AskToConfirmWarningsAsync(IEnumerable<StatValueDecreaseWarningDto> warnings)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine("Folgende Werte sind niedriger als das vorherige Level:");
+        builder.AppendLine();
+
+        foreach (var warning in warnings)
+        {
+            var statName = Stats?.FirstOrDefault(s => s.Id == warning.StatId)?.ShortName ?? warning.StatId.ToString();
+            builder.AppendLine($"{statName}: Level {warning.CurrentLevel} => {warning.CurrentValue} (vorher Level {warning.PreviousLevel} => {warning.PreviousValue})");
+        }
+
+        builder.AppendLine();
+        builder.Append("Sollen die Werte trotzdem gespeichert werden?");
+
+        var confirmation = await DialogService.ShowMessageBox("Bitte bestätigen", builder.ToString(), yesText: "Ja", cancelText: "Nein");
+        return confirmation == true;
     }
 
     private async Task ShowErrorMessage(string text)
     {
         await DialogService.ShowMessageBox("Error", text);
+    }
+
+    private void PrepareStatValuesList()
+    {
+        if (Stats == null) return;
+        _statValues.Clear();
+        foreach (var statDto in Stats.OrderBy(x => x.ShortName).ToList())
+        {
+            var statValueDto = new StatValueForCreationDto() { StatId = statDto.Id, CharacterId = Character?.Id ?? 0, Level = Level };
+            _statValues.Add(statValueDto);
+        }
     }
 }

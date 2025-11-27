@@ -94,6 +94,13 @@ public class StatValueService : IStatValueService
 
         var statValue = statValueForCreationDto.Adapt<StatValue>();
 
+        var existingStatValue = await _dbContext.StatValues
+            .FirstOrDefaultAsync(sv => sv.CharacterId == statValueForCreationDto.CharacterId &&
+                                       sv.StatId == statValueForCreationDto.StatId &&
+                                       sv.Level == statValueForCreationDto.Level);
+        if (existingStatValue != null)
+            throw new InvalidOperationException("A StatValue with the same CharacterId, StatId, and Level already exists.");
+
         _dbContext.Add(statValue);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
@@ -102,16 +109,66 @@ public class StatValueService : IStatValueService
         return statValue.Adapt<StatValueDto>();
     }
 
-    public async Task<List<StatValueDto>> CreateMultipleStatValuesAsync(List<StatValueForCreationDto> statValueForCreationDto)
+    public async Task<StatValueCreationResultDto> CreateMultipleStatValuesAsync(CreateStatValuesRequestDto request)
     {
-        var statValues = statValueForCreationDto.Adapt<List<StatValue>>();
+        if (request == null)
+            throw new ArgumentNullException(nameof(request));
+
+        if (request.StatValues == null || request.StatValues.Count == 0)
+            throw new ArgumentException("At least one StatValue entry is required.", nameof(request));
+
+        var statValues = request.StatValues.Adapt<List<StatValue>>();
+        var warnings = new List<StatValueDecreaseWarningDto>();
+
+        foreach (var statValue in statValues)
+        {
+            var existingStatValue = await _dbContext.StatValues
+                .FirstOrDefaultAsync(sv => sv.CharacterId == statValue.CharacterId &&
+                                           sv.StatId == statValue.StatId &&
+                                           sv.Level == statValue.Level);
+            if (existingStatValue != null)
+                throw new InvalidOperationException("A StatValue with the same CharacterId, StatId, and Level already exists.");
+
+            var previousStatValue = await _dbContext.StatValues
+                .Where(sv => sv.CharacterId == statValue.CharacterId &&
+                             sv.StatId == statValue.StatId &&
+                             sv.Level < statValue.Level)
+                .OrderByDescending(sv => sv.Level)
+                .FirstOrDefaultAsync();
+
+            if (previousStatValue != null && statValue.Value < previousStatValue.Value)
+            {
+                warnings.Add(new StatValueDecreaseWarningDto
+                {
+                    CharacterId = statValue.CharacterId,
+                    StatId = statValue.StatId,
+                    PreviousLevel = previousStatValue.Level,
+                    PreviousValue = previousStatValue.Value,
+                    CurrentLevel = statValue.Level,
+                    CurrentValue = statValue.Value
+                });
+            }
+        }
+
+        if (warnings.Count > 0 && !request.ForceSave)
+        {
+            return new StatValueCreationResultDto
+            {
+                CreatedStatValues = new List<StatValueDto>(),
+                Warnings = warnings
+            };
+        }
 
         _dbContext.AddRange(statValues);
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
             throw new InvalidOperationException("StatValues could not be created");
 
-        return statValues.Adapt<List<StatValueDto>>();
+        return new StatValueCreationResultDto
+        {
+            CreatedStatValues = statValues.Adapt<List<StatValueDto>>(),
+            Warnings = warnings
+        };
     }
 
     public async Task<StatValueDto> UpdateStatValueAsync(long statValueId, long characterId, long statId,
