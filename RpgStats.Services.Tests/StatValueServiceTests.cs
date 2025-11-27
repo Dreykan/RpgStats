@@ -229,12 +229,19 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
             }
         };
 
-        var result = await _service.CreateMultipleStatValuesAsync(statValuesForCreationDto);
+        var request = new CreateStatValuesRequestDto
+        {
+            StatValues = statValuesForCreationDto
+        };
+
+        var result = await _service.CreateMultipleStatValuesAsync(request);
 
         Assert.NotNull(result);
-        Assert.Equal(2, result.Count);
+        Assert.NotNull(result.CreatedStatValues);
+        Assert.Equal(2, result.CreatedStatValues.Count);
+        Assert.False(result.HasWarnings);
 
-        foreach (var statValue in result)
+        foreach (var statValue in result.CreatedStatValues)
         {
             await _service.DeleteStatValueAsync(statValue.Id);
         }
@@ -264,10 +271,89 @@ public class StatValueServiceTests : IClassFixture<DatabaseFixture>
                 StatId = 1
             }
         };
+        var request = new CreateStatValuesRequestDto
+        {
+            StatValues = statValuesForCreationDto
+        };
+
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
-            await _service.CreateMultipleStatValuesAsync(statValuesForCreationDto);
+            await _service.CreateMultipleStatValuesAsync(request);
         });
+    }
+
+    [Fact]
+    public async Task CreateStatValuesAsync_ReturnsWarnings_WhenValueDecreases()
+    {
+        var statValuesForCreationDto = new List<StatValueForCreationDto>
+        {
+            new()
+            {
+                Value = 40,
+                ContainedBonusNum = 5,
+                ContainedBonusPercent = 2,
+                Level = 7,
+                CharacterId = 2,
+                StatId = 1
+            }
+        };
+
+        var request = new CreateStatValuesRequestDto
+        {
+            ForceSave = false,
+            StatValues = statValuesForCreationDto
+        };
+
+        var result = await _service.CreateMultipleStatValuesAsync(request);
+
+        Assert.NotNull(result);
+        Assert.True(result.HasWarnings);
+        Assert.Empty(result.CreatedStatValues);
+        Assert.Single(result.Warnings);
+        Assert.Equal(2, result.Warnings[0].CharacterId);
+        Assert.Equal(1, result.Warnings[0].StatId);
+        Assert.Equal(6, result.Warnings[0].PreviousLevel);
+        Assert.Equal(56, result.Warnings[0].PreviousValue);
+        Assert.Equal(7, result.Warnings[0].CurrentLevel);
+        Assert.Equal(40, result.Warnings[0].CurrentValue);
+    }
+
+    [Fact]
+    public async Task CreateStatValuesAsync_Saves_WhenForceSaveIsTrue()
+    {
+        var statValuesForCreationDto = new List<StatValueForCreationDto>
+        {
+            new()
+            {
+                Value = 45,
+                ContainedBonusNum = 5,
+                ContainedBonusPercent = 2,
+                Level = 8,
+                CharacterId = 2,
+                StatId = 1
+            }
+        };
+
+        var request = new CreateStatValuesRequestDto
+        {
+            ForceSave = true,
+            StatValues = statValuesForCreationDto
+        };
+
+        var result = await _service.CreateMultipleStatValuesAsync(request);
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.CreatedStatValues);
+        Assert.Single(result.CreatedStatValues);
+        Assert.True(result.HasWarnings);
+        Assert.Single(result.Warnings);
+        Assert.Equal(8, result.Warnings[0].CurrentLevel);
+        Assert.Equal(45, result.Warnings[0].CurrentValue);
+
+        foreach (var statValue in result.CreatedStatValues)
+        {
+            await _service.DeleteStatValueAsync(statValue.Id);
+        }
     }
 
     [Fact]

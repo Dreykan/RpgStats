@@ -20,4 +20,12 @@ public class ApiResponse<T>
 
         return new ApiResponse<T> { Success = false, ErrorMessage = errorMessage };
     }
+
+    public static ApiResponse<T> WarningResult(string warningMessage, T data)
+    {
+        if (string.IsNullOrEmpty(warningMessage))
+            warningMessage = "A warning occurred.";
+
+        return new ApiResponse<T> { Success = false, ErrorMessage = warningMessage, Data = data };
+    }
 }

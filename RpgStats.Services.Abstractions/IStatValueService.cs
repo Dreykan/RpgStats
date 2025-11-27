@@ -10,7 +10,7 @@ public interface IStatValueService
     Task<Dictionary<long, int>> GetHighestLevelByCharactersAsync(List<long> characterIds);
     Task<StatValueDto?> GetStatValueByIdAsync(long statValueId);
     Task<StatValueDto> CreateStatValueAsync(StatValueForCreationDto statValueForCreationDto);
-    Task<List<StatValueDto>> CreateMultipleStatValuesAsync(List<StatValueForCreationDto> statValuesForCreationDto);
+    Task<StatValueCreationResultDto> CreateMultipleStatValuesAsync(CreateStatValuesRequestDto request);
     Task<StatValueDto> UpdateStatValueAsync(long statValueId, long characterId, long statId,
         StatValueForUpdateDto statValueForUpdateDto);
     Task<StatValueDto?> DeleteStatValueAsync(long statValueId);

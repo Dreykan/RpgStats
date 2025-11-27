@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
@@ -159,22 +160,31 @@ public class StatValueController : ControllerBase
     }
 
     [HttpPost("CreateMultipleStatValues")]
-    [SwaggerResponse(201, "StatValues created successfully", typeof(ApiResponse<List<StatValueDto>>))]
-    [SwaggerResponse(400, "Invalid StatValues data")]
-    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "StatValues created successfully", typeof(ApiResponse<StatValueCreationResultDto>))]
+    [SwaggerResponse(StatusCodes.Status412PreconditionFailed, "StatValues contain decreases compared to previous level", typeof(ApiResponse<StatValueCreationResultDto>))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid StatValues data")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error")]
     [SwaggerOperation(Summary = "Create multiple StatValues")]
-    public async Task<IActionResult> CreateMultipleStatValues([FromBody] List<StatValueForCreationDto> statValuesForCreationDto)
+    public async Task<IActionResult> CreateMultipleStatValues([FromBody] CreateStatValuesRequestDto request)
     {
         try
         {
-            var statValues = await _statValueService.CreateMultipleStatValuesAsync(statValuesForCreationDto);
+            var result = await _statValueService.CreateMultipleStatValuesAsync(request);
+
+            if (result.HasWarnings && !request.ForceSave)
+            {
+                return StatusCode(StatusCodes.Status412PreconditionFailed,
+                    ApiResponse<StatValueCreationResultDto>.WarningResult(
+                        "Mindestens ein StatValue ist kleiner als der Wert des vorherigen Levels.", result));
+            }
+
             return CreatedAtAction(nameof(GetAllStatValues), null,
-                ApiResponse<List<StatValueDto>>.SuccessResult(statValues));
+                ApiResponse<StatValueCreationResultDto>.SuccessResult(result));
         }
         catch (Exception e)
         {
             return BadRequest(
-                ApiResponse<List<StatValueDto>>.ErrorResult($"An error occurred while creating the StatValues: {e.Message}"));
+                ApiResponse<StatValueCreationResultDto>.ErrorResult($"An error occurred while creating the StatValues: {e.Message}"));
         }
     }
 
