@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
@@ -49,6 +50,34 @@ public class StatValueController : ControllerBase
                 return Ok(ApiResponse<List<StatValueDto>>.ErrorResult(
                     $"No StatValues found for the specified characterId: {characterId}"));
 
+            return Ok(ApiResponse<List<StatValueDto>>.SuccessResult(statValues));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<List<StatValueDto>>.ErrorResult(e.Message));
+        }
+    }
+    
+    [HttpGet("GetAllStatValuesByCharacterAndLevel/{characterId:long}/{level:int}")]
+    [SwaggerResponse(200, "Returns a list of StatValues by character ID and level", typeof(ApiResponse<List<StatValueDto>>))]
+    [SwaggerResponse(400, "Invalid character ID or level")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get all StatValues by Character and Level")]
+    public async Task<IActionResult> GetAllStatValuesByCharacterAndLevel(long characterId, int level)
+    {
+        if (characterId <= 0)
+            return BadRequest(ApiResponse<List<StatValueDto>>.ErrorResult("Invalid character ID."));
+        if (level <= 0)
+            return BadRequest(ApiResponse<List<StatValueDto>>.ErrorResult("Invalid level."));
+        
+        try
+        {
+            var statValues = await _statValueService.GetAllStatValuesByCharacterLevelAsync(characterId, level);
+            if (statValues.Count == 0)
+                return Ok(ApiResponse<List<StatValueDto>>.ErrorResult(
+                    $"No StatValues found for the specified characterId: {characterId} and level: {level}"));
+            
             return Ok(ApiResponse<List<StatValueDto>>.SuccessResult(statValues));
         }
         catch (CharacterNotFoundException e)
@@ -129,6 +158,40 @@ public class StatValueController : ControllerBase
 
         return Ok(ApiResponse<StatValueDto>.SuccessResult(statValue));
     }
+    
+    [HttpGet("GetStatValueByCharacterLevelAndStat/{characterId:long}/{level:int}/{statId:long}")]
+    [SwaggerResponse(200, "Returns a StatValue by Character, Level and Stat ID", typeof(ApiResponse<StatValueDto>))]
+    [SwaggerResponse(400, "Invalid character ID, level or stat ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get StatValue by Character, Level and Stat Id")]
+    public async Task<IActionResult> GetStatValueByCharacterLevelAndStat(long characterId, int level, long statId)
+    {
+        if (characterId <= 0)
+            return BadRequest(ApiResponse<StatValueDto>.ErrorResult("Invalid character ID."));
+        if (level <= 0)
+            return BadRequest(ApiResponse<StatValueDto>.ErrorResult("Invalid level."));
+        if (statId <= 0)
+            return BadRequest(ApiResponse<StatValueDto>.ErrorResult("Invalid stat ID."));
+        
+        try
+        {
+            var statValue = await _statValueService.GetStatValueByCharacterLevelAndStatIdAsync(characterId, level, statId);
+            if (statValue == null)
+                return NotFound(ApiResponse<StatValueDto>.ErrorResult(
+                    $"StatValue not found for characterId {characterId}, level {level} and statId {statId}"));
+            
+            return Ok(ApiResponse<StatValueDto>.SuccessResult(statValue));
+        }
+        catch (CharacterNotFoundException e)
+        {
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
+        }
+        catch (StatNotFoundException e)
+        {
+            return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
+        }
+    }
 
     [HttpPost("CreateStatValue")]
     [SwaggerResponse(201, "StatValue created successfully", typeof(ApiResponse<StatValueDto>))]
@@ -150,6 +213,10 @@ public class StatValueController : ControllerBase
         catch (StatNotFoundException e)
         {
             return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(ApiResponse<StatValueDto>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {

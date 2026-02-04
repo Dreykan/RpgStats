@@ -1,10 +1,12 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
+using RpgStats.Services.Validations.StatValue;
 
 namespace RpgStats.Services;
 
@@ -35,6 +37,19 @@ public class StatValueService : IStatValueService
             .Where(sv => sv.CharacterId == characterId)
             .ToListAsync();
 
+        return statValues.Adapt<List<StatValueDto>>();
+    }
+
+    public async Task<List<StatValueDto>> GetAllStatValuesByCharacterLevelAsync(long characterId, int level)
+    {
+        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+        if (character == null)
+            throw new CharacterNotFoundException(characterId);
+        
+        var statValues = await _dbContext.StatValues
+            .Where(sv => sv.CharacterId == characterId && sv.Level == level)
+            .ToListAsync();
+        
         return statValues.Adapt<List<StatValueDto>>();
     }
 
@@ -82,8 +97,32 @@ public class StatValueService : IStatValueService
         return statValue?.Adapt<StatValueDto>();
     }
 
+    public async Task<StatValueDto?> GetStatValueByCharacterLevelAndStatIdAsync(long characterId, int level, long statId)
+    {
+        var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+        if (character == null)
+            throw new CharacterNotFoundException(characterId);
+
+        var stat = await _dbContext.Stats.FirstOrDefaultAsync(s => s.Id == statId);
+        if (stat == null)
+            throw new StatNotFoundException(statId);
+
+        var statValue = await _dbContext.StatValues
+            .FirstOrDefaultAsync(sv => sv.CharacterId == characterId && sv.Level == level && sv.StatId == statId);
+
+        return statValue?.Adapt<StatValueDto>();
+    }
+
     public async Task<StatValueDto> CreateStatValueAsync(StatValueForCreationDto statValueForCreationDto)
     {
+        var validator = new StatValueForCreationValidator(_dbContext);
+        var validationResult = await validator.ValidateAsync(statValueForCreationDto);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new ValidationException($"StatValueForCreationDto validation failed: {errors}");
+        }
+        
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == statValueForCreationDto.CharacterId);
         if (character == null)
             throw new CharacterNotFoundException(statValueForCreationDto.CharacterId);
@@ -102,9 +141,9 @@ public class StatValueService : IStatValueService
         return statValue.Adapt<StatValueDto>();
     }
 
-    public async Task<List<StatValueDto>> CreateMultipleStatValuesAsync(List<StatValueForCreationDto> statValueForCreationDto)
+    public async Task<List<StatValueDto>> CreateMultipleStatValuesAsync(List<StatValueForCreationDto> statValueForCreationDtos)
     {
-        var statValues = statValueForCreationDto.Adapt<List<StatValue>>();
+        var statValues = statValueForCreationDtos.Adapt<List<StatValue>>();
 
         _dbContext.AddRange(statValues);
         var result = await _dbContext.SaveChangesAsync();

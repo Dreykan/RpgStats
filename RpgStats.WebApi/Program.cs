@@ -5,6 +5,8 @@ using RpgStats.Repo;
 using RpgStats.Services;
 using RpgStats.Services.Abstractions;
 using RpgStats.WebApi;
+using FluentValidation;
+using RpgStats.Services.Validations.StatValue;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +17,13 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "RpgStats", Version = "v1" });
 });
-builder.Services.AddTransient<ICharacterService, CharacterService>();
-builder.Services.AddTransient<IGameService, GameService>();
-builder.Services.AddTransient<IGameStatService, GameStatService>();
-builder.Services.AddTransient<IPlatformService, PlatformService>();
-builder.Services.AddTransient<IPlatformGameService, PlatformGameService>();
-builder.Services.AddTransient<IStatService, StatService>();
-builder.Services.AddTransient<IStatValueService, StatValueService>();
+builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameStatService, GameStatService>();
+builder.Services.AddScoped<IPlatformService, PlatformService>();
+builder.Services.AddScoped<IPlatformGameService, PlatformGameService>();
+builder.Services.AddScoped<IStatService, StatService>();
+builder.Services.AddScoped<IStatValueService, StatValueService>();
 builder.Services.AddDbContextPool<RpgStatsContext>(options =>
 {
     var connectionString = builder.Environment.IsDevelopment() 

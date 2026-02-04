@@ -12,4 +12,8 @@
         <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.8"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>

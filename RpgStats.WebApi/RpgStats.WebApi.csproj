@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\RpgStats.BizLogic\RpgStats.BizLogic.csproj" />
         <ProjectReference Include="..\RpgStats.Repo\RpgStats.Repo.csproj"/>
         <ProjectReference Include="..\RpgStats.Services.Abstractions\RpgStats.Services.Abstractions.csproj"/>
         <ProjectReference Include="..\RpgStats.Services\RpgStats.Services.csproj"/>

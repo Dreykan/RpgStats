@@ -1,0 +1,15 @@
+meta {
+  name: GetAllStatValuesByCharacterLevel
+  type: http
+  seq: 33
+}
+
+get {
+  url: {{host}}/{{basePath}}/{{statValuePath}}/GetAllStatValuesByCharacterAndLevel/49/3
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
