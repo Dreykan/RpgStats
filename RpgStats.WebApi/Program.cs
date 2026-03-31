@@ -6,7 +6,8 @@ using RpgStats.Services;
 using RpgStats.Services.Abstractions;
 using RpgStats.WebApi;
 using FluentValidation;
-using RpgStats.Services.Validations.StatValue;
+using RpgStats.BizLogic.Validations.StatValue;
+using RpgStats.Dto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,11 @@ builder.Services.AddScoped<IPlatformService, PlatformService>();
 builder.Services.AddScoped<IPlatformGameService, PlatformGameService>();
 builder.Services.AddScoped<IStatService, StatService>();
 builder.Services.AddScoped<IStatValueService, StatValueService>();
+
+// Validators
+builder.Services.AddValidatorsFromAssemblyContaining<StatValueForCreationValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<StatValueForCreationListValidator>();
+
 builder.Services.AddDbContextPool<RpgStatsContext>(options =>
 {
     var connectionString = builder.Environment.IsDevelopment() 

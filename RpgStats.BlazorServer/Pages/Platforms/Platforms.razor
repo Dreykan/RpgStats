@@ -87,6 +87,12 @@
         }
 
         var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<PlatformWithGamesDto>>>();
+        if (result == null || result.Success == false || result.Data == null)
+        {
+            _platforms = new List<PlatformWithGamesDto>();
+            return;
+        }
+
         _platforms = result?.Data?.OrderBy(x => x.Name).ToList();
     }
 

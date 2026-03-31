@@ -70,19 +70,28 @@
         foreach (var statValue in _statValues)
         {
             statValue.Level = Level;
+            statValue.CharacterName = Character?.Name ?? string.Empty;
+            statValue.GameStatShortName = Character?.GameStats?.FirstOrDefault(gs => gs.StatId == statValue.StatId)?.CustomStatShortName ?? string.Empty;
         }
 
         var response = await HttpClient.PostAsJsonAsync($"api/StatValue/CreateMultipleStatValues/", _statValues);
         var responseContent = await response.Content.ReadFromJsonAsync<WebApiResponse<List<StatValueDto>>>();
 
         if (!response.IsSuccessStatusCode && responseContent?.Success == false)
-            await ShowErrorMessage("Fehler beim Speichern der Werte");
+        {
+            await ShowErrorMessage($"Fehler beim Speichern der Werte.\n{responseContent.ErrorMessage}");
+        }
+        else
+        {
+            MudDialog?.Close(DialogResult.Ok(_statValues));
+        }
 
-        MudDialog?.Close(DialogResult.Ok(_statValues));
     }
 
     private async Task ShowErrorMessage(string text)
     {
-        await DialogService.ShowMessageBox("Error", text);
+        var markupText = new MarkupString(text.Replace("\n", "<br />- "));
+        // await DialogService.ShowMessageBox("Error", text);
+        await DialogService.ShowMessageBox("Fehler", markupText, "OK", null, null, new DialogOptions { FullWidth = true, MaxWidth = MaxWidth.Medium });
     }
 }

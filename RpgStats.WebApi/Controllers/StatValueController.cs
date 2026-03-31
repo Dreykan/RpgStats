@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using RpgStats.BizLogic.Validations.StatValue;
 using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Services.Abstractions;
@@ -12,10 +13,14 @@ namespace RpgStats.WebApi.Controllers;
 public class StatValueController : ControllerBase
 {
     private readonly IStatValueService _statValueService;
+    private readonly IValidator<StatValueForCreationDto> _statValueForCreationValidator;
+    private readonly IValidator<List<StatValueForCreationDto>> _statValueForCreationListValidator;
 
-    public StatValueController(IStatValueService statValueService)
+    public StatValueController(IStatValueService statValueService, IValidator<StatValueForCreationDto> statValueForCreationValidator, IValidator<List<StatValueForCreationDto>> statValueForCreationListValidator)
     {
         _statValueService = statValueService;
+        _statValueForCreationValidator = statValueForCreationValidator;
+        _statValueForCreationListValidator = statValueForCreationListValidator;
     }
 
     [HttpGet("GetAllStatValues")]
@@ -200,6 +205,14 @@ public class StatValueController : ControllerBase
     [SwaggerOperation(Summary = "Create a StatValue")]
     public async Task<IActionResult> CreateStatValue([FromBody] StatValueForCreationDto statValueForCreationDto)
     {
+        var validationResult = await _statValueForCreationValidator.ValidateAsync(statValueForCreationDto);
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            var message = string.Join(Environment.NewLine, errors);
+            return BadRequest(ApiResponse<StatValueDto>.ErrorResult(message));
+        }
+        
         try
         {
             var statValue = await _statValueService.CreateStatValueAsync(statValueForCreationDto);
@@ -213,10 +226,6 @@ public class StatValueController : ControllerBase
         catch (StatNotFoundException e)
         {
             return NotFound(ApiResponse<StatValueDto>.ErrorResult(e.Message));
-        }
-        catch (ValidationException e)
-        {
-            return BadRequest(ApiResponse<StatValueDto>.ErrorResult(e.Message));
         }
         catch (Exception e)
         {
@@ -232,6 +241,14 @@ public class StatValueController : ControllerBase
     [SwaggerOperation(Summary = "Create multiple StatValues")]
     public async Task<IActionResult> CreateMultipleStatValues([FromBody] List<StatValueForCreationDto> statValuesForCreationDto)
     {
+        var validationResult = await _statValueForCreationListValidator.ValidateAsync(statValuesForCreationDto);
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            var message = string.Join(Environment.NewLine, errors);
+            return BadRequest(ApiResponse<List<StatValueDto>>.ErrorResult(message));
+        }
+        
         try
         {
             var statValues = await _statValueService.CreateMultipleStatValuesAsync(statValuesForCreationDto);

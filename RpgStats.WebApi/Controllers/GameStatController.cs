@@ -86,6 +86,24 @@ public class GameStatController : ControllerBase
 
         return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
     }
+    
+    [HttpGet("GetGameStatByStatAndGame/{statId:long}/{gameId:long}")]
+    [SwaggerResponse(200, "Returns a GameStat by Stat ID and Game ID", typeof(ApiResponse<GameStatDto>))]
+    [SwaggerResponse(400, "Invalid stat ID or game ID")]
+    [SwaggerResponse(404, "Resource not found")]
+    [SwaggerResponse(500, "Internal server error")]
+    [SwaggerOperation(Summary = "Get a GameStat by Stat and Game")]
+    public async Task<IActionResult> GetGameStatByStatAndGame(long statId, long gameId)
+    {
+        if (statId <= 0 || gameId <= 0)
+            return BadRequest(ApiResponse<GameStatDto>.ErrorResult("Invalid stat ID or game ID."));
+        
+        var gameStat = await _gameStatService.GetGameStatByStatIdAndGameIdAsync(statId, gameId);
+        if (gameStat == null)
+            return NotFound(ApiResponse<GameStatDto>.ErrorResult($"GameStat with Stat ID {statId} and Game ID {gameId} not found."));
+        
+        return Ok(ApiResponse<GameStatDto>.SuccessResult(gameStat));
+    }
 
     [HttpPost("CreateGameStat")]
     [SwaggerResponse(201, "GameStat created successfully", typeof(ApiResponse<GameStatDto>))]

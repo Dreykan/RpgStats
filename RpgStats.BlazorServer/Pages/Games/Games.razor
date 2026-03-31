@@ -78,6 +78,12 @@
         }
 
         var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<GameDto>>>();
+        if (result == null || !result.Success || result.Data == null)
+        {
+            _games = new List<GameDto>();
+            return;
+        }
+
         _games = result?.Data?.OrderBy(game => game.Name).ToList();
     }
 

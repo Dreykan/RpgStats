@@ -70,6 +70,12 @@
         }
 
         var result = await response.Content.ReadFromJsonAsync<WebApiResponse<List<CharacterDto>>>();
+        if (result == null || result.Success == false || result.Data == null)
+        {
+            _characters = new List<CharacterDto>();
+            return;
+        }
+
         _characters = result?.Data?.OrderBy(character => character.Name).ToList();
     }
 

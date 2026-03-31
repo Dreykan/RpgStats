@@ -21,4 +21,8 @@ public record StatValueForCreationDto
 
     [Required(ErrorMessage = "A CharacterId entry is required.")]
     public long CharacterId { get; set; }
+    
+    public string? CharacterName { get; set; }
+    
+    public string? GameStatShortName { get; set; }
 }

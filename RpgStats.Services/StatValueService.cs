@@ -1,12 +1,10 @@
-﻿using FluentValidation;
-using Mapster;
+﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using RpgStats.Domain.Entities;
 using RpgStats.Domain.Exceptions;
 using RpgStats.Dto;
 using RpgStats.Repo;
 using RpgStats.Services.Abstractions;
-using RpgStats.Services.Validations.StatValue;
 
 namespace RpgStats.Services;
 
@@ -115,14 +113,6 @@ public class StatValueService : IStatValueService
 
     public async Task<StatValueDto> CreateStatValueAsync(StatValueForCreationDto statValueForCreationDto)
     {
-        var validator = new StatValueForCreationValidator(_dbContext);
-        var validationResult = await validator.ValidateAsync(statValueForCreationDto);
-        if (!validationResult.IsValid)
-        {
-            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            throw new ValidationException($"StatValueForCreationDto validation failed: {errors}");
-        }
-        
         var character = await _dbContext.Characters.FirstOrDefaultAsync(c => c.Id == statValueForCreationDto.CharacterId);
         if (character == null)
             throw new CharacterNotFoundException(statValueForCreationDto.CharacterId);
